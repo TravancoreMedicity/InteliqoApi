@@ -1,4 +1,4 @@
-const { create, update, createdetl, checkInsertVal, checkUpdateVal, updatefineslno, getFineByID, getFineBySlno } = require('../hrm_emp_fine/fine.service');
+const { create, update, createdetl, checkInsertVal, checkUpdateVal, updatefineslno, getFineByID, getFineBySlno, getFineByIDStatus } = require('../hrm_emp_fine/fine.service');
 const { validatefinededuction } = require('../../validation/validation_schema');
 
 module.exports = {
@@ -13,7 +13,6 @@ module.exports = {
             });
         }
         body.fine_type = body_result.value.fine_type;
-
         checkInsertVal(body, (err, results) => {
             const value = JSON.parse(JSON.stringify(results))
             if (Object.keys(value).length === 0) {
@@ -25,7 +24,6 @@ module.exports = {
                             message: err
                         });
                     }
-
                     else {
                         createdetl(body, (err, results) => {
                             if (err) {
@@ -93,12 +91,10 @@ module.exports = {
                             message: "Record Not Found"
                         });
                     }
-
                     return res.status(200).json({
                         success: 2,
                         message: "Data Updated Successfully"
                     });
-
                 });
             } else {
                 return res.status(200).json({
@@ -118,20 +114,17 @@ module.exports = {
                     message: err
                 });
             }
-
             if (results.length == 0) {
                 return res.status(200).json({
                     success: 0,
                     message: "No Record Found"
                 });
             }
-
             return res.status(200).json({
                 success: 1,
                 data: results
             });
         });
-
     },
     getFineBySlno: (req, res) => {
 
@@ -143,9 +136,31 @@ module.exports = {
                     message: err
                 });
             }
-
             if (results.length == 0) {
                 return res.status(400).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+
+    getFineByIDStatus: (req, res) => {
+        const body = req.body;
+        getFineByIDStatus(body, (err, results) => {
+            if (err) {
+                return res.status(400).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(200).json({
                     success: 0,
                     message: "No Record Found"
                 });

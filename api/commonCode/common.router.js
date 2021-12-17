@@ -28,7 +28,12 @@ const {
     GetEarningsSalry,
     GetDeductionSalry,
     getFineSlno,
-    GetLastChangedSalary
+    GetLastChangedSalary,
+    getannprocess, getcasual,
+    getleaveholiday,
+    getleavecommon,
+    getCompanyById,
+    getcompanylogId
 } = require('../commonCode/common.controller');
 
 router.get("/getdept", checkToken, getDepartmentName)
@@ -59,4 +64,12 @@ router.get("/getfixedearnings/:id", checkToken, GetEarningsSalry)//salary inform
 router.get("/getfixeddeduction/:id", checkToken, GetDeductionSalry)//salary information of Deduction
 router.get("/getlastwage/:id", checkToken, GetLastChangedSalary)//salary information of Deduction
 router.get("/getFineSlno", checkToken, getFineSlno)
+router.get("/getannprocess/:id", checkToken, getannprocess)
+router.get("/getcasual/:id", checkToken, getcasual)
+router.get("/getleaveholiday/:id", checkToken, getleaveholiday)
+router.get("/getleavecommon/:id", checkToken, getleavecommon)
+router.get("/getcompanydetails/:id", checkToken, getCompanyById)
+router.get("/getcompanylog/:id", checkToken, getcompanylogId)
+
+
 module.exports = router;

@@ -308,5 +308,71 @@ module.exports = {
             }
         )
 
-    }
+    },
+
+    createCompanyInfo: (data, callBack) => {
+        pool.query(
+            `INSERT INTO hrm_emp_company_log(
+                com_branch,
+                com_dept,
+                com_deptsec,
+                com_institution_type,
+                com_category,
+                com_category_new,
+                create_user,
+                edit_user,
+                em_id,
+                em_no
+            )
+            VALUES(?,?,?,?,?,?,?,?,?,?)`,
+            [
+                data.em_branch,
+                data.em_department,
+                data.em_dept_section,
+                data.em_institution_type,
+                data.com_category,
+                data.em_category,
+                data.create_user,
+                data.edit_user,
+                data.em_id,
+                data.em_no
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+
+    updateCompanyInfo: (data, callBack) => {
+        pool.query(
+            `UPDATE hrm_emp_master
+                SET           
+                em_branch = ?,
+                em_department = ?,
+                em_dept_section = ?,
+                em_institution_type = ?,
+                em_category = ?
+                WHERE em_no = ?`,
+            [
+                data.em_branch,
+                data.em_department,
+                data.em_dept_section,
+                data.em_institution_type,
+                data.em_category,
+                data.em_no
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+
+
+
 }

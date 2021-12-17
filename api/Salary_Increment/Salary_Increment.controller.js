@@ -1,10 +1,10 @@
-const { create, update, checkInsertVal, checkUpdateVal, deleteByID, getData, getDataById, getSelect } = require('../doctortype/doctype.service');
-const { validatedoctype } = require('../../validation/validation_schema');
+const { create, update, getDataBySlno, getSelectAllDataById, checkInsertVal, createSalary } = require('../Salary_Increment/Salary_Increment.service');
+const { validatesalaryIncrement } = require('../../validation/validation_schema');
 
 module.exports = {
-    createDocType: (req, res) => {
+    createIncre: (req, res) => {
         const body = req.body;
-        const body_result = validatedoctype.validate(body);
+        const body_result = validatesalaryIncrement.validate(body);
 
         if (body_result.error) {
             return res.status(200).json({
@@ -13,12 +13,10 @@ module.exports = {
             });
         }
 
-        body.doctype_desc = body_result.value.doctype_desc;
-
+        body.relg_name = body_result.value.relg_name;
         checkInsertVal(body, (err, results) => {
             const value = JSON.parse(JSON.stringify(results))
             if (Object.keys(value).length === 0) {
-                // Insert the values
                 create(body, (err, results) => {
                     if (err) {
                         return res.status(200).json({
@@ -33,18 +31,19 @@ module.exports = {
                     });
 
                 });
-            } else {
+            }
+            else {
                 return res.status(200).json({
                     success: 7,
-                    message: "Doctor Type Already Exist"
+                    message: "Salary Increment Already In Process"
                 })
             }
         })
     },
-    updateDocType: (req, res) => {
+    updateIncre: (req, res) => {
 
         const body = req.body;
-        const body_result = validatedoctype.validate(body);
+        const body_result = validatesalaryIncrement.validate(body);
 
         if (body_result.error) {
             return res.status(200).json({
@@ -53,55 +52,19 @@ module.exports = {
             });
         }
 
-        body.doctype_desc = body_result.value.doctype_desc;
+        body.relg_name = body_result.value.relg_name;
 
-        checkUpdateVal(body, (err, results) => {
-            const value = JSON.parse(JSON.stringify(results))
-            if (Object.keys(value).length === 0) {
-                update(body, (err, results) => {
+        update(body, (err, results) => {
 
-                    if (err) {
-                        return res.status(200).json({
-                            success: 0,
-                            message: err.sqlMessage
-                        });
-                    }
-
-                    if (!results) {
-                        return res.status(200).json({
-                            success: 1,
-                            message: "Record Not Found"
-                        });
-                    }
-
-                    return res.status(200).json({
-                        success: 2,
-                        message: "Data Updated Successfully"
-                    });
-
-                });
-            } else {
-                return res.status(200).json({
-                    success: 7,
-                    message: "Doctor Type Already Exist"
-                })
-            }
-        })
-    },
-    inactiveDocType: (req, res) => {
-
-        const body = req.body;
-
-        deleteByID(body, (err, results) => {
             if (err) {
-                return res.status(400).json({
+                return res.status(200).json({
                     success: 0,
-                    message: res.err
+                    message: err
                 });
             }
 
             if (!results) {
-                return res.status(400).json({
+                return res.status(200).json({
                     success: 1,
                     message: "Record Not Found"
                 });
@@ -109,37 +72,15 @@ module.exports = {
 
             return res.status(200).json({
                 success: 2,
-                message: "Record Deleted Successfully"
+                message: "Data Updated Successfully"
             });
+
         });
     },
-    getDocType: (req, res) => {
-
-        getData((err, results) => {
-            if (err) {
-                return res.status(200).json({
-                    success: 2,
-                    message: err
-                });
-            }
-
-            if (!results) {
-                return res.status(200).json({
-                    success: 0,
-                    message: "No Results Found"
-                });
-            }
-
-            return res.status(200).json({
-                success: 1,
-                data: results
-            });
-        });
-    },
-    getDocTypeByID: (req, res) => {
+    getDataBySlno: (req, res) => {
 
         const id = req.params.id;
-        getDataById(id, (err, results) => {
+        getDataBySlno(id, (err, results) => {
             if (err) {
                 return res.status(400).json({
                     success: 0,
@@ -148,7 +89,7 @@ module.exports = {
             }
 
             if (results.length == 0) {
-                return res.status(400).json({
+                return res.status(200).json({
                     success: 0,
                     message: "No Record Found"
                 });
@@ -161,20 +102,20 @@ module.exports = {
         });
 
     },
-    getSelectDocType: (req, res) => {
-
-        getSelect((err, results) => {
+    getSelectAllExpByID: (req, res) => {
+        const id = req.params.id;
+        getSelectAllDataById(id, (err, results) => {
             if (err) {
-                return res.status(200).json({
+                return res.status(400).json({
                     success: 2,
                     message: err
                 });
             }
 
-            if (!results) {
+            if (results.length == 0) {
                 return res.status(200).json({
                     success: 0,
-                    message: "No Results Found"
+                    message: "No Record Found"
                 });
             }
 
@@ -183,5 +124,31 @@ module.exports = {
                 data: results
             });
         });
+
     },
+    createSalary: (req, res) => {
+        const body = req.body;
+        createSalary(body, (err, results) => {
+            if (err) {
+                return res.status(400).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    }
+
+
 }

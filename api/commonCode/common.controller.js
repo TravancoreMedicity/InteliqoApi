@@ -26,7 +26,13 @@ const {
     GetEarningsSalry,
     GetDeductionSalry,
     getFineSlno,
-    GetLastChangedSalary
+    GetLastChangedSalary,
+    getannprocess,
+    getcasual,
+    getleaveholiday,
+    getleavecommon,
+    getCompanyById,
+    getcompanylogId
 } = require('../commonCode/common.service');
 
 module.exports = {
@@ -683,5 +689,151 @@ module.exports = {
             });
         })
     },
+
+    getannprocess: (req, res) => {
+        const id = req.params.id
+        getannprocess(id, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    data: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+
+    },
+    getcasual: (req, res) => {
+        const id = req.params.id
+        getcasual(id, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    data: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+
+    },
+    getleaveholiday: (req, res) => {
+        const id = req.params.id
+        getleaveholiday(id, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    data: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+
+    },
+    getleavecommon: (req, res) => {
+        const id = req.params.id
+        getleavecommon(id, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    data: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+
+    },
+    getCompanyById: (req, res) => {
+        const id = req.params.id
+        getCompanyById(id, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    data: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+
+    },
+    getcompanylogId: (req, res) => {
+        const id = req.params.id
+        getcompanylogId(id, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    data: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+
+    },
+
 
 }

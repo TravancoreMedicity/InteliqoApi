@@ -339,6 +339,7 @@ module.exports = {
         pool.query(
             `SELECT
             hrm_earning_type.earning_type_name ,
+            hrm_earning_deduction.erning_type_id,
             include_esi,
             include_pf,
             include_lwf,
@@ -424,14 +425,13 @@ module.exports = {
         )
     },
 
-
     //Get salary Information Of Fixed wages
     GetFixedWagesSalry: (id, callBack) => {
         pool.query(
             `SELECT ernded_slno,
-            hrm_earning_deduction.earnded_name,
+            hrm_earning_deduction.earnded_name,hrm_emp_earn_deduction.em_salary_desc,
             hrm_earning_type.earning_type_name,
-             em_amount,DATE_FORMAT(changed_date, '%d-%m-%Y')changed_date
+             em_amount,DATE_FORMAT(changed_date,'%d-%m-%Y')changed_date
              FROM medi_hrm.hrm_emp_earn_deduction
               LEFT JOIN  hrm_earning_deduction ON hrm_earning_deduction.earnded_id= hrm_emp_earn_deduction.em_salary_desc
               LEFT JOIN   hrm_earning_type ON  hrm_earning_deduction.erning_type_id= hrm_earning_type.erning_type_id 
@@ -453,8 +453,8 @@ module.exports = {
         pool.query(
             `SELECT ernded_slno,
             hrm_earning_deduction.earnded_name,
-            hrm_earning_type.earning_type_name,
-             em_amount,DATE_FORMAT(changed_date, '%d-%m-%Y')changed_date
+            hrm_earning_type.earning_type_name,hrm_emp_earn_deduction.em_salary_desc,
+             em_amount,DATE_FORMAT(changed_date,'%d-%m-%Y')changed_date
              FROM medi_hrm.hrm_emp_earn_deduction
               LEFT JOIN  hrm_earning_deduction ON hrm_earning_deduction.earnded_id= hrm_emp_earn_deduction.em_salary_desc
               LEFT JOIN   hrm_earning_type ON  hrm_earning_deduction.erning_type_id= hrm_earning_type.erning_type_id 
@@ -475,9 +475,9 @@ module.exports = {
     GetDeductionSalry: (id, callBack) => {
         pool.query(
             `SELECT ernded_slno,
-            hrm_earning_deduction.earnded_name,
-            hrm_earning_type.earning_type_name,
-             em_amount,DATE_FORMAT(changed_date, '%d-%m-%Y')changed_date
+             hrm_earning_deduction.earnded_name,
+             hrm_earning_type.earning_type_name,hrm_emp_earn_deduction.em_salary_desc,
+             em_amount,DATE_FORMAT(changed_date,'%d-%m-%Y')changed_date
              FROM medi_hrm.hrm_emp_earn_deduction
               LEFT JOIN  hrm_earning_deduction ON hrm_earning_deduction.earnded_id= hrm_emp_earn_deduction.em_salary_desc
               LEFT JOIN   hrm_earning_type ON  hrm_earning_deduction.erning_type_id= hrm_earning_type.erning_type_id 
@@ -497,7 +497,7 @@ module.exports = {
     //Get Last Changed wage imformation
     GetLastChangedSalary: (id, callBack) => {
         pool.query(
-            `SELECT wagelog_slno,em_salary_desc,wage_type,last_wage,new_wage,
+            `SELECT wagelog_slno,em_salary_desc,last_wage,new_wage,
             DATE_FORMAT(changed_date, '%d-%m-%Y')changed_date,emp_id,hrm_earning_deduction.earnded_name,
             (new_wage-last_wage)new_change
             FROM medi_hrm.hrm_emp_wage_log
@@ -530,6 +530,133 @@ module.exports = {
 
     },
 
+    // get data for processstart
+    getannprocess: (id, callBack) => {
+        pool.query(
+            `SELECT em_category,
+            em_contract_end_date,
+            em_retirement_date,
+            em_conf_end_date,
+            em_prob_end_date,
+            ecat_cont,
+            ecat_prob,
+            ecat_cl,
+            ecat_el,
+            ecat_nh,
+            ecat_fh,
+            ecat_woff_allow,
+            ecat_doff_allow,
+            ecat_esi_allow,
+            ecat_confere,
+            ecat_lop,ecat_sl,
+            ecat_mate
+              FROM medi_hrm.hrm_emp_master,hrm_emp_category where em_no='8889' 
+              and hrm_emp_master.em_category = hrm_emp_category.category_slno`,
+            [
+                id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+
+    // get data for casualleave
+    getcasual: (id, callBack) => {
+        pool.query(
+            `SELECT hrm_cl_slno, em_no, em_id, cl_lv_mnth, cl_lv_year, cl_lv_allowed, 
+            cl_lv_credit, cl_lv_taken, 
+            lv_process_slno, update_user, update_date FROM hrm_leave_cl where em_no='8889'`,
+            [
+                id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    // get data for leave holiday list
+    getleaveholiday: (id, callBack) => {
+        pool.query(
+            `SELECT hrm_hl_slno,em_no,hd_slno,hl_lv_year,hl_date,hl_lv_credit,hl_lv_taken,lv_process_slno,em_id
+            FROM hrm_leave_holiday where em_no='8889'`,
+            [
+                id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    // get data for leave common list
+    getleavecommon: (id, callBack) => {
+        pool.query(
+            `SELECT hrm_lv_cmn,em_no,llvetype_slno,cmn_lv_year,cmn_lv_allowed,cmn_lv_taken,cmn_lv_balance,Iv_process_slno,em_id
+            FROM hrm_leave_common where em_no='8889'`,
+            [
+                id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+
+    //get Company Details
+    getCompanyById: (id, callBack) => {
+        pool.query(
+            `SELECT 
+            em_branch,
+            em_department,
+            em_dept_section,
+            em_institution_type,
+            em_category
+            FROM hrm_emp_master 
+            WHERE em_no=?`,
+            [
+                id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    //get Company Details for table from log table
+    getcompanylogId: (id, callBack) => {
+        pool.query(
+            ` SELECT 
+                    DATE_FORMAT(update_date, '%d-%m-%Y')update_date,
+                    hrm_emp_category.ecat_name,
+                    hrm_emp_company_log.edit_user
+              FROM hrm_emp_company_log
+              LEFT JOIN hrm_emp_category ON hrm_emp_category.category_slno=hrm_emp_company_log.com_category_new
+              WHERE em_no=?`,
+            [
+                id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 
 }
 

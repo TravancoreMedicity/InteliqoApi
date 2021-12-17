@@ -1,4 +1,4 @@
-const { create, update, checkInsertVal, checkUpdateVal, deleteByID, getDataById, getDataBySlno } = require('../employeEarnDeduction/earnDeduction.service');
+const { create, update, checkInsertVal, checkUpdateVal, deleteByID, getDataById, getDataBySlno, createWageLog, updateWageLog } = require('../employeEarnDeduction/earnDeduction.service');
 const { validateearndeduction } = require('../../validation/validation_schema');
 
 module.exports = {
@@ -25,12 +25,22 @@ module.exports = {
                             message: err
                         });
                     }
-
-                    return res.status(200).json({
-                        success: 1,
-                        message: "Data Created Successfully"
-                    });
-
+                    else {
+                        createWageLog(body, (err, results) => {
+                            if (err) {
+                                return res.status(200).json({
+                                    success: 0,
+                                    message: err
+                                });
+                            }
+                            else {
+                                return res.status(200).json({
+                                    success: 1,
+                                    message: "Data Created Successfully"
+                                });
+                            }
+                        })
+                    }
                 });
             } else {
                 return res.status(200).json({
@@ -63,21 +73,33 @@ module.exports = {
                             message: err
                         });
                     }
-
-                    if (!results) {
+                    else if (!results) {
                         return res.status(200).json({
                             success: 1,
                             message: "Record Not Found"
                         });
                     }
+                    else {
+                        updateWageLog(body, (err, results) => {
+                            if (err) {
+                                return res.status(200).json({
+                                    success: 0,
+                                    message: err
+                                });
+                            }
+                            else {
+                                return res.status(200).json({
+                                    success: 2,
+                                    message: "Data Updated Successfully"
+                                });
+                            }
 
-                    return res.status(200).json({
-                        success: 2,
-                        message: "Data Updated Successfully"
-                    });
+                        });
+                    }
 
-                });
-            } else {
+                })
+            }
+            else {
                 return res.status(200).json({
                     success: 7,
                     message: "Salary Description Already Exist"

@@ -7,16 +7,18 @@ module.exports = {
                 em_no,
                 em_id,
                 em_salary_desc,
+                em_earning_type,
                 em_amount,
                 em_start_date,
                 em_end_date,
                 create_user               
             )
-            VALUES (?,?,?,?,?,?,?)`,
+            VALUES (?,?,?,?,?,?,?,?)`,
             [
                 data.em_no,
                 data.em_id,
                 data.em_salary_desc,
+                data.em_earning_type,
                 data.em_amount,
                 data.em_start_date,
                 data.em_end_date,
@@ -144,6 +146,50 @@ module.exports = {
             `UPDATE hrm_emp_earn_deduction SET em_status = 0 WHERE em_no = ?`,
             [
                 data.em_no
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    createWageLog:
+        (data, callBack) => {
+            pool.query(
+                `INSERT INTO hrm_emp_wage_log(
+                    em_salary_desc,
+                    earning_type,
+                    emp_id ,
+                    new_wage                        
+            )
+            VALUES (?,?,?,?)`,
+                [
+                    data.em_salary_desc,
+                    data.em_earning_type,
+                    data.em_id,
+                    data.em_amount
+                ],
+                (error, results, feilds) => {
+                    if (error) {
+                        return callBack(error);
+                    }
+                    return callBack(null, results);
+                }
+            )
+        },
+    updateWageLog: (data, callBack) => {
+        pool.query(
+            `UPDATE hrm_emp_wage_log
+                    SET last_wage =?,
+                        new_wage=?                                      
+                    WHERE em_salary_desc= ? AND emp_id = ?`,
+            [
+                data.last_wage,
+                data.em_amount,
+                data.em_salary_desc,
+                data.em_id
             ],
             (error, results, feilds) => {
                 if (error) {

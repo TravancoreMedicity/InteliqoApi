@@ -2,7 +2,6 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 
-
 const userRouter = require("./api/users/user.router");
 const employeeRouter = require("./api/employee/employee.router");
 const branchRouter = require("./api/branch/branch.router");
@@ -49,8 +48,10 @@ const EarntypeRouter = require("./api/EarnType/earnType.router") //EarnType Mast
 const leaveTypeRouter = require("./api/leavetype/leavetype.router")//leave Type Master
 const state = require("./api/state/state.router")//State Master
 const finededuction = require("./api/fine_deduction/fineded.router") //fine deduction
-const empfinededuction = require("./api/hrm_emp_fine/fine.router") //emp fine deduction
+const empfinededuction = require("./api/hrm_emp_fine/fine.router") //emp fine deductionrs
 const upload = require("./api/uploadFile/upload.router")
+const salaryincrementRouter = require("./api/Salary_Increment/Salary_Increment.router")//salary Increment Proces
+const yearleaveprocess = require("./api/yearleaveprocess/yearlleaveprocess.router")//Yearly Leave  Proces
 
 app.use(express.json());
 
@@ -117,6 +118,8 @@ app.use("/api/state", state)
 app.use("/api/fineded", finededuction)
 app.use("/api/empfinededuction", empfinededuction)
 app.use("/api/upload", upload)
+app.use("/api/salaryIncrement", salaryincrementRouter)
+app.use("/api/yearleaveprocess", yearleaveprocess)
 
 // app.all('*', function (req, res) {
 //     return res.status(200).json({

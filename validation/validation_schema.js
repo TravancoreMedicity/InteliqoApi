@@ -296,7 +296,7 @@ const validateGradeMast = Joi.object({
 // VALIDATE EARN TYPE
 const validateEarnMast = Joi.object({
 
-        earn_type: Joi.string().required(),
+        earn_type: Joi.string().required().uppercase().trim(),
         deduction_status: Joi.number().required(),
         earntype_status: Joi.number().required(),
         create_user: Joi.number().optional(),
@@ -369,7 +369,7 @@ const validateempcategory = Joi.object({
 
 // VALIDATE REGISTRATON TYPE
 const validateregistraiontype = Joi.object({
-        registration_name: Joi.string().trim().uppercase().trim().max(45),
+        registration_name: Joi.string().trim().uppercase().max(45),
         registration_status: Joi.number(),
         reg_id: Joi.number().optional(),
         create_user: Joi.number().optional(),
@@ -584,13 +584,16 @@ const validateearndeduction = Joi.object({
         em_no: Joi.number().optional(),
         em_id: Joi.number().optional(),
         em_salary_desc: Joi.number().min(1).required(),
+        em_earning_type: Joi.number().min(1).optional(),
         em_amount: Joi.number().optional(),
         em_start_date: Joi.date().optional(),
         em_end_date: Joi.date().optional(),
         em_status: Joi.string().max(1).optional(),
         create_user: Joi.number().optional(),
         edit_user: Joi.number().optional(),
-        ernded_slno: Joi.number().optional()
+        ernded_slno: Joi.number().optional(),
+        last_wage: Joi.number().optional(),
+        new_wage: Joi.number().optional(),
 
 });
 
@@ -606,6 +609,24 @@ const validateempexperience_ = Joi.object({
         create_user: Joi.number().optional(),
         edit_user: Joi.number().optional(),
         emexp_slno: Joi.number().optional()
+})
+
+// VALIDATE EMPLOYEE EXPERIENCE DETAILS
+const validatesalaryIncrement = Joi.object({
+        em_no: Joi.number().optional(),
+        em_id: Joi.number().optional(),
+        incr_start_date: Joi.date().required(),
+        em_salary_desc: Joi.number().required(),
+        incre_type: Joi.number().max(1).required(),
+        incre_amount: Joi.number().required(),
+        last_amount: Joi.number().optional(),
+        incre_process_status: Joi.string().optional(),
+        incre_process_date: Joi.number().optional(),
+        incre_process_user: Joi.number().optional(),
+        incre_last_changed_date: Joi.optional(),
+        create_user: Joi.number().optional(),
+        edit_user: Joi.number().optional(),
+        incre_slno: Joi.number().optional()
 })
 
 // VALIDATE EMPLOYEE PERSIONAL DETAILS
@@ -681,7 +702,7 @@ const validateempqualification = Joi.object({
 
 // VALIDATE COURSE
 const validatecourse = Joi.object({
-        cour_desc: Joi.string().max(45).required().uppercase(),
+        cour_desc: Joi.string().max(45).required().uppercase().trim(),
         edu_slno: Joi.number().max(99999).required().required(),
         cour_status: Joi.number().max(1.).required(),
         cour_slno: Joi.number().optional(),
@@ -752,12 +773,29 @@ const validatefinededuction = Joi.object({
         fine_type: Joi.number().min(1).required(),
         fine_descp: Joi.string().required(),
         fine_amount: Joi.number().required(),
+        fine_status: Joi.number().optional(),
         fine_start: Joi.date().required(),
         fine_end: Joi.date().required(),
         fine_period: Joi.number().required(),
         fine_remark: Joi.string().required(),
         fine_create_user: Joi.number().optional(),
         fine_edit_user: Joi.number().optional(),
+})
+
+//validation company details updation in employee master
+validateempmastercompanyupdate = Joi.object({
+        em_branch: Joi.number().required(),
+        em_department: Joi.number().required(),
+        em_dept_section: Joi.number().required(),
+        em_institution_type: Joi.number().required(),
+        em_category: Joi.number().required(),
+        em_no: Joi.number().required(),
+        com_category: Joi.number().required(),
+        com_category_new: Joi.number().required(),
+        create_user: Joi.number().optional(),
+        edit_user: Joi.number().optional(),
+        em_id: Joi.number().optional(),
+
 })
 
 
@@ -809,4 +847,6 @@ module.exports = {
         validateEarnMast,
         validatefineded,
         validatefinededuction,
+        validatesalaryIncrement,
+        validateempmastercompanyupdate
 }

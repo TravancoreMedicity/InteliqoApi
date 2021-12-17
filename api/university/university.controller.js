@@ -14,8 +14,6 @@ module.exports = {
         }
         body.unver_name = body_result.value.unver_name;
 
-
-
         create(body, (err, results) => {
             if (err) {
                 return res.status(200).json({

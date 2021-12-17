@@ -1,9 +1,8 @@
 const router = require("express").Router();
-// const multer = require("multer")
 const { checkToken } = require("../../auth/token_validation");
-const { uploadfile } = require("./upload.controller");
-// const upload = multer()
+const { uploadfile, getEmployeeProfilePic } = require("../uploadFile/upload.controller");
 
 router.post("/upload", checkToken, uploadfile);
+router.post("/", checkToken, getEmployeeProfilePic)
 
 module.exports = router;

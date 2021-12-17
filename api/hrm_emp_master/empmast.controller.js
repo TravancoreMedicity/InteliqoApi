@@ -6,9 +6,11 @@ const {
     getDataById,
     getSelect,
     getEmpByDeptAndSection,
-    updateserialnum
+    updateserialnum,
+    updateCompanyInfo,
+    createCompanyInfo
 } = require('../hrm_emp_master/empmast.service');
-const { validateempmaster, validateempmasterupdate } = require('../../validation/validation_schema');
+const { validateempmaster, validateempmasterupdate, validateempmastercompanyupdate } = require('../../validation/validation_schema');
 
 module.exports = {
     createempmast: (req, res) => {
@@ -216,5 +218,50 @@ module.exports = {
                 data: results
             });
         })
-    }
+    },
+    createCompanyInfo: (req, res) => {
+        const body = req.body;
+        const body_result = validateempmastercompanyupdate.validate(body);
+
+        if (body_result.error) {
+            return res.status(200).json({
+                success: 2,
+                message: body_result.error.details[0].message
+            });
+        }
+
+        body.em_name = body_result.value.em_name;
+
+        createCompanyInfo(body, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else {
+                updateCompanyInfo(body, (err, results) => {
+
+                    if (err) {
+                        return res.status(200).json({
+                            success: 2,
+                            message: err
+                        });
+                    }
+                    if (!results) {
+                        return res.status(200).json({
+                            success: 1,
+                            message: "Record Not Found"
+                        });
+                    }
+                    return res.status(200).json({
+                        success: 1,
+                        message: "Data Updated Successfully"
+                    });
+
+                });
+
+            }
+        })
+    },
 }
