@@ -66,17 +66,12 @@ module.exports = {
                 fine_emp_no,
                 fine_emp_id,
                 fine_amount,
-                create_user ,
-                fine_status                         
+                fine_date,
+                create_user                                         
             )
-            VALUES (?,?,?,?,?,?)`,
+            VALUES ?`,
             [
-                data.fine_slno,
-                data.fine_emp_no,
-                data.fine_emp_id,
-                data.fine_amount,
-                data.fine_create_user,
-                data.fine_status
+                data
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -221,5 +216,18 @@ module.exports = {
             }
         )
     },
-
+    deletefinedetl: (id, callBack) => {
+        pool.query(
+            `delete from hrm_emp_fine_detl where fine_slno= ?`,
+            [
+                id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }

@@ -58,9 +58,7 @@ module.exports = {
         )
     },
     update: (data, callBack) => {
-
-        console.log(data.com_slno)
-        pool.query(
+              pool.query(
             `UPDATE hrm_yearly_leaves
                 SET
                 max_allowed_count_cl=?,
@@ -205,7 +203,6 @@ module.exports = {
                 WHERE lvetype_slno_cl = ? AND lvetype_slno_sick = ? AND lvetype_slno_conference = ? AND
                 lvetype_slno_lop = ?  AND lvetype_slno_maternity = ? AND lvetype_slno_previlage = ? `,
             [
-
                 data.lvetype_slno_cl,
                 data.lvetype_slno_sick,
                 data.lvetype_slno_conference,
@@ -214,13 +211,27 @@ module.exports = {
                 data.lvetype_slno_previlage
             ],
             (error, results, feilds) => {
-
-                console.log(error)
                 if (error) {
                     return callBack(error)
                 }
                 return callBack(null, results)
             }
         )
+    },
+
+    getcommonleave: (callBack) => {
+        pool.query(
+            `SELECT lvetype_slno,lvetype_desc,leave_credit_policy_count FROM medi_hrm.hrm_leave_type where common_leave='1'`,
+            [
+
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error)
+                }
+                return callBack(null, results)
+            }
+        )
+
     }
 }

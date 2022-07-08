@@ -1,14 +1,13 @@
 const { genSaltSync, hashSync, compareSync } = require("bcrypt");
 const { sign } = require("jsonwebtoken");
-const { employeeinsert, employeeupdate, getemplpyee, employeeGetById, employeedelete, getEmployeeByUserName } = require('../employee/employee.service');
+const { employeeinsert, employeeupdate, getemplpyee, employeeGetById, employeedelete, getEmployeeByUserName, getEmployeeID } = require('../employee/employee.service');
 const { validateEmployee } = require('../../validation/validation_schema');
-
+const logger = require('../../logger/logger')
 
 module.exports = {
     employeeinsert: (req, res) => {
 
         const body = req.body;
-
 
         //Validate requested body data
         const body_data = validateEmployee.validate(body);
@@ -23,7 +22,8 @@ module.exports = {
 
         employeeinsert(body, (err, results) => {
             if (err) {
-                return res.status(400).json({
+                logger.errorLogger(err)
+                return res.status(200).json({
                     success: 0,
                     message: err.message
                 });
@@ -52,6 +52,7 @@ module.exports = {
         employeeupdate(body, (err, results) => {
 
             if (err) {
+                logger.errorLogger(err)
                 return res.status(500).json({
                     success: 0,
                     message: err
@@ -73,6 +74,7 @@ module.exports = {
 
         getemplpyee((err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(400).json({
                     success: 10,
                     message: err
@@ -96,6 +98,7 @@ module.exports = {
         const id = req.params.id;
         employeeGetById(id, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(400).json({
                     success: 0,
                     message: err
@@ -119,6 +122,7 @@ module.exports = {
         const body = req.body;
         employeedelete(body, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(400).json({
                     success: 0,
                     message: res.err
@@ -139,11 +143,10 @@ module.exports = {
         });
     },
     login: (req, res) => {
-        // console.log(req.body);
         const body = req.body;
         getEmployeeByUserName(body.emp_username, (err, results) => {
             if (err) {
-                console.log(err);
+                logger.errorLogger(err)
             }
             if (!results) {
                 return res.json({
@@ -153,7 +156,6 @@ module.exports = {
             }
             const get_password = body.emp_password.toString();
             const result = compareSync(get_password, results.emp_password);
-            //   console.log(result);
             if (result) {
                 results.emp_password = undefined;
                 const jsontoken = sign({ result: results }, "@dhj$&$(*)dndkm76$%#jdn(^$6GH%^#73*#*", {
@@ -164,7 +166,8 @@ module.exports = {
                     message: "login successfully",
                     token: jsontoken,
                     user: results.emp_username,
-                    emp_no: results.emp_no
+                    emp_no: results.emp_no,
+                    emp_id: results.emp_id
                 });
             } else {
                 return res.json({
@@ -173,6 +176,7 @@ module.exports = {
                 });
             }
         });
-    }
+    },
+
 
 }

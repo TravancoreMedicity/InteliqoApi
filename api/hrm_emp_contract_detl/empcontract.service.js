@@ -22,7 +22,6 @@ module.exports = {
             ],
             (error, results, feilds) => {
                 if (error) {
-                    console.log(error)
                     return callBack(error);
                 }
                 return callBack(null, results);
@@ -77,7 +76,6 @@ module.exports = {
                 if (error) {
                     return callBack(error);
                 }
-                console.log(results)
                 return callBack(null, results);
             }
         )
@@ -111,14 +109,15 @@ module.exports = {
             em_cont_compl_status,
             em_cont_renew,
             em_cont_renew_date,
-            em_cont_close,cont_grace,
+            em_cont_close,cont_grace,fine_status,
             em_cont_close_date,em_category
         FROM hrm_emp_contract_detl
         left join hrm_emp_master
         on hrm_emp_master.em_no=hrm_emp_contract_detl.em_no
         left join hrm_emp_category 
-        on
-        hrm_emp_category.category_slno=hrm_emp_master.em_category
+		on hrm_emp_category.category_slno=hrm_emp_master.em_category
+        left join hrm_emp_fine_mast
+        on hrm_emp_fine_mast.fine_emp_id=hrm_emp_contract_detl.em_id
         WHERE hrm_emp_contract_detl.em_id=? and em_cont_close is null`,
             [
                 id
@@ -164,5 +163,174 @@ module.exports = {
             }
         )
 
-    }
+    },
+    insertContractlog: (data, callBack) => {
+        pool.query(
+            `INSERT INTO hrm_emp_contract_log (
+               em_id,
+               old_emno,
+                new_emno, 
+                changed_date, 
+                contract_end_date
+                                                    
+            )
+            VALUES (?,?,?,?,?)`,
+            [
+                data.em_id,
+                data.old_emno,
+                data.em_no,
+                data.changed_date,
+                data.em_cont_end
+
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    //update emp_personal
+    updateempPersonal: (data, callBack) => {
+        pool.query(
+            `update hrm_emp_personal
+            set em_no=?
+            where em_id=?`,
+            [
+                data.em_no,
+                data.em_id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    updateEmpQual: (data, callBack) => {
+        pool.query(
+            `update hrm_emp_qual
+            set em_no=?
+            where em_id=?`,
+            [
+                data.em_no,
+                data.em_id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    updateEmpexp: (data, callBack) => {
+        pool.query(
+            `update hrm_emp_exp
+            set em_no=?
+            where em_id=?`,
+            [
+                data.em_no,
+                data.em_id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    updatePfEsi: (data, callBack) => {
+        pool.query(
+            `update hrm_emp_pfesi
+            set em_no=?
+            where em_id=?`,
+            [
+                data.em_no,
+                data.em_id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    updateEarnDeduction: (data, callBack) => {
+        pool.query(
+            `update hrm_emp_earn_deduction
+            set em_no=?
+            where em_id=?`,
+            [
+                data.em_no,
+                data.em_id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    updateFineMast: (data, callBack) => {
+        pool.query(
+            `update hrm_emp_fine_mast
+            set fine_emp_no=?
+            where fine_emp_id=?`,
+            [
+                data.em_no,
+                data.em_id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getContractCloseDetl: (callBack) => {
+        pool.query(
+            `select hrm_emp_contract_detl.em_id,hrm_emp_contract_detl.em_no,dept_name,em_cont_start,em_designation,desg_name,
+            em_cont_close_date,em_cont_close,em_department,em_dept_section,em_name,sect_name
+            from hrm_emp_contract_detl
+            left join hrm_emp_master on hrm_emp_master.em_id=hrm_emp_contract_detl.em_id
+            left join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
+            left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
+			left join designation on designation.desg_slno=hrm_emp_master.em_designation
+			where em_cont_close='C' and em_cont_renew is null and contract_close_hr_appr is null`,
+            [],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getContractCloseDetlById: (id, callBack) => {
+        pool.query(
+            `select hrm_emp_contract_detl.em_id,hrm_emp_contract_detl.em_no,dept_name,em_cont_start,em_designation,desg_name,
+            em_cont_close_date,em_cont_close,em_department,em_dept_section,em_name,sect_name
+            from hrm_emp_contract_detl
+            left join hrm_emp_master on hrm_emp_master.em_id=hrm_emp_contract_detl.em_id
+            left join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
+            left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
+			left join designation on designation.desg_slno=hrm_emp_master.em_designation
+            where em_cont_close='C' and em_cont_renew is null and hrm_emp_contract_detl.em_id=?`,
+            [id],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }

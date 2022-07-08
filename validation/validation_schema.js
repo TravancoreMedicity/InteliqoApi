@@ -89,10 +89,13 @@ const validateSection = Joi.object({
                         'string.max': 'Department Section Name length must be less than or equal to 45 characters long'
                 }),
         sect_status: Joi.number().min(0).max(1),
+        authorization_incharge: Joi.number().optional(),
+        authorization_hod: Joi.number().optional(),
         dept_id: Joi.number().required(),
         sect_id: Joi.optional(),
         create_user: Joi.number().optional(),
         edit_user: Joi.number().optional(),
+        dept_sub_sect: Joi.number().required()
 });
 
 const validateMenuName = Joi.object({
@@ -133,8 +136,6 @@ const validateEmployeeType = Joi.object({
                         'string.max': 'Type length must be less than or equal to 45 characters long',
                         'string.min': 'Type length must be at least 3 characters long',
                 }),
-        cont_period: Joi.number().required(),
-        cont_grace: Joi.number().required(),
         el_aplicable: Joi.number().min(0).max(1).required(),
         create_user: Joi.number().optional(),
         edit_user: Joi.number().optional(),
@@ -150,12 +151,7 @@ const validateEmployeeStatus = Joi.object({
                         'string.max': 'Name length must be less than or equal to 45 characters long',
                         'string.min': 'Name length must be at least 3 characters long',
                 }),
-        empstat_cl: Joi.number().min(0).max(1).required(),
-        empstat_el: Joi.number().min(0).max(1).required(),
-        empstat_hd: Joi.number().min(0).max(1).required(),
-        empstat_esi: Joi.number().min(0).max(1).required(),
-        empstat_pf: Joi.number().min(0).max(1).required(),
-        empstat_period: Joi.number().min(0).required(),
+        desigstatus: Joi.number().min(0).max(1).required(),
         create_user: Joi.number().optional(),
         update_user: Joi.number().optional(),
 });
@@ -169,6 +165,7 @@ const validateDesignation = Joi.object({
                         'string.max': 'Deignation length must be less than or equal to 45 characters long',
                         'string.min': 'Deignation length must be at least 3 characters long',
                 }),
+        desg_notice_prd: Joi.number().required(),
         desg_status: Joi.number().min(0).max(1).required(),
         create_user: Joi.number().optional(),
         edit_user: Joi.number().optional(),
@@ -176,6 +173,7 @@ const validateDesignation = Joi.object({
 
 const validateBankMaster = Joi.object({
         bank_slno: Joi.optional(),
+        bank_mastname: Joi.required(),
         bank_name: Joi.string().trim().uppercase().min(3).max(45).required()
                 .messages({
                         'string.empty': 'Bank Name is Required',
@@ -241,7 +239,7 @@ const validateRegion = Joi.object({
 // VALIDATE UNIVERSITY
 const validateunivercity = Joi.object({
         unver_slno: Joi.optional(),
-        unver_alias: Joi.optional(),
+        unver_alias: Joi.string().trim().uppercase().min(1).max(10).required(),
         unver_name: Joi.string().trim().uppercase().min(3).max(45).required()
                 .messages({
                         'string.empty': 'University Name is Required',
@@ -390,28 +388,33 @@ const validateprofessionaltax = Joi.object({
 const validateshiftmaster = Joi.object({
         shft_desc: Joi.string().trim().uppercase().max(45).required(),
         shft_code: Joi.string().trim().uppercase().max(10).required(),
-        shft_chkin_time: Joi.string().regex(/^([0-9]{2})\:([0-9]{2})$/).required(),
-        shft_chkout_time: Joi.string().regex(/^([0-9]{2})\:([0-9]{2})$/).required(),
+        shft_chkin_time: Joi.date().required(),
+        shft_chkout_time: Joi.date().required(),
         shft_cross_day: Joi.number(),
-        shft_chkin_start: Joi.string().regex(/^([0-9]{2})\:([0-9]{2})$/).required(),
-        shft_chkin_end: Joi.string().regex(/^([0-9]{2})\:([0-9]{2})$/).required(),
-        shft_chkout_start: Joi.string().regex(/^([0-9]{2})\:([0-9]{2})$/).required(),
-        shft_chkout_end: Joi.string().regex(/^([0-9]{2})\:([0-9]{2})$/).required(),
+        shft_chkin_start: Joi.date().required(),
+        shft_chkin_end: Joi.date().required(),
+        shft_chkout_start: Joi.date().required(),
+        shft_chkout_end: Joi.date().required(),
         shft_duty_day: Joi.number(),
-        shft_brk_start: Joi.string().regex(/^([0-9]{2})\:([0-9]{2})$/).required(),
-        shft_brk_end: Joi.string().regex(/^([0-9]{2})\:([0-9]{2})$/).required(),
+        shft_brk_start: Joi.date().required(),
+        shft_brk_end: Joi.date().required(),
         shft_early_in_criteria: Joi.number(),
-        shft_early_in_mints: Joi.string().regex(/^([0-9]{2})/).required(),
+        shft_early_in_mints: Joi.date().required(),
         shft_late_out_criteria: Joi.number(),
-        shft_late_out_mints: Joi.string().regex(/^([0-9]{2})/).required(),
-        shft_latein_allow_time: Joi.string().regex(/^([0-9]{2})/).required(),
-        shft_earlyout_allow_time: Joi.string().regex(/^([0-9]{2})/).required(),
-        first_half_in: Joi.string().regex(/^([0-9]{2})\:([0-9]{2})$/).required(),
-        first_half_out: Joi.string().regex(/^([0-9]{2})\:([0-9]{2})$/).required(),
-        second_half_in: Joi.string().regex(/^([0-9]{2})\:([0-9]{2})$/).required(),
-        second_half_out: Joi.string().regex(/^([0-9]{2})\:([0-9]{2})$/).required(),
+        shft_late_out_mints: Joi.date().required(),
+        shft_latein_allow_time: Joi.date().required(),
+        shft_earlyout_allow_time: Joi.date().required(),
+        first_half_in: Joi.date().required(),
+        first_half_out: Joi.date().required(),
+        second_half_in: Joi.date().required(),
+        second_half_out: Joi.date().required(),
         shft_status: Joi.number(),
-        shft_slno: Joi.number().optional()
+        shft_slno: Joi.number().optional(),
+        shift_duration_in_min: Joi.number().optional(),
+        shift_start_in_min: Joi.number().optional(),
+        shift_end_in_min: Joi.number().optional(),
+        night_off_flag: Joi.number().optional()
+
 })
 
 // VALIDATE YEARLY HOLIDAY LIST
@@ -460,7 +463,7 @@ const validateleavetype = Joi.object({
         avail_on_after_confirm: Joi.number().optional(),
         half_day_allowed: Joi.number().optional(),
         leave_credit_policy: Joi.number().optional(),
-        leave_credit_policy_count: Joi.number().optional(),
+        leave_credit_policy_count: Joi.optional(),
         status: Joi.number().required(),
         is_lop: Joi.number().optional(),
         is_holiday: Joi.number().optional(),
@@ -501,17 +504,18 @@ const validateempmaster = Joi.object({
         em_age_day: Joi.number().optional(),
         em_doj: Joi.date().required(),
         hrm_religion: Joi.number().min(1).required(),
-        em_mobile: Joi.number().min(10).required(),
-        em_phone: Joi.number().optional(),
-        em_email: Joi.string().email().required(),
+        em_mobile: Joi.number().max(999999999999).required(),
+        em_phone: Joi.optional(),
+        em_email: Joi.string().email().optional(),
         em_region: Joi.number().min(1).required(),
         hrm_region2: Joi.number().min(1).required(),
         em_branch: Joi.number().min(1).required(),
+        contractflag: Joi.number().required(),
         em_department: Joi.number().min(1).required(),
         em_dept_section: Joi.number().min(1).required(),
         em_institution_type: Joi.number().min(1).required(),
         em_designation: Joi.number().min(1).required(),
-        em_doc_type: Joi.number().min(1).required(),
+        em_doc_type: Joi.optional(),
         em_category: Joi.number().min(1).required(),
         em_prob_end_date: Joi.date().optional(),
         em_conf_end_date: Joi.date().optional(),
@@ -522,10 +526,10 @@ const validateempmaster = Joi.object({
         create_date: Joi.date().optional(),
         addressPresent1: Joi.string().trim().uppercase().required(),
         addressPresent2: Joi.string().trim().uppercase().required(),
-        presPincode: Joi.number().required(),
+        presPincode: Joi.number().max(999999).required(),
         addressPermnt1: Joi.string().trim().uppercase().required(),
         addressPermnt2: Joi.string().trim().uppercase().required(),
-        perPincode: Joi.number().required(),
+        perPincode: Joi.number().max(999999).required(),
         blood_slno: Joi.number().min(1).required(),
 })
 // VALIDATE EMPLOYEupdate
@@ -538,7 +542,7 @@ const validateempmasterupdate = Joi.object({
         em_age_day: Joi.number().optional(),
         em_religion: Joi.number().min(1).required(),
         em_cont_mobile: Joi.number().min(10).required(),
-        em_cont_phone: Joi.number().optional(),
+        em_cont_phone: Joi.number().optional().integer().min(0).allow(null),
         em_email: Joi.string().email().required(),
         em_region: Joi.number().min(1).required(),
         hrm_region2: Joi.number().min(1).required(),
@@ -550,13 +554,13 @@ const validateempmasterupdate = Joi.object({
         em_pmnt_address2: Joi.string().trim().uppercase().required(),
         em_pmnt_pincode: Joi.number().required(),
         em_bloodgroup: Joi.number().min(1).required(),
-        em_passport_no: Joi.number().optional(),
-        em_pan_no: Joi.number().optional(),
+        em_passport_no: Joi.optional(),
+        em_pan_no: Joi.optional(),
         em_adhar_no: Joi.number().optional(),
-        em_license_no: Joi.number().optional(),
-        em_bank: Joi.number().optional(),
+        em_license_no: Joi.optional(),
+        em_bank: Joi.optional(),
         em_account_no: Joi.number().optional(),
-        em_ifsc: Joi.number().optional(),
+        em_ifsc: Joi.optional(),
         em_maritalstatus: Joi.number().min(1).required(),
 })
 
@@ -574,7 +578,9 @@ const validateempcontract = Joi.object({
         update_date: Joi.date().optional(),
         em_cont_renew_date: Joi.date().optional(),
         em_cont_close: Joi.string().max(1).optional(),
-        em_cont_close_date: Joi.date().optional()
+        em_cont_close_date: Joi.date().optional(),
+        old_emno: Joi.date().optional(),
+        changed_date: Joi.date().optional()
 
 
 })
@@ -585,9 +591,9 @@ const validateearndeduction = Joi.object({
         em_id: Joi.number().optional(),
         em_salary_desc: Joi.number().min(1).required(),
         em_earning_type: Joi.number().min(1).optional(),
-        em_amount: Joi.number().optional(),
-        em_start_date: Joi.date().optional(),
-        em_end_date: Joi.date().optional(),
+        em_amount: Joi.number().required(),
+        em_start_date: Joi.date().required(),
+        em_end_date: Joi.date().required(),
         em_status: Joi.string().max(1).optional(),
         create_user: Joi.number().optional(),
         edit_user: Joi.number().optional(),
@@ -600,6 +606,7 @@ const validateearndeduction = Joi.object({
 // VALIDATE EMPLOYEE EXPERIENCE DETAILS
 const validateempexperience_ = Joi.object({
         em_no: Joi.number().optional(),
+        em_id: Joi.number().required(),
         em_institution: Joi.string().max(45).required(),
         em_designation: Joi.number().required(),
         em_from: Joi.date().optional(),
@@ -633,30 +640,30 @@ const validatesalaryIncrement = Joi.object({
 const validateeemployeepersonal = Joi.object({
         em_no: Joi.number().required(),
         em_id: Joi.number().required(),
-        em_per_address1: Joi.string().max(75).required(),
-        em_per_address2: Joi.string().max(75).required(),
+        em_per_address1: Joi.string().max(125).required(),
+        em_per_address2: Joi.string().max(125).required(),
         em_per_address3: Joi.string().optional(),
         em_per_pincode: Joi.string().max(10),
-        em_pmnt_address1: Joi.string().max(75).required(),
-        em_pmnt_address2: Joi.string().max(75).required(),
+        em_pmnt_address1: Joi.string().max(125).required(),
+        em_pmnt_address2: Joi.string().max(125).required(),
         em_pmnt_address3: Joi.string().optional(),
         em_pmnt_pincode: Joi.string().max(10),
-        em_passport_no: Joi.string().max(12).optional(),
-        em_pan_no: Joi.string().max(12).optional(),
-        em_adhar_no: Joi.number().max(9999999999).optional(),
-        em_license_no: Joi.string().max(20),
+        em_passport_no: Joi.optional(),
+        em_pan_no: Joi.optional(),
+        em_adhar_no: Joi.number().max(999999999999).optional(),
+        em_license_no: Joi.optional(),
         //em_nationality: Joi.number().optional(),
         em_religion: Joi.number().required(),
         em_bloodgroup: Joi.number().min(1).required(),
         em_maritalstatus: Joi.number().min(1).required(),
         em_spouse_guardian: Joi.string().optional(),
         em_cont_mobile: Joi.number().min(10).required(),
-        em_cont_phone: Joi.number().min(11).optional(),
+        em_cont_phone: Joi.number().optional().integer().min(0).allow(null),
         //em_notice_period: Joi.number().optional(),
         em_pers_remarks: Joi.string().max(45).optional(),
-        em_bank: Joi.number().min(1).required(),
-        em_account_no: Joi.number().max(999999999).required(),
-        em_ifsc: Joi.string().max(10).optional(),
+        em_bank: Joi.optional(),
+        em_account_no: Joi.optional(),
+        em_ifsc: Joi.optional(),
         create_user: Joi.number().optional(),
         edit_user: Joi.number().optional(),
         emper_slno: Joi.number().optional(),
@@ -673,14 +680,13 @@ const validateempesipf = Joi.object({
         em_no: Joi.number().optional(),
         em_id: Joi.number().optional(),
         em_pf_status: Joi.number().required().max(1),
-        em_pf_no: Joi.string().max(20).optional(),
-        em_uan_no: Joi.string().max(20).optional(),
+        em_pf_no: Joi.number().optional(),
+        em_uan_no: Joi.string().optional(),
         em_esi_status: Joi.number().required().max(1),
-        em_esi_no: Joi.string().max(20).optional(),
+        em_esi_no: Joi.number().optional(),
         em_grade: Joi.number().optional(),
         create_user: Joi.number().optional(),
         edit_user: Joi.number().optional(),
-        esi_slno: Joi.number().optional(),
 })
 
 // VALIDATE EMPOYEE QUALIFICATION
@@ -688,16 +694,20 @@ const validateempqualification = Joi.object({
         em_no: Joi.number().optional(),
         em_id: Joi.number().optional(),
         em_education: Joi.number().min(1).required(),
-        em_course: Joi.number().min(1).required(),
-        em_specialization: Joi.number().min(1).required(),
-        em_univ_institute: Joi.number().min(1).required(),
-        em_year: Joi.date().optional(),
+        em_course: Joi.optional(),
+        em_specialization: Joi.optional(),
+        em_univ_institute: Joi.optional(),
+        em_board: Joi.optional(),
+        em_year: Joi.date().required(),
         em_mark_grade: Joi.optional(),
-        em_reg_type: Joi.number().max(9999999).required(),
-        em_reg_no: Joi.string().max(20),
+        em_reg_type: Joi.optional(),
+        em_reg_no: Joi.optional(),
         create_user: Joi.number().optional(),
         edit_user: Joi.number().optional(),
         emqual_slno: Joi.number().optional(),
+        em_exp_date: Joi.optional(),
+        em_chellan: Joi.optional(),
+        em_chellan_exp_date: Joi.optional(),
 })
 
 // VALIDATE COURSE
@@ -721,7 +731,7 @@ const validateeducation = Joi.object({
 
 //SPECIALIZATION 
 const validatespecialization = Joi.object({
-        spec_desc: Joi.string().max(45).uppercase().trim().required(),
+        spec_desc: Joi.string().max(200).uppercase().trim().required(),
         cour_slno: Joi.number().required(),
         spec_status: Joi.number().required(),
         spec_slno: Joi.number().optional(),
@@ -797,8 +807,378 @@ validateempmastercompanyupdate = Joi.object({
         em_id: Joi.number().optional(),
 
 })
+// VALIDATION Departmentshiftmaster
+const validatedepartmentshiftmaster = Joi.object({
+        dept_id: Joi.number().required(),
+        sect_id: Joi.number().required(),
+        shft_code: Joi.optional(),
+        dept_shift_Slno: Joi.number().optional(),
+        updated_user: Joi.number().optional()
+})
 
+//Validate leave request Type master
+const validateleaverequest = Joi.object({
+        lrequest_type: Joi.string().required().trim().uppercase(),
+        lrequest_status: Joi.number().required(),
+        lrequest_short: Joi.string().trim().uppercase().required(),
+        create_user: Joi.number().optional(),
+        edit_user: Joi.number().optional(),
+        lrequest_slno: Joi.number().optional()
+})
 
+//validation for OT Request
+const validateotrequest = Joi.object({
+        ot_slno: Joi.number().optional(),
+        ot_date: Joi.date().required(),
+        emp_id: Joi.number().required(),
+        em_no: Joi.number().optional(),
+        ot_days: Joi.date().required(),
+        ot_shift_id: Joi.number().optional(),
+        check_in: Joi.date().required(),
+        check_out: Joi.date().required(),
+        over_time: Joi.number().optional(),
+        ot_convert: Joi.number().optional(),
+        ot_reson: Joi.string().required(),
+        ot_remarks: Joi.string().required(),
+        ot_amount: Joi.number().required(),
+        ot_inch_require: Joi.number().required(),
+        ot_hod_require: Joi.number().required(),
+        ot_hr_require: Joi.number().required(),
+        ot_ceo_require: Joi.number().required(),
+        ot_deptsec_id: Joi.number().required(),
+        duty_day: Joi.optional(),
+
+})
+//Validation for OT update
+const validateotrequestupdate = Joi.object({
+        ot_reson: Joi.string().required(),
+        ot_remarks: Joi.string().required(),
+        ot_slno: Joi.number().required(),
+})
+//validate board under education
+const validateboard = Joi.object({
+        board_name: Joi.string().max(45).required().uppercase().trim(),
+        education_slno: Joi.number().max(99999).required().required(),
+        board_status: Joi.number().max(1.).required(),
+        board_slno: Joi.number().optional(),
+        create_user: Joi.number().max(999999999).optional(),
+        edit_user: Joi.number().max(999999999).optional(),
+})
+
+//valiodation for authorization
+const validateauthorization = Joi.object({
+        dept_section: Joi.number().min(1).required(),
+        auth_post: Joi.number().min(1).required(),
+        dept_section_post: Joi.number().min(1).required(),
+        emp_id: Joi.number().required(),
+        create_user: Joi.number().optional(),
+        create_date: Joi.date().optional(),
+        auth_slno: Joi.number().optional(),
+
+})
+
+//Validate Resignation Request
+
+const validateResignationRequest = Joi.object({
+        dept_id: Joi.number().min(1).required(),
+        sect_id: Joi.number().min(1).required(),
+        em_id: Joi.number().min(1).required(),
+        em_no: Joi.number().min(1).required(),
+        designation: Joi.number().min(1).required(),
+        resignation_type: Joi.number().min(1).required(),
+        request_date: Joi.date().required(),
+        relieving_date: Joi.date().required(),
+        resign_reason: Joi.string().required(),
+        notice_period: Joi.number().optional(),
+        incharge_required: Joi.number().optional(),
+        hod_required: Joi.number().optional(),
+        ceo_required: Joi.number().optional(),
+})
+const validateResignationRequestApproval = Joi.object({
+        em_id: Joi.number().min(1).optional(),
+        designation: Joi.number().min(1).optional(),
+        resign_status: Joi.string().optional(),
+        resign_cancel: Joi.string().optional(),
+        hr_id: Joi.number().optional(),
+        hr_app_date: Joi.date().optional(),
+        hr_app_status: Joi.number().optional(),
+        hr_coment: Joi.string().optional(),
+        notice_period: Joi.number().optional(),
+        incharge_required: Joi.number().optional(),
+        hod_required: Joi.number().optional(),
+        ceo_required: Joi.number().optional(),
+        resig_slno: Joi.number().optional(),
+})
+const validateResignationRequestApprovalINcharge = Joi.object({
+        em_id: Joi.number().min(1).optional(),
+        designation: Joi.number().min(1).optional(),
+        inch_id: Joi.number().optional(),
+        inch_app_date: Joi.date().optional(),
+        inch_app_status: Joi.number().optional(),
+        inch_coment: Joi.string().optional(),
+        resig_slno: Joi.number().optional(),
+        replacement_required_incharge: Joi.number().optional(),
+})
+const validateResignationRequestApprovalHOD = Joi.object({
+        em_id: Joi.number().min(1).optional(),
+        designation: Joi.number().min(1).optional(),
+        hod_id: Joi.number().required(),
+        hod_app_date: Joi.date().required(),
+        hod_app_status: Joi.number().required(),
+        hod_coment: Joi.string().required(),
+        resig_slno: Joi.number().optional(),
+        replacement_required_hod: Joi.number().optional(),
+})
+const validateResignationRequestApprovalCEO = Joi.object({
+        ceo_id: Joi.number().required(),
+        ceo_appr_date: Joi.date().required(),
+        ceo_appr_status: Joi.number().required(),
+        ceo_comment: Joi.string().required(),
+        resig_slno: Joi.number().optional(),
+})
+const validateResignationRequestApprovalHR = Joi.object({
+        hr_id: Joi.number().required(),
+        hr_app_date: Joi.date().required(),
+        hr_app_status: Joi.number().required(),
+        hr_coment: Joi.string().required(),
+        resign_status: Joi.string().required(),
+        em_id: Joi.number().min(1).optional(),
+        resig_slno: Joi.number().optional(),
+        dept_id: Joi.number().optional(),
+        sect_id: Joi.number().optional(),
+        em_id: Joi.number().optional(),
+        em_no: Joi.number().optional(),
+        designation: Joi.number().optional(),
+        resignation_type: Joi.number().optional(),
+        request_date: Joi.date().optional(),
+        relieving_date: Joi.date().optional(),
+        resign_reason: Joi.string().optional(),
+        contract_close_resign: Joi.string().optional(),
+})
+const validateResignationRequestCancel = Joi.object({
+        resign_cancel: Joi.string().required(),
+        resign_cancel_reason: Joi.string().required(),
+        cancel_user: Joi.number().required(),
+        resign_cancel_date: Joi.date().required(),
+        resig_slno: Joi.number().optional(),
+
+})
+const validatecoassign = Joi.object({
+        co_slno: Joi.number().optional(),
+        emp_id: Joi.number().required(),
+        co_assign: Joi.number().required(),
+        create_user: Joi.number().optional(),
+
+})
+
+//Validation For OT Incharge Approval
+const validateotincharge = Joi.object({
+        ot_inch_status: Joi.number().required(),
+        ot_inch_remark: Joi.string().required(),
+        ot_inch_user: Joi.number().required(),
+        ot_slno: Joi.number().required(),
+        ot_coff_type: Joi.number().required(),
+        ot_time: Joi.number().optional(),
+        emp_id: Joi.number().optional(),
+        ot_status: Joi.number().optional(),
+        ot_new_time: Joi.number().optional(),
+})
+
+//Validation For OT HOD Approval
+const validateothod = Joi.object({
+        ot_hod_status: Joi.number().required(),
+        ot_hod_remark: Joi.string().required(),
+        ot_hod_user: Joi.number().required(),
+        ot_slno: Joi.number().required(),
+        ot_coff_type: Joi.number().required(),
+        ot_time: Joi.number().optional(),
+        emp_id: Joi.number().optional(),
+        ot_status: Joi.number().optional(),
+        ot_new_time: Joi.number().optional(),
+})
+
+//Validation For OT HR Approval
+const validateothr = Joi.object({
+        ot_hr_status: Joi.number().required(),
+        ot_hr_remark: Joi.string().required(),
+        ot_hr_user: Joi.number().required(),
+        ot_slno: Joi.number().required(),
+        ot_coff_type: Joi.number().required(),
+        ot_time: Joi.number().optional(),
+        emp_id: Joi.number().optional(),
+        ot_status: Joi.number().optional(),
+        ot_new_time: Joi.number().optional(),
+})
+
+//Validation For OT CEO Approval
+const validateotceo = Joi.object({
+        ot_ceo_status: Joi.number().required(),
+        ot_ceo_remark: Joi.string().required(),
+        ot_ceo_user: Joi.number().required(),
+        ot_slno: Joi.number().required(),
+        ot_coff_type: Joi.number().required(),
+        ot_time: Joi.number().optional(),
+        emp_id: Joi.number().optional(),
+        ot_status: Joi.number().optional(),
+        ot_new_time: Joi.number().optional(),
+})
+
+// VALIDATION DUE CLEARENCE DEPARTMENT
+const validatedepartmentdueclearencedept = Joi.object({
+        dept_id: Joi.number().required(),
+        sect_id: Joi.number().required(),
+        due_dept_code: Joi.optional(),
+        due_dept_slno: Joi.number().optional(),
+        updated_user: Joi.number().optional()
+})
+
+//VALIDATION OF OT WAGE  UPDATE IN dept section wise
+
+const validateotwage = Joi.object({
+        emp__ot: Joi.number().required(),
+        ot_amount: Joi.number().required(),
+        em_dept_section: Joi.number().optional(),
+})
+
+// validation due clearence insert
+const validateDueClearence = Joi.object({
+        due_dept_status: Joi.string().required(),
+        due_dept_comment: Joi.string().required(),
+        approved_date: Joi.date().optional(),
+        approved_user: Joi.number().optional(),
+        charge_handover_emp: Joi.optional(),
+        due_slno: Joi.number().optional(),
+})
+//VALIDATION OF OT WAGE UPDATE IN employee
+const validateotwageone = Joi.object({
+        emp__ot: Joi.number().required(),
+        ot_amount: Joi.number().required(),
+        em_id: Joi.number().required(),
+})
+//validate due clearence Master
+const validatedueClearenceMaster = Joi.object({
+        duemast_slno: Joi.number().optional(),
+        due_desc: Joi.string().required(),
+        due_shortname: Joi.string().required(),
+        due_status: Joi.required(),
+        create_user: Joi.number().optional(),
+        edit_user: Joi.number().optional(),
+})
+
+const validateinsertLeaveCalculation = Joi.object({
+        emp_id: Joi.number().required(),
+        lvetype_slno: Joi.number().required(),
+        credited: Joi.number().required(),
+        dept_id: Joi.number().optional(),
+        ot_slno: Joi.number().optional(),
+        ot_coff_slno: Joi.number().optional(),
+        applied_cl: Joi.number().optional(),
+        ot_inch_status: Joi.number().required(),
+        ot_inch_remark: Joi.string().required(),
+        ot_slno: Joi.number().required(),
+        ot_coff_type: Joi.number().required(),
+        ot_time: Joi.number().optional(),
+        emp_id: Joi.number().optional(),
+        ot_status: Joi.number().optional(),
+})
+const validatecoffupdate = Joi.object({
+        emp_id: Joi.number().required(),
+        ot_coff_slno: Joi.number().optional(),
+        ot_time: Joi.number().optional(),
+        applied_cl: Joi.number().optional(),
+})
+
+const validationinchageapprv = Joi.object({
+        status: Joi.number().required(),
+        comment: Joi.string().required(),
+        slno: Joi.number().required(),
+        apprvdate: Joi.date().required(),
+        us_code: Joi.number().optional(),
+        lve_uniq_no: Joi.number().optional(),
+
+})
+const validateotcancel = Joi.object({
+        ot_status: Joi.number().required(),
+        ot_cancel_reason: Joi.string().required(),
+        ot_cancel_date: Joi.date().required(),
+        ot_cancel_user: Joi.number().required(),
+        ot_slno: Joi.number().optional(),
+})
+//validate common settings
+const validatecommonsettings = Joi.object({
+        cmmn_grace_period: Joi.number().optional(),
+        cmmn_late_in: Joi.number().optional(),
+        cmmn_early_out: Joi.number().optional(),
+        cmmn_late_in_grace: Joi.number().optional(),
+        cmmn_early_out_grace: Joi.number().optional(),
+        carry_hl: Joi.number().optional(),
+        carry_cl: Joi.number().optional(),
+        carry_el: Joi.number().optional(),
+        carry_sl: Joi.number().optional(),
+        min_salary: Joi.number().optional(),
+        max_salary: Joi.number().optional(),
+        pf_age: Joi.number().optional(),
+        pf_employee: Joi.number().precision(2).optional(),
+        pf_employer: Joi.number().precision(2).optional(),
+        esi_limit: Joi.number().optional(),
+        esi_employee: Joi.number().precision(2).optional(),
+        esi_employer: Joi.number().precision(2).optional(),
+        creat_user: Joi.number().optional(),
+        update_user: Joi.number().optional(),
+        setting_slno: Joi.number().optional(),
+        noofadvanceinyear: Joi.number().optional()
+})
+//validate carryforward
+const validatecarryforward = Joi.object({
+        dept_sec: Joi.number().required(),
+        emp_type: Joi.number().required(),
+        carry_hl: Joi.number().required(),
+        carry_cl: Joi.number().required(),
+        carry_el: Joi.number().required(),
+        carry_sl: Joi.number().required(),
+        create_user: Joi.number().optional(),
+        edit_user: Joi.number().optional(),
+        carry_slno: Joi.number().optional(),
+})
+const validateAlert = Joi.object({
+        alert: Joi.string().required(),
+        alert_expr_date: Joi.date().required(),
+        alert_branch: Joi.number().optional(),
+        alert_department: Joi.number().optional(),
+        aler_deptsec: Joi.number().optional(),
+        emp_category: Joi.number().optional(),
+        designation: Joi.number().optional(),
+        create_date: Joi.date().optional(),
+        create_user: Joi.number().optional(),
+})
+const validateMessage = Joi.object({
+        message_deptsec: Joi.number().required(),
+        message_dept: Joi.number().required(),
+        emp_id: Joi.number().required(),
+        message: Joi.string().optional(),
+        created_date: Joi.date().optional(),
+        expr_date: Joi.date().required(),
+        created_user: Joi.number().optional(),
+})
+//validate proffessional Tax against Employee
+const validatempprotax = Joi.object({
+        pro_emp_id: Joi.number().required(),
+        pro_emp_no: Joi.number().required(),
+        pro_emp_name: Joi.string().required(),
+        pro_gross_salary: Joi.number().required(),
+        pro_tax: Joi.number().required(),
+        pro_tax_date: Joi.date().optional(),
+});
+//validate proffessional Tax against Employee
+const validateadvanceSettings = Joi.object({
+        adv_settings_Slno: Joi.number().optional(),
+        service_from: Joi.number().optional(),
+        service_to: Joi.number().optional(),
+        adv_eligibility: Joi.string().optional(),
+        monthly_installments: Joi.number().optional(),
+        create_user: Joi.number().optional(),
+        edit_user: Joi.number().optional(),
+});
 module.exports = {
         authSchema,  //authSchema:authSchema
         validateEmployee,
@@ -848,5 +1228,38 @@ module.exports = {
         validatefineded,
         validatefinededuction,
         validatesalaryIncrement,
-        validateempmastercompanyupdate
+        validateempmastercompanyupdate,
+        validatedepartmentshiftmaster,
+        validateleaverequest,
+        validateotrequest,
+        validateotrequestupdate,
+        validateboard,
+        validateauthorization,
+        validateResignationRequest,
+        validatecoassign,
+        validateResignationRequestApproval,
+        validateotincharge,
+        validateResignationRequestApprovalHOD,
+        validateothod,
+        validateothr,
+        validateResignationRequestApprovalCEO,
+        validateResignationRequestApprovalINcharge,
+        validateResignationRequestApprovalHR,
+        validateotceo,
+        validateResignationRequestCancel,
+        validatedepartmentdueclearencedept,
+        validateotwage,
+        validateDueClearence,
+        validateotwageone,
+        validatedueClearenceMaster,
+        validateinsertLeaveCalculation,
+        validatecoffupdate,
+        validationinchageapprv,
+        validateotcancel,
+        validatecommonsettings,
+        validatecarryforward,
+        validateAlert,
+        validateMessage,
+        validatempprotax,
+        validateadvanceSettings
 }

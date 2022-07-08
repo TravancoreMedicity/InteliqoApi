@@ -124,14 +124,14 @@ module.exports = {
             }
         )
     },
-    getSelect: (callBack) => {
+    getSelect: (id, callBack) => {
         pool.query(
             `SELECT 
                     earnded_id,
                     earnded_name
                 FROM hrm_earning_deduction
-                WHERE earnded_status = 1`,
-            [],
+                WHERE earnded_status = 1 and  erning_type_id=?`,
+            [id],
             (error, results, feilds) => {
                 if (error) {
                     return callBack(error);

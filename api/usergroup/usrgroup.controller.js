@@ -1,6 +1,6 @@
 const { insertuserGroup, getUserGroups, getGroupById, updateUserGroup, deleteUserGroup, getUserGroupSelect } = require('./usrgroup.service');
 const { validateUserGroup } = require('../../validation/validation_schema');
-
+const logger = require('../../logger/logger')
 module.exports = {
 
     insertuserGroup: (req, res) => {
@@ -20,6 +20,7 @@ module.exports = {
         insertuserGroup(body, (err, results) => {
 
             if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err
@@ -49,6 +50,7 @@ module.exports = {
 
         updateUserGroup(body, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err
@@ -74,6 +76,7 @@ module.exports = {
         const body = req.body;
         deleteUserGroup(body, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: res.err
@@ -96,6 +99,7 @@ module.exports = {
     getUserGroups: (req, res) => {
         getUserGroups((err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 10,
                     message: err
@@ -119,6 +123,7 @@ module.exports = {
         const id = req.params.id;
         getGroupById(id, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err
@@ -141,6 +146,7 @@ module.exports = {
     getUserGroupsSelected: (req, res) => {
         getUserGroupSelect((err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 10,
                     message: err

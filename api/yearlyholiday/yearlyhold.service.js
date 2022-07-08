@@ -121,4 +121,37 @@ module.exports = {
             }
         )
     },
+    getDatabyYear: (callBack) => {
+        pool.query(
+            `SELECT 
+            hld_desc,
+            DATE_FORMAT(hld_date,'%d %M')
+            hld_year
+        FROM hrm_yearly_holiday_list
+        WHERE YEAR(CURDATE()) order by hld_date asc`,
+            [],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getHolidayByDate: (data, callBack) => {
+        pool.query(
+            `select hld_date from hrm_yearly_holiday_list
+        where hld_date between ? and ?`,
+            [
+                data.start_date,
+                data.end_date
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    }
 }

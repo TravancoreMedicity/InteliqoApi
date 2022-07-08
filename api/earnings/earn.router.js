@@ -6,7 +6,7 @@ router.post("/", checkToken, createEarning);
 router.patch("/", checkToken, updateEarning);
 router.delete("/", checkToken, inactiveEarning);
 router.get("/", checkToken, getEarningData);
-router.get("/select", checkToken, getSelectDrop);
+router.get("/select/:id", checkToken, getSelectDrop);
 router.get("/:id", checkToken, getEarningDataByID);
 
 module.exports = router;

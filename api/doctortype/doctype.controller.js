@@ -1,5 +1,6 @@
 const { create, update, checkInsertVal, checkUpdateVal, deleteByID, getData, getDataById, getSelect } = require('../doctortype/doctype.service');
 const { validatedoctype } = require('../../validation/validation_schema');
+const logger = require('../../logger/logger')
 
 module.exports = {
     createDocType: (req, res) => {
@@ -21,6 +22,7 @@ module.exports = {
                 // Insert the values
                 create(body, (err, results) => {
                     if (err) {
+                        logger.errorLogger(err)
                         return res.status(200).json({
                             success: 0,
                             message: err
@@ -61,6 +63,7 @@ module.exports = {
                 update(body, (err, results) => {
 
                     if (err) {
+                        logger.errorLogger(err)
                         return res.status(200).json({
                             success: 0,
                             message: err.sqlMessage
@@ -94,6 +97,7 @@ module.exports = {
 
         deleteByID(body, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(400).json({
                     success: 0,
                     message: res.err
@@ -117,6 +121,7 @@ module.exports = {
 
         getData((err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 2,
                     message: err
@@ -124,6 +129,7 @@ module.exports = {
             }
 
             if (!results) {
+
                 return res.status(200).json({
                     success: 0,
                     message: "No Results Found"
@@ -141,6 +147,7 @@ module.exports = {
         const id = req.params.id;
         getDataById(id, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(400).json({
                     success: 0,
                     message: err
@@ -165,6 +172,7 @@ module.exports = {
 
         getSelect((err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 2,
                     message: err

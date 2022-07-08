@@ -1,6 +1,7 @@
-const { create, update, deleteByID, getData, getDataById, getSelect } = require('../yearlyholiday/yearlyhold.service');
+const { create, update, deleteByID, getData, getDataById, getSelect, getDatabyYear,
+    getHolidayByDate } = require('../yearlyholiday/yearlyhold.service');
 const { validateyearlyholidaylist } = require('../../validation/validation_schema');
-
+const logger = require('../../logger/logger')
 module.exports = {
     createYearlyHoliday: (req, res) => {
         const body = req.body;
@@ -17,6 +18,7 @@ module.exports = {
 
         create(body, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err
@@ -47,6 +49,7 @@ module.exports = {
         update(body, (err, results) => {
 
             if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err
@@ -73,6 +76,7 @@ module.exports = {
 
         deleteByID(body, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(400).json({
                     success: 0,
                     message: res.err
@@ -96,6 +100,7 @@ module.exports = {
 
         getData((err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 2,
                     message: err
@@ -120,6 +125,7 @@ module.exports = {
         const id = req.params.id;
         getDataById(id, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(400).json({
                     success: 0,
                     message: err
@@ -144,6 +150,7 @@ module.exports = {
 
         getSelect((err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 2,
                     message: err
@@ -162,6 +169,54 @@ module.exports = {
                 data: results
             });
         });
-    }
+    },
+    getDatabyYear: (req, res) => {
+        getDatabyYear((err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    getHolidayByDate: (req, res) => {
+        const body = req.body;
+        getHolidayByDate(body, (err, results) => {
+
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Record Not Found"
+                });
+            }
+            return res.status(200).json({
+                success: 2,
+                data: results
+            });
+
+        });
+    },
 
 }

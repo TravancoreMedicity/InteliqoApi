@@ -8,10 +8,15 @@ const {
     getEmpByDeptAndSection,
     updateserialnum,
     updateCompanyInfo,
-    createCompanyInfo
+    createCompanyInfo, updatecategory,
+    getDepartmentSectEmployye, checkidvaluedate, getCategoryType, updateDeptSec,
+    getInactiveEmpByDeptAndSection,
+    InActiveEmpHR,
+    getEmpVerification,
+    UpdateVerification
 } = require('../hrm_emp_master/empmast.service');
-const { validateempmaster, validateempmasterupdate, validateempmastercompanyupdate } = require('../../validation/validation_schema');
-
+const { validateempmaster, validateempmasterupdate } = require('../../validation/validation_schema');
+const logger = require('../../logger/logger')
 module.exports = {
     createempmast: (req, res) => {
         const body = req.body;
@@ -25,42 +30,44 @@ module.exports = {
         }
 
         body.em_name = body_result.value.em_name;
+        body.addressPermnt1 = body_result.value.addressPermnt1;
+        body.addressPermnt2 = body_result.value.addressPermnt2;
+        body.addressPresent2 = body_result.value.addressPresent2;
+        body.addressPresent1 = body_result.value.addressPresent1;
 
-        create(body, (err, results) => {
-            if (err) {
-                return res.status(200).json({
-                    success: 0,
-                    message: err
-                });
-            }
-
-            else {
-                updateserialnum((err, results) => {
+        checkidvaluedate(body, (err, results) => {
+            const value = JSON.parse(JSON.stringify(results))
+            if (Object.keys(value).length === 0) {
+                // Insert the values
+                create(body, (err, results) => {
                     if (err) {
+                        logger.errorLogger(err)
                         return res.status(200).json({
-                            success: 2,
+                            success: 0,
                             message: err
                         });
-                    }
-
-                    if (!results) {
+                    } else if (!results) {
                         return res.status(200).json({
                             success: 0,
                             message: "No Results Found"
                         });
                     }
+                    else {
+                        return res.status(200).json({
+                            success: 1,
+                            message: "Data Created Successfully"
+                        });
+                    }
 
-                    return res.status(200).json({
-                        success: 1,
-                        message: "Data Created Successfully"
-                    });
                 });
-
-
+            } else {
+                return res.status(200).json({
+                    success: 7,
+                    message: "Employee ID  Already Exist"
+                })
             }
+        })
 
-
-        });
     },
     updateempmast: (req, res) => {
 
@@ -77,21 +84,19 @@ module.exports = {
         body.em_name = body_result.value.em_name;
 
         update(body, (err, results) => {
-
             if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err
                 });
             }
-
             if (!results) {
                 return res.status(200).json({
                     success: 1,
                     message: "Record Not Found"
                 });
             }
-
             return res.status(200).json({
                 success: 2,
                 message: "Data Updated Successfully"
@@ -105,6 +110,7 @@ module.exports = {
 
         deleteByID(body, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(400).json({
                     success: 0,
                     message: res.err
@@ -128,6 +134,7 @@ module.exports = {
 
         getData((err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 2,
                     message: err
@@ -152,6 +159,7 @@ module.exports = {
         const id = req.params.id;
         getDataById(id, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(400).json({
                     success: 0,
                     message: err
@@ -176,6 +184,7 @@ module.exports = {
 
         getSelect((err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 2,
                     message: err
@@ -200,6 +209,32 @@ module.exports = {
 
         getEmpByDeptAndSection(body, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: res.err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    getInactiveEmpByDeptAndSection: (req, res) => {
+        const body = req.body
+
+        getInactiveEmpByDeptAndSection(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: res.err
@@ -221,19 +256,10 @@ module.exports = {
     },
     createCompanyInfo: (req, res) => {
         const body = req.body;
-        const body_result = validateempmastercompanyupdate.validate(body);
-
-        if (body_result.error) {
-            return res.status(200).json({
-                success: 2,
-                message: body_result.error.details[0].message
-            });
-        }
-
-        body.em_name = body_result.value.em_name;
 
         createCompanyInfo(body, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err
@@ -243,6 +269,7 @@ module.exports = {
                 updateCompanyInfo(body, (err, results) => {
 
                     if (err) {
+                        logger.errorLogger(err)
                         return res.status(200).json({
                             success: 2,
                             message: err
@@ -263,5 +290,190 @@ module.exports = {
 
             }
         })
+    },
+
+    updatecategory: (req, res) => {
+
+        const body = req.body;
+
+
+        updatecategory(body, (err, results) => {
+
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 2,
+                message: "Data Updated Successfully"
+            });
+
+        });
+    },
+    getDepartmentSectEmployye: (req, res) => {
+        const body = req.body;
+        getDepartmentSectEmployye(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+
+    },
+    getCategoryType: (req, res) => {
+
+        const id = req.params.id;
+        getCategoryType(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(400).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+
+    },
+    updateDeptSec: (req, res) => {
+
+        const body = req.body;
+
+        updateDeptSec(body, (err, results) => {
+
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 2,
+                message: "Data Updated Successfully"
+            });
+
+        });
+    },
+    InActiveEmpHR: (req, res) => {
+        const body = req.body;
+        InActiveEmpHR(body, (err, results) => {
+
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 2,
+                message: "Data Updated Successfully"
+            });
+
+        });
+    },
+    getEmpVerification: (req, res) => {
+        getEmpVerification((err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(400).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+
+    },
+    UpdateVerification: (req, res) => {
+        const body = req.body;
+        UpdateVerification(body, (err, results) => {
+
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 2,
+                message: "Data Updated Successfully"
+            });
+
+        });
     },
 }

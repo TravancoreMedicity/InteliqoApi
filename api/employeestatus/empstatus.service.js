@@ -5,23 +5,13 @@ module.exports = {
         pool.query(
             `INSERT INTO employee_status (
                 empstat_name,
-                empstat_cl,
-                empstat_el,
-                empstat_hd,
-                empstat_esi,
-                empstat_pf,
-                empstat_period,
+                status,
                 create_user
             )
-            VALUES (?,?,?,?,?,?,?,?)`,
+            VALUES (?,?,?)`,
             [
                 data.empstat_name,
-                data.empstat_cl,
-                data.empstat_el,
-                data.empstat_hd,
-                data.empstat_esi,
-                data.empstat_pf,
-                data.empstat_period,
+                data.desigstatus,
                 data.create_user
             ],
             (error, results, feilds) => {
@@ -37,23 +27,12 @@ module.exports = {
         pool.query(
             `UPDATE employee_status 
                 SET empstat_name = ?,
-                    empstat_cl = ?,
-                    empstat_el = ?,
-                    empstat_hd = ?,
-                    empstat_esi =?,
-                    empstat_pf = ?,
-                    empstat_period=?,
-                    update_user = ?
+                status = ?,            
+                update_user = ?
                 WHERE emstats_slno = ?`,
             [
                 data.empstat_name,
-                data.empstat_cl,
-                data.empstat_el,
-                data.empstat_hd,
-                data.empstat_esi,
-                data.empstat_pf,
-                data.empstat_period,
-                data.update_user,
+                data.desigstatus,
                 data.emstats_slno
             ],
             (error, results, feilds) => {
@@ -81,12 +60,8 @@ module.exports = {
     getData: (callBack) => {
         pool.query(
             `SELECT 
-                empstat_name,emstats_slno,empstat_period,
-                if(empstat_cl = 1 ,'Yes','No') empstat_cl ,
-                if(empstat_el = 1 ,'Yes','No') empstat_el ,
-                if(empstat_hd = 1 ,'Yes','No') empstat_hd ,
-                if(empstat_esi = 1 ,'Yes','No') empstat_esi,
-                if(empstat_pf = 1 ,'Yes','No') empstat_pf 
+                empstat_name,emstats_slno,
+                if(status = 1 ,'Yes','No') status          
             FROM employee_status`,
             [],
             (error, results, feilds) => {
@@ -101,13 +76,8 @@ module.exports = {
         pool.query(
             `SELECT 
                 emstats_slno,
-                empstat_name,
-                empstat_cl,
-                empstat_el,
-                empstat_hd,
-                empstat_esi,
-                empstat_pf,
-                ifnull(empstat_period,0)empstat_period
+                empstat_name,             
+                status
             FROM employee_status
             WHERE emstats_slno = ?`,
             [

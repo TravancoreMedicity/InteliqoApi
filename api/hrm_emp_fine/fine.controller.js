@@ -1,6 +1,7 @@
-const { create, update, createdetl, checkInsertVal, checkUpdateVal, updatefineslno, getFineByID, getFineBySlno, getFineByIDStatus } = require('../hrm_emp_fine/fine.service');
+const { create, update, createdetl, checkInsertVal, checkUpdateVal, updatefineslno, getFineByID,
+    getFineBySlno, getFineByIDStatus, deletefinedetl } = require('../hrm_emp_fine/fine.service');
 const { validatefinededuction } = require('../../validation/validation_schema');
-
+const logger = require('../../logger/logger')
 module.exports = {
     createfine: (req, res) => {
         const body = req.body;
@@ -19,37 +20,29 @@ module.exports = {
                 // Insert the values
                 create(body, (err, results) => {
                     if (err) {
+                        logger.errorLogger(err)
                         return res.status(200).json({
                             success: 0,
                             message: err
                         });
                     }
+
                     else {
-                        createdetl(body, (err, results) => {
+                        updatefineslno(body, (err, results) => {
                             if (err) {
+                                logger.errorLogger(err)
                                 return res.status(200).json({
                                     success: 0,
                                     message: err
                                 });
                             }
                             else {
-                                updatefineslno(body, (err, results) => {
-                                    if (err) {
-                                        return res.status(200).json({
-                                            success: 0,
-                                            message: err
-                                        });
-                                    }
-                                    else {
-                                        return res.status(200).json({
-                                            success: 1,
-                                            message: "Data Created Successfully"
-                                        })
-                                    }
+                                return res.status(200).json({
+                                    success: 1,
+                                    message: "Data Created Successfully"
                                 })
                             }
                         })
-
                     }
 
                 });
@@ -79,6 +72,7 @@ module.exports = {
                 update(body, (err, results) => {
 
                     if (err) {
+                        logger.errorLogger(err)
                         return res.status(200).json({
                             success: 0,
                             message: err
@@ -109,6 +103,7 @@ module.exports = {
         const id = req.params.id;
         getFineByID(id, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(400).json({
                     success: 0,
                     message: err
@@ -131,6 +126,7 @@ module.exports = {
         const id = req.params.id;
         getFineBySlno(id, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(400).json({
                     success: 0,
                     message: err
@@ -153,6 +149,7 @@ module.exports = {
         const body = req.body;
         getFineByIDStatus(body, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(400).json({
                     success: 0,
                     message: err
@@ -173,5 +170,56 @@ module.exports = {
         });
 
     },
+    detailedtableinsert: (req, res) => {
+        const body = req.body;
+        var a1 = body.map((value, index) => {
+            return [value.fine_slno, value.fine_emp_no, value.fine_emp_id, value.fine_amount, value.fine_date,
+            value.create_user]
+        })
 
+        createdetl(a1, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+
+    },
+    deletefinedetl: (req, res) => {
+        const id = req.params.id;
+        deletefinedetl(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (!results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                message: "Record Deleted Successfully"
+            });
+        });
+    },
 }

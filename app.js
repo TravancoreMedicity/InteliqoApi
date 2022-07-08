@@ -1,6 +1,11 @@
 require("dotenv").config();
+require("./upload/punchTableEventCheck")
+
 const express = require("express");
+const fs = require('fs');
 const app = express();
+const { infoLogger } = require('./logger/logger')
+
 
 const userRouter = require("./api/users/user.router");
 const employeeRouter = require("./api/employee/employee.router");
@@ -52,9 +57,40 @@ const empfinededuction = require("./api/hrm_emp_fine/fine.router") //emp fine de
 const upload = require("./api/uploadFile/upload.router")
 const salaryincrementRouter = require("./api/Salary_Increment/Salary_Increment.router")//salary Increment Proces
 const yearleaveprocess = require("./api/yearleaveprocess/yearlleaveprocess.router")//Yearly Leave  Proces
+const dutyplanning = require("./api/dutyplan/dutyplan.router") // Duty planning 
+const leaveRequestType = require("./api/leaveRequestType/leaveRequestType.router")//Leave Request Type master
+const departmentshiftRouter = require("./api/Departmentshiftmaster/Departmentshiftmaster.router")//department shift master
+const overtimerequest = require("./api/overtimeRequest/otRequest.router")//overtime request
+const boardEdu = require("./api/boardmaster/board.router")
+const authorization = require("./api/authorization/authorization.router")
+const ResignationRouter = require("./api/ResignationRequest/ResignationRequest.router")
+const LeaveRequest = require("./api/LeaveRequest/LeaveRequest.router")
+const DuedepartmentRouter = require("./api/DueaClearenceDepartment/DueaClearenceDepartment.router")
+const OtWage = require("./api/otwage/otwage.router")
+const DueclearenceRouter = require("./api/hrm_due_clearence/hrm_due_clearence.router")
+const DueClearenceMastRouter = require("./api/DueClearenceMast/DueClearenceMast.router")
+const DueClearenceHRRouter = require("./api/DueClearenceHR/DueClearenceHR.router")
+const LeaveRequestApproval = require("./api/LeaveRequestApproval/LeaveRequestApproval.router")
+const attendanceDetl = require("./api/attendance_updation/attendance.router")
+const otcancel = require("./api/otcancel/otcancel.router")
+const CommonSettings = require("./api/CommonSetting/CommonSetting.router")
+const carryforward = require("./api/carryforwardleaves/carryforward.router")
+const attandancemarking = require("./api/attandance_marking/attandance_marking.router")
+const LeavecarryforwardLeave = require("./api/leavecarryforward/leavecarryforward.router")
+const hrmAlertRouter = require("./api/hrm_alert/hrm_alert.router")
+const hrmMessageRouter = require("./api/hrm_message/hrm_message.router")
+const CountRouter = require("./api/dashboardcount/count.router")
+const hrmAnnouncementRouter = require("./api/hrm_Announcement/hrm_Announcement.router")
+const hrmgrosssalaryRouter = require("./api/Hrm_grosssalary/Hrm_grosssalary.router")
+const attedancemarkRouter = require("./api/attendance_marking_save/attendance_marking_save.router")
+const payrollprocess = require("./api/payrollprocess/payrollprocess.router")
+const JobdescriptionRouter = require("./api/Job_description/Job_description.router")
+const reportsRouter = require("./api/Reports/Reports.router")
+const advance_settingsRouter = require("./api/advance_settings/advance_settings.router")
+const advancerequestRouter = require("./api/advance_request/advance_request.router")
+
 
 app.use(express.json());
-
 app.use((req, res, next) => {
     //     res.header("Access-Control-Allow-Origin", "http://192.168.10.170:8080
     res.header("Access-Control-Allow-Origin", "*");
@@ -69,6 +105,35 @@ app.use((req, res, next) => {
     }
     next();
 });
+
+// ----- logger display For Info ----
+app.get('/info', (req, res) => {
+    fs.readFile('./errorlog/info.log', (error, txtString) => {
+        if (error) throw err;
+        res.write('<div id="content"><pre>' + txtString.toString().replace(/\n/g, '<br />') + '</pre>');
+        res.end();
+    })
+})
+
+// ----- logger display For err ----
+app.get('/error', (req, res) => {
+    fs.readFile('./errorlog/error.log', (error, txtString) => {
+        if (error) throw err;
+        res.write('<div id="content"><pre>' + txtString.toString().replace(/\n/g, '<br />') + '</pre>');
+        res.end();
+    })
+})
+
+// ----- logger display For ward ----
+app.get('/warn', (req, res) => {
+    fs.readFile('./errorlog/warn.log', (error, txtString) => {
+        if (error) throw err;
+        res.write('<div id="content"><pre>' + txtString.toString().replace(/\n/g, '<br />') + '</pre>');
+        res.end();
+    })
+})
+
+
 
 app.use("/api/users", userRouter);
 app.use("/api/employee", employeeRouter);
@@ -94,7 +159,6 @@ app.use("/api/district", district)
 app.use("/api/earn", earnings)
 app.use("/api/empcat", empcategory)
 app.use("/api/regtype", registraiontype)
-app.use("/api/proftax", professionaltax)
 app.use("/api/shift", shiftmaster)
 app.use("/api/holidaylist", yearlyholidaylist)
 app.use("/api/yearlyleaves", yearlyleaves)
@@ -120,16 +184,44 @@ app.use("/api/empfinededuction", empfinededuction)
 app.use("/api/upload", upload)
 app.use("/api/salaryIncrement", salaryincrementRouter)
 app.use("/api/yearleaveprocess", yearleaveprocess)
+app.use("/api/plan", dutyplanning)
+app.use("/api/leaveRequestType", leaveRequestType)
+app.use("/api/departmentshift", departmentshiftRouter)
+app.use("/api/overtimerequest", overtimerequest)
+app.use("/api/boardEdu", boardEdu)
+app.use("/api/LeaveRequest", LeaveRequest)
+app.use("/api/authorization", authorization)
+app.use("/api/Resignation", ResignationRouter)//resignation request
+app.use("/api/Duedepartment", DuedepartmentRouter)//Due Clearence Department Master
+app.use("/api/OtWage", OtWage)//OT Wage 
+app.use("/api/dueclearence", DueclearenceRouter)//due clearence
+app.use("/api/duemast", DueClearenceMastRouter)//due clearence
+app.use("/api/dueclrHR", DueClearenceHRRouter)//due clearence HR
+app.use("/api/LeaveRequestApproval", LeaveRequestApproval)//due clearence HR
+app.use("/api/attendCal", attendanceDetl) // Attendance Calculation
+app.use("/api/otcancel", otcancel) // otcancel
+app.use("/api/commonsettings", CommonSettings) // common settings
+app.use("/api/carryforward", carryforward)
+app.use("/api/attandancemarking", attandancemarking)
+app.use("/api/CarryLeave", LeavecarryforwardLeave)
+app.use("/api/hrmAlert", hrmAlertRouter)//alert
+app.use("/api/hrmMessage", hrmMessageRouter)//message
+app.use("/api/Count", CountRouter)
+app.use("/api/hrmAnnouncement", hrmAnnouncementRouter)//Announcement
+app.use("/api/hrmgrosssalary", hrmgrosssalaryRouter)//Announcement
+app.use("/api/proftax", professionaltax)//proffessional Tax
+app.use("/api/attedancemarkSave", attedancemarkRouter)//attendance marking save
+app.use("/api/payrollprocess", payrollprocess)//payroll Process
+app.use("/api/jobdescription", JobdescriptionRouter)//job description
+app.use("/api/reports", reportsRouter)//Reports
+app.use("/api/advanceSettings", advance_settingsRouter)
+app.use("/api/advancerequest", advancerequestRouter)
 
-// app.all('*', function (req, res) {
-//     return res.status(200).json({
-//         success: 2,
-//         message: "Bad Request"
-//     });
-// })
+// ------ Database Connection --------
 
 app.listen(process.env.APP_PORT, () =>
-    console.log(`Server Up and Running ${process.env.APP_PORT}`)
+    console.log(`Server Up and Running ${process.env.APP_PORT}`),
+    infoLogger(`Server Up and Running ${process.env.APP_PORT}`)
 );
 
 

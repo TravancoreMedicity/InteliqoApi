@@ -1,6 +1,11 @@
-const { create, update, getDataById, updatecontractclose, updateContractRenew, updateContractComplete, updateempnumber } = require('../hrm_emp_contract_detl/empcontract.service');
+const { create, update, getDataById,
+    updatecontractclose, updateContractRenew,
+    updateContractComplete, updateempnumber,
+    insertContractlog, updateempPersonal, updateEmpQual,
+    updateEmpexp, updatePfEsi, updateEarnDeduction, updateFineMast, getContractCloseDetl, getContractCloseDetlById
+} = require('../hrm_emp_contract_detl/empcontract.service');
 const { validateempcontract } = require('../../validation/validation_schema');
-
+const logger = require('../../logger/logger')
 module.exports = {
     creatempcontract: (req, res) => {
         const body = req.body;
@@ -15,6 +20,7 @@ module.exports = {
 
         create(body, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err
@@ -43,6 +49,7 @@ module.exports = {
         update(body, (err, results) => {
 
             if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err
@@ -78,6 +85,7 @@ module.exports = {
         updatecontractclose(body, (err, results) => {
 
             if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err
@@ -99,10 +107,60 @@ module.exports = {
         });
     },
     getempcontractByID: (req, res) => {
-
         const id = req.params.id;
         getDataById(id, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 2,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+
+    },
+    //get contract close detl
+    getContractCloseDetl: (req, res) => {
+
+        getContractCloseDetl((err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    getContractCloseDetlById: (req, res) => {
+        const id = req.params.id;
+        getContractCloseDetlById(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
                 return res.status(400).json({
                     success: 2,
                     message: err
@@ -125,7 +183,6 @@ module.exports = {
     },
     //contract Renew
     updateContractRenew: (req, res) => {
-
         const body = req.body;
         const body_result = validateempcontract.validate(body);
 
@@ -139,6 +196,7 @@ module.exports = {
             updatecontractclose(body, (err, results) => {
 
                 if (err) {
+                    logger.errorLogger(err)
                     return res.status(200).json({
                         success: 0,
                         message: err
@@ -148,6 +206,7 @@ module.exports = {
                     updateContractRenew(body, (err, results) => {
 
                         if (err) {
+                            logger.errorLogger(err)
                             return res.status(200).json({
                                 success: 0,
                                 message: err
@@ -155,10 +214,9 @@ module.exports = {
                         }
 
                         else {
-
-
                             updateContractComplete(body, (err, results) => {
                                 if (err) {
+                                    logger.errorLogger(err)
                                     return res.status(200).json({
                                         success: 0,
                                         message: err
@@ -167,52 +225,121 @@ module.exports = {
                                 else {
                                     create(body, (err, results) => {
                                         if (err) {
+                                            logger.errorLogger(err)
                                             return res.status(200).json({
                                                 success: 0,
                                                 message: err
                                             });
                                         }
-
                                         else {
-
                                             updateempnumber(body, (err, results) => {
                                                 if (err) {
+                                                    logger.errorLogger(err)
                                                     return res.status(200).json({
                                                         success: 0,
                                                         message: err
                                                     });
                                                 }
-
                                                 else {
-                                                    return res.status(200).json({
-                                                        success: 2,
-                                                        message: "Contract Renewed Successfully"
+                                                    insertContractlog(body, (err, results) => {
+                                                        if (err) {
+                                                            logger.errorLogger(err)
+                                                            return res.status(200).json({
+                                                                success: 0,
+                                                                message: err
+                                                            });
+                                                        }
+                                                        else {
+                                                            updateempPersonal(body, (err, results) => {
+                                                                if (err) {
+                                                                    logger.errorLogger(err)
+                                                                    return res.status(200).json({
+                                                                        success: 0,
+                                                                        message: err
+                                                                    });
+                                                                }
+                                                                else {
+                                                                    updateEmpQual(body, (err, results) => {
+                                                                        if (err) {
+                                                                            logger.errorLogger(err)
+                                                                            return res.status(200).json({
+                                                                                success: 0,
+                                                                                message: err
+                                                                            });
+                                                                        }
+
+                                                                        else {
+                                                                            updateEmpexp(body, (err, results) => {
+                                                                                if (err) {
+                                                                                    logger.errorLogger(err)
+                                                                                    return res.status(200).json({
+                                                                                        success: 0,
+                                                                                        message: err
+                                                                                    });
+                                                                                }
+
+                                                                                else {
+                                                                                    updatePfEsi(body, (err, results) => {
+                                                                                        if (err) {
+                                                                                            logger.errorLogger(err)
+                                                                                            return res.status(200).json({
+                                                                                                success: 0,
+                                                                                                message: err
+                                                                                            });
+                                                                                        }
+
+                                                                                        else {
+                                                                                            updateEarnDeduction(body, (err, results) => {
+                                                                                                if (err) {
+                                                                                                    logger.errorLogger(err)
+                                                                                                    return res.status(200).json({
+                                                                                                        success: 0,
+                                                                                                        message: err
+                                                                                                    });
+                                                                                                }
+
+                                                                                                else {
+                                                                                                    updateFineMast(body, (err, results) => {
+                                                                                                        if (err) {
+                                                                                                            logger.errorLogger(err)
+                                                                                                            return res.status(200).json({
+                                                                                                                success: 0,
+                                                                                                                message: err
+                                                                                                            });
+                                                                                                        }
+
+                                                                                                        else {
+                                                                                                            return res.status(200).json({
+                                                                                                                success: 2,
+                                                                                                                message: "Contract Renewed Successfully"
+                                                                                                            });
+                                                                                                        }
+
+                                                                                                    });
+                                                                                                }
+                                                                                            });
+                                                                                        }
+                                                                                    });
+                                                                                }
+                                                                            });
+                                                                        }
+                                                                    });
+                                                                }
+                                                            });
+                                                        }
                                                     });
                                                 }
-
-
                                             });
                                         }
-
-
                                     });
-
                                 }
                             });
-
-
-
                         }
-
                     });
-
                 }
 
-
             });
-
         }
-
     },
 }
 

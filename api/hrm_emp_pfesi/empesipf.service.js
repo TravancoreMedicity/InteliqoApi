@@ -115,4 +115,20 @@ module.exports = {
             }
         )
     },
+    getEsiallow: (id, callBack) => {
+        pool.query(
+            `select ecat_esi_allow from hrm_emp_master
+            left join hrm_emp_category on hrm_emp_category.category_slno=hrm_emp_master.em_category
+            where em_id=?`,
+            [
+                id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }

@@ -1,6 +1,6 @@
-const { create, update, getDataById, getDataBySlno } = require('../hrm_emp_pfesi/empesipf.service');
+const { create, update, getDataById, getDataBySlno, getEsiallow } = require('../hrm_emp_pfesi/empesipf.service');
 const { validateempesipf } = require('../../validation/validation_schema');
-
+const logger = require('../../logger/logger')
 module.exports = {
     createpfesi: (req, res) => {
         const body = req.body;
@@ -15,6 +15,7 @@ module.exports = {
 
         create(body, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err
@@ -35,7 +36,7 @@ module.exports = {
 
         if (body_result.error) {
             return res.status(200).json({
-                success: 2,
+                success: 3,
                 message: body_result.error.details[0].message
             });
         }
@@ -43,6 +44,7 @@ module.exports = {
         update(body, (err, results) => {
 
             if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err
@@ -68,6 +70,7 @@ module.exports = {
         const id = req.params.id;
         getDataById(id, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(400).json({
                     success: 0,
                     message: err
@@ -93,6 +96,33 @@ module.exports = {
         const id = req.params.id;
         getDataBySlno(id, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(400).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+
+    },
+    getEsiallow: (req, res) => {
+
+        const id = req.params.id;
+        getEsiallow(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
                 return res.status(400).json({
                     success: 0,
                     message: err

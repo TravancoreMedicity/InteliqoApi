@@ -1,6 +1,6 @@
 const { create, update, getDataBySlno, getSelectAllDataById, checkInsertVal, createSalary } = require('../Salary_Increment/Salary_Increment.service');
 const { validatesalaryIncrement } = require('../../validation/validation_schema');
-
+const logger = require('../../logger/logger')
 module.exports = {
     createIncre: (req, res) => {
         const body = req.body;
@@ -19,6 +19,7 @@ module.exports = {
             if (Object.keys(value).length === 0) {
                 create(body, (err, results) => {
                     if (err) {
+                        logger.errorLogger(err)
                         return res.status(200).json({
                             success: 0,
                             message: err
@@ -57,6 +58,7 @@ module.exports = {
         update(body, (err, results) => {
 
             if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err
@@ -82,6 +84,7 @@ module.exports = {
         const id = req.params.id;
         getDataBySlno(id, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(400).json({
                     success: 0,
                     message: err
@@ -106,6 +109,7 @@ module.exports = {
         const id = req.params.id;
         getSelectAllDataById(id, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(400).json({
                     success: 2,
                     message: err
@@ -130,6 +134,7 @@ module.exports = {
         const body = req.body;
         createSalary(body, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(400).json({
                     success: 0,
                     message: err

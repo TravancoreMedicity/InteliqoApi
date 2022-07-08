@@ -1,6 +1,6 @@
 const { create, update, getSelect, getModuleMasterByID } = require('../module_group_mast/moduleGroup.service');
 const { validatemodulegroupmaster } = require('../../validation/validation_schema');
-
+const logger = require('../../logger/logger')
 module.exports = {
     createmodulegruop: (req, res) => {
 
@@ -16,6 +16,7 @@ module.exports = {
         body.module_group_name = body_result.value.module_group_name;
         create(body, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err
@@ -46,6 +47,7 @@ module.exports = {
         update(body, (err, results) => {
 
             if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err
@@ -70,6 +72,7 @@ module.exports = {
 
         getSelect((err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 2,
                     message: err
@@ -93,6 +96,7 @@ module.exports = {
         const id = req.params.id;
         getModuleMasterByID(id, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err

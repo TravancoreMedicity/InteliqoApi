@@ -1,6 +1,6 @@
-const { create, update, deleteByID, getData, getDataById } = require('../designation/designation.service');
+const { create, update, deleteByID, getData, getDataById, getNoticePeriod } = require('../designation/designation.service');
 const { validateDesignation } = require('../../validation/validation_schema');
-
+const logger = require('../../logger/logger')
 module.exports = {
     createDesignation: (req, res) => {
 
@@ -18,6 +18,7 @@ module.exports = {
 
         create(body, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err
@@ -48,6 +49,7 @@ module.exports = {
         update(body, (err, results) => {
 
             if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err
@@ -74,6 +76,7 @@ module.exports = {
 
         deleteByID(body, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(400).json({
                     success: 0,
                     message: res.err
@@ -97,6 +100,7 @@ module.exports = {
 
         getData((err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 2,
                     message: err
@@ -121,6 +125,7 @@ module.exports = {
         const id = req.params.id;
         getDataById(id, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(400).json({
                     success: 0,
                     message: err
@@ -140,5 +145,30 @@ module.exports = {
             });
         });
 
-    }
+    },
+    getNoticePeriod: (req, res) => {
+        const id = req.params.id;
+        getNoticePeriod(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+
+    },
 }

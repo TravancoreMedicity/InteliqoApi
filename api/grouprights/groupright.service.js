@@ -101,6 +101,20 @@ module.exports = {
                 return callBack(null, results)
             }
         )
+    },
+    getMenuRightSlno: (id, callBack) => {
+        pool.query(
+            `call GET_MENU_RIGHT_SLNO(?)`,
+            [
+                id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error)
+                }
+                return callBack(null, results)
+            }
+        )
     }
 
 }

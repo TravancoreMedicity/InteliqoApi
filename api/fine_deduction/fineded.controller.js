@@ -1,6 +1,6 @@
 const { createFineDed, checkInsertVal, getData } = require('../fine_deduction/fineded.service')
 const { validatefineded } = require('../../validation/validation_schema');
-
+const logger = require('../../logger/logger')
 module.exports = {
     createFineDed: (req, res) => {
         const body = req.body;
@@ -21,6 +21,7 @@ module.exports = {
                 // Insert the values
                 createFineDed(body, (err, results) => {
                     if (err) {
+                        logger.errorLogger(err)
                         return res.status(200).json({
                             success: 0,
                             message: err
@@ -45,6 +46,7 @@ module.exports = {
 
         getData((err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 2,
                     message: err

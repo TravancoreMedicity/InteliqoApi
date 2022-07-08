@@ -1,8 +1,9 @@
 const { create, update, getDataById, getDataBySlno, checkpersonaldata } = require('../hrm_emp_personal/emppersonal.service');
 const { validateeemployeepersonal } = require('../../validation/validation_schema');
-
+const logger = require('../../logger/logger')
 module.exports = {
     createEmpPers: (req, res) => {
+
         const body = req.body;
         const body_result = validateeemployeepersonal.validate(body);
 
@@ -18,6 +19,7 @@ module.exports = {
             if (Object.keys(value).length === 0) {
                 create(body, (err, results) => {
                     if (err) {
+                        logger.errorLogger(err)
                         return res.status(200).json({
                             success: 0,
                             message: err
@@ -33,6 +35,7 @@ module.exports = {
                 update(body, (err, results) => {
 
                     if (err) {
+                        logger.errorLogger(err)
                         return res.status(200).json({
                             success: 0,
                             message: err
@@ -75,6 +78,7 @@ module.exports = {
         update(body, (err, results) => {
 
             if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err
@@ -100,6 +104,7 @@ module.exports = {
         const id = req.params.id;
         getDataById(id, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(400).json({
                     success: 0,
                     message: err
@@ -125,6 +130,7 @@ module.exports = {
         const id = req.params.id;
         getDataBySlno(id, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(400).json({
                     success: 0,
                     message: err

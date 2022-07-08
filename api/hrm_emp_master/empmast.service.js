@@ -39,9 +39,9 @@ module.exports = {
                 hrm_pin2, 
                 hrm_region2, 
                 blood_slno,
-                hrm_religion
+                hrm_religion,contract_status
             )
-            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
                 data.em_no,
                 data.em_id,
@@ -78,7 +78,7 @@ module.exports = {
                 data.presPincode,
                 data.hrm_region2,
                 data.blood_slno,
-                data.hrm_religion
+                data.hrm_religion, data.contractflag
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -235,7 +235,7 @@ module.exports = {
     getSelect: (callBack) => {
         pool.query(
             `SELECT 
-                em_no,
+            em_id,
                 em_name
             FROM hrm_emp_master
             WHERE em_status = 1`,
@@ -251,7 +251,6 @@ module.exports = {
     getEmpByDeptAndSection: (data, callBack) => {
         pool.query(
             `SELECT 
-               
                 em_no,
                 em_id,
                 CONCAT(hrm_salutation.sal_name, '.', em_name) AS emp_name,
@@ -282,7 +281,56 @@ module.exports = {
             WHERE
                 hrm_department.dept_id = ?
                     AND hrm_dept_section.sect_id = ?
-                    AND hrm_branch.branch_slno = ?`,
+                    AND hrm_branch.branch_slno = ?
+                    AND em_status=1`,
+            [
+                data.dept_id,
+                data.sect_id,
+                data.branch_slno
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getInactiveEmpByDeptAndSection: (data, callBack) => {
+        pool.query(
+            `SELECT 
+                em_no,
+                em_id,
+                CONCAT(hrm_salutation.sal_name, '.', em_name) AS emp_name,
+                IF(em_gender = 1, 'Male', 'Female') gender,
+                em_dob,
+                em_age_year,
+                em_doj,
+                em_mobile,
+                hrm_branch.branch_name,
+                hrm_department.dept_name,
+                hrm_dept_section.sect_name,
+                designation.desg_name,
+                IF(em_status = 1, 'Yes', 'No') emp_status
+            FROM
+                hrm_emp_master
+                    LEFT JOIN
+                hrm_salutation ON hrm_salutation.sa_code = hrm_emp_master.em_salutation
+                    LEFT JOIN
+                hrm_branch ON hrm_branch.branch_slno = hrm_emp_master.em_branch
+                    LEFT JOIN
+                hrm_department ON hrm_department.dept_id = hrm_emp_master.em_department
+                    LEFT JOIN
+                hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
+                    LEFT JOIN
+                designation ON designation.desg_slno = hrm_emp_master.em_designation
+                    LEFT JOIN
+                hrm_emp_category ON hrm_emp_category.category_slno = hrm_emp_master.em_category
+            WHERE
+                hrm_department.dept_id = ?
+                    AND hrm_dept_section.sect_id = ?
+                    AND hrm_branch.branch_slno = ?
+                    AND em_status=0`,
             [
                 data.dept_id,
                 data.sect_id,
@@ -354,13 +402,37 @@ module.exports = {
                 em_department = ?,
                 em_dept_section = ?,
                 em_institution_type = ?,
-                em_category = ?
+                em_category = ?,
+                contract_status=?,
+                em_conf_end_date=?,
+                probation_status=?
                 WHERE em_no = ?`,
             [
                 data.em_branch,
                 data.em_department,
                 data.em_dept_section,
                 data.em_institution_type,
+                data.em_category,
+                data.contract_status,
+                data.em_conf_end_date,
+                data.probation_status,
+                data.em_no
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    updatecategory: (data, callBack) => {
+        pool.query(
+            `UPDATE hrm_emp_master
+                SET           
+                em_category = ?
+                WHERE em_no = ?`,
+            [
                 data.em_category,
                 data.em_no
             ],
@@ -372,7 +444,127 @@ module.exports = {
             }
         )
     },
+    getDepartmentSectEmployye: (data, callBack) => {
+        pool.query(
+            `select em_id,em_name
+            from hrm_emp_master
+            where em_dept_section=?
+            and em_department=?
+            and em_status=1`,
+            [
+                data.em_dept_section,
+                data.em_department
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 
+    checkidvaluedate: (data, callback) => {
+        pool.query(
+            `select em_id,em_name
+            from hrm_emp_master
+            where em_no=?`,
+            [
+                data.em_no
 
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callback(error);
+                }
+                return callback(null, results);
+            }
+        )
+    },
+    getCategoryType: (id, callBack) => {
+        pool.query(
+            `  select emp_type,des_type from hrm_emp_category where category_slno= ?`,
+            [
+                id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 
+    updateDeptSec: (data, callBack) => {
+        pool.query(
+            `UPDATE hrm_emp_master SET em_dept_section=? WHERE em_id= ?`,
+            [
+                data.em_dept_section,
+                data.em_id,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+
+    //Inactiving Employee By Hr
+    InActiveEmpHR: (data, callBack) => {
+        pool.query(
+            `update hrm_emp_master
+            set em_status=0
+            where em_id=?`,
+            [
+                data.em_id,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    //get employee details for verification
+    getEmpVerification: (callBack) => {
+        pool.query(
+            `select em_id,em_no,em_name,em_doj,branch_name,dept_name,
+            sect_name,verification_status,ifnull(verification_Remark,'Verification Pending')verification_Remark
+            from hrm_emp_master
+            left join hrm_branch on hrm_branch.branch_slno=hrm_emp_master.em_branch
+            left join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
+            left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
+            where verification_status!=1 and em_status=1`,
+            [],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        );
+    },
+    UpdateVerification: (data, callBack) => {
+        pool.query(
+            `update hrm_emp_master
+            set verification_status=?,
+             verification_Remark=?
+            where em_id=?`,
+            [
+                data.verification_status,
+                data.verification_Remark,
+                data.em_id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }

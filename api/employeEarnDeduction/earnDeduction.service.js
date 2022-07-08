@@ -199,4 +199,18 @@ module.exports = {
             }
         )
     },
+    GetFixedAndEarningWage: (data, callBack) => {
+        pool.query(
+            `call medi_hrm.GET_FIXED_EARNING_SLARY(?);`,
+            [
+                data.em_no
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }

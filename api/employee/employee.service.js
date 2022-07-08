@@ -88,7 +88,7 @@ module.exports = {
         pool.query(
             `SELECT e.emp_slno,
                 e.emp_no,
-                e.emp_name,
+                e.emp_username,
                 if(e.emp_gender = 'F','Female','Male') emp_gender,
                 e.emp_dob,
                 e.emp_permanent,
@@ -121,7 +121,7 @@ module.exports = {
         pool.query(
             `SELECT e.emp_slno,
                 e.emp_no,
-                e.emp_name,
+                e.emp_username,
                 if(e.emp_gender = 'F','Female','Male') emp_gender,
                 e.emp_dob,
                 e.emp_permanent,
@@ -168,7 +168,7 @@ module.exports = {
     },
     getEmployeeByUserName: (userName, callBack) => {
         pool.query(
-            `SELECT * FROM hrm_employee WHERE emp_username = ? AND emp_status = 'Y'`,
+            `SELECT * FROM hrm_employee WHERE emp_username = ? AND emp_status = '1'`,
             [userName],
             (error, results, fields) => {
                 if (error) {
@@ -177,5 +177,6 @@ module.exports = {
                 return callBack(null, results[0]);
             }
         );
-    },
+    }
+
 }

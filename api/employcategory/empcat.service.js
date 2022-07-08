@@ -29,7 +29,7 @@ module.exports = {
                     ecat_mate,
                     ecat_mate_max,
                     ecat_status,
-                    empstat_period,
+                    empstat_grace,
                     cont_period,
                     cont_grace,create_users
                 )
@@ -102,7 +102,7 @@ module.exports = {
                     ecat_mate =?,
                     ecat_mate_max =?,
                     ecat_status = ?,
-                    empstat_period=?,
+                    empstat_grace=?,
                     cont_period=?,
                     cont_grace=?,
                     edit_user=?
@@ -133,7 +133,7 @@ module.exports = {
                 data.ecat_mate,
                 data.ecat_mate_max,
                 data.ecat_status,
-                data.empstat_period,
+                data.cont_period,
                 data.cont_period,
                 data.cont_grace,
                 data.edit_user,
@@ -207,7 +207,7 @@ module.exports = {
             ecat_mate,
             ecat_mate_max,
             ecat_status,
-            empstat_period,
+            empstat_grace,
            cont_period,
          cont_grace
         FROM hrm_emp_category
@@ -238,5 +238,120 @@ module.exports = {
                 return callBack(null, results);
             }
         )
-    }
+    },
+
+    getSelectContract: (callBack) => {
+        pool.query(
+            `SELECT category_slno,ecat_name FROM medi_hrm.hrm_emp_category where emp_type='2'`,
+            [],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+
+    checkemptpe: (data, callBack) => {
+        pool.query(
+            `SELECT category_slno FROM medi_hrm.hrm_emp_category where emp_type=? and  des_type=?`,
+            [data.emp_type,
+            data.des_type],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+
+    },
+    //get Probation End Details
+    getProbationEndDetl: (callBack) => {
+        pool.query(
+            `select em_id,em_no,em_name,sect_name,em_prob_end_date< CURDATE() 'probation_falg',
+            em_doj,desg_name,
+            em_prob_end_date 
+            from hrm_emp_master
+            left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
+            left join designation on designation.desg_slno=hrm_emp_master.em_designation
+            where em_prob_end_date between CURDATE() and  ADDDATE(CURDATE(),15) 
+            or em_prob_end_date<=CURDATE()`,
+            [],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+
+    getProbationEndDetlbyDate: (data, callBack) => {
+        pool.query(
+            `select em_id,em_no,em_name,sect_name,em_prob_end_date< CURDATE() 'probation_falg',
+            em_doj,desg_name,
+            em_prob_end_date 
+            from hrm_emp_master
+            left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
+            left join designation on designation.desg_slno=hrm_emp_master.em_designation
+            where em_prob_end_date between ? and  ?` ,
+            [
+                data.startdate,
+                data.enddate
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    //get Contract End Details
+    getContractEndDetl: (callBack) => {
+        pool.query(
+            `select em_id,em_no,em_name,sect_name,em_contract_end_date< CURDATE() 'contract_falg',
+            em_doj,desg_name,
+            em_contract_end_date 
+            from hrm_emp_master
+            left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
+            left join designation on designation.desg_slno=hrm_emp_master.em_designation
+            where em_contract_end_date between CURDATE() and  ADDDATE(CURDATE(),15) 
+            or em_contract_end_date<=CURDATE() and contract_status=1`,
+            [],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    //get Contract End Details
+    getcontractEndDetlByDate: (data, callBack) => {
+        pool.query(
+            `select em_id,em_no,em_name,sect_name,em_contract_end_date< CURDATE() 'contract_falg',
+                em_doj,desg_name,
+                em_contract_end_date 
+                from hrm_emp_master
+                left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
+                left join designation on designation.desg_slno=hrm_emp_master.em_designation
+                where em_contract_end_date between ? and ?
+                and contract_status=1`,
+            [
+                data.startdate,
+                data.enddate
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }
+
+

@@ -5,6 +5,7 @@ module.exports = {
         pool.query(
             `INSERT INTO hrm_emp_exp (
                 em_no,
+                em_id,
                 em_institution,
                 em_designation,
                 em_from,
@@ -13,9 +14,10 @@ module.exports = {
                 em_salary,
                 create_user
             )
-            VALUES (?,?,?,?,?,?,?,?)`,
+            VALUES (?,?,?,?,?,?,?,?,?)`,
             [
                 data.em_no,
+                data.em_id,
                 data.em_institution,
                 data.em_designation,
                 data.em_from,
@@ -35,7 +37,9 @@ module.exports = {
     update: (data, callBack) => {
         pool.query(
             `UPDATE hrm_emp_exp
-                SET em_institution = ?,
+                SET em_no = ?,
+                em_id =?,
+                em_institution = ?,
                     em_designation =?,
                     em_from =?,
                     em_to =?,
@@ -44,6 +48,8 @@ module.exports = {
                     edit_user =?
                 WHERE emexp_slno = ?`,
             [
+                data.em_no,
+                data.em_id,
                 data.em_institution,
                 data.em_designation,
                 data.em_from,

@@ -83,13 +83,15 @@ module.exports = {
     getUserModuleRightByID: (id, callBack) => {
         pool.query(
             `SELECT 
-                mdrte_slno,
-                emp_slno,
-                mdgrp_slno,
-                user_grp_slno,
-                status
-            FROM module_group_user_rights
-            WHERE mdrte_slno =? `,
+            mdrte_slno,
+            emp_slno,
+            mdgrp_slno,
+            user_grp_slno,
+            em_dept_section,
+            status
+        FROM module_group_user_rights
+        left join hrm_emp_master on hrm_emp_master.em_id=module_group_user_rights.emp_slno
+        WHERE mdrte_slno =? `,
             [
                 id
             ],
@@ -109,13 +111,14 @@ module.exports = {
                 mdrte_slno,
                 emp_slno,
                 hrm_emp_master.em_name,
+                hrm_emp_master.em_department,
                 module_group_mast.module_group_name,
                 user_group_mast.user_group_name,
                 IF(status = 1, 'Active', 'Inactive') status
             FROM
                 module_group_user_rights
                     LEFT JOIN
-                hrm_emp_master ON hrm_emp_master.em_no = module_group_user_rights.emp_slno
+                hrm_emp_master ON hrm_emp_master.em_id = module_group_user_rights.emp_slno
                     LEFT JOIN
                 module_group_mast ON module_group_mast.mdgrp_slno = module_group_user_rights.mdgrp_slno
                     LEFT JOIN 

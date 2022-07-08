@@ -3,9 +3,10 @@ const {
     validateGroupRights,
     getGroupMenuRigths,
     getMenuSlno,
-    updateGroupMenuRights
+    updateGroupMenuRights,
+    getMenuRightSlno
 } = require('../grouprights/groupright.service');
-
+const logger = require('../../logger/logger')
 module.exports = {
     createGroupRights: (req, res) => {
 
@@ -34,6 +35,7 @@ module.exports = {
                     }
 
                     if (err) {
+                        logger.errorLogger(err)
                         return res.status(200).json({
                             success: 0,
                             message: err
@@ -49,6 +51,7 @@ module.exports = {
 
                     insertGroupRight(menuDetl, (err, results) => {
                         if (err) {
+                            logger.errorLogger(err)
                             return res.status(200).json({
                                 success: 0,
                                 message: err
@@ -60,6 +63,7 @@ module.exports = {
                             getGroupMenuRigths(postData, (err, results) => {
 
                                 if (err) {
+                                    logger.errorLogger(err)
                                     return res.status(200).json({
                                         success: 0,
                                         message: err
@@ -81,6 +85,7 @@ module.exports = {
                 getGroupMenuRigths(body, (err, results) => {
 
                     if (err) {
+                        logger.errorLogger(err)
                         return res.status(200).json({
                             success: 0,
                             message: err
@@ -106,6 +111,7 @@ module.exports = {
         const body = req.body
         updateGroupMenuRights(body, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err
@@ -123,6 +129,7 @@ module.exports = {
                 getGroupMenuRigths(body, (err, results) => {
 
                     if (err) {
+                        logger.errorLogger(err)
                         return res.status(200).json({
                             success: 0,
                             message: err
@@ -150,6 +157,7 @@ module.exports = {
         getGroupMenuRigths(body, (err, results) => {
 
             if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err
@@ -166,6 +174,31 @@ module.exports = {
             return res.status(200).json({
                 success: 1,
                 data: results
+            });
+        })
+    },
+    getModuleMenuList: (req, res) => {
+        const id = req.params.id;
+        // console.log(body)
+        getMenuRightSlno(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    status: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    status: 0,
+                    message: "No Data Found"
+                });
+            }
+
+            return res.status(200).json({
+                status: 1,
+                resdata: results
             });
         })
     }

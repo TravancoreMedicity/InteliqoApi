@@ -16,9 +16,9 @@ module.exports = {
                 is_lop,
                 is_holiday,
                 is_leave,
-                create_user
+                create_user,common_leave
                 )
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
                 data.lvetype_desc,
                 data.lvetype_code,
@@ -32,7 +32,8 @@ module.exports = {
                 data.is_lop,
                 data.is_holiday,
                 data.is_leave,
-                data.create_user
+                data.create_user,
+                data.common
 
             ],
             (error, results, feilds) => {
@@ -58,7 +59,8 @@ module.exports = {
                     is_lop= ?,
                     is_holiday = ?,
                     is_leave = ?,
-                    edit_user = ?
+                    edit_user = ?,
+                    common_leave=?
                 WHERE lvetype_slno = ?`,
             [
                 data.lvetype_desc,
@@ -74,7 +76,8 @@ module.exports = {
                 data.is_holiday,
                 data.is_leave,
                 data.edit_user,
-                data.lvetype_slno
+                data.lvetype_slno,
+                data.common
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -130,7 +133,7 @@ module.exports = {
                 status,
                 is_lop,
                 is_holiday,
-                is_leave
+                is_leave,common_leave
             FROM hrm_leave_type
             WHERE lvetype_slno = ?`,
             [

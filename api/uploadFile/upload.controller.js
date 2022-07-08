@@ -2,7 +2,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require("fs")
 const { insertProfile, getProfilePic } = require('../uploadFile/upload.service')
-
+const logger = require('../../logger/logger')
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
 
@@ -10,16 +10,16 @@ const storage = multer.diskStorage({
         // File or directtory check 
         const filepath = path.join('E:/', "PersonalRecords", `${id}`)
         // const filepath = path.join(__dirname, "api", `${id}`)
-        console.log(filepath)
+        // console.log(filepath)
 
         if (fs.existsSync(filepath)) {
             // Do something
-            console.log("file excist")
+            // console.log("file excist")
             cb(null, `${filepath}`);
         } else {
             fs.mkdir(path.join('E:', "/PersonalRecords", `${id}`), {}, (err) => {
 
-                console.log(err);
+                // console.log(err);
                 if (err) {
                     return cb(new Error('Error Occured while Mkdir'));
                 }
@@ -58,7 +58,7 @@ module.exports = {
     uploadfile: (req, res) => {
         upload(req, res, (err) => {
             const body = req.body;
-            console.log(body)
+            // console.log(body)
             // FILE SIZE ERROR
             if (err instanceof multer.MulterError) {
                 // return res.end("Max file size 2MB allowed!");
@@ -69,6 +69,7 @@ module.exports = {
             }
             // INVALID FILE TYPE, message will return from fileFilter callback
             else if (err) {
+                logger.errorLogger(err)
                 // return res.end(err.message);
                 return res.status(200).json({
                     status: 0,
@@ -90,6 +91,7 @@ module.exports = {
 
                 insertProfile(body, (err, results) => {
                     if (err) {
+                        logger.errorLogger(err)
                         return res.status(200).json({
                             success: 0,
                             message: err
@@ -108,8 +110,10 @@ module.exports = {
     },
     getEmployeeProfilePic: (req, res) => {
         const body = req.body;
+
         getProfilePic(body, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err

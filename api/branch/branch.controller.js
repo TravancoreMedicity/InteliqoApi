@@ -1,6 +1,6 @@
 const { create, updateBranch, deleteBranch, getBranch, getBranchById } = require('../branch/branch.service');
 const { validateBranch } = require('../../validation/validation_schema');
-
+const logger = require('../../logger/logger')
 module.exports = {
     createBranch: (req, res) => {
         const body = req.body;
@@ -22,6 +22,7 @@ module.exports = {
 
         create(body, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err
@@ -50,10 +51,10 @@ module.exports = {
                 message: body_result.error.details[0].message
             });
         }
-        console.log(body);
 
         updateBranch(body, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err
@@ -61,6 +62,7 @@ module.exports = {
             }
 
             if (!results) {
+                logger.infoLogger("No Records Found")
                 return res.status(200).json({
                     success: 1,
                     message: "Record Not Found"
@@ -77,9 +79,9 @@ module.exports = {
     },
     deleteBranch: (req, res) => {
         const body = req.body;
-        console.log(body);
         deleteBranch(body, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(400).json({
                     success: 0,
                     message: res.err
@@ -87,6 +89,7 @@ module.exports = {
             }
 
             if (!results) {
+                logger.infoLogger("No Records Found")
                 return res.status(400).json({
                     success: 1,
                     message: "Record Not Found"
@@ -102,6 +105,7 @@ module.exports = {
     getBranch: (req, res) => {
         getBranch((err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 10,
                     message: err
@@ -109,6 +113,7 @@ module.exports = {
             }
 
             if (!results) {
+                logger.infoLogger("No Records Found")
                 return res.status(200).json({
                     success: 0,
                     message: "No Results Found"
@@ -125,6 +130,7 @@ module.exports = {
         const id = req.params.id;
         getBranchById(id, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(400).json({
                     success: 0,
                     message: err
@@ -132,6 +138,7 @@ module.exports = {
             }
 
             if (results.length == 0) {
+                logger.infoLogger("No Records Found")
                 return res.status(400).json({
                     success: 0,
                     message: "No Record Found"

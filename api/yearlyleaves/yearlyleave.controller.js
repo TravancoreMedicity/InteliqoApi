@@ -1,6 +1,6 @@
-const { create, update, deleteByID, getData, getDataById,checkInsertVal,checkUpdateVal } = require('../yearlyleaves/yearlyleave.service');
+const { create, update, deleteByID, getData, getDataById, checkInsertVal, checkUpdateVal, getcommonleave } = require('../yearlyleaves/yearlyleave.service');
 const { validateyearyleaves } = require('../../validation/validation_schema');
-
+const logger = require('../../logger/logger')
 module.exports = {
     createYearlyLeave: (req, res) => {
         const body = req.body;
@@ -17,27 +17,28 @@ module.exports = {
             const value = JSON.parse(JSON.stringify(results))
             if (Object.keys(value).length === 0) {
                 create(body, (err, results) => {
-                        if (err) {
-                            return res.status(200).json({
-                                success: 0,
-                                message: err
-                            });
-                        }
-
+                    if (err) {
+                        logger.errorLogger(err)
                         return res.status(200).json({
-                            success: 1,
-                            message: "Data Created Successfully"
+                            success: 0,
+                            message: err
                         });
+                    }
 
-                    });
-                 }
-                else{
                     return res.status(200).json({
-                        success: 7,
-                        message: "Year Leave Count already inserted"
-                    })
-                 }
+                        success: 1,
+                        message: "Data Created Successfully"
+                    });
+
+                });
+            }
+            else {
+                return res.status(200).json({
+                    success: 7,
+                    message: "Year Leave Count already inserted"
                 })
+            }
+        })
     },
     updateYearlyLeave: (req, res) => {
 
@@ -57,36 +58,37 @@ module.exports = {
         //     const value = JSON.parse(JSON.stringify(results))
         //     if (Object.keys(value).length === 0) {
 
-                    update(body, (err, results) => {
+        update(body, (err, results) => {
 
-                        if (err) {
-                            return res.status(200).json({
-                                success: 0,
-                                message: err
-                            });
-                        }
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
 
-                        if (!results) {
-                            return res.status(200).json({
-                                success: 1,
-                                message: "Record Not Found"
-                            });
-                        }
+            if (!results) {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Record Not Found"
+                });
+            }
 
-                        return res.status(200).json({
-                            success: 2,
-                            message: "Data Updated Successfully"
-                        });
+            return res.status(200).json({
+                success: 2,
+                message: "Data Updated Successfully"
+            });
 
-                    });
-            //     }
-            //     else{
-            //         return res.status(200).json({
-            //             success: 7,
-            //             message: "Leave Type Count already setted"
-            //         })   
-            //     }
-            //  })
+        });
+        //     }
+        //     else{
+        //         return res.status(200).json({
+        //             success: 7,
+        //             message: "Leave Type Count already setted"
+        //         })   
+        //     }
+        //  })
     },
     inactiveYearlyLeave: (req, res) => {
 
@@ -94,6 +96,7 @@ module.exports = {
 
         deleteByID(body, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(400).json({
                     success: 0,
                     message: res.err
@@ -117,22 +120,23 @@ module.exports = {
 
         getData((err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
-                    success: 2,
-                    message: err
+                    successleave: 2,
+                    messageleave: err
                 });
             }
 
-            if (!results) {
+            else if (results.length == 0) {
                 return res.status(200).json({
-                    success: 0,
-                    message: "No Results Found"
+                    successleave: 0,
+                    messageleave: "No Results Found"
                 });
             }
 
             return res.status(200).json({
-                success: 1,
-                data: results
+                successleave: 1,
+                messageleave: results
             });
         });
     },
@@ -141,6 +145,7 @@ module.exports = {
         const id = req.params.id;
         getDataById(id, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(400).json({
                     success: 0,
                     message: err
@@ -160,5 +165,32 @@ module.exports = {
             });
         });
 
-    }
+    },
+    getcommonleave: (req, res) => {
+
+        getcommonleave((err, results) => {
+
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    successcommonleave: 2,
+                    messagecommonleave: err
+                });
+            }
+
+            else if (results.length == 0) {
+                return res.status(200).json({
+                    successcommonleave: 0,
+                    messagecommonleave: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                successcommonleave: 1,
+                messagecommonleave: results
+            });
+        });
+    },
+
+
 }

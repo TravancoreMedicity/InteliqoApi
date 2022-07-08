@@ -1,6 +1,7 @@
-const { create, update, checkInsertVal, checkUpdateVal, deleteByID, getDataById, getDataBySlno, createWageLog, updateWageLog } = require('../employeEarnDeduction/earnDeduction.service');
+const { create, update, checkInsertVal, checkUpdateVal, deleteByID, getDataById,
+    getDataBySlno, createWageLog, updateWageLog, GetFixedAndEarningWage } = require('../employeEarnDeduction/earnDeduction.service');
 const { validateearndeduction } = require('../../validation/validation_schema');
-
+const logger = require('../../logger/logger')
 module.exports = {
     createearndeduction: (req, res) => {
         const body = req.body;
@@ -20,6 +21,7 @@ module.exports = {
                 // Insert the values
                 create(body, (err, results) => {
                     if (err) {
+                        logger.errorLogger(err)
                         return res.status(200).json({
                             success: 0,
                             message: err
@@ -28,6 +30,7 @@ module.exports = {
                     else {
                         createWageLog(body, (err, results) => {
                             if (err) {
+                                logger.errorLogger(err)
                                 return res.status(200).json({
                                     success: 0,
                                     message: err
@@ -68,6 +71,7 @@ module.exports = {
                 update(body, (err, results) => {
 
                     if (err) {
+                        logger.errorLogger(err)
                         return res.status(200).json({
                             success: 0,
                             message: err
@@ -82,6 +86,7 @@ module.exports = {
                     else {
                         updateWageLog(body, (err, results) => {
                             if (err) {
+                                logger.errorLogger(err)
                                 return res.status(200).json({
                                     success: 0,
                                     message: err
@@ -112,6 +117,7 @@ module.exports = {
         const id = req.params.id;
         getDataById(id, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(400).json({
                     success: 0,
                     message: err
@@ -138,6 +144,7 @@ module.exports = {
 
         deleteByID(body, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(400).json({
                     success: 0,
                     message: res.err
@@ -162,6 +169,7 @@ module.exports = {
         const id = req.params.id;
         getDataBySlno(id, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(400).json({
                     success: 0,
                     message: err
@@ -178,5 +186,30 @@ module.exports = {
                 data: results
             });
         });
+    },
+    GetFixedAndEarningWage: (req, res) => {
+        const body = req.body;
+        GetFixedAndEarningWage(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+
     },
 }

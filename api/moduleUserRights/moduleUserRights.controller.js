@@ -1,5 +1,5 @@
 const { create, update, checkInsertVal, checkUpdateVal, getUserModuleRightByID, getuserModuleRights } = require('../moduleUserRights/moduleUserRights.service');
-
+const logger = require('../../logger/logger')
 module.exports = {
     createModuleUserRight: (req, res) => {
 
@@ -19,6 +19,7 @@ module.exports = {
                 // Insert the values
                 create(body, (err, results) => {
                     if (err) {
+                        logger.errorLogger(err)
                         return res.status(200).json({
                             success: 0,
                             message: err
@@ -56,6 +57,7 @@ module.exports = {
                 update(body, (err, results) => {
 
                     if (err) {
+                        logger.errorLogger(err)
                         return res.status(200).json({
                             success: 0,
                             message: err.sqlMessage
@@ -87,6 +89,7 @@ module.exports = {
         const id = req.params.id;
         getUserModuleRightByID(id, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err
@@ -110,6 +113,7 @@ module.exports = {
 
         getuserModuleRights((err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 2,
                     message: err

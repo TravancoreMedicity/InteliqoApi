@@ -1,6 +1,6 @@
 const { create, getData } = require('../EarnType/earntype.service');
 const { validateEarnMast } = require('../../validation/validation_schema');
-
+const logger = require('../../logger/logger')
 module.exports = {
     createEarnType: (req, res) => {
 
@@ -18,6 +18,7 @@ module.exports = {
 
         create(body, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err
@@ -35,6 +36,7 @@ module.exports = {
 
         getData((err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 2,
                     message: err

@@ -1,6 +1,6 @@
 const { insertGroupAssign, getGroupAssignById, updateGroupAssign, deleteGroupAssign, getGroupAssign } = require('../usergroupassign/groupassign.service');
 const { validateGroupAssign } = require('../../validation/validation_schema');
-
+const logger = require('../../logger/logger')
 module.exports = {
 
     insertGroupAssign: (req, res) => {
@@ -18,6 +18,7 @@ module.exports = {
         insertGroupAssign(body, (err, results) => {
 
             if (err) {
+                logger.errorLogger(err)
                 return res.status(400).json({
                     success: 0,
                     message: err
@@ -45,6 +46,7 @@ module.exports = {
 
         updateGroupAssign(body, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(400).json({
                     success: 0,
                     message: err
@@ -70,6 +72,7 @@ module.exports = {
         const body = req.body;
         deleteGroupAssign(body, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(400).json({
                     success: 0,
                     message: res.err
@@ -92,6 +95,7 @@ module.exports = {
     getGroupAssign: (req, res) => {
         getGroupAssign((err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(400).json({
                     success: 10,
                     message: err
@@ -115,6 +119,7 @@ module.exports = {
         const id = req.params.id;
         getGroupAssignById(id, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(400).json({
                     success: 0,
                     message: err

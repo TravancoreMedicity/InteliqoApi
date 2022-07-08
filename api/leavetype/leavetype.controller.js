@@ -1,6 +1,6 @@
 const { create, update, deleteByID, getData, getDataById, getSelect } = require('../leavetype/leavetype.service');
 const { validateleavetype } = require('../../validation/validation_schema');
-
+const logger = require('../../logger/logger')
 module.exports = {
     createLeaveType: (req, res) => {
         const body = req.body;
@@ -16,25 +16,25 @@ module.exports = {
         body.lvetype_desc = body_result.value.lvetype_desc;
         body.lvetype_code = body_result.value.lvetype_code;
 
-       
-                create(body, (err, results) => {
-                        if (err) {
-                            return res.status(200).json({
-                                success: 0,
-                                message: err
-                            });
-                        }
 
-                        return res.status(200).json({
-                            success: 1,
-                            message: "Data Created Successfully"
-                        });
+        create(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
 
-                    });
-                 
-              
-            
- },
+            return res.status(200).json({
+                success: 1,
+                message: "Data Created Successfully"
+            });
+
+        });
+
+
+    },
     updateLeaveType: (req, res) => {
 
         const body = req.body;
@@ -49,41 +49,43 @@ module.exports = {
 
         body.lvetype_desc = body_result.value.lvetype_desc;
         body.lvetype_code = body_result.value.lvetype_code;
-        
-       
 
-                    update(body, (err, results) => {
 
-                        if (err) {
-                            return res.status(200).json({
-                                success: 0,
-                                message: err
-                            });
-                        }
 
-                        if (!results) {
-                            return res.status(200).json({
-                                success: 1,
-                                message: "Record Not Found"
-                            });
-                        }
+        update(body, (err, results) => {
 
-                        return res.status(200).json({
-                            success: 2,
-                            message: "Data Updated Successfully"
-                        });
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
 
-                    });
-                
-             
-             
-        },
+            if (!results) {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 2,
+                message: "Data Updated Successfully"
+            });
+
+        });
+
+
+
+    },
     inactiveLeaveType: (req, res) => {
 
         const body = req.body;
 
         deleteByID(body, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(400).json({
                     success: 0,
                     message: res.err
@@ -107,6 +109,7 @@ module.exports = {
 
         getData((err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 2,
                     message: err
@@ -131,6 +134,7 @@ module.exports = {
         const id = req.params.id;
         getDataById(id, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(400).json({
                     success: 0,
                     message: err
@@ -155,6 +159,7 @@ module.exports = {
 
         getSelect((err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 2,
                     message: err

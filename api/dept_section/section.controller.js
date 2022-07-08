@@ -1,6 +1,7 @@
-const { createSect, updateSect, deleteSect, getSect, getSectById, getSelectedSectionByDept } = require('../dept_section/section.service');
+const { createSect, updateSect, deleteSect, getSect, getSectById, getSelectedSectionByDept, getSectionselect,
+    getAuthorization, getSectEmp } = require('../dept_section/section.service');
 const { validateSection } = require('../../validation/validation_schema');
-
+const logger = require('../../logger/logger')
 
 module.exports = {
     createSect: (req, res) => {
@@ -18,6 +19,7 @@ module.exports = {
 
         createSect(body, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err
@@ -47,6 +49,7 @@ module.exports = {
         updateSect(body, (err, results) => {
 
             if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err
@@ -72,6 +75,7 @@ module.exports = {
         const body = req.body;
         deleteSect(body, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(400).json({
                     success: 0,
                     message: res.err
@@ -94,6 +98,7 @@ module.exports = {
     getSect: (req, res) => {
         getSect((err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 2,
                     message: err
@@ -117,6 +122,7 @@ module.exports = {
         const id = req.params.id;
         getSectById(id, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(400).json({
                     success: 2,
                     message: err
@@ -140,6 +146,7 @@ module.exports = {
         const id = req.params.id;
         getSelectedSectionByDept(id, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 2,
                     message: err
@@ -157,5 +164,75 @@ module.exports = {
                 data: results
             });
         })
-    }
+    },
+    getSectionselect: (req, res) => {
+        getSectionselect((err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    getAuthorization: (req, res) => {
+        const id = req.params.id;
+        getAuthorization(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    getSectEmp: (req, res) => {
+        const id = req.params.id;
+        getSectEmp(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 2,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(400).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
 }

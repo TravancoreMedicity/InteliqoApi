@@ -70,9 +70,8 @@ module.exports = {
             reg_name,dist_name,
             reg_pincode,
              if(reg_status = 1 ,'Yes','No') reg_status
-        FROM hrm_region,hrm_district where hrm_region.reg_dist_slno=hrm_district.dist_slno
-        and reg_dist_slno='3'
-        `,
+        FROM hrm_region,hrm_district where hrm_region.reg_dist_slno=hrm_district.dist_slno`,
+            //and reg_dist_slno='3'
             [],
             (error, results, feilds) => {
                 if (error) {

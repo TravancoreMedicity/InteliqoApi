@@ -66,15 +66,15 @@ module.exports = {
         )
     },
     checkUpdateVal: (data, callBack) => {
-        pool.query(
+             pool.query(
             `SELECT spec_desc,
                 spec_slno
                 FROM hrm_mast_specializtion
-                WHERE spec_desc = ?  AND spec_slno != ?`,
+                WHERE spec_desc = ?  AND spec_slno = ? `,
             [
                 data.spec_desc,
-
-                data.spec_slno
+                data.spec_slno,
+                data.cour_slno
             ],
             (error, results, feilds) => {
                 if (error) {

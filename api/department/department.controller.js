@@ -1,6 +1,6 @@
 const { createDept, updateDept, deleteDept, getDept, getDeptById } = require('../department/department.service');
 const { validateDepartment } = require('../../validation/validation_schema');
-
+const logger = require('../../logger/logger')
 module.exports = {
     createDept: (req, res) => {
         const body = req.body;
@@ -18,6 +18,7 @@ module.exports = {
 
         createDept(body, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err
@@ -44,10 +45,10 @@ module.exports = {
                 message: body_result.error.details[0].message
             });
         }
-        // console.log(body);
         updateDept(body, (err, results) => {
 
             if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err
@@ -73,6 +74,7 @@ module.exports = {
         const body = req.body;
         deleteDept(body, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(400).json({
                     success: 0,
                     message: res.err
@@ -95,6 +97,7 @@ module.exports = {
     getDept: (req, res) => {
         getDept((err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 2,
                     message: err
@@ -118,6 +121,7 @@ module.exports = {
         const id = req.params.id;
         getDeptById(id, (err, results) => {
             if (err) {
+                logger.errorLogger(err)
                 return res.status(400).json({
                     success: 0,
                     message: err
