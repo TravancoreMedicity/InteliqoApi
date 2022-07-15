@@ -93,5 +93,40 @@ module.exports = {
                 return callBack(null, results);
             }
         );
-    }
+    },
+    checkInsertVal: (data, callBack) => {
+        pool.query(
+            `SELECT dept_name,
+            dept_alias
+                FROM hrm_department
+                WHERE dept_name = ?`,
+            [
+                data.dept_name,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error)
+                }
+                return callBack(null, results)
+            }
+        )
+    },
+    checkUpdateVal: (data, callBack) => {
+        pool.query(
+            `SELECT dept_name,               
+            dept_id
+            FROM hrm_department
+            WHERE dept_name =?  AND dept_id != ?`,
+            [
+                data.dept_name,
+                data.dept_id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error)
+                }
+                return callBack(null, results)
+            }
+        )
+    },
 }

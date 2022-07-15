@@ -1303,6 +1303,21 @@ module.exports = {
         )
 
     },
+    getContractDetl: (id, callBack) => {
+        pool.query(
+            `select em_cont_start,em_cont_end from hrm_emp_contract_detl
+            where em_cont_compl_status is null and em_cont_close is null and em_id=?`,
+            [
+                id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 
 }
 

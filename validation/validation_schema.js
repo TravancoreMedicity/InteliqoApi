@@ -615,7 +615,8 @@ const validateempexperience_ = Joi.object({
         em_salary: Joi.number().optional(),
         create_user: Joi.number().optional(),
         edit_user: Joi.number().optional(),
-        emexp_slno: Joi.number().optional()
+        emexp_slno: Joi.number().optional(),
+        tmch_exp: Joi.number().optional()
 })
 
 // VALIDATE EMPLOYEE EXPERIENCE DETAILS
@@ -712,7 +713,7 @@ const validateempqualification = Joi.object({
 
 // VALIDATE COURSE
 const validatecourse = Joi.object({
-        cour_desc: Joi.string().max(45).required().uppercase().trim(),
+        cour_desc: Joi.string().max(100).required().uppercase().trim(),
         edu_slno: Joi.number().max(99999).required().required(),
         cour_status: Joi.number().max(1.).required(),
         cour_slno: Joi.number().optional(),
@@ -1179,6 +1180,21 @@ const validateadvanceSettings = Joi.object({
         create_user: Joi.number().optional(),
         edit_user: Joi.number().optional(),
 });
+//validate advance Request
+const validateAdvanceRequest = Joi.object({
+        advance_id: Joi.number().required(),
+        em_id: Joi.number().required(),
+        em_no: Joi.number().required(),
+        dept_id: Joi.number().required(),
+        dept_sect: Joi.number().required(),
+        requested_amount: Joi.number().required(),
+        allowable_amount: Joi.number().optional(),
+        noof_installment: Joi.number().required(),
+        incharge_level: Joi.number().required(),
+        hod_level: Joi.number().required(),
+        ceo_level: Joi.number().required(),
+        adv_req_date: Joi.date().required(),
+})
 module.exports = {
         authSchema,  //authSchema:authSchema
         validateEmployee,
@@ -1261,5 +1277,6 @@ module.exports = {
         validateAlert,
         validateMessage,
         validatempprotax,
-        validateadvanceSettings
+        validateadvanceSettings,
+        validateAdvanceRequest
 }

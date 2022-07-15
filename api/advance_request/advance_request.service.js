@@ -41,5 +41,21 @@ module.exports = {
             }
         )
     },
+    CheckInsertval: (data, callBack) => {
+        pool.query(
+            `select em_id from hrm_advance_request
+            where account_apprv_status=0 and em_id=?`,
+            [
+                data.em_id,
+
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 
 }

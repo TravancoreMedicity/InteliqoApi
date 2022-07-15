@@ -1,4 +1,4 @@
-const { create, update, deleteByID, getData, getDataById } = require('../employeetype/empType.service');
+const { create, update, deleteByID, getData, getDataById, checkInsertVal, checkUpdateVal } = require('../employeetype/empType.service');
 const { validateEmployeeType } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -15,22 +15,34 @@ module.exports = {
         }
 
         body.emptype_name = body_result.value.emptype_name;
+        checkInsertVal(body, (err, results) => {
+            const value = JSON.parse(JSON.stringify(results))
+            if (Object.keys(value).length === 0) {
 
-        create(body, (err, results) => {
-            if (err) {
-                logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 0,
-                    message: err
+
+                create(body, (err, results) => {
+                    if (err) {
+                        logger.errorLogger(err)
+                        return res.status(200).json({
+                            success: 0,
+                            message: err
+                        });
+                    }
+
+                    return res.status(200).json({
+                        success: 1,
+                        message: "Data Created Successfully"
+                    });
+
                 });
             }
-
-            return res.status(200).json({
-                success: 1,
-                message: "Data Created Successfully"
-            });
-
-        });
+            else {
+                return res.status(200).json({
+                    success: 7,
+                    message: "Employee Type Already Exist"
+                })
+            }
+        })
     },
     updateEmpType: (req, res) => {
 
@@ -45,30 +57,40 @@ module.exports = {
         }
 
         body.emptype_name = body_result.value.emptype_name;
+        checkUpdateVal(body, (err, results) => {
+            const value = JSON.parse(JSON.stringify(results))
+            if (Object.keys(value).length === 0) {
+                update(body, (err, results) => {
 
-        update(body, (err, results) => {
+                    if (err) {
+                        logger.errorLogger(err)
+                        return res.status(200).json({
+                            success: 0,
+                            message: err
+                        });
+                    }
 
-            if (err) {
-                logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 0,
-                    message: err
+                    if (!results) {
+                        return res.status(200).json({
+                            success: 1,
+                            message: "Record Not Found"
+                        });
+                    }
+
+                    return res.status(200).json({
+                        success: 2,
+                        message: "Data Updated Successfully"
+                    });
+
                 });
             }
-
-            if (!results) {
+            else {
                 return res.status(200).json({
-                    success: 1,
-                    message: "Record Not Found"
-                });
+                    success: 7,
+                    message: "Employee Type Already Exist"
+                })
             }
-
-            return res.status(200).json({
-                success: 2,
-                message: "Data Updated Successfully"
-            });
-
-        });
+        })
     },
     deleteEmpType: (req, res) => {
 
