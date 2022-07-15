@@ -1,4 +1,4 @@
 node_modules/*
-errorlog/error.log
-errorlog/info.log
-errorlog/warn.log
+errorlog/*.*
+errorlog/*.*
+errorlog/*.*
