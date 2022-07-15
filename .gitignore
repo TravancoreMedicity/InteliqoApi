@@ -1,5 +1,7 @@
 .env
-node_modules/*
-errorlog/*.*
-errorlog/*.*
-errorlog/*.*
+/node_modules
+/errorlog/*.*
+/errorlog/*.*
+/errorlog/*.*
+
+package-loak.json
