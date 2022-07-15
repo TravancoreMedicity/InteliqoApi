@@ -12,9 +12,10 @@ module.exports = {
                 em_to,
                 em_total_year,
                 em_salary,
+                is_tmch,
                 create_user
             )
-            VALUES (?,?,?,?,?,?,?,?,?)`,
+            VALUES (?,?,?,?,?,?,?,?,?,?)`,
             [
                 data.em_no,
                 data.em_id,
@@ -24,6 +25,7 @@ module.exports = {
                 data.em_to,
                 data.em_total_year,
                 data.em_salary,
+                data.tmch_exp,
                 data.create_user
             ],
             (error, results, feilds) => {
@@ -40,6 +42,7 @@ module.exports = {
                 SET em_no = ?,
                 em_id =?,
                 em_institution = ?,
+                is_tmch=?,
                     em_designation =?,
                     em_from =?,
                     em_to =?,
@@ -51,6 +54,7 @@ module.exports = {
                 data.em_no,
                 data.em_id,
                 data.em_institution,
+                data.tmch_exp,
                 data.em_designation,
                 data.em_from,
                 data.em_to,
@@ -75,6 +79,7 @@ module.exports = {
                 em_institution,
                 em_designation,
                 em_from,
+                is_tmch,
                 em_to,
                 em_total_year,
                 em_salary
@@ -97,6 +102,7 @@ module.exports = {
             emexp_slno, 
             em_no,
             em_institution,
+            is_tmch,
             em_designation,
             DATE_FORMAT(em_from, '%d-%m-%Y')em_from,
             DATE_FORMAT(em_to, '%d-%m-%Y')em_to,

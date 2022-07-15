@@ -58,7 +58,8 @@ const {
     getCarryDetails,
     getEmpLeaveProcessDates,
     getEmployeeSection,
-    getadvancerequestSlno
+    getadvancerequestSlno,
+    getContractDetl
 } = require('../commonCode/common.service');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -1712,6 +1713,31 @@ module.exports = {
                 data: results
             });
         });
+    },
+    getContractDetl: (req, res) => {
+        const id = req.params.id;
+        getContractDetl(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (results.length === 0) {
+                logger.infoLogger("No Records Found")
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
     },
 
 }
