@@ -85,5 +85,40 @@ module.exports = {
                 return callBack(null, results);
             }
         )
-    }
+    },
+    checkInsertVal: (data, callBack) => {
+        pool.query(
+            `SELECT emptype_name,
+            emptype_slno
+                FROM employee_type
+                WHERE emptype_name = ?`,
+            [
+                data.emptype_name,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error)
+                }
+                return callBack(null, results)
+            }
+        )
+    },
+    checkUpdateVal: (data, callBack) => {
+        pool.query(
+            `SELECT emptype_name,               
+            emptype_slno
+            FROM employee_type
+            WHERE emptype_name =?  AND emptype_slno != ?`,
+            [
+                data.emptype_name,
+                data.emptype_slno
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error)
+                }
+                return callBack(null, results)
+            }
+        )
+    },
 }

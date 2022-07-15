@@ -1,4 +1,5 @@
-const { createDept, updateDept, deleteDept, getDept, getDeptById } = require('../department/department.service');
+const { createDept, updateDept, deleteDept, getDept, getDeptById,
+    checkInsertVal, checkUpdateVal } = require('../department/department.service');
 const { validateDepartment } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -15,21 +16,32 @@ module.exports = {
         // let body.dept_name = body_result
         body.dept_name = body_result.value.dept_name;
         body.dept_alias = body_result.value.dept_alias;
+        checkInsertVal(body, (err, results) => {
+            const value = JSON.parse(JSON.stringify(results))
+            if (Object.keys(value).length === 0) {
 
-        createDept(body, (err, results) => {
-            if (err) {
-                logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 0,
-                    message: err
+                createDept(body, (err, results) => {
+                    if (err) {
+                        logger.errorLogger(err)
+                        return res.status(200).json({
+                            success: 0,
+                            message: err
+                        });
+                    }
+
+                    return res.status(200).json({
+                        success: 1,
+                        message: "Department Master Created"
+                    });
                 });
             }
-
-            return res.status(200).json({
-                success: 1,
-                message: "Department Master Created"
-            });
-        });
+            else {
+                return res.status(200).json({
+                    success: 7,
+                    message: "Department Name Already Exist"
+                })
+            }
+        })
     },
     updateDept: (req, res) => {
 
@@ -45,29 +57,40 @@ module.exports = {
                 message: body_result.error.details[0].message
             });
         }
-        updateDept(body, (err, results) => {
+        checkUpdateVal(body, (err, results) => {
+            const value = JSON.parse(JSON.stringify(results))
+            if (Object.keys(value).length === 0) {
+                updateDept(body, (err, results) => {
 
-            if (err) {
-                logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 0,
-                    message: err
+                    if (err) {
+                        logger.errorLogger(err)
+                        return res.status(200).json({
+                            success: 0,
+                            message: err
+                        });
+                    }
+
+                    if (!results) {
+                        return res.status(200).json({
+                            success: 1,
+                            message: "Record Not Found"
+                        });
+                    }
+
+                    return res.status(200).json({
+                        success: 2,
+                        message: "Department Updated Successfully"
+                    });
+
                 });
             }
-
-            if (!results) {
+            else {
                 return res.status(200).json({
-                    success: 1,
-                    message: "Record Not Found"
-                });
+                    success: 7,
+                    message: "Department Name Already Exist"
+                })
             }
-
-            return res.status(200).json({
-                success: 2,
-                message: "Department Updated Successfully"
-            });
-
-        });
+        })
 
     },
     deleteDept: (req, res) => {

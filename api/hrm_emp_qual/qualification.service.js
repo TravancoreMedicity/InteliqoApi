@@ -212,4 +212,19 @@ module.exports = {
             }
         )
     },
+    DeleteByIdQual: (id, callBack) => {
+        pool.query(
+            `delete from hrm_emp_qual
+            where emqual_slno=?`,
+            [
+                id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }

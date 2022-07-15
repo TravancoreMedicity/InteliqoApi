@@ -33,6 +33,7 @@ module.exports = {
             [
                 data.empstat_name,
                 data.desigstatus,
+                data.update_user,
                 data.emstats_slno
             ],
             (error, results, feilds) => {
