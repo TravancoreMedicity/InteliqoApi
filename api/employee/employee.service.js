@@ -19,7 +19,7 @@ module.exports = {
             data.emp_password,
             data.emp_status,
             data.create_user,
-            data.em_id,
+            data.emp_id,
             data.emp_no,
             ],
             (error, results, feilds) => {

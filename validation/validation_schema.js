@@ -494,7 +494,7 @@ const validatereligion = Joi.object({
 // VALIDATE EMPLOYEE MASTER
 const validateempmaster = Joi.object({
         em_no: Joi.number().required(),
-        em_id: Joi.number().required(),
+        em_id: Joi.number().optional(),
         em_salutation: Joi.number().min(1).required(),
         em_name: Joi.string().trim().uppercase().required().max(60),
         em_gender: Joi.number().min(1).required(),

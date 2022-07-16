@@ -276,8 +276,10 @@ module.exports = {
             from hrm_emp_master
             left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
             left join designation on designation.desg_slno=hrm_emp_master.em_designation
+              left join hrm_emp_category on hrm_emp_category.category_slno=hrm_emp_master.em_category
+            left join employee_status on employee_status.emstats_slno=hrm_emp_category.des_type
             where em_prob_end_date between CURDATE() and  ADDDATE(CURDATE(),15) 
-            or em_prob_end_date<=CURDATE()`,
+            or em_prob_end_date<=CURDATE() and em_status=1 and empstat_name='PROBATION';`,
             [],
             (error, results, feilds) => {
                 if (error) {
@@ -291,12 +293,14 @@ module.exports = {
     getProbationEndDetlbyDate: (data, callBack) => {
         pool.query(
             `select em_id,em_no,em_name,sect_name,em_prob_end_date< CURDATE() 'probation_falg',
-            em_doj,desg_name,
+            em_doj,desg_name,empstat_name,
             em_prob_end_date 
             from hrm_emp_master
             left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
             left join designation on designation.desg_slno=hrm_emp_master.em_designation
-            where em_prob_end_date between ? and  ?` ,
+            left join hrm_emp_category on hrm_emp_category.category_slno=hrm_emp_master.em_category
+            left join employee_status on employee_status.emstats_slno=hrm_emp_category.des_type
+            where em_prob_end_date between ? and  ? and em_status=1 and empstat_name='PROBATION'` ,
             [
                 data.startdate,
                 data.enddate
@@ -319,7 +323,7 @@ module.exports = {
             left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
             left join designation on designation.desg_slno=hrm_emp_master.em_designation
             where em_contract_end_date between CURDATE() and  ADDDATE(CURDATE(),15) 
-            or em_contract_end_date<=CURDATE() and contract_status=1`,
+            or em_contract_end_date<=CURDATE() and contract_status=1 and em_status=1 and em_contract_end_date!='2000-01-01';`,
             [],
             (error, results, feilds) => {
                 if (error) {
@@ -332,14 +336,14 @@ module.exports = {
     //get Contract End Details
     getcontractEndDetlByDate: (data, callBack) => {
         pool.query(
-            `select em_id,em_no,em_name,sect_name,em_contract_end_date< CURDATE() 'contract_falg',
-                em_doj,desg_name,
-                em_contract_end_date 
-                from hrm_emp_master
-                left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
-                left join designation on designation.desg_slno=hrm_emp_master.em_designation
-                where em_contract_end_date between ? and ?
-                and contract_status=1`,
+            `   select em_id,em_no,em_name,sect_name,em_contract_end_date< CURDATE() 'contract_falg',
+            em_doj,desg_name,
+            em_contract_end_date 
+            from hrm_emp_master
+            left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
+            left join designation on designation.desg_slno=hrm_emp_master.em_designation
+            where em_contract_end_date between ? and ?
+            and contract_status=1 and em_status=1 and em_contract_end_date!='2000-01-01'`,
             [
                 data.startdate,
                 data.enddate
