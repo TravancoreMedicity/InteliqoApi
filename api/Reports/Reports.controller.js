@@ -23,7 +23,14 @@ const {
     DeptSectReport,
     getEmpNameByDeptSection,
     EmpNameReport,
-    InstitutionReport
+    InstitutionReport,
+    getDeptSectByID,
+    RegistrationTypeReport,
+    DeptRegistrationTypeReport,
+    EmpRegistrationTypeReport,
+    getRegistrTyp,
+    RegistrationNumberWiseReport,
+    ChellanWiseReport
 
 
 } = require('../reports/reports.service');
@@ -518,6 +525,29 @@ module.exports = {
             });
         })
     },
+    getDeptSectByID: (req, res) => {
+        const body = req.body;
+        getDeptSectByID(body, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
     DeptSectReport: (req, res) => {
         const body = req.body;
         DeptSectReport(body, (err, results) => {
@@ -542,8 +572,8 @@ module.exports = {
         })
     },
     getEmpNameByDeptSection: (req, res) => {
-        const id = req.params.id;
-        getEmpNameByDeptSection(id, (err, results) => {
+        const body = req.body;
+        getEmpNameByDeptSection(body, (err, results) => {
             if (err) {
                 return res.status(200).json({
                     success: 0,
@@ -590,6 +620,144 @@ module.exports = {
     InstitutionReport: (req, res) => {
         const body = req.body;
         InstitutionReport(body, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+
+    RegistrationTypeReport: (req, res) => {
+        const body = req.body;
+        RegistrationTypeReport(body, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    DeptRegistrationTypeReport: (req, res) => {
+        const body = req.body;
+        DeptRegistrationTypeReport(body, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    EmpRegistrationTypeReport: (req, res) => {
+        const body = req.body;
+        EmpRegistrationTypeReport(body, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    getRegistrTyp: (req, res) => {
+        getRegistrTyp((err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    RegistrationNumberWiseReport: (req, res) => {
+        const body = req.body;
+        RegistrationNumberWiseReport(body, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    ChellanWiseReport: (req, res) => {
+        const body = req.body;
+        ChellanWiseReport(body, (err, results) => {
             if (err) {
                 return res.status(200).json({
                     success: 0,
