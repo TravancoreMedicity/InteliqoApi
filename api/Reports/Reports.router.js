@@ -25,7 +25,17 @@ const {
     DeptSectReport,
     getEmpNameByDeptSection,
     EmpNameReport,
-    InstitutionReport
+    InstitutionReport,
+    getDeptSectByID,
+    RegistrationTypeReport,
+    DeptRegistrationTypeReport,
+    EmpRegistrationTypeReport,
+    getRegistrTyp,
+    RegistrationNumberWiseReport,
+    ChellanWiseReport,
+    getDesignationExp,
+    getdeptSection,
+    getSectionTypeDetl
 
 
 } = require('../Reports/Reports.controller');
@@ -58,16 +68,34 @@ router.post('/education/ById', checkToken, getEducationById);
 router.post('/education/course', checkToken, getCourse);
 router.post('/course/ById', checkToken, getCourseById);
 router.post('/course/specialization', checkToken, getSpecialization);
-router.get('/specialization/ById', getSpecializationById);
+router.post('/specialization/ById', getSpecializationById);
 
 
 //expeience report
 router.post('/expemployee', experienceReport);
 router.post('/deptsect', DeptSectReport);
-router.get('/empname/:id', getEmpNameByDeptSection);
+router.post('/empname', getEmpNameByDeptSection);
 router.post('/sectempname', EmpNameReport);
+router.post('/deptsectById', getDeptSectByID);
 
 //Institution Report
 router.post('/instiution', InstitutionReport);
+
+
+//RegistrationType wise report
+router.post('/registerationtype', RegistrationTypeReport)
+router.post('/deptregistration', DeptRegistrationTypeReport)
+router.post('/regTypeReport', EmpRegistrationTypeReport)
+router.get('/getRegType', getRegistrTyp)
+router.post('/reNoWise', RegistrationNumberWiseReport)
+router.post('/challanwiserprt', ChellanWiseReport)
+// designation experience wise report
+router.post('/designexp', getDesignationExp);
+
+// department type wise report
+
+router.post('/deptsection', getdeptSection);
+router.post('/Sectiontype', getSectionTypeDetl);
+
 
 module.exports = router;
