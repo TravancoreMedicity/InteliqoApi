@@ -30,8 +30,10 @@ const {
     EmpRegistrationTypeReport,
     getRegistrTyp,
     RegistrationNumberWiseReport,
-    ChellanWiseReport
-
+    ChellanWiseReport,
+    getDesignationExp,
+    getdeptSection,
+    getSectionTypeDetl
 
 } = require('../reports/reports.service');
 
@@ -456,6 +458,7 @@ module.exports = {
     },
     getSpecialization: (req, res) => {
         const body = req.body
+        // console.log(body);
         getSpecialization(body, (err, results) => {
             if (err) {
                 // logger.errorLogger(err)
@@ -479,7 +482,7 @@ module.exports = {
         });
     },
     getSpecializationById: (req, res) => {
-        const body = req.params.id;
+        const body = req.body
         getSpecializationById(body, (err, results) => {
             if (err) {
                 // logger.errorLogger(err)
@@ -640,7 +643,6 @@ module.exports = {
             });
         })
     },
-
     RegistrationTypeReport: (req, res) => {
         const body = req.body;
         RegistrationTypeReport(body, (err, results) => {
@@ -710,6 +712,7 @@ module.exports = {
             });
         })
     },
+
     getRegistrTyp: (req, res) => {
         getRegistrTyp((err, results) => {
             if (err) {
@@ -732,7 +735,7 @@ module.exports = {
             });
         });
     },
-    RegistrationNumberWiseReport: (req, res) => {
+     RegistrationNumberWiseReport: (req, res) => {
         const body = req.body;
         RegistrationNumberWiseReport(body, (err, results) => {
             if (err) {
@@ -777,5 +780,77 @@ module.exports = {
                 data: results
             });
         })
-    }
+    },
+        getSectionTypeDetl: (req, res) => {
+        const body = req.body;
+        getSectionTypeDetl(body, (err, results) => {
+            if (err) {
+                // logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+        getdeptSection: (req, res) => {
+        const body = req.body
+        getdeptSection(body, (err, results) => {
+            if (err) {
+                // logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "no result found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+        getDesignationExp: (req, res) => {
+        const body = req.body
+        getDesignationExp(body, (err, results) => {
+            if (err) {
+                // logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
 }

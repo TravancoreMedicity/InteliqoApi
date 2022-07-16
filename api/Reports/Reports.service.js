@@ -498,10 +498,13 @@ module.exports = {
                 data
             ],
             (error, results, feilds) => {
+
                 if (error) {
                     return callBack(error);
                 }
+
                 return callBack(null, results);
+
             }
         )
     },
@@ -538,11 +541,11 @@ module.exports = {
             left join hrm_mast_education on  hrm_emp_qual.em_education = hrm_mast_education.edu_slno
             left join hrm_mast_course on hrm_emp_qual.em_course = hrm_mast_course.cour_slno
             left join hrm_mast_specializtion on hrm_emp_qual.em_specialization = hrm_mast_specializtion.spec_slno
-            where hrm_mast_specializtion.spec_slno IN (?) and   hrm_mast_course.cour_slno  IN (?) and hrm_emp_master.em_status = 1 `,
+            where hrm_mast_specializtion.spec_slno IN (?) and   hrm_mast_course.cour_slno  IN (?) and  hrm_mast_education.edu_slno IN(?) and  hrm_emp_master.em_status = 1 `,
             [
-                data.spec_slno,
-                data.cour_slno,
-                data.edu_slno
+                data.specialization,
+                data.course,
+                data.education
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -800,7 +803,7 @@ module.exports = {
             }
         )
     },
-    RegistrationTypeReport: (data, callBack) => {
+        RegistrationTypeReport: (data, callBack) => {
         pool.query(
             `SELECT 
             hrm_emp_qual.em_id, 
@@ -961,5 +964,98 @@ module.exports = {
                 return callBack(null, results);
             }
         )
+    },
+        getDesignationExp: (data, callBack) => {
+        pool.query(
+            `SELECT hrm_emp_master.em_no,
+            hrm_emp_master.em_name,
+            hrm_emp_master.em_age_year,
+            hrm_emp_master.em_mobile,
+            hrm_emp_exp.em_from,
+            hrm_emp_exp.em_to,
+             hrm_emp_exp.em_total_year,
+            bloodgroup.group_name,
+            hrm_department.dept_name,
+            hrm_dept_section.sect_name,
+            designation.desg_name,
+            hrm_branch.branch_name,
+            institution_type.inst_emp_type,
+            designation.desg_name,
+            hrm_religion.relg_name,
+            hrm_emp_master.em_doj,
+            hrm_emp_category.ecat_name,
+            case when em_gender = 1 then 'male'when  em_gender = 2 then 'female' else 'Not Updated' end as 'Gender',
+            case when hrm_emp_personal.em_maritalstatus = 1 then 'married' when  hrm_emp_personal.em_maritalstatus=2 then 'unmarried' else 'not updated' end as 'marital_status'
+            FROM medi_hrm.hrm_emp_master
+            left join bloodgroup on  hrm_emp_master.blood_slno = bloodgroup.group_slno
+            left join hrm_department on hrm_emp_master.em_department = hrm_department.dept_id
+            left join hrm_dept_section on hrm_emp_master.em_dept_section = hrm_dept_section.sect_id
+            left join hrm_branch on hrm_emp_master.em_branch = hrm_branch.branch_slno
+            left join institution_type on hrm_emp_master.em_institution_type = institution_type.inst_slno
+            left join designation on hrm_emp_master.em_designation = designation.desg_slno
+            left join hrm_religion on  hrm_emp_master.hrm_religion = hrm_religion.relg_slno
+            left join hrm_emp_category on hrm_emp_master.em_category = hrm_emp_category.category_slno
+            left join hrm_emp_personal on hrm_emp_master.em_id = hrm_emp_personal.em_id
+            left join hrm_emp_exp on designation.desg_slno =  hrm_emp_exp.em_designation
+            where hrm_emp_master.em_status = 1 and   hrm_emp_exp.em_designation IN (?)`,
+            [
+                data
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+
+        )
+    },
+        getdeptSection: (data, callBack) => {
+        pool.query(
+            `SELECT 
+            hrm_dept_section.sect_id,hrm_dept_section.sect_name FROM medi_hrm.hrm_dept_section where dept_sub_sect IN (?)`,
+            [
+                data
+            ],
+            (error, results, fields) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    
+    getSectionTypeDetl: (data, callBack) => {
+        pool.query(
+            `SELECT
+            hrm_dept_section.sect_name,
+            hrm_emp_master.em_name,
+            hrm_emp_master.em_no,
+            hrm_department.dept_name,
+            hrm_branch.branch_name,
+            hrm_emp_master.em_doj,
+            hrm_emp_master.em_mobile,
+            case when hrm_dept_section.dept_sub_sect = 1  then 'genral' when hrm_dept_section.dept_sub_sect = 2  then 'OT'  when hrm_dept_section.dept_sub_sect = 3 then 'ICU'  when hrm_dept_section.dept_sub_sect = 4 then 'ER'  end as 'section type'
+            FROM medi_hrm.hrm_dept_section
+            left join hrm_emp_master on hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
+             left join hrm_branch on hrm_emp_master.em_branch = hrm_branch.branch_slno
+            left join hrm_department on hrm_dept_section.dept_id = hrm_department.dept_id
+            where em_status = 1 and hrm_dept_section.dept_sub_sect IN (?) and hrm_dept_section.sect_id IN(?)`,
+            [
+
+                data.sectionType,
+                data.section
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
     }
+    
+    
+    
 }
