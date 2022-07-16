@@ -25,7 +25,11 @@ const {
     DeptSectReport,
     getEmpNameByDeptSection,
     EmpNameReport,
-    InstitutionReport
+    InstitutionReport,
+    getDesignationExp,
+    getdeptSection,
+    getSectionTypeDetl
+
 
 
 } = require('../Reports/Reports.controller');
@@ -58,7 +62,7 @@ router.post('/education/ById', checkToken, getEducationById);
 router.post('/education/course', checkToken, getCourse);
 router.post('/course/ById', checkToken, getCourseById);
 router.post('/course/specialization', checkToken, getSpecialization);
-router.get('/specialization/ById', getSpecializationById);
+router.post('/specialization/ById', getSpecializationById);
 
 
 //expeience report
@@ -69,5 +73,14 @@ router.post('/sectempname', EmpNameReport);
 
 //Institution Report
 router.post('/instiution', InstitutionReport);
+
+// designation experience wise report
+router.post('/designexp', getDesignationExp);
+
+// department type wise report
+
+router.post('/deptsection', getdeptSection);
+router.post('/Sectiontype', getSectionTypeDetl);
+
 
 module.exports = router;
