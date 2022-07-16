@@ -13,7 +13,9 @@ const {
     getInactiveEmpByDeptAndSection,
     InActiveEmpHR,
     getEmpVerification,
-    UpdateVerification
+    UpdateVerification,
+    getEmpBybranch,
+    getEmpByDeptartment
 } = require('../hrm_emp_master/empmast.service');
 const { validateempmaster, validateempmasterupdate } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
@@ -233,6 +235,56 @@ module.exports = {
         const body = req.body
 
         getInactiveEmpByDeptAndSection(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: res.err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    getEmpBybranch: (req, res) => {
+        const body = req.body
+
+        getEmpBybranch(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: res.err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    getEmpByDeptartment: (req, res) => {
+        const body = req.body
+
+        getEmpByDeptartment(body, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
@@ -474,6 +526,31 @@ module.exports = {
                 message: "Data Updated Successfully"
             });
 
+        });
+    },
+    updateserialnum: (req, res) => {
+
+
+        updateserialnum((err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: res.err
+                });
+            }
+
+            if (!results) {
+                return res.status(400).json({
+                    success: 1,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 2,
+                message: "Employee Number Updated Successfully"
+            });
         });
     },
 }
