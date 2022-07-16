@@ -79,7 +79,6 @@ module.exports = {
         });
     },
     getBloodgrpWiseReport: (req, res) => {
-
         const body = req.body
         getBloodgrpWiseReport(body, (err, results) => {
             if (err) {
