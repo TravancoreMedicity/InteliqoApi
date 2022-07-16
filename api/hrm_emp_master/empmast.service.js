@@ -5,7 +5,6 @@ module.exports = {
         pool.query(
             `INSERT INTO hrm_emp_master (
                 em_no,
-                em_id,
                 em_salutation,
                 em_name,
                 em_gender,
@@ -41,10 +40,9 @@ module.exports = {
                 blood_slno,
                 hrm_religion,contract_status
             )
-            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
                 data.em_no,
-                data.em_id,
                 data.em_salutation,
                 data.em_name,
                 data.em_gender,
@@ -334,6 +332,97 @@ module.exports = {
             [
                 data.dept_id,
                 data.sect_id,
+                data.branch_slno
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getEmpBybranch: (data, callBack) => {
+        pool.query(
+            `SELECT 
+                em_no,
+                em_id,
+                CONCAT(hrm_salutation.sal_name, '.', em_name) AS emp_name,
+                IF(em_gender = 1, 'Male', 'Female') gender,
+                em_dob,
+                em_age_year,
+                em_doj,
+                em_mobile,
+                hrm_branch.branch_name,
+                hrm_department.dept_name,
+                hrm_dept_section.sect_name,
+                designation.desg_name,
+                IF(em_status = 1, 'Yes', 'No') emp_status
+            FROM
+                hrm_emp_master
+                    LEFT JOIN
+                hrm_salutation ON hrm_salutation.sa_code = hrm_emp_master.em_salutation
+                    LEFT JOIN
+                hrm_branch ON hrm_branch.branch_slno = hrm_emp_master.em_branch
+                    LEFT JOIN
+                hrm_department ON hrm_department.dept_id = hrm_emp_master.em_department
+                    LEFT JOIN
+                hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
+                    LEFT JOIN
+                designation ON designation.desg_slno = hrm_emp_master.em_designation
+                    LEFT JOIN
+                hrm_emp_category ON hrm_emp_category.category_slno = hrm_emp_master.em_category
+            WHERE
+                    hrm_branch.branch_slno = ?
+                    AND em_status=1`,
+            [
+
+                data.branch_slno
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getEmpByDeptartment: (data, callBack) => {
+        pool.query(
+            `SELECT 
+                em_no,
+                em_id,
+                CONCAT(hrm_salutation.sal_name, '.', em_name) AS emp_name,
+                IF(em_gender = 1, 'Male', 'Female') gender,
+                em_dob,
+                em_age_year,
+                em_doj,
+                em_mobile,
+                hrm_branch.branch_name,
+                hrm_department.dept_name,
+                hrm_dept_section.sect_name,
+                designation.desg_name,
+                IF(em_status = 1, 'Yes', 'No') emp_status
+            FROM
+                hrm_emp_master
+                    LEFT JOIN
+                hrm_salutation ON hrm_salutation.sa_code = hrm_emp_master.em_salutation
+                    LEFT JOIN
+                hrm_branch ON hrm_branch.branch_slno = hrm_emp_master.em_branch
+                    LEFT JOIN
+                hrm_department ON hrm_department.dept_id = hrm_emp_master.em_department
+                    LEFT JOIN
+                hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
+                    LEFT JOIN
+                designation ON designation.desg_slno = hrm_emp_master.em_designation
+                    LEFT JOIN
+                hrm_emp_category ON hrm_emp_category.category_slno = hrm_emp_master.em_category
+            WHERE
+                hrm_department.dept_id = ?
+                AND hrm_branch.branch_slno = ?
+                AND em_status=1`,
+            [
+                data.dept_id,
                 data.branch_slno
             ],
             (error, results, feilds) => {
