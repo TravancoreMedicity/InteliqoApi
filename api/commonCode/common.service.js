@@ -232,7 +232,8 @@ module.exports = {
             `SELECT 
             edu_slno,
             edu_desc
-            FROM  hrm_mast_education `,
+            FROM  hrm_mast_education
+            where edu_status=1 `,
             [],
             (error, results, feilds) => {
                 if (error) {
@@ -249,7 +250,8 @@ module.exports = {
             `SELECT 
             cour_slno,
             cour_desc
-            FROM  hrm_mast_course`,
+            FROM  hrm_mast_course
+            where cour_status=1`,
             [],
             (error, results, feilds) => {
                 if (error) {
@@ -304,7 +306,8 @@ module.exports = {
             `SELECT 
             unver_slno,
             unver_name
-            FROM  hrm_university`,
+            FROM  hrm_university
+            where unver_status=1`,
             [],
             (error, results, feilds) => {
                 if (error) {
