@@ -651,7 +651,7 @@ const validateeemployeepersonal = Joi.object({
         em_pmnt_pincode: Joi.string().max(10),
         em_passport_no: Joi.optional(),
         em_pan_no: Joi.optional(),
-        em_adhar_no: Joi.number().max(999999999999).optional(),
+        em_adhar_no: Joi.number().max(999999999999).required(),
         em_license_no: Joi.optional(),
         //em_nationality: Joi.number().optional(),
         em_religion: Joi.number().required(),
