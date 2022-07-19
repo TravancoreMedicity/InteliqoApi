@@ -209,6 +209,9 @@ module.exports = {
             ecat_status,
             empstat_grace,
            cont_period,
+           ecat_cl_max,
+           ecat_el_max,
+           ecat_sl_max,
          cont_grace
         FROM hrm_emp_category
         WHERE category_slno = ?`,
