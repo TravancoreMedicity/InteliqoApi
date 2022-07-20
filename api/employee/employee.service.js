@@ -31,50 +31,27 @@ module.exports = {
         )
     },
     employeeupdate: (data, callBack) => {
+        console.log(data)
         pool.query(
             `UPDATE hrm_employee
                 SET
-                    emp_no = ?,
-                    emp_name = ?,
-                    emp_gender = ?,
-                    emp_dob = ?,
-                    emp_permanent = ?,
-                    emp_pincode_pres =  ?,
-                    emp_present = ?,
-                    emp_pincode_perm = ?,
-                    emp_mob = ?,
-                    emp_phone = ?,
-                    emp_email = ?,
-                    emp_doj = ?,
-                    emp_username = ?,
-                    emp_password = ?,
-                    emp_dept_id = ?,
-                    emp_sect_id = ?,
-                    emp_branch_slno = ?,
-                    emp_status = ?,
-                    emp_updated = ?
-                WHERE emp_slno = ?`,
+                emp_email=?,
+                emp_username=?,
+                emp_password=?,
+                emp_status=?,
+                emp_create_user=?, 
+                emp_id=?, 
+                emp_no=?
+                WHERE emp_no = ?`,
             [
-                data.emp_no,
-                data.emp_name,
-                data.emp_gender,
-                data.emp_dob,
-                data.emp_permanent,
-                data.emp_pincode_pres,
-                data.emp_present,
-                data.emp_pincode_perm,
-                data.emp_mob,
-                data.emp_phone,
                 data.emp_email,
-                data.emp_doj,
-                data.emp_username,
+                data.emp_no,
                 data.emp_password,
-                data.emp_dept_id,
-                data.emp_sect_id,
-                data.emp_branch_slno,
                 data.emp_status,
-                data.emp_updated,
-                data.emp_slno
+                data.create_user,
+                data.emp_id,
+                data.emp_no,
+                data.oldempno
             ],
             (error, results, feilds) => {
                 if (error) {

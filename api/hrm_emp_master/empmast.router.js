@@ -17,7 +17,8 @@ const {
     UpdateVerification,
     updateserialnum,
     getEmpBybranch,
-    getEmpByDeptartment
+    getEmpByDeptartment,
+    updateEmpRegister
 } = require('../hrm_emp_master/empmast.controller');
 
 router.post("/", checkToken, createempmast)
@@ -39,6 +40,7 @@ router.patch("/empmaster/updateverification", checkToken, UpdateVerification)
 router.post("/empmast/serialnum", checkToken, updateserialnum)
 router.post("/empmaster/getdeptByBranch", checkToken, getEmpBybranch)
 router.post("/empmaster/getdeptByDept", checkToken, getEmpByDeptartment)
+router.patch("/empregister/Edit", checkToken, updateEmpRegister)
 
 
 module.exports = router;

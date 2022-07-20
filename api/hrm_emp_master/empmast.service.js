@@ -76,7 +76,94 @@ module.exports = {
                 data.presPincode,
                 data.hrm_region2,
                 data.blood_slno,
-                data.hrm_religion, data.contractflag
+                data.hrm_religion,
+                data.contractflag
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    updateEmpRegister: (data, callBack) => {
+        pool.query(
+            `UPDATE hrm_emp_master
+                SET           
+                em_salutation=?,
+                em_name=?,
+                em_gender=?,
+                em_dob=?,
+                em_age_year=?,
+                em_age_month=?,
+                em_age_day=?,
+                em_doj=?,
+                em_mobile=?,
+                em_phone=?,
+                em_email=?,
+                em_branch=?,
+                em_department=?,
+                em_dept_section=?,
+                em_institution_type=?,
+                em_designation=?,
+                em_doc_type=?,
+                em_category=?,
+                em_prob_end_date=?,
+                em_conf_end_date=?,
+                em_retirement_date=?,
+                em_contract_end_date=?,
+                em_status=?,
+                create_user=?,
+                addressPermnt1=?,
+                addressPermnt2=?, 
+                hrm_pin1=?,
+                em_region=?,
+                addressPresent1=?,
+                addressPresent2=?,
+                hrm_pin2=?, 
+                hrm_region2=?, 
+                blood_slno=?,
+                hrm_religion=?,
+                contract_status=?
+                WHERE em_no = ?`,
+            [
+                data.em_salutation,
+                data.em_name,
+                data.em_gender,
+                data.em_dob,
+                data.em_age_year,
+                data.em_age_month,
+                data.em_age_day,
+                data.em_doj,
+                data.em_mobile,
+                data.em_phone,
+                data.em_email,
+                data.em_branch,
+                data.em_department,
+                data.em_dept_section,
+                data.em_institution_type,
+                data.em_designation,
+                data.em_doc_type,
+                data.em_category,
+                data.em_prob_end_date,
+                data.em_conf_end_date,
+                data.em_retirement_date,
+                data.em_contract_end_date,
+                data.em_status,
+                data.create_user,
+                data.addressPermnt1,
+                data.addressPermnt2,
+                data.perPincode,
+                data.em_region,
+                data.addressPresent1,
+                data.addressPresent2,
+                data.presPincode,
+                data.hrm_region2,
+                data.blood_slno,
+                data.hrm_religion,
+                data.contractflag,
+                data.em_no
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -193,7 +280,7 @@ module.exports = {
     },
     getDataById: (id, callBack) => {
         pool.query(
-            `  SELECT 
+            `SELECT 
             ifnull(em_no,'')em_no,
             ifnull(em_id,'')em_id,
             ifnull(em_salutation,'0')em_salutation,
@@ -216,9 +303,11 @@ module.exports = {
             ifnull(hrm_pin2,'')hrm_pin2, 
             ifnull(hrm_region2,'0')hrm_region2, 
             ifnull(blood_slno,'0')blood_slno,
-            ifnull(hrm_religion,'0')hrm_religion
+            ifnull(hrm_religion,'0')hrm_religion,
+            em_branch,em_department,em_dept_section,em_institution_type,em_designation,em_doc_type,em_category
                 FROM hrm_emp_master
-                WHERE em_no = ?`,
+                WHERE em_no = ?
+                AND em_status=1 `,
             [
                 id
             ],
