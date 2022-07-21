@@ -15,9 +15,10 @@ const {
     getEmpVerification,
     UpdateVerification,
     getEmpBybranch,
-    getEmpByDeptartment
+    getEmpByDeptartment,
+    updateEmpRegister
 } = require('../hrm_emp_master/empmast.service');
-const { validateempmaster, validateempmasterupdate } = require('../../validation/validation_schema');
+const { validateempmaster, validateempmasterupdate, validateempmasterEdit } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
 module.exports = {
     createempmast: (req, res) => {
@@ -101,6 +102,41 @@ module.exports = {
             }
             return res.status(200).json({
                 success: 2,
+                message: "Data Updated Successfully"
+            });
+
+        });
+    },
+    updateEmpRegister: (req, res) => {
+
+        const body = req.body;
+        const body_result = validateempmasterEdit.validate(body);
+
+        if (body_result.error) {
+            return res.status(200).json({
+                success: 2,
+                message: body_result.error.details[0].message
+            });
+        }
+
+        body.em_name = body_result.value.em_name;
+
+        updateEmpRegister(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
                 message: "Data Updated Successfully"
             });
 
