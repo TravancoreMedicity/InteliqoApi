@@ -1160,7 +1160,8 @@ const validatecommonsettings = Joi.object({
         creat_user: Joi.number().optional(),
         update_user: Joi.number().optional(),
         setting_slno: Joi.number().optional(),
-        noofadvanceinyear: Joi.number().optional()
+        noofadvanceinyear: Joi.number().optional(),
+        verification_level: Joi.number().optional(),
 })
 //validate carryforward
 const validatecarryforward = Joi.object({

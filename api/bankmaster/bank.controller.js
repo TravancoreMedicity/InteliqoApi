@@ -140,7 +140,7 @@ module.exports = {
 
             if (results.length == 0) {
                 logger.infoLogger("No Records Found")
-                return res.status(400).json({
+                return res.status(200).json({
                     success: 0,
                     message: "No Record Found"
                 });

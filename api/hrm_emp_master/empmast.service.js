@@ -707,42 +707,6 @@ module.exports = {
             }
         )
     },
-    //get employee details for verification
-    getEmpVerification: (callBack) => {
-        pool.query(
-            `select em_id,em_no,em_name,em_doj,branch_name,dept_name,
-            sect_name,verification_status,ifnull(verification_Remark,'Verification Pending')verification_Remark
-            from hrm_emp_master
-            left join hrm_branch on hrm_branch.branch_slno=hrm_emp_master.em_branch
-            left join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
-            left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
-            where verification_status!=1 and em_status=1`,
-            [],
-            (error, results, feilds) => {
-                if (error) {
-                    return callBack(error);
-                }
-                return callBack(null, results);
-            }
-        );
-    },
-    UpdateVerification: (data, callBack) => {
-        pool.query(
-            `update hrm_emp_master
-            set verification_status=?,
-             verification_Remark=?
-            where em_id=?`,
-            [
-                data.verification_status,
-                data.verification_Remark,
-                data.em_id
-            ],
-            (error, results, feilds) => {
-                if (error) {
-                    return callBack(error);
-                }
-                return callBack(null, results);
-            }
-        )
-    },
+
+
 }
