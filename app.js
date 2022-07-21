@@ -88,6 +88,7 @@ const JobdescriptionRouter = require("./api/Job_description/Job_description.rout
 const reportsRouter = require("./api/Reports/Reports.router")
 const advance_settingsRouter = require("./api/advance_settings/advance_settings.router")
 const advancerequestRouter = require("./api/advance_request/advance_request.router")
+const empVerificationRouter = require("./api/EmpVerification/EmpVerification.router")
 
 
 app.use(express.json());
@@ -216,6 +217,7 @@ app.use("/api/jobdescription", JobdescriptionRouter)//job description
 app.use("/api/reports", reportsRouter)//Reports
 app.use("/api/advanceSettings", advance_settingsRouter)
 app.use("/api/advancerequest", advancerequestRouter)
+app.use("/api/empVerification", empVerificationRouter)
 
 // ------ Database Connection --------
 
