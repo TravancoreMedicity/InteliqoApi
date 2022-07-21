@@ -11,23 +11,13 @@ const authSchema = Joi.object({
 const validateEmployee = Joi.object({
         emp_slno: Joi.optional(),
         emp_no: Joi.number().required(),
-        emp_name: Joi.string().uppercase().required().max(65),
-        emp_gender: Joi.string().max(1).required(),
-        emp_dob: Joi.date().optional(),
-        emp_permanent: Joi.string().optional(),
-        emp_pincode_pres: Joi.string().optional(),
-        emp_present: Joi.string().optional(),
-        emp_pincode_perm: Joi.string().optional(),
-        emp_mob: Joi.number().optional(),
-        emp_phone: Joi.string().optional(),
         emp_email: Joi.string().optional(),
-        emp_doj: Joi.date().optional(),
-        emp_username: Joi.string().max(20),
+        emp_username: Joi.string().max(20).required(),
         emp_password: Joi.string().required(),
-        emp_dept_id: Joi.required(),
-        emp_sect_id: Joi.required(),
-        emp_branch_slno: Joi.required(),
-        emp_status: Joi.required(),
+        emp_status: Joi.optional(),
+        emp_id: Joi.number().required(),
+        create_user: Joi.number().optional(),
+        oldempno: Joi.number().required(),
 });
 
 // brqanch input validation
@@ -532,6 +522,48 @@ const validateempmaster = Joi.object({
         perPincode: Joi.number().max(999999).required(),
         blood_slno: Joi.number().min(1).required(),
 })
+
+// VALIDATE EMPLOYEE MASTER EDIT
+const validateempmasterEdit = Joi.object({
+        em_no: Joi.number().required(),
+        em_id: Joi.number().optional(),
+        em_salutation: Joi.number().min(1).required(),
+        em_name: Joi.string().trim().uppercase().required().max(60),
+        em_gender: Joi.number().min(1).required(),
+        em_dob: Joi.date().required(),
+        em_age_year: Joi.number().optional(),
+        em_age_month: Joi.number().optional(),
+        em_age_day: Joi.number().optional(),
+        em_doj: Joi.date().required(),
+        hrm_religion: Joi.number().min(1).required(),
+        em_mobile: Joi.number().max(999999999999).required(),
+        em_phone: Joi.optional(),
+        em_email: Joi.string().email().optional(),
+        em_region: Joi.number().min(1).required(),
+        hrm_region2: Joi.number().min(1).required(),
+        em_branch: Joi.number().min(1).required(),
+        contractflag: Joi.number().required(),
+        em_department: Joi.number().min(1).required(),
+        em_dept_section: Joi.number().min(1).required(),
+        em_institution_type: Joi.number().min(1).required(),
+        em_designation: Joi.number().min(1).required(),
+        em_doc_type: Joi.optional(),
+        em_category: Joi.number().min(1).required(),
+        em_prob_end_date: Joi.date().optional(),
+        em_conf_end_date: Joi.date().optional(),
+        em_retirement_date: Joi.date().optional(),
+        em_contract_end_date: Joi.date().optional(),
+        em_status: Joi.number().min(1).required(),
+        edit_user: Joi.number().required(),
+        create_date: Joi.date().optional(),
+        addressPresent1: Joi.string().trim().uppercase().required(),
+        addressPresent2: Joi.string().trim().uppercase().required(),
+        presPincode: Joi.number().max(999999).required(),
+        addressPermnt1: Joi.string().trim().uppercase().required(),
+        addressPermnt2: Joi.string().trim().uppercase().required(),
+        perPincode: Joi.number().max(999999).required(),
+        blood_slno: Joi.number().min(1).required(),
+})
 // VALIDATE EMPLOYEupdate
 const validateempmasterupdate = Joi.object({
         em_no: Joi.number().required(),
@@ -562,6 +594,7 @@ const validateempmasterupdate = Joi.object({
         em_account_no: Joi.number().optional(),
         em_ifsc: Joi.optional(),
         em_maritalstatus: Joi.number().min(1).required(),
+
 })
 
 // VALIDATE EMPLOYEE CONTRACT DETAILS
@@ -1278,5 +1311,6 @@ module.exports = {
         validateMessage,
         validatempprotax,
         validateadvanceSettings,
-        validateAdvanceRequest
+        validateAdvanceRequest,
+        validateempmasterEdit
 }
