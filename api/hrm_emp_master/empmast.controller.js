@@ -12,8 +12,6 @@ const {
     getDepartmentSectEmployye, checkidvaluedate, getCategoryType, updateDeptSec,
     getInactiveEmpByDeptAndSection,
     InActiveEmpHR,
-    getEmpVerification,
-    UpdateVerification,
     getEmpBybranch,
     getEmpByDeptartment,
     updateEmpRegister
@@ -514,56 +512,7 @@ module.exports = {
 
         });
     },
-    getEmpVerification: (req, res) => {
-        getEmpVerification((err, results) => {
-            if (err) {
-                logger.errorLogger(err)
-                return res.status(400).json({
-                    success: 0,
-                    message: err
-                });
-            }
 
-            if (results.length == 0) {
-                return res.status(400).json({
-                    success: 0,
-                    message: "No Record Found"
-                });
-            }
-
-            return res.status(200).json({
-                success: 1,
-                data: results
-            });
-        });
-
-    },
-    UpdateVerification: (req, res) => {
-        const body = req.body;
-        UpdateVerification(body, (err, results) => {
-
-            if (err) {
-                logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 0,
-                    message: err
-                });
-            }
-
-            if (!results) {
-                return res.status(200).json({
-                    success: 1,
-                    message: "Record Not Found"
-                });
-            }
-
-            return res.status(200).json({
-                success: 2,
-                message: "Data Updated Successfully"
-            });
-
-        });
-    },
     updateserialnum: (req, res) => {
 
 
