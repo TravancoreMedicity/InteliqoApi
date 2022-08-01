@@ -17,32 +17,23 @@ module.exports = {
         }
 
         body.ecat_name = body_result.value.ecat_name;
-        checkemptpe(body, (err, results) => {
-            const value = JSON.parse(JSON.stringify(results))
-            if (Object.keys(value).length === 0) {
-                // Insert the values
-                create(body, (err, results) => {
-                    if (err) {
-                        logger.errorLogger(err)
-                        return res.status(200).json({
-                            success: 0,
-                            message: err
-                        });
-                    }
 
-                    return res.status(200).json({
-                        success: 1,
-                        message: "Data Created Successfully"
-                    });
-
-                });
-            } else {
+        // Insert the values
+        create(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
                 return res.status(200).json({
-                    success: 7,
-                    message: "Category Type Already Exist"
-                })
+                    success: 0,
+                    message: err
+                });
             }
-        })
+
+            return res.status(200).json({
+                success: 1,
+                message: "Data Created Successfully"
+            });
+
+        });
     },
     updateEmpCategory: (req, res) => {
 
