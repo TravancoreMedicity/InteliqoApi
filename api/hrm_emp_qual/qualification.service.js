@@ -18,9 +18,10 @@ module.exports = {
                 em_exp_date,
                 em_chellan,
                 em_chellan_exp_date,
-                create_user                
+                create_user,
+                pass_fail                
             )
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
                 data.em_no,
                 data.em_id,
@@ -36,7 +37,8 @@ module.exports = {
                 data.em_exp_date,
                 data.em_chellan,
                 data.em_chellan_exp_date,
-                data.create_user
+                data.create_user,
+                data.pass_fail
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -66,7 +68,6 @@ module.exports = {
     // },
 
     update: (data, callBack) => {
-
         pool.query(
             `UPDATE hrm_emp_qual
                 SET em_education = ?,
@@ -81,7 +82,8 @@ module.exports = {
                     em_exp_date=?,
                 em_chellan=?,
                 em_chellan_exp_date=?, 
-                    edit_user = ?                                      
+                    edit_user = ? ,
+                    pass_fail=?                                     
                 WHERE emqual_slno = ?`,
             [
                 data.em_education,
@@ -97,7 +99,9 @@ module.exports = {
                 data.em_chellan,
                 data.em_chellan_exp_date,
                 data.edit_user,
-                data.emqual_slno
+                data.pass_fail,
+                data.emqual_slno,
+
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -111,7 +115,8 @@ module.exports = {
         pool.query(
             `SELECT emqual_slno,
             em_no,
-            edu_desc,   
+            edu_desc, 
+            if(pass_fail = 1 ,'Fail','Pass') pass_fail,
             IFNULL(unver_name,"NILL" ) unver_name,            
             IFNULL( cour_desc, "NILL") cour_desc,                    
             IFNULL( spec_desc, "NILL") spec_desc
@@ -148,7 +153,8 @@ module.exports = {
                 em_reg_no,
                 em_exp_date,
                 em_chellan,
-                em_chellan_exp_date
+                em_chellan_exp_date,
+                pass_fail
             FROM hrm_emp_qual
             WHERE emqual_slno = ?`,
             [
@@ -169,7 +175,8 @@ module.exports = {
                     edu_desc,
                     cour_desc,
                     em_course,
-                    spec_desc
+                    spec_desc,
+                    pass_fail
              FROM hrm_emp_qual
              LEFT JOIN hrm_mast_education ON  hrm_mast_education.edu_slno =hrm_emp_qual.em_education
              LEFT JOIN hrm_mast_course ON  hrm_mast_course.cour_slno = hrm_emp_qual.em_course 
