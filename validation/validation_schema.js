@@ -742,6 +742,7 @@ const validateempqualification = Joi.object({
         em_exp_date: Joi.optional(),
         em_chellan: Joi.optional(),
         em_chellan_exp_date: Joi.optional(),
+        pass_fail: Joi.optional()
 })
 
 // VALIDATE COURSE

@@ -89,6 +89,10 @@ const reportsRouter = require("./api/Reports/Reports.router")
 const advance_settingsRouter = require("./api/advance_settings/advance_settings.router")
 const advancerequestRouter = require("./api/advance_request/advance_request.router")
 const empVerificationRouter = require("./api/EmpVerification/EmpVerification.router")
+const JobSummaryRouter = require("./api/JobSummary/JobSummary.router")
+const KRARouter = require("./api/KRA/KRA.router")
+
+
 
 
 app.use(express.json());
@@ -218,6 +222,8 @@ app.use("/api/reports", reportsRouter)//Reports
 app.use("/api/advanceSettings", advance_settingsRouter)
 app.use("/api/advancerequest", advancerequestRouter)
 app.use("/api/empVerification", empVerificationRouter)
+app.use("/api/jobsummary", JobSummaryRouter)//job summary
+app.use("/api/KraMast", KRARouter)//KRA
 
 // ------ Database Connection --------
 
