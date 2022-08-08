@@ -85,14 +85,27 @@ const hrmgrosssalaryRouter = require("./api/Hrm_grosssalary/Hrm_grosssalary.rout
 const attedancemarkRouter = require("./api/attendance_marking_save/attendance_marking_save.router")
 const payrollprocess = require("./api/payrollprocess/payrollprocess.router")
 const JobdescriptionRouter = require("./api/Job_description/Job_description.router")
-const reportsRouter = require("./api/Reports/Reports.router")
+// const reportsRouter = require("./api/Reports/Reports.router")
 const advance_settingsRouter = require("./api/advance_settings/advance_settings.router")
 const advancerequestRouter = require("./api/advance_request/advance_request.router")
+const CategoryReportRouter = require("./api/CategoryReport/CategoryReport.router")
+const DesignationReportRouter = require("./api/DesignationReport/DesignationReport.router")
+const QualificatonReportRouter = require("./api/QualificationReport/QualificationReport.router")
+const DeptSectionReportRouter = require("./api/DeptSectionReport/DeptSectionReport.router")
+const DesigExpReportRouter = require("./api/DesignationExpReport/DesigExpReport.router")
+const TrainingProbaReportRouter = require("./api/TraingProbaReport/TrainingProbaReport.router")
+const bloodgrpReportRouter = require("./api/bloodgrpReport/bloodgrpReport.router")
+const ReligionReportRouter = require("./api/ReligionReport/ReligionReport.router")
+const RegionReportRouter = require("./api/regionReport/regionReport.router")
+const experienceReportRouter = require("./api/experienceReport/ExperienceReport.router")
+const institutionReportRouter = require("./api/institutionReport/institutionReport.router")
+const RegistrationTypeReportRouter = require("./api/RegistrationTypeReport/RegistrationTypeReport.router")
+const ContractReportRouter = require("./api/ContractReport/ContractReport.router")
+const PermanentEmpReportRouter = require("./api/PermanentEmpReport/PermanentEmpReport.router")
+const employeeReportRouter = require("./api/employeeReport/EmployeeReport.router")
 const empVerificationRouter = require("./api/EmpVerification/EmpVerification.router")
 const JobSummaryRouter = require("./api/JobSummary/JobSummary.router")
 const KRARouter = require("./api/KRA/KRA.router")
-
-
 
 
 app.use(express.json());
@@ -137,8 +150,6 @@ app.get('/warn', (req, res) => {
         res.end();
     })
 })
-
-
 
 app.use("/api/users", userRouter);
 app.use("/api/employee", employeeRouter);
@@ -218,9 +229,25 @@ app.use("/api/proftax", professionaltax)//proffessional Tax
 app.use("/api/attedancemarkSave", attedancemarkRouter)//attendance marking save
 app.use("/api/payrollprocess", payrollprocess)//payroll Process
 app.use("/api/jobdescription", JobdescriptionRouter)//job description
-app.use("/api/reports", reportsRouter)//Reports
+// app.use("/api/reports", reportsRouter)//Reports
+
 app.use("/api/advanceSettings", advance_settingsRouter)
 app.use("/api/advancerequest", advancerequestRouter)
+app.use("/api/CategoryReport", CategoryReportRouter)
+app.use("/api/DesignationReport", DesignationReportRouter)
+app.use("/api/QualificationReport", QualificatonReportRouter)
+app.use("/api/DeptSectionReport", DeptSectionReportRouter)
+app.use("/api/DesignationExpReport", DesigExpReportRouter)
+app.use("/api/TraingProbaReport", TrainingProbaReportRouter)
+app.use("/api/bloodgrpReport", bloodgrpReportRouter)//blood group reports
+app.use("/api/religionReport", ReligionReportRouter)// religion wise report
+app.use("/api/RegionReport", RegionReportRouter)//region wise report
+app.use("/api/experienceReport", experienceReportRouter) // employee experience report
+app.use("/api/institutionReport", institutionReportRouter) //institution report
+app.use("/api/RegistrationTypeReport", RegistrationTypeReportRouter) //registration type reports
+app.use("/api/ContractReport", ContractReportRouter)// contract expiry report
+app.use("/api/PermanentEmpReport", PermanentEmpReportRouter) //permanent employee report
+app.use("/api/employeeReport", employeeReportRouter)
 app.use("/api/empVerification", empVerificationRouter)
 app.use("/api/jobsummary", JobSummaryRouter)//job summary
 app.use("/api/KraMast", KRARouter)//KRA
