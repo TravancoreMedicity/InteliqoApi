@@ -44,18 +44,18 @@ module.exports = {
     getGroupMenuRigths: (data, callBack) => {
         pool.query(
             `SELECT 
-            user_group_rights.group_right_slno,
-            menu_master.menu_slno,
-            menu_master.menu_module_slno,
-            menu_master.menu_name,
+            user_group_rights.group_rights_slno,
+            menu_name.menu_slno,
+            menu_name.menu_module,
+            menu_name.menu_name,
             user_group_rights.menu_view,
             user_group_rights.menu_add,
             user_group_rights.menu_edit
         FROM user_group_rights
-        RIGHT JOIN menu_master ON menu_master.menu_slno = user_group_rights.menu_slno 
-        WHERE menu_master.menu_module_slno =? AND user_group_slno = ?`,
+        RIGHT JOIN menu_name ON menu_name.menu_slno = user_group_rights.menu_slno 
+        WHERE menu_name.menu_module = ? AND user_group_slno = ?`,
             [
-                data.menu_module_slno,
+                data.module_slno,
                 data.user_group_slno,
             ],
             (error, results, feilds) => {
