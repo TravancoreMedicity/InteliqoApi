@@ -88,7 +88,15 @@ const JobdescriptionRouter = require("./api/Job_description/Job_description.rout
 const reportsRouter = require("./api/Reports/Reports.router")
 const advance_settingsRouter = require("./api/advance_settings/advance_settings.router")
 const advancerequestRouter = require("./api/advance_request/advance_request.router")
-
+const bloodgrpReportRouter = require("./api/bloodgrpReport/bloodgrpReport.router")
+const ReligionReportRouter = require("./api/ReligionReport/ReligionReport.router")
+const RegionReportRouter = require("./api/regionReport/regionReport.router")
+const experienceReportRouter = require("./api/experienceReport/ExperienceReport.router")
+const institutionReportRouter = require("./api/institutionReport/institutionReport.router")
+const RegistrationTypeReportRouter = require("./api/RegistrationTypeReport/RegistrationTypeReport.router")
+const ContractReportRouter = require("./api/ContractReport/ContractReport.router")
+const PermanentEmpReportRouter = require("./api/PermanentEmpReport/PermanentEmpReport.router")
+const employeeReportRouter = require("./api/employeeReport/EmployeeReport.router")
 
 app.use(express.json());
 app.use((req, res, next) => {
@@ -132,8 +140,6 @@ app.get('/warn', (req, res) => {
         res.end();
     })
 })
-
-
 
 app.use("/api/users", userRouter);
 app.use("/api/employee", employeeRouter);
@@ -216,7 +222,15 @@ app.use("/api/jobdescription", JobdescriptionRouter)//job description
 app.use("/api/reports", reportsRouter)//Reports
 app.use("/api/advanceSettings", advance_settingsRouter)
 app.use("/api/advancerequest", advancerequestRouter)
-
+app.use("/api/bloodgrpReport", bloodgrpReportRouter)//blood group reports
+app.use("/api/religionReport", ReligionReportRouter)// religion wise report
+app.use("/api/RegionReport", RegionReportRouter)//region wise report
+app.use("/api/experienceReport", experienceReportRouter) // employee experience report
+app.use("/api/institutionReport", institutionReportRouter) //institution report
+app.use("/api/RegistrationTypeReport", RegistrationTypeReportRouter) //registration type reports
+app.use("/api/ContractReport", ContractReportRouter)// contract expiry report
+app.use("/api/PermanentEmpReport", PermanentEmpReportRouter) //permanent employee report
+app.use("/api/employeeReport", employeeReportRouter)
 // ------ Database Connection --------
 
 app.listen(process.env.APP_PORT, () =>
