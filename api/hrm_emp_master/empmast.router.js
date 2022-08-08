@@ -13,8 +13,11 @@ const {
     getCategoryType,
     updateDeptSec,
     getInactiveEmpByDeptAndSection,
-    InActiveEmpHR, getEmpVerification,
-    UpdateVerification
+    InActiveEmpHR,
+    updateserialnum,
+    getEmpBybranch,
+    getEmpByDeptartment,
+    updateEmpRegister
 } = require('../hrm_emp_master/empmast.controller');
 
 router.post("/", checkToken, createempmast)
@@ -31,8 +34,10 @@ router.patch("/updatecategory", checkToken, updatecategory)//Category change in 
 router.get("/getEmpTypeDesg/:id", checkToken, getCategoryType) //get employee Type and desgnetion type get according to category
 router.patch("/empmaster/deptsecChange", checkToken, updateDeptSec)// update department section changes
 router.patch("/empmaster/Inactiveemp", checkToken, InActiveEmpHR)
-router.get("/empverify/verification", checkToken, getEmpVerification)
-router.patch("/empmaster/updateverification", checkToken, UpdateVerification)
+router.post("/empmast/serialnum", checkToken, updateserialnum)
+router.post("/empmaster/getdeptByBranch", checkToken, getEmpBybranch)
+router.post("/empmaster/getdeptByDept", checkToken, getEmpByDeptartment)
+router.patch("/empregister/Edit", checkToken, updateEmpRegister)
 
 
 module.exports = router;

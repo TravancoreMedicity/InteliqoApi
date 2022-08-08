@@ -97,6 +97,10 @@ const RegistrationTypeReportRouter = require("./api/RegistrationTypeReport/Regis
 const ContractReportRouter = require("./api/ContractReport/ContractReport.router")
 const PermanentEmpReportRouter = require("./api/PermanentEmpReport/PermanentEmpReport.router")
 const employeeReportRouter = require("./api/employeeReport/EmployeeReport.router")
+const empVerificationRouter = require("./api/EmpVerification/EmpVerification.router")
+const JobSummaryRouter = require("./api/JobSummary/JobSummary.router")
+const KRARouter = require("./api/KRA/KRA.router")
+
 
 app.use(express.json());
 app.use((req, res, next) => {
@@ -231,6 +235,10 @@ app.use("/api/RegistrationTypeReport", RegistrationTypeReportRouter) //registrat
 app.use("/api/ContractReport", ContractReportRouter)// contract expiry report
 app.use("/api/PermanentEmpReport", PermanentEmpReportRouter) //permanent employee report
 app.use("/api/employeeReport", employeeReportRouter)
+app.use("/api/empVerification", empVerificationRouter)
+app.use("/api/jobsummary", JobSummaryRouter)//job summary
+app.use("/api/KraMast", KRARouter)//KRA
+
 // ------ Database Connection --------
 
 app.listen(process.env.APP_PORT, () =>

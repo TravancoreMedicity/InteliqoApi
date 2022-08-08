@@ -22,8 +22,9 @@ module.exports = {
                 esi_employee,
                 esi_employer,
                 noofadvanceinyear,
+                verification_level,
                 creat_user)
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
                 data.cmmn_grace_period,
                 data.cmmn_late_in,
@@ -43,6 +44,7 @@ module.exports = {
                 data.esi_employee,
                 data.esi_employer,
                 data.noofadvanceinyear,
+                data.verification_level,
                 data.creat_user
             ],
             (error, results, feilds) => {
@@ -86,6 +88,7 @@ module.exports = {
                 esi_employee=?,
                 esi_employer=?,
                 noofadvanceinyear=?,
+                verification_level=?,
                 update_user=?
                 WHERE setting_slno =?`,
             [
@@ -107,6 +110,7 @@ module.exports = {
                 data.esi_employee,
                 data.esi_employer,
                 data.noofadvanceinyear,
+                data.verification_level,
                 data.update_user,
                 data.setting_slno
             ],
