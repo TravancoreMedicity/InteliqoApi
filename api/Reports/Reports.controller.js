@@ -1,22 +1,22 @@
 const {
-    getCatogery,
+    // getCatogery,
     getBloodgrp,
     getDistrictById,
     getDistrict,
     getRegion,
     getReligion,
-    getCategorybyId,
+    // getCategorybyId,
     getBloodgrpWiseReport,
     getReligionWiseReport,
-    getDesignation,
-    getDesignationById,
-    getEducation,
-    getEducationById,
+    // getDesignation,
+    // getDesignationById,
+    // getEducation,
+    // getEducationById,
     getRegionById,
-    getCourse,
-    getCourseById,
-    getSpecialization,
-    getSpecializationById,
+    // getCourse,
+    // getCourseById,
+    // getSpecialization,
+    // getSpecializationById,
     getDistRegion,
     getDistRegionById,
     experienceReport,
@@ -31,37 +31,58 @@ const {
     getRegistrTyp,
     RegistrationNumberWiseReport,
     ChellanWiseReport,
-    getDesignationExp,
-    getdeptSection,
-    getSectionTypeDetl
+    // getDesignationExpGreater,
+    // getdeptSection,
+    // getSectionTypeDetl,
+    // getDesignationExpLessthan,
+    // getDesignationExpDetl,
+    // getExpdetlnonTmch,
+    // getExpdetlTmch,
+    // getCurrentExp,
+    // getCurrentTmchExp,
+    // getCurrentPrevious,
+    // getTotalExp,
+    // getTmchLessExp,
+    // getTmchGreaterExp,
+    // getNonTmchLessExp,
+    // getNonTmchGreaterExp,
+    // getCurrentExpLess,
+    // getCurrentExpGreater,
+    // getCurrentPreviousLess,
+    // getCurrentPreviousGreter,
+    // getcurrentTmchLess,
+    // getcurrentTmchGreater,
+    // getTotalExpLess,
+    // getTotalExpGreater
+
 
 } = require('../reports/reports.service');
 
 
 module.exports = {
-    getCatogery: (req, res) => {
-        getCatogery((err, results) => {
-            if (err) {
-                // logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 2,
-                    message: err
-                });
-            }
+    // getCatogery: (req, res) => {
+    //     getCatogery((err, results) => {
+    //         if (err) {
+    //             // logger.errorLogger(err)
+    //             return res.status(200).json({
+    //                 success: 2,
+    //                 message: err
+    //             });
+    //         }
 
-            if (!results) {
-                return res.status(200).json({
-                    success: 0,
-                    message: "No Results Found"
-                });
-            }
+    //         if (!results) {
+    //             return res.status(200).json({
+    //                 success: 0,
+    //                 message: "No Results Found"
+    //             });
+    //         }
 
-            return res.status(200).json({
-                success: 1,
-                data: results
-            });
-        });
-    },
+    //         return res.status(200).json({
+    //             success: 1,
+    //             data: results
+    //         });
+    //     });
+    // },
     getBloodgrp: (req, res) => {
         getBloodgrp((err, results) => {
             if (err) {
@@ -107,30 +128,30 @@ module.exports = {
             });
         });
     },
-    getCategorybyId: (req, res) => {
-        const body = req.body;
-        getCategorybyId(body, (err, results) => {
-            if (err) {
-                // logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 0,
-                    message: err
-                });
-            }
+    // getCategorybyId: (req, res) => {
+    //     const body = req.body;
+    //     getCategorybyId(body, (err, results) => {
+    //         if (err) {
+    //             // logger.errorLogger(err)
+    //             return res.status(200).json({
+    //                 success: 0,
+    //                 message: err
+    //             });
+    //         }
 
-            if (!results) {
-                return res.status(200).json({
-                    success: 2,
-                    message: "No Results Found"
-                });
-            }
+    //         if (!results) {
+    //             return res.status(200).json({
+    //                 success: 2,
+    //                 message: "No Results Found"
+    //             });
+    //         }
 
-            return res.status(200).json({
-                success: 1,
-                data: results
-            });
-        })
-    },
+    //         return res.status(200).json({
+    //             success: 1,
+    //             data: results
+    //         });
+    //     })
+    // },
     getReligionWiseReport: (req, res) => {
 
         const body = req.body
@@ -155,53 +176,53 @@ module.exports = {
             });
         });
     },
-    getDesignation: (req, res) => {
-        getDesignation((err, results) => {
-            if (err) {
-                // logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 2,
-                    message: err
-                });
-            }
+    // getDesignation: (req, res) => {
+    //     getDesignation((err, results) => {
+    //         if (err) {
+    //             // logger.errorLogger(err)
+    //             return res.status(200).json({
+    //                 success: 2,
+    //                 message: err
+    //             });
+    //         }
 
-            if (!results) {
-                return res.status(200).json({
-                    success: 0,
-                    message: "No Results Found"
-                });
-            }
+    //         if (!results) {
+    //             return res.status(200).json({
+    //                 success: 0,
+    //                 message: "No Results Found"
+    //             });
+    //         }
 
-            return res.status(200).json({
-                success: 1,
-                data: results
-            });
-        });
-    },
-    getDesignationById: (req, res) => {
-        const body = req.body
-        getDesignationById(body, (err, results) => {
-            if (err) {
-                // logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 0,
-                    message: err
-                });
-            }
+    //         return res.status(200).json({
+    //             success: 1,
+    //             data: results
+    //         });
+    //     });
+    // },
+    // getDesignationById: (req, res) => {
+    //     const body = req.body
+    //     getDesignationById(body, (err, results) => {
+    //         if (err) {
+    //             // logger.errorLogger(err)
+    //             return res.status(200).json({
+    //                 success: 0,
+    //                 message: err
+    //             });
+    //         }
 
-            if (!results) {
-                return res.status(200).json({
-                    success: 2,
-                    message: "No Results Found"
-                });
-            }
+    //         if (!results) {
+    //             return res.status(200).json({
+    //                 success: 2,
+    //                 message: "No Results Found"
+    //             });
+    //         }
 
-            return res.status(200).json({
-                success: 1,
-                data: results
-            });
-        })
-    },
+    //         return res.status(200).json({
+    //             success: 1,
+    //             data: results
+    //         });
+    //     })
+    // },
     getReligion: (req, res) => {
         getReligion((err, results) => {
             if (err) {
@@ -360,150 +381,150 @@ module.exports = {
             });
         })
     },
-    getEducation: (req, res) => {
-        getEducation((err, results) => {
-            if (err) {
-                // logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 2,
-                    message: err
-                });
-            }
+    // getEducation: (req, res) => {
+    //     getEducation((err, results) => {
+    //         if (err) {
+    //             // logger.errorLogger(err)
+    //             return res.status(200).json({
+    //                 success: 2,
+    //                 message: err
+    //             });
+    //         }
 
-            if (!results) {
-                return res.status(200).json({
-                    success: 0,
-                    message: "No Results Found"
-                });
-            }
+    //         if (!results) {
+    //             return res.status(200).json({
+    //                 success: 0,
+    //                 message: "No Results Found"
+    //             });
+    //         }
 
-            return res.status(200).json({
-                success: 1,
-                data: results
-            });
-        });
-    },
-    getEducationById: (req, res) => {
-        const body = req.body;
-        getEducationById(body, (err, results) => {
-            if (err) {
-                // logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 0,
-                    message: err
-                });
-            }
+    //         return res.status(200).json({
+    //             success: 1,
+    //             data: results
+    //         });
+    //     });
+    // },
+    // getEducationById: (req, res) => {
+    //     const body = req.body;
+    //     getEducationById(body, (err, results) => {
+    //         if (err) {
+    //             // logger.errorLogger(err)
+    //             return res.status(200).json({
+    //                 success: 0,
+    //                 message: err
+    //             });
+    //         }
 
-            if (!results) {
-                return res.status(200).json({
-                    success: 2,
-                    message: "No Results Found"
-                });
-            }
+    //         if (!results) {
+    //             return res.status(200).json({
+    //                 success: 2,
+    //                 message: "No Results Found"
+    //             });
+    //         }
 
-            return res.status(200).json({
-                success: 1,
-                data: results
-            });
-        })
-    },
-    getCourse: (req, res) => {
-        const body = req.body
-        getCourse(body, (err, results) => {
-            if (err) {
-                // logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 2,
-                    message: err
-                });
-            }
+    //         return res.status(200).json({
+    //             success: 1,
+    //             data: results
+    //         });
+    //     })
+    // },
+    // getCourse: (req, res) => {
+    //     const body = req.body
+    //     getCourse(body, (err, results) => {
+    //         if (err) {
+    //             // logger.errorLogger(err)
+    //             return res.status(200).json({
+    //                 success: 2,
+    //                 message: err
+    //             });
+    //         }
 
-            if (results.length == 0) {
-                return res.status(200).json({
-                    success: 0,
-                    message: "No Results Found"
-                });
-            }
+    //         if (results.length == 0) {
+    //             return res.status(200).json({
+    //                 success: 0,
+    //                 message: "No Results Found"
+    //             });
+    //         }
 
-            return res.status(200).json({
-                success: 1,
-                data: results
-            });
-        });
-    },
-    getCourseById: (req, res) => {
-        const body = req.body;
-        getCourseById(body, (err, results) => {
-            if (err) {
-                // logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 0,
-                    message: err
-                });
-            }
+    //         return res.status(200).json({
+    //             success: 1,
+    //             data: results
+    //         });
+    //     });
+    // },
+    // getCourseById: (req, res) => {
+    //     const body = req.body;
+    //     getCourseById(body, (err, results) => {
+    //         if (err) {
+    //             // logger.errorLogger(err)
+    //             return res.status(200).json({
+    //                 success: 0,
+    //                 message: err
+    //             });
+    //         }
 
-            if (!results) {
-                return res.status(200).json({
-                    success: 2,
-                    message: "No Results Found"
-                });
-            }
+    //         if (!results) {
+    //             return res.status(200).json({
+    //                 success: 2,
+    //                 message: "No Results Found"
+    //             });
+    //         }
 
-            return res.status(200).json({
-                success: 1,
-                data: results
-            });
-        })
-    },
-    getSpecialization: (req, res) => {
-        const body = req.body
-        // console.log(body);
-        getSpecialization(body, (err, results) => {
-            if (err) {
-                // logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 2,
-                    message: err
-                });
-            }
+    //         return res.status(200).json({
+    //             success: 1,
+    //             data: results
+    //         });
+    //     })
+    // },
+    // getSpecialization: (req, res) => {
+    //     const body = req.body
+    //     // console.log(body);
+    //     getSpecialization(body, (err, results) => {
+    //         if (err) {
+    //             // logger.errorLogger(err)
+    //             return res.status(200).json({
+    //                 success: 2,
+    //                 message: err
+    //             });
+    //         }
 
-            if (!results) {
-                return res.status(200).json({
-                    success: 0,
-                    message: "No Results Found"
-                });
-            }
+    //         if (!results) {
+    //             return res.status(200).json({
+    //                 success: 0,
+    //                 message: "No Results Found"
+    //             });
+    //         }
 
-            return res.status(200).json({
-                success: 1,
-                data: results
-            });
-        });
-    },
-    getSpecializationById: (req, res) => {
-        const body = req.body
-        getSpecializationById(body, (err, results) => {
-            if (err) {
-                // logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 0,
-                    message: err
-                });
-            }
+    //         return res.status(200).json({
+    //             success: 1,
+    //             data: results
+    //         });
+    //     });
+    // },
+    // getSpecializationById: (req, res) => {
+    //     const body = req.body
+    //     getSpecializationById(body, (err, results) => {
+    //         if (err) {
+    //             // logger.errorLogger(err)
+    //             return res.status(200).json({
+    //                 success: 0,
+    //                 message: err
+    //             });
+    //         }
 
-            if (!results) {
-                return res.status(200).json({
-                    success: 2,
-                    message: "No Results Found"
-                });
-            }
+    //         if (!results) {
+    //             return res.status(200).json({
+    //                 success: 2,
+    //                 message: "No Results Found"
+    //             });
+    //         }
 
-            return res.status(200).json({
-                success: 1,
-                data: results
-            });
-        })
-    },
+    //         return res.status(200).json({
+    //             success: 1,
+    //             data: results
+    //         });
+    //     })
+    // },
     experienceReport: (req, res) => {
         const body = req.body
         experienceReport(body, (err, results) => {
@@ -734,7 +755,7 @@ module.exports = {
             });
         });
     },
-     RegistrationNumberWiseReport: (req, res) => {
+    RegistrationNumberWiseReport: (req, res) => {
         const body = req.body;
         RegistrationNumberWiseReport(body, (err, results) => {
             if (err) {
@@ -780,76 +801,558 @@ module.exports = {
             });
         })
     },
-        getSectionTypeDetl: (req, res) => {
-        const body = req.body;
-        getSectionTypeDetl(body, (err, results) => {
-            if (err) {
-                // logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 0,
-                    message: err
-                });
-            }
+    // getSectionTypeDetl: (req, res) => {
+    //     const body = req.body;
+    //     getSectionTypeDetl(body, (err, results) => {
+    //         if (err) {
+    //             // logger.errorLogger(err)
+    //             return res.status(200).json({
+    //                 success: 0,
+    //                 message: err
+    //             });
+    //         }
 
-            if (!results) {
-                return res.status(200).json({
-                    success: 2,
-                    message: "No Results Found"
-                });
-            }
+    //         if (!results) {
+    //             return res.status(200).json({
+    //                 success: 2,
+    //                 message: "No Results Found"
+    //             });
+    //         }
 
-            return res.status(200).json({
-                success: 1,
-                data: results
-            });
-        })
-    },
-        getdeptSection: (req, res) => {
-        const body = req.body
-        getdeptSection(body, (err, results) => {
-            if (err) {
-                // logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 2,
-                    message: err
-                });
-            }
+    //         return res.status(200).json({
+    //             success: 1,
+    //             data: results
+    //         });
+    //     })
+    // },
+    // getdeptSection: (req, res) => {
+    //     const body = req.body
+    //     getdeptSection(body, (err, results) => {
+    //         if (err) {
+    //             // logger.errorLogger(err)
+    //             return res.status(200).json({
+    //                 success: 2,
+    //                 message: err
+    //             });
+    //         }
 
-            if (!results) {
-                return res.status(200).json({
-                    success: 0,
-                    message: "no result found"
-                });
-            }
+    //         if (!results) {
+    //             return res.status(200).json({
+    //                 success: 0,
+    //                 message: "no result found"
+    //             });
+    //         }
 
-            return res.status(200).json({
-                success: 1,
-                data: results
-            });
-        });
-    },
-        getDesignationExp: (req, res) => {
-        const body = req.body
-        getDesignationExp(body, (err, results) => {
-            if (err) {
-                // logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 0,
-                    message: err
-                });
-            }
+    //         return res.status(200).json({
+    //             success: 1,
+    //             data: results
+    //         });
+    //     });
+    // },
+    // getDesignationExpGreater: (req, res) => {
+    //     const body = req.body
+    //     getDesignationExpGreater(body, (err, results) => {
+    //         if (err) {
+    //             // logger.errorLogger(err)
+    //             return res.status(200).json({
+    //                 success: 0,
+    //                 message: err
+    //             });
+    //         }
 
-            if (!results) {
-                return res.status(200).json({
-                    success: 2,
-                    message: "No Results Found"
-                });
-            }
+    //         if (!results) {
+    //             return res.status(200).json({
+    //                 success: 2,
+    //                 message: "No Results Found"
+    //             });
+    //         }
 
-            return res.status(200).json({
-                success: 1,
-                data: results
-            });
-        })
-    },
+    //         return res.status(200).json({
+    //             success: 1,
+    //             data: results
+    //         });
+    //     })
+    // },
+
+    // getDesignationExpLessthan: (req, res) => {
+    //     const body = req.body
+    //     getDesignationExpLessthan(body, (err, results) => {
+    //         if (err) {
+    //             // logger.errorLogger(err)
+    //             return res.status(200).json({
+    //                 success: 0,
+    //                 message: err
+    //             });
+    //         }
+
+    //         if (!results) {
+    //             return res.status(200).json({
+    //                 success: 2,
+    //                 message: "No Results Found"
+    //             });
+    //         }
+
+    //         return res.status(200).json({
+    //             success: 1,
+    //             data: results
+    //         });
+    //     })
+    // },
+    // getDesignationExpDetl: (req, res) => {
+    //     const body = req.body
+    //     getDesignationExpDetl(body, (err, results) => {
+    //         if (err) {
+    //             // logger.errorLogger(err)
+    //             return res.status(200).json({
+    //                 success: 0,
+    //                 message: err
+    //             });
+    //         }
+
+    //         if (!results) {
+    //             return res.status(200).json({
+    //                 success: 2,
+    //                 message: "No Results Found"
+    //             });
+    //         }
+
+    //         return res.status(200).json({
+    //             success: 1,
+    //             data: results
+    //         });
+    //     })
+    // },
+    // getExpdetlnonTmch: (req, res) => {
+    //     const body = req.body
+    //     getExpdetlnonTmch(body, (err, results) => {
+    //         if (err) {
+    //             // logger.errorLogger(err)
+    //             return res.status(200).json({
+    //                 success: 0,
+    //                 message: err
+    //             });
+    //         }
+
+    //         if (!results) {
+    //             return res.status(200).json({
+    //                 success: 2,
+    //                 message: "No Results Found"
+    //             });
+    //         }
+
+    //         return res.status(200).json({
+    //             success: 1,
+    //             data: results
+    //         });
+    //     })
+    // },
+    // getExpdetlTmch: (req, res) => {
+    //     const body = req.body
+    //     getExpdetlTmch(body, (err, results) => {
+    //         if (err) {
+    //             // logger.errorLogger(err)
+    //             return res.status(200).json({
+    //                 success: 0,
+    //                 message: err
+    //             });
+    //         }
+
+    //         if (!results) {
+    //             return res.status(200).json({
+    //                 success: 2,
+    //                 message: "No Results Found"
+    //             });
+    //         }
+
+    //         return res.status(200).json({
+    //             success: 1,
+    //             data: results
+    //         });
+    //     })
+    // },
+
+    // getCurrentExp: (req, res) => {
+    //     const body = req.body
+    //     getCurrentExp(body, (err, results) => {
+    //         if (err) {
+    //             // logger.errorLogger(err)
+    //             return res.status(200).json({
+    //                 success: 0,
+    //                 message: err
+    //             });
+    //         }
+
+    //         if (!results) {
+    //             return res.status(200).json({
+    //                 success: 2,
+    //                 message: "No Results Found"
+    //             });
+    //         }
+
+    //         return res.status(200).json({
+    //             success: 1,
+    //             data: results
+    //         });
+    //     })
+    // },
+    // getCurrentTmchExp: (req, res) => {
+    //     const body = req.body
+    //     getCurrentTmchExp(body, (err, results) => {
+    //         if (err) {
+    //             // logger.errorLogger(err)
+    //             return res.status(200).json({
+    //                 success: 0,
+    //                 message: err
+    //             });
+    //         }
+
+    //         if (!results) {
+    //             return res.status(200).json({
+    //                 success: 2,
+    //                 message: "No Results Found"
+    //             });
+    //         }
+
+    //         return res.status(200).json({
+    //             success: 1,
+    //             data: results
+    //         });
+    //     })
+    // },
+    // getCurrentPrevious: (req, res) => {
+    //     const body = req.body
+    //     getCurrentPrevious(body, (err, results) => {
+    //         if (err) {
+    //             // logger.errorLogger(err)
+    //             return res.status(200).json({
+    //                 success: 0,
+    //                 message: err
+    //             });
+    //         }
+
+    //         if (!results) {
+    //             return res.status(200).json({
+    //                 success: 2,
+    //                 message: "No Results Found"
+    //             });
+    //         }
+
+    //         return res.status(200).json({
+    //             success: 1,
+    //             data: results
+    //         });
+    //     })
+    // },
+    // getTotalExp: (req, res) => {
+    //     const body = req.body
+    //     getTotalExp(body, (err, results) => {
+    //         if (err) {
+    //             // logger.errorLogger(err)
+    //             return res.status(200).json({
+    //                 success: 0,
+    //                 message: err
+    //             });
+    //         }
+
+    //         if (!results) {
+    //             return res.status(200).json({
+    //                 success: 2,
+    //                 message: "No Results Found"
+    //             });
+    //         }
+
+    //         return res.status(200).json({
+    //             success: 1,
+    //             data: results
+    //         });
+    //     })
+    // },
+    // getTmchLessExp: (req, res) => {
+    //     const body = req.body
+    //     getTmchLessExp(body, (err, results) => {
+    //         if (err) {
+    //             // logger.errorLogger(err)
+    //             return res.status(200).json({
+    //                 success: 0,
+    //                 message: err
+    //             });
+    //         }
+
+    //         if (!results) {
+    //             return res.status(200).json({
+    //                 success: 2,
+    //                 message: "No Results Found"
+    //             });
+    //         }
+
+    //         return res.status(200).json({
+    //             success: 1,
+    //             data: results
+    //         });
+    //     })
+    // },
+    // getTmchGreaterExp: (req, res) => {
+    //     const body = req.body
+    //     getTmchGreaterExp(body, (err, results) => {
+    //         if (err) {
+    //             // logger.errorLogger(err)
+    //             return res.status(200).json({
+    //                 success: 0,
+    //                 message: err
+    //             });
+    //         }
+
+    //         if (!results) {
+    //             return res.status(200).json({
+    //                 success: 2,
+    //                 message: "No Results Found"
+    //             });
+    //         }
+
+    //         return res.status(200).json({
+    //             success: 1,
+    //             data: results
+    //         });
+    //     })
+    // },
+    // getNonTmchLessExp: (req, res) => {
+    //     const body = req.body
+    //     getNonTmchLessExp(body, (err, results) => {
+    //         if (err) {
+    //             // logger.errorLogger(err)
+    //             return res.status(200).json({
+    //                 success: 0,
+    //                 message: err
+    //             });
+    //         }
+
+    //         if (!results) {
+    //             return res.status(200).json({
+    //                 success: 2,
+    //                 message: "No Results Found"
+    //             });
+    //         }
+
+    //         return res.status(200).json({
+    //             success: 1,
+    //             data: results
+    //         });
+    //     })
+    // },
+    // getNonTmchGreaterExp: (req, res) => {
+    //     const body = req.body
+    //     getNonTmchGreaterExp(body, (err, results) => {
+    //         if (err) {
+    //             // logger.errorLogger(err)
+    //             return res.status(200).json({
+    //                 success: 0,
+    //                 message: err
+    //             });
+    //         }
+
+    //         if (!results) {
+    //             return res.status(200).json({
+    //                 success: 2,
+    //                 message: "No Results Found"
+    //             });
+    //         }
+
+    //         return res.status(200).json({
+    //             success: 1,
+    //             data: results
+    //         });
+    //     })
+    // },
+    // getCurrentExpLess: (req, res) => {
+    //     const body = req.body
+    //     getCurrentExpLess(body, (err, results) => {
+    //         if (err) {
+    //             // logger.errorLogger(err)
+    //             return res.status(200).json({
+    //                 success: 0,
+    //                 message: err
+    //             });
+    //         }
+
+    //         if (!results) {
+    //             return res.status(200).json({
+    //                 success: 2,
+    //                 message: "No Results Found"
+    //             });
+    //         }
+
+    //         return res.status(200).json({
+    //             success: 1,
+    //             data: results
+    //         });
+    //     })
+    // },
+    // getCurrentExpGreater: (req, res) => {
+    //     const body = req.body
+    //     getCurrentExpGreater(body, (err, results) => {
+    //         if (err) {
+    //             // logger.errorLogger(err)
+    //             return res.status(200).json({
+    //                 success: 0,
+    //                 message: err
+    //             });
+    //         }
+
+    //         if (!results) {
+    //             return res.status(200).json({
+    //                 success: 2,
+    //                 message: "No Results Found"
+    //             });
+    //         }
+
+    //         return res.status(200).json({
+    //             success: 1,
+    //             data: results
+    //         });
+    //     })
+    // },
+    // getCurrentPreviousLess: (req, res) => {
+    //     const body = req.body
+    //     getCurrentPreviousLess(body, (err, results) => {
+    //         if (err) {
+    //             // logger.errorLogger(err)
+    //             return res.status(200).json({
+    //                 success: 0,
+    //                 message: err
+    //             });
+    //         }
+
+    //         if (!results) {
+    //             return res.status(200).json({
+    //                 success: 2,
+    //                 message: "No Results Found"
+    //             });
+    //         }
+
+    //         return res.status(200).json({
+    //             success: 1,
+    //             data: results
+    //         });
+    //     })
+    // },
+    // getCurrentPreviousGreter: (req, res) => {
+    //     const body = req.body
+    //     getCurrentPreviousGreter(body, (err, results) => {
+    //         if (err) {
+    //             // logger.errorLogger(err)
+    //             return res.status(200).json({
+    //                 success: 0,
+    //                 message: err
+    //             });
+    //         }
+
+    //         if (!results) {
+    //             return res.status(200).json({
+    //                 success: 2,
+    //                 message: "No Results Found"
+    //             });
+    //         }
+
+    //         return res.status(200).json({
+    //             success: 1,
+    //             data: results
+    //         });
+    //     })
+    // },
+    // getcurrentTmchLess: (req, res) => {
+    //     const body = req.body
+    //     getcurrentTmchLess(body, (err, results) => {
+    //         if (err) {
+    //             // logger.errorLogger(err)
+    //             return res.status(200).json({
+    //                 success: 0,
+    //                 message: err
+    //             });
+    //         }
+
+    //         if (!results) {
+    //             return res.status(200).json({
+    //                 success: 2,
+    //                 message: "No Results Found"
+    //             });
+    //         }
+
+    //         return res.status(200).json({
+    //             success: 1,
+    //             data: results
+    //         });
+    //     })
+    // },
+    // getcurrentTmchGreater: (req, res) => {
+    //     const body = req.body
+    //     getcurrentTmchGreater(body, (err, results) => {
+    //         if (err) {
+    //             // logger.errorLogger(err)
+    //             return res.status(200).json({
+    //                 success: 0,
+    //                 message: err
+    //             });
+    //         }
+
+    //         if (!results) {
+    //             return res.status(200).json({
+    //                 success: 2,
+    //                 message: "No Results Found"
+    //             });
+    //         }
+
+    //         return res.status(200).json({
+    //             success: 1,
+    //             data: results
+    //         });
+    //     })
+    // },
+    // getTotalExpLess: (req, res) => {
+    //     const body = req.body
+    //     getTotalExpLess(body, (err, results) => {
+    //         if (err) {
+    //             // logger.errorLogger(err)
+    //             return res.status(200).json({
+    //                 success: 0,
+    //                 message: err
+    //             });
+    //         }
+
+    //         if (!results) {
+    //             return res.status(200).json({
+    //                 success: 2,
+    //                 message: "No Results Found"
+    //             });
+    //         }
+
+    //         return res.status(200).json({
+    //             success: 1,
+    //             data: results
+    //         });
+    //     })
+    // },
+    // getTotalExpGreater: (req, res) => {
+    //     const body = req.body
+    //     getTotalExpGreater(body, (err, results) => {
+    //         if (err) {
+    //             // logger.errorLogger(err)
+    //             return res.status(200).json({
+    //                 success: 0,
+    //                 message: err
+    //             });
+    //         }
+
+    //         if (!results) {
+    //             return res.status(200).json({
+    //                 success: 2,
+    //                 message: "No Results Found"
+    //             });
+    //         }
+
+    //         return res.status(200).json({
+    //             success: 1,
+    //             data: results
+    //         });
+    //     })
+    // }
 }
