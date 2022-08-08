@@ -1,53 +1,24 @@
 const {
-    getCatogery,
-    getCategorybyId,
-    getDesignation,
-    getDesignationById,
-    getEducation,
-    getEducationById,
-    getCourse,
-    getCourseById,
-    getSpecialization,
-    getSpecializationById,
-    getDesignationExp,
-    getdeptSection,
-    getSectionTypeDetl,
-    getPermanentEmpBranch,
-    getpermanentEmpBranchDept,
-    getpermanentEmpDetails
-
-} = require('../reports/reports.service');
-
+    RegistrationTypeReport,
+    DeptRegistrationTypeReport,
+    EmpRegistrationTypeReport,
+    getRegistrTyp,
+    RegistrationNumberWiseReport,
+    ChellanWiseReport,
+    RegNumberWithDate,
+    getRegisterOnly,
+    getChallanOnly,
+    getChallanRegistrationCombined,
+    challanNumberWithDate,
+    getCombinedRegType,
+    getCombinedWithdate,
+} = require('../RegistrationTypeReport/RegistrationTypeReport.service')
 
 module.exports = {
-    getCatogery: (req, res) => {
-        getCatogery((err, results) => {
-            if (err) {
-                // logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 2,
-                    message: err
-                });
-            }
-
-            if (!results) {
-                return res.status(200).json({
-                    success: 0,
-                    message: "No Results Found"
-                });
-            }
-
-            return res.status(200).json({
-                success: 1,
-                data: results
-            });
-        });
-    },
-    getCategorybyId: (req, res) => {
+    RegistrationTypeReport: (req, res) => {
         const body = req.body;
-        getCategorybyId(body, (err, results) => {
+        RegistrationTypeReport(body, (err, results) => {
             if (err) {
-                // logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err
@@ -67,81 +38,10 @@ module.exports = {
             });
         })
     },
-    getDesignation: (req, res) => {
-        getDesignation((err, results) => {
-            if (err) {
-                // logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 2,
-                    message: err
-                });
-            }
-
-            if (!results) {
-                return res.status(200).json({
-                    success: 0,
-                    message: "No Results Found"
-                });
-            }
-
-            return res.status(200).json({
-                success: 1,
-                data: results
-            });
-        });
-    },
-    getDesignationById: (req, res) => {
-        const body = req.body
-        getDesignationById(body, (err, results) => {
-            if (err) {
-                // logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 0,
-                    message: err
-                });
-            }
-
-            if (!results) {
-                return res.status(200).json({
-                    success: 2,
-                    message: "No Results Found"
-                });
-            }
-
-            return res.status(200).json({
-                success: 1,
-                data: results
-            });
-        })
-    },
-    getEducation: (req, res) => {
-        getEducation((err, results) => {
-            if (err) {
-                // logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 2,
-                    message: err
-                });
-            }
-
-            if (!results) {
-                return res.status(200).json({
-                    success: 0,
-                    message: "No Results Found"
-                });
-            }
-
-            return res.status(200).json({
-                success: 1,
-                data: results
-            });
-        });
-    },
-    getEducationById: (req, res) => {
+    DeptRegistrationTypeReport: (req, res) => {
         const body = req.body;
-        getEducationById(body, (err, results) => {
+        DeptRegistrationTypeReport(body, (err, results) => {
             if (err) {
-                // logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err
@@ -161,35 +61,10 @@ module.exports = {
             });
         })
     },
-    getCourse: (req, res) => {
-        const body = req.body
-        getCourse(body, (err, results) => {
-            if (err) {
-                // logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 2,
-                    message: err
-                });
-            }
-
-            if (results.length == 0) {
-                return res.status(200).json({
-                    success: 0,
-                    message: "No Results Found"
-                });
-            }
-
-            return res.status(200).json({
-                success: 1,
-                data: results
-            });
-        });
-    },
-    getCourseById: (req, res) => {
+    EmpRegistrationTypeReport: (req, res) => {
         const body = req.body;
-        getCourseById(body, (err, results) => {
+        EmpRegistrationTypeReport(body, (err, results) => {
             if (err) {
-                // logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err
@@ -209,12 +84,10 @@ module.exports = {
             });
         })
     },
-    getSpecialization: (req, res) => {
-        const body = req.body
-        // console.log(body);
-        getSpecialization(body, (err, results) => {
+
+    getRegistrTyp: (req, res) => {
+        getRegistrTyp((err, results) => {
             if (err) {
-                // logger.errorLogger(err)
                 return res.status(200).json({
                     success: 2,
                     message: err
@@ -234,33 +107,56 @@ module.exports = {
             });
         });
     },
-    getSpecializationById: (req, res) => {
-        const body = req.body
-        getSpecializationById(body, (err, results) => {
-            if (err) {
-                // logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 0,
-                    message: err
-                });
-            }
-
-            if (!results) {
-                return res.status(200).json({
-                    success: 2,
-                    message: "No Results Found"
-                });
-            }
-
-            return res.status(200).json({
-                success: 1,
-                data: results
-            });
-        })
-    },
-    getSectionTypeDetl: (req, res) => {
+    RegistrationNumberWiseReport: (req, res) => {
         const body = req.body;
-        getSectionTypeDetl(body, (err, results) => {
+        RegistrationNumberWiseReport(body, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    ChellanWiseReport: (req, res) => {
+        const body = req.body;
+        ChellanWiseReport(body, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    /** Get registration number with date */
+    RegNumberWithDate: (req, res) => {
+        const body = req.body
+        RegNumberWithDate(body, (err, results) => {
             if (err) {
                 // logger.errorLogger(err)
                 return res.status(200).json({
@@ -282,9 +178,9 @@ module.exports = {
             });
         })
     },
-    getdeptSection: (req, res) => {
-        const body = req.body
-        getdeptSection(body, (err, results) => {
+    /** Registration number only report */
+    getRegisterOnly: (req, res) => {
+        getRegisterOnly((err, results) => {
             if (err) {
                 // logger.errorLogger(err)
                 return res.status(200).json({
@@ -296,7 +192,7 @@ module.exports = {
             if (!results) {
                 return res.status(200).json({
                     success: 0,
-                    message: "no result found"
+                    message: "No Results Found"
                 });
             }
 
@@ -306,9 +202,56 @@ module.exports = {
             });
         });
     },
-    getDesignationExp: (req, res) => {
+    getChallanOnly: (req, res) => {
+        getChallanOnly((err, results) => {
+            if (err) {
+                // logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    getChallanRegistrationCombined: (req, res) => {
+        getChallanRegistrationCombined((err, results) => {
+            if (err) {
+                // logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    /** Get challan number with date */
+    challanNumberWithDate: (req, res) => {
         const body = req.body
-        getDesignationExp(body, (err, results) => {
+        challanNumberWithDate(body, (err, results) => {
             if (err) {
                 // logger.errorLogger(err)
                 return res.status(200).json({
@@ -330,79 +273,53 @@ module.exports = {
             });
         })
     },
-    // /** Branch wise permanent employee list */
-    // getPermanentEmpBranch: (req, res) => {
-    //     const body = req.body
-    //     getPermanentEmpBranch(body, (err, results) => {
-    //         if (err) {
-    //             // logger.errorLogger(err)
-    //             return res.status(200).json({
-    //                 success: 0,
-    //                 message: err
-    //             });
-    //         }
+    getCombinedRegType: (req, res) => {
+        const body = req.body
+        getCombinedRegType(body, (err, results) => {
+            if (err) {
+                // logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
 
-    //         if (!results) {
-    //             return res.status(200).json({
-    //                 success: 2,
-    //                 message: "No Results Found"
-    //             });
-    //         }
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Results Found"
+                });
+            }
 
-    //         return res.status(200).json({
-    //             success: 1,
-    //             data: results
-    //         });
-    //     })
-    // },
-    // /** Branch, Department wise permanent employee */
-    // getpermanentEmpBranchDept: (req, res) => {
-    //     const body = req.body
-    //     getpermanentEmpBranchDept(body, (err, results) => {
-    //         if (err) {
-    //             // logger.errorLogger(err)
-    //             return res.status(200).json({
-    //                 success: 0,
-    //                 message: err
-    //             });
-    //         }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    /** Both challan and registration number details with date, register type */
+    getCombinedWithdate: (req, res) => {
+        const body = req.body
+        getCombinedWithdate(body, (err, results) => {
+            if (err) {
+                // logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
 
-    //         if (!results) {
-    //             return res.status(200).json({
-    //                 success: 2,
-    //                 message: "No Results Found"
-    //             });
-    //         }
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Results Found"
+                });
+            }
 
-    //         return res.status(200).json({
-    //             success: 1,
-    //             data: results
-    //         });
-    //     })
-    // },
-    // /** Branch, department, dept section wise permanent employee list */
-    // getpermanentEmpDetails: (req, res) => {
-    //     const body = req.body
-    //     getpermanentEmpDetails(body, (err, results) => {
-    //         if (err) {
-    //             // logger.errorLogger(err)
-    //             return res.status(200).json({
-    //                 success: 0,
-    //                 message: err
-    //             });
-    //         }
-
-    //         if (!results) {
-    //             return res.status(200).json({
-    //                 success: 2,
-    //                 message: "No Results Found"
-    //             });
-    //         }
-
-    //         return res.status(200).json({
-    //             success: 1,
-    //             data: results
-    //         });
-    //     })
-    // },
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
 }

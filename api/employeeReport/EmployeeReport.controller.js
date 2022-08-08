@@ -1,38 +1,32 @@
 const {
-    getCatogery,
-    getCategorybyId,
-    getDesignation,
-    getDesignationById,
-    getEducation,
-    getEducationById,
-    getCourse,
-    getCourseById,
-    getSpecialization,
-    getSpecializationById,
-    getDesignationExp,
-    getdeptSection,
-    getSectionTypeDetl,
-    getPermanentEmpBranch,
-    getpermanentEmpBranchDept,
-    getpermanentEmpDetails
-
-} = require('../reports/reports.service');
-
+    getDeptActiveEmployees,
+    getBranchActiveEmployees,
+    getActiveEmployees,
+    getBranchInActiveEmployees,
+    getBranchActiveEmpDate,
+    getActiveEmployeesDate,
+    getDeptInActiveEmployees,
+    getInActiveEmployees,
+    getBranchResignedEmployees,
+    getDeptResignedEmployees,
+    getResignedEmployees,
+    getDeptActiveEmpDate
+} = require('../employeeReport/EmployeeReport.service')
 
 module.exports = {
-    getCatogery: (req, res) => {
-        getCatogery((err, results) => {
+    getBranchActiveEmployees: (req, res) => {
+        const body = req.body
+        getBranchActiveEmployees(body, (err, results) => {
             if (err) {
-                // logger.errorLogger(err)
                 return res.status(200).json({
-                    success: 2,
+                    success: 0,
                     message: err
                 });
             }
 
             if (!results) {
                 return res.status(200).json({
-                    success: 0,
+                    success: 2,
                     message: "No Results Found"
                 });
             }
@@ -43,11 +37,10 @@ module.exports = {
             });
         });
     },
-    getCategorybyId: (req, res) => {
-        const body = req.body;
-        getCategorybyId(body, (err, results) => {
+    getDeptActiveEmployees: (req, res) => {
+        const body = req.body
+        getDeptActiveEmployees(body, (err, results) => {
             if (err) {
-                // logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err
@@ -57,29 +50,6 @@ module.exports = {
             if (!results) {
                 return res.status(200).json({
                     success: 2,
-                    message: "No Results Found"
-                });
-            }
-
-            return res.status(200).json({
-                success: 1,
-                data: results
-            });
-        })
-    },
-    getDesignation: (req, res) => {
-        getDesignation((err, results) => {
-            if (err) {
-                // logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 2,
-                    message: err
-                });
-            }
-
-            if (!results) {
-                return res.status(200).json({
-                    success: 0,
                     message: "No Results Found"
                 });
             }
@@ -90,11 +60,10 @@ module.exports = {
             });
         });
     },
-    getDesignationById: (req, res) => {
+    getActiveEmployees: (req, res) => {
         const body = req.body
-        getDesignationById(body, (err, results) => {
+        getActiveEmployees(body, (err, results) => {
             if (err) {
-                // logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err
@@ -104,29 +73,6 @@ module.exports = {
             if (!results) {
                 return res.status(200).json({
                     success: 2,
-                    message: "No Results Found"
-                });
-            }
-
-            return res.status(200).json({
-                success: 1,
-                data: results
-            });
-        })
-    },
-    getEducation: (req, res) => {
-        getEducation((err, results) => {
-            if (err) {
-                // logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 2,
-                    message: err
-                });
-            }
-
-            if (!results) {
-                return res.status(200).json({
-                    success: 0,
                     message: "No Results Found"
                 });
             }
@@ -137,11 +83,10 @@ module.exports = {
             });
         });
     },
-    getEducationById: (req, res) => {
-        const body = req.body;
-        getEducationById(body, (err, results) => {
+    getBranchActiveEmpDate: (req, res) => {
+        const body = req.body
+        getBranchActiveEmpDate(body, (err, results) => {
             if (err) {
-                // logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err
@@ -151,30 +96,6 @@ module.exports = {
             if (!results) {
                 return res.status(200).json({
                     success: 2,
-                    message: "No Results Found"
-                });
-            }
-
-            return res.status(200).json({
-                success: 1,
-                data: results
-            });
-        })
-    },
-    getCourse: (req, res) => {
-        const body = req.body
-        getCourse(body, (err, results) => {
-            if (err) {
-                // logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 2,
-                    message: err
-                });
-            }
-
-            if (results.length == 0) {
-                return res.status(200).json({
-                    success: 0,
                     message: "No Results Found"
                 });
             }
@@ -185,45 +106,19 @@ module.exports = {
             });
         });
     },
-    getCourseById: (req, res) => {
-        const body = req.body;
-        getCourseById(body, (err, results) => {
-            if (err) {
-                // logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 0,
-                    message: err
-                });
-            }
-
-            if (!results) {
-                return res.status(200).json({
-                    success: 2,
-                    message: "No Results Found"
-                });
-            }
-
-            return res.status(200).json({
-                success: 1,
-                data: results
-            });
-        })
-    },
-    getSpecialization: (req, res) => {
+    getDeptActiveEmpDate: (req, res) => {
         const body = req.body
-        // console.log(body);
-        getSpecialization(body, (err, results) => {
+        getDeptActiveEmpDate(body, (err, results) => {
             if (err) {
-                // logger.errorLogger(err)
                 return res.status(200).json({
-                    success: 2,
+                    success: 0,
                     message: err
                 });
             }
 
             if (!results) {
                 return res.status(200).json({
-                    success: 0,
+                    success: 2,
                     message: "No Results Found"
                 });
             }
@@ -234,11 +129,10 @@ module.exports = {
             });
         });
     },
-    getSpecializationById: (req, res) => {
+    getActiveEmployeesDate: (req, res) => {
         const body = req.body
-        getSpecializationById(body, (err, results) => {
+        getActiveEmployeesDate(body, (err, results) => {
             if (err) {
-                // logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err
@@ -249,54 +143,6 @@ module.exports = {
                 return res.status(200).json({
                     success: 2,
                     message: "No Results Found"
-                });
-            }
-
-            return res.status(200).json({
-                success: 1,
-                data: results
-            });
-        })
-    },
-    getSectionTypeDetl: (req, res) => {
-        const body = req.body;
-        getSectionTypeDetl(body, (err, results) => {
-            if (err) {
-                // logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 0,
-                    message: err
-                });
-            }
-
-            if (!results) {
-                return res.status(200).json({
-                    success: 2,
-                    message: "No Results Found"
-                });
-            }
-
-            return res.status(200).json({
-                success: 1,
-                data: results
-            });
-        })
-    },
-    getdeptSection: (req, res) => {
-        const body = req.body
-        getdeptSection(body, (err, results) => {
-            if (err) {
-                // logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 2,
-                    message: err
-                });
-            }
-
-            if (!results) {
-                return res.status(200).json({
-                    success: 0,
-                    message: "no result found"
                 });
             }
 
@@ -306,11 +152,10 @@ module.exports = {
             });
         });
     },
-    getDesignationExp: (req, res) => {
+    getBranchInActiveEmployees: (req, res) => {
         const body = req.body
-        getDesignationExp(body, (err, results) => {
+        getBranchInActiveEmployees(body, (err, results) => {
             if (err) {
-                // logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err
@@ -328,81 +173,121 @@ module.exports = {
                 success: 1,
                 data: results
             });
-        })
+        });
     },
-    // /** Branch wise permanent employee list */
-    // getPermanentEmpBranch: (req, res) => {
-    //     const body = req.body
-    //     getPermanentEmpBranch(body, (err, results) => {
-    //         if (err) {
-    //             // logger.errorLogger(err)
-    //             return res.status(200).json({
-    //                 success: 0,
-    //                 message: err
-    //             });
-    //         }
+    getDeptInActiveEmployees: (req, res) => {
+        const body = req.body
+        getDeptInActiveEmployees(body, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
 
-    //         if (!results) {
-    //             return res.status(200).json({
-    //                 success: 2,
-    //                 message: "No Results Found"
-    //             });
-    //         }
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Results Found"
+                });
+            }
 
-    //         return res.status(200).json({
-    //             success: 1,
-    //             data: results
-    //         });
-    //     })
-    // },
-    // /** Branch, Department wise permanent employee */
-    // getpermanentEmpBranchDept: (req, res) => {
-    //     const body = req.body
-    //     getpermanentEmpBranchDept(body, (err, results) => {
-    //         if (err) {
-    //             // logger.errorLogger(err)
-    //             return res.status(200).json({
-    //                 success: 0,
-    //                 message: err
-    //             });
-    //         }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    getInActiveEmployees: (req, res) => {
+        const body = req.body
+        getInActiveEmployees(body, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
 
-    //         if (!results) {
-    //             return res.status(200).json({
-    //                 success: 2,
-    //                 message: "No Results Found"
-    //             });
-    //         }
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Results Found"
+                });
+            }
 
-    //         return res.status(200).json({
-    //             success: 1,
-    //             data: results
-    //         });
-    //     })
-    // },
-    // /** Branch, department, dept section wise permanent employee list */
-    // getpermanentEmpDetails: (req, res) => {
-    //     const body = req.body
-    //     getpermanentEmpDetails(body, (err, results) => {
-    //         if (err) {
-    //             // logger.errorLogger(err)
-    //             return res.status(200).json({
-    //                 success: 0,
-    //                 message: err
-    //             });
-    //         }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    getBranchResignedEmployees: (req, res) => {
+        const body = req.body
+        getBranchResignedEmployees(body, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
 
-    //         if (!results) {
-    //             return res.status(200).json({
-    //                 success: 2,
-    //                 message: "No Results Found"
-    //             });
-    //         }
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Results Found"
+                });
+            }
 
-    //         return res.status(200).json({
-    //             success: 1,
-    //             data: results
-    //         });
-    //     })
-    // },
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    getDeptResignedEmployees: (req, res) => {
+        const body = req.body
+        getDeptResignedEmployees(body, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    getResignedEmployees: (req, res) => {
+        const body = req.body
+        getResignedEmployees(body, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
 }
