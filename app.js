@@ -106,6 +106,7 @@ const employeeReportRouter = require("./api/employeeReport/EmployeeReport.router
 const empVerificationRouter = require("./api/EmpVerification/EmpVerification.router")
 const JobSummaryRouter = require("./api/JobSummary/JobSummary.router")
 const KRARouter = require("./api/KRA/KRA.router")
+const performanceGradeRouter = require("./api/performanceGrade/performanceGrade.router")
 
 
 app.use(express.json());
@@ -251,6 +252,7 @@ app.use("/api/employeeReport", employeeReportRouter)
 app.use("/api/empVerification", empVerificationRouter)
 app.use("/api/jobsummary", JobSummaryRouter)//job summary
 app.use("/api/KraMast", KRARouter)//KRA
+app.use("/api/performanceGrade", performanceGradeRouter)//performance grade master
 
 // ------ Database Connection --------
 

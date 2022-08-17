@@ -311,4 +311,16 @@ module.exports = {
             }
         )
     },
+    probationEndCount: (callBack) => {
+        pool.query(
+            `select count(*) 'probationcount' from hrm_emp_master where em_category IN (4,7,9) and em_prob_end_date<=curdate(); `,
+            [],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }
