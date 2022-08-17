@@ -51,6 +51,7 @@ module.exports = {
                 data.designation
             ],
             (error, results, feilds) => {
+                console.log(results);
                 if (error) {
                     return callBack(error);
                 }
@@ -259,4 +260,53 @@ module.exports = {
             }
         )
     },
+    createJobCompetency: (data, callBack) => {
+        pool.query(
+            `INSERT INTO job_competency (
+                job_id,
+                key_result_area,
+                competency_desc,
+                dept_id,
+                designation
+                )
+            VALUES ?`,
+            [
+                data
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+
+    getJobCompetency: (data, callBack) => {
+        pool.query(
+            `SELECT 
+            description_slno,
+            designation,
+            department,
+            job_desription,
+            job_Summary
+            FROM job_description 
+            where designation =? and department =?`,
+            [
+                data.designation,
+                data.department
+            ],
+
+            (error, results, feilds) => {
+                if (error) {
+
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+
+
+
 }

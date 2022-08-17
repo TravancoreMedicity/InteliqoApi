@@ -2,7 +2,7 @@ const router = require("express").Router();
 const { checkToken } = require("../../auth/token_validation");
 const { createJobSummary, CheckInsertValue, createJobDuties, getjobId,
     createJobSpecification, createJobQualification, createJobGeneric,
-    getJobSummary, getJobDuties, getJobSpecification, getJobGeneric, getJobQualification } = require('../JobSummary/JobSummary.controller');
+    getJobSummary, getJobDuties, getJobSpecification, getJobGeneric, getJobQualification, createJobCompetency, getJobCompetency } = require('../JobSummary/JobSummary.controller');
 
 router.post("/", checkToken, createJobSummary);
 router.post("/check", checkToken, CheckInsertValue);
@@ -16,4 +16,10 @@ router.post("/getjobduties", checkToken, getJobDuties);
 router.post("/getjobspecific", checkToken, getJobSpecification);
 router.post("/getjobgeneric", checkToken, getJobGeneric);
 router.post("/getjobQual", checkToken, getJobQualification);
+
+
+
+router.post("/getcomptency", checkToken, getJobCompetency)
+router.post("/jobcompetency", checkToken, createJobCompetency)
+
 module.exports = router;

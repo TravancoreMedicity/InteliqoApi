@@ -108,6 +108,7 @@ const JobSummaryRouter = require("./api/JobSummary/JobSummary.router")
 const KRARouter = require("./api/KRA/KRA.router")
 
 
+
 app.use(express.json());
 app.use((req, res, next) => {
     //     res.header("Access-Control-Allow-Origin", "http://192.168.10.170:8080
@@ -251,6 +252,7 @@ app.use("/api/employeeReport", employeeReportRouter)
 app.use("/api/empVerification", empVerificationRouter)
 app.use("/api/jobsummary", JobSummaryRouter)//job summary
 app.use("/api/KraMast", KRARouter)//KRA
+
 
 // ------ Database Connection --------
 

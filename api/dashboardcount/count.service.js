@@ -311,4 +311,31 @@ module.exports = {
             }
         )
     },
+    getActiveEmpCount: (callBack) => {
+        pool.query(
+            `SELECT LPAD(count(*),4,'0') 'ActiveEmpCount'  FROM medi_hrm.hrm_emp_master where em_status = 1;`,
+            [],
+            (error, results, feilds) => {
+
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+
+    getpunchCount: (callBack) => {
+        pool.query(
+            `SELECT LPAD(count(*),4,'0') 'punchcount' FROM punch_data
+            where DATE(punch_time) = curdate()`,
+            [],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    }
 }
