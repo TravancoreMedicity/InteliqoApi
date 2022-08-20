@@ -1,6 +1,7 @@
 const { createJobSummary, CheckInsertValue, createJobDuties, getjobId,
     createJobSpecification, createJobQualification, createJobGeneric,
-    getJobSummary, getJobDuties, getJobSpecification, getJobGeneric, getJobQualification, createJobCompetency, getJobCompetency } = require('../JobSummary/JobSummary.service');
+    getJobSummary, getJobDuties, getJobSpecification, getJobGeneric, getJobQualification,
+    createJobCompetency, getJobSummarydetl, updatejobsummarydetl } = require('../JobSummary/JobSummary.service');
 // const { validatereligion } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -327,10 +328,9 @@ module.exports = {
             });
         });
     },
-    getJobCompetency: (req, res) => {
+    getJobSummarydetl: (req, res) => {
         const body = req.body;
-        getJobCompetency(body, (err, results) => {
-
+        getJobSummarydetl(body, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
@@ -350,6 +350,32 @@ module.exports = {
                 success: 1,
                 data: results
             });
+        });
+    },
+    updatejobsummarydetl: (req, res) => {
+        const body = req.body;
+        updatejobsummarydetl(body, (err, results) => {
+
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 2,
+                message: "Data Updated Successfully"
+            });
+
         });
     }
 }

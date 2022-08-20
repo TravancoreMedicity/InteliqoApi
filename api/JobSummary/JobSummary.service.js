@@ -1,3 +1,4 @@
+const { log } = require('winston');
 const { Console } = require('winston/lib/winston/transports');
 const pool = require('../../config/database');
 
@@ -282,19 +283,13 @@ module.exports = {
         )
     },
 
-    getJobCompetency: (data, callBack) => {
+    getJobSummarydetl: (data, callBack) => {
         pool.query(
-            `SELECT 
-            description_slno,
-            designation,
-            department,
-            job_desription,
-            job_Summary
-            FROM job_description 
-            where designation =? and department =?`,
+            `SELECT * FROM medi_hrm.job_summary
+            where dept_id = ? and designation = ?`,
             [
-                data.designation,
-                data.department
+                data.dept_id,
+                data.designation
             ],
 
             (error, results, feilds) => {
@@ -306,7 +301,38 @@ module.exports = {
             }
         )
     },
+    updatejobsummarydetl: (data, callBack) => {
+        pool.query(
+            `UPDATE medi_hrm.job_summary
+        set objective= "?",
+        scope="?",
+        work_place=?,
+        reporting_dept=?,
+        reporting_designation=?,
+        equipment_used ="?",
+        working_hour = "?"
+        where dept_id =? and designation =?`,
+            [
+                data.objective,
+                data.scope,
+                data.work_place,
+                data.reporting_dept,
+                data.reporting_designation,
+                data.equipment_used,
+                JSON.stringify(data.working_hour),
+                data.dept_id,
+                data.designation
+            ],
 
+            (error, results, feilds) => {
+                if (error) {
+
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    }
 
 
 }
