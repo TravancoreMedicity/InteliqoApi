@@ -34,10 +34,9 @@ module.exports = {
         pool.query(
             `SELECT 
             emp_id,
-            em_no,
+            punch_master.em_no,
             punch_in,
             punch_out, 
-            em_no,  
            ifnull( sum(duty_worked),0) duty_worked,
             sum(hrs_worked)hrs_worked, 
             sum(over_time)over_time,
@@ -45,11 +44,13 @@ module.exports = {
             count(if(leave_type!=0,leave_type,null))leave_type,
             sum(late_in)late_in, 
             sum(early_out)early_out, 
-           ifnull( sum(duty_status),0)duty_status
+           ifnull( sum(duty_status),0)duty_status,
+           ifnull(gross_salary,0)gross_salary
             FROM medi_hrm.punch_master 
-            where emp_id=? 
+            left join hrm_gross_salary on hrm_gross_salary.em_id=punch_master.emp_id
+            where emp_id=?
             and duty_day between ? and ?
-             group by emp_id, em_no`,
+             group by emp_id,punch_master.em_no`,
             [data.emp_id, data.start, data.end
             ],
             (error, results, feilds) => {

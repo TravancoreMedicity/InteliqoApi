@@ -230,4 +230,19 @@ module.exports = {
             }
         )
     },
+    getTotalFine: (id, callBack) => {
+        pool.query(
+            `SELECT ifnull(sum(fine_amount),0) as fine_sum from hrm_emp_fine_mast 
+            where fine_emp_id=? and fine_status=0`,
+            [
+                id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }

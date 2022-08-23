@@ -319,14 +319,13 @@ module.exports = {
     //get Contract End Details
     getContractEndDetl: (callBack) => {
         pool.query(
-            `select em_id,em_no,em_name,sect_name,em_contract_end_date< CURDATE() 'contract_falg',
-            em_doj,desg_name,
-            em_contract_end_date 
-            from hrm_emp_master
+            `select hrm_emp_contract_detl.em_id,hrm_emp_contract_detl.em_no,em_name,sect_name,desg_name,em_status,
+            em_doj,em_cont_start,em_cont_end from hrm_emp_contract_detl
+            left join hrm_emp_master on hrm_emp_master.em_id=hrm_emp_contract_detl.em_id
             left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
             left join designation on designation.desg_slno=hrm_emp_master.em_designation
-            where em_contract_end_date between CURDATE() and  ADDDATE(CURDATE(),15) 
-            or em_contract_end_date<=CURDATE() and contract_status=1 and em_status=1 and em_contract_end_date!='2000-01-01';`,
+            where em_cont_close is null and em_cont_renew is null and contract_renew_appr=0 and em_cont_end<=CURDATE() or 
+            em_cont_end between CURDATE() and  ADDDATE(CURDATE(),30) and em_status=1 and contract_renew_appr!=1`,
             [],
             (error, results, feilds) => {
                 if (error) {
@@ -339,14 +338,13 @@ module.exports = {
     //get Contract End Details
     getcontractEndDetlByDate: (data, callBack) => {
         pool.query(
-            `   select em_id,em_no,em_name,sect_name,em_contract_end_date< CURDATE() 'contract_falg',
-            em_doj,desg_name,
-            em_contract_end_date 
-            from hrm_emp_master
+            `select hrm_emp_contract_detl.em_id,hrm_emp_contract_detl.em_no,em_name,sect_name,desg_name,em_status,
+            em_doj,em_cont_start,em_cont_end from hrm_emp_contract_detl
+            left join hrm_emp_master on hrm_emp_master.em_id=hrm_emp_contract_detl.em_id
             left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
             left join designation on designation.desg_slno=hrm_emp_master.em_designation
-            where em_contract_end_date between ? and ?
-            and contract_status=1 and em_status=1 and em_contract_end_date!='2000-01-01'`,
+            where em_cont_close is null and em_cont_renew is null and contract_renew_appr=0 and em_cont_end<=CURDATE() or 
+            em_cont_end between ? and ? and em_status=1`,
             [
                 data.startdate,
                 data.enddate

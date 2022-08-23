@@ -1,5 +1,5 @@
 const { create, update, createdetl, checkInsertVal, checkUpdateVal, updatefineslno, getFineByID,
-    getFineBySlno, getFineByIDStatus, deletefinedetl } = require('../hrm_emp_fine/fine.service');
+    getFineBySlno, getFineByIDStatus, deletefinedetl, getTotalFine } = require('../hrm_emp_fine/fine.service');
 const { validatefinededuction } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -219,6 +219,29 @@ module.exports = {
             return res.status(200).json({
                 success: 1,
                 message: "Record Deleted Successfully"
+            });
+        });
+    },
+    getTotalFine: (req, res) => {
+
+        const id = req.params.id;
+        getTotalFine(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
             });
         });
     },
