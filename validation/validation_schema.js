@@ -1241,6 +1241,15 @@ const validationPerformanceGrade = Joi.object({
 })
 
 
+// VALIDATION PerformanceAppraisalRights
+const validatePerformanceAppraisalRights = Joi.object({
+        dept_id: Joi.number().required(),
+        em_id: Joi.number().required(),
+        rights_needed: Joi.optional(),
+        p_rights_slno: Joi.number().optional()
+})
+
+
 module.exports = {
         authSchema,  //authSchema:authSchema
         validateEmployee,
@@ -1326,5 +1335,6 @@ module.exports = {
         validateadvanceSettings,
         validateAdvanceRequest,
         validateempmasterEdit,
-        validationPerformanceGrade
+        validationPerformanceGrade,
+        validatePerformanceAppraisalRights
 }

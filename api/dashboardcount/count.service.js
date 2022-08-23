@@ -313,7 +313,47 @@ module.exports = {
     },
     probationEndCount: (callBack) => {
         pool.query(
-            `select count(*) 'probationcount' from hrm_emp_master where em_category IN (4,7,9) and em_prob_end_date<=curdate(); `,
+            `select count(*) 'probationcount' from hrm_emp_master where em_category IN (4,7,9) and em_prob_end_date<=curdate() and em_prob_end_date!="2000-01-01"; `,
+            [],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    annualAppraisalCount: (callBack) => {
+        pool.query(
+            `SELECT count(*) 'annualcount' FROM medi_hrm.hrm_emp_master  where em_category=1 and em_prob_end_date<=curdate();`,
+            [],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    trainingAppraisalCount: (callBack) => {
+        pool.query(
+            `SELECT count(*) 'trainingcount' FROM medi_hrm.hrm_emp_master  where em_category IN (3,4) and em_prob_end_date<=curdate();`,
+            [],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    contractEndCount: (callBack) => {
+        pool.query(
+            `select count(*) 'contractcount' 
+            from hrm_emp_master
+            left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
+            left join designation on designation.desg_slno=hrm_emp_master.em_designation
+            where em_contract_end_date<=CURDATE() and contract_status=1 and em_status=1 and em_contract_end_date!='2000-01-01';`,
             [],
             (error, results, feilds) => {
                 if (error) {
