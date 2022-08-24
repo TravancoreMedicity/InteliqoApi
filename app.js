@@ -88,28 +88,28 @@ const JobdescriptionRouter = require("./api/Job_description/Job_description.rout
 // const reportsRouter = require("./api/Reports/Reports.router")
 const advance_settingsRouter = require("./api/advance_settings/advance_settings.router")
 const advancerequestRouter = require("./api/advance_request/advance_request.router")
-//const CategoryReportRouter = require("./api/CategoryReport/CategoryReport.router")
-// const DesignationReportRouter = require("./api/DesignationReport/DesignationReport.router")
-// const QualificatonReportRouter = require("./api/QualificationReport/QualificationReport.router")
-// const DeptSectionReportRouter = require("./api/DeptSectionReport/DeptSectionReport.router")
-// const DesigExpReportRouter = require("./api/DesignationExpReport/DesigExpReport.router")
-// const TrainingProbaReportRouter = require("./api/TraingProbaReport/TrainingProbaReport.router")
-// const bloodgrpReportRouter = require("./api/bloodgrpReport/bloodgrpReport.router")
-// const ReligionReportRouter = require("./api/ReligionReport/ReligionReport.router")
-// const RegionReportRouter = require("./api/regionReport/regionReport.router")
-// const experienceReportRouter = require("./api/experienceReport/ExperienceReport.router")
-// const institutionReportRouter = require("./api/institutionReport/institutionReport.router")
-// const RegistrationTypeReportRouter = require("./api/RegistrationTypeReport/RegistrationTypeReport.router")
-// const ContractReportRouter = require("./api/ContractReport/ContractReport.router")
-// const PermanentEmpReportRouter = require("./api/PermanentEmpReport/PermanentEmpReport.router")
-// const employeeReportRouter = require("./api/employeeReport/EmployeeReport.router")
+const CategoryReportRouter = require("./api/CategoryReport/CategoryReport.router")
+const DesignationReportRouter = require("./api/DesignationReport/DesignationReport.router")
+const QualificatonReportRouter = require("./api/QualificationReport/QualificationReport.router")
+const DeptSectionReportRouter = require("./api/DeptSectionReport/DeptSectionReport.router")
+const DesigExpReportRouter = require("./api/DesignationExpReport/DesigExpReport.router")
+const TrainingProbaReportRouter = require("./api/TraingProbaReport/TrainingProbaReport.router")
+const bloodgrpReportRouter = require("./api/bloodgrpReport/bloodgrpReport.router")
+const ReligionReportRouter = require("./api/ReligionReport/ReligionReport.router")
+const RegionReportRouter = require("./api/regionReport/regionReport.router")
+const experienceReportRouter = require("./api/experienceReport/ExperienceReport.router")
+const institutionReportRouter = require("./api/institutionReport/institutionReport.router")
+const RegistrationTypeReportRouter = require("./api/RegistrationTypeReport/RegistrationTypeReport.router")
+const ContractReportRouter = require("./api/ContractReport/ContractReport.router")
+const PermanentEmpReportRouter = require("./api/PermanentEmpReport/PermanentEmpReport.router")
+//const employeeReportRouter = require("./api/employeeReport/EmployeeReport.router")
 const empVerificationRouter = require("./api/EmpVerification/EmpVerification.router")
 const JobSummaryRouter = require("./api/JobSummary/JobSummary.router")
 const KRARouter = require("./api/KRA/KRA.router")
 const performanceGradeRouter = require("./api/performanceGrade/performanceGrade.router")
 const PerformanceAppraisalRouter = require("./api/PerformanceAppraisal/PerformanceAppraisal.router")
 const AppraisalRoightsRouter = require("./api/performanceappriasalrights/performanceappriasalrights.router")
-
+const ActiveEmpReportRouter = require("./api/ActiveEmpReport/ActiveEmpReport.router")
 
 
 
@@ -238,20 +238,20 @@ app.use("/api/jobdescription", JobdescriptionRouter)//job description
 
 app.use("/api/advanceSettings", advance_settingsRouter)
 app.use("/api/advancerequest", advancerequestRouter)
-//app.use("/api/CategoryReport", CategoryReportRouter)
-// app.use("/api/DesignationReport", DesignationReportRouter)
-// app.use("/api/QualificationReport", QualificatonReportRouter)
-// app.use("/api/DeptSectionReport", DeptSectionReportRouter)
-// app.use("/api/DesignationExpReport", DesigExpReportRouter)
-// app.use("/api/TraingProbaReport", TrainingProbaReportRouter)
-// app.use("/api/bloodgrpReport", bloodgrpReportRouter)//blood group reports
-// app.use("/api/religionReport", ReligionReportRouter)// religion wise report
-// app.use("/api/RegionReport", RegionReportRouter)//region wise report
-// app.use("/api/experienceReport", experienceReportRouter) // employee experience report
-// app.use("/api/institutionReport", institutionReportRouter) //institution report
-// app.use("/api/RegistrationTypeReport", RegistrationTypeReportRouter) //registration type reports
-// app.use("/api/ContractReport", ContractReportRouter)// contract expiry report
-// app.use("/api/PermanentEmpReport", PermanentEmpReportRouter) //permanent employee report
+app.use("/api/CategoryReport", CategoryReportRouter)
+app.use("/api/DesignationReport", DesignationReportRouter)
+app.use("/api/QualificationReport", QualificatonReportRouter)
+app.use("/api/DeptSectionReport", DeptSectionReportRouter)
+app.use("/api/DesignationExpReport", DesigExpReportRouter)
+app.use("/api/TraingProbaReport", TrainingProbaReportRouter)
+app.use("/api/bloodgrpReport", bloodgrpReportRouter)//blood group reports
+app.use("/api/religionReport", ReligionReportRouter)// religion wise report
+app.use("/api/RegionReport", RegionReportRouter)//region wise report
+app.use("/api/experienceReport", experienceReportRouter) // employee experience report
+app.use("/api/institutionReport", institutionReportRouter) //institution report
+app.use("/api/RegistrationTypeReport", RegistrationTypeReportRouter) //registration type reports
+app.use("/api/ContractReport", ContractReportRouter)// contract expiry report
+app.use("/api/PermanentEmpReport", PermanentEmpReportRouter) //permanent employee report
 // app.use("/api/employeeReport", employeeReportRouter)
 app.use("/api/empVerification", empVerificationRouter)
 app.use("/api/jobsummary", JobSummaryRouter)//job summary
@@ -259,6 +259,7 @@ app.use("/api/KraMast", KRARouter)//KRA
 app.use("/api/performanceGrade", performanceGradeRouter)//performance grade master
 app.use("/api/Performance", PerformanceAppraisalRouter)
 app.use("/api/performanceappriasalrights", AppraisalRoightsRouter)
+app.use("/api/ActiveEmpReport", ActiveEmpReportRouter)
 
 
 

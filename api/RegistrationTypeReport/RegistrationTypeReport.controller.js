@@ -1,41 +1,93 @@
-const { createrights, selectrights, getAppraisalRightByID, update,
-    employeeByDepartment, HodInchargeNames, employeeByID, HODInsert,
-    selecthod, getAppraisalRightByHOD, updatehod, getUserRights, createPerformanceAppraisal,
-    getAllProbAppraisalEmployee } = require('../performanceappriasalrights/performanceappriasalrights.service');
-const { validatePerformanceAppraisalRights } = require('../../validation/validation_schema');
-const logger = require('../../logger/logger')
+const {
+    RegistrationTypeReport,
+    DeptRegistrationTypeReport,
+    EmpRegistrationTypeReport,
+    getRegistrTyp,
+    RegistrationNumberWiseReport,
+    ChellanWiseReport,
+    RegNumberWithDate,
+    getRegisterOnly,
+    getChallanOnly,
+    getChallanRegistrationCombined,
+    challanNumberWithDate,
+    getCombinedRegType,
+    getCombinedWithdate,
+} = require('../RegistrationTypeReport/RegistrationTypeReport.service')
+
 module.exports = {
-    createrights: (req, res) => {
+    RegistrationTypeReport: (req, res) => {
         const body = req.body;
-        var a1 = body.map((value, index) => {
-            return [value.dept_id, value.em_id, JSON.stringify(value.rights_needed)]
-        })
-        createrights(a1, (err, results) => {
+        RegistrationTypeReport(body, (err, results) => {
             if (err) {
-                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err
                 });
             }
+
             if (!results) {
                 return res.status(200).json({
-                    success: 0,
+                    success: 2,
                     message: "No Results Found"
                 });
             }
+
             return res.status(200).json({
                 success: 1,
-                message: "Data Created Successfully"
+                data: results
             });
-
-        });
+        })
     },
-    selectrights: (req, res) => {
-
-        selectrights((err, results) => {
+    DeptRegistrationTypeReport: (req, res) => {
+        const body = req.body;
+        DeptRegistrationTypeReport(body, (err, results) => {
             if (err) {
-                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    EmpRegistrationTypeReport: (req, res) => {
+        const body = req.body;
+        EmpRegistrationTypeReport(body, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+
+    getRegistrTyp: (req, res) => {
+        getRegistrTyp((err, results) => {
+            if (err) {
                 return res.status(200).json({
                     success: 2,
                     message: err
@@ -55,61 +107,20 @@ module.exports = {
             });
         });
     },
-    getAppraisalRightByID: (req, res) => {
-        const id = req.params.id;
-        getAppraisalRightByID(id, (err, results) => {
-            if (err) {
-                logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 0,
-                    message: err
-                });
-            }
-
-            if (results.length == 0) {
-                return res.status(200).json({
-                    success: 0,
-                    message: "No Record Found"
-                });
-            }
-
-            return res.status(200).json({
-                success: 1,
-                data: results
-            });
-        })
-    },
-    update: (req, res) => {
-
+    RegistrationNumberWiseReport: (req, res) => {
         const body = req.body;
-        const result = update(body)
-            .then((r) => {
-                return res.status(200).json({
-                    success: 1,
-                    message: r
-                });
-            }).catch((e) => {
-                return res.status(200).json({
-                    success: 0,
-                    message: e.sqlMessage
-                });
-            })
-    },
-    employeeByDepartment: (req, res) => {
-        const id = req.params.id;
-        employeeByDepartment(id, (err, results) => {
+        RegistrationNumberWiseReport(body, (err, results) => {
             if (err) {
-                logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err
                 });
             }
 
-            if (results.length == 0) {
+            if (!results) {
                 return res.status(200).json({
-                    success: 0,
-                    message: "No Record Found"
+                    success: 2,
+                    message: "No Results Found"
                 });
             }
 
@@ -119,11 +130,59 @@ module.exports = {
             });
         })
     },
-    HodInchargeNames: (req, res) => {
-
-        HodInchargeNames((err, results) => {
+    ChellanWiseReport: (req, res) => {
+        const body = req.body;
+        ChellanWiseReport(body, (err, results) => {
             if (err) {
-                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    /** Get registration number with date */
+    RegNumberWithDate: (req, res) => {
+        const body = req.body
+        RegNumberWithDate(body, (err, results) => {
+            if (err) {
+                // logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    /** Registration number only report */
+    getRegisterOnly: (req, res) => {
+        getRegisterOnly((err, results) => {
+            if (err) {
+                // logger.errorLogger(err)
                 return res.status(200).json({
                     success: 2,
                     message: err
@@ -143,57 +202,10 @@ module.exports = {
             });
         });
     },
-    employeeByID: (req, res) => {
-        const id = req.params.id;
-        employeeByID(id, (err, results) => {
+    getChallanOnly: (req, res) => {
+        getChallanOnly((err, results) => {
             if (err) {
-                logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 0,
-                    message: err
-                });
-            }
-
-            if (results.length == 0) {
-                return res.status(200).json({
-                    success: 0,
-                    message: "No Record Found"
-                });
-            }
-
-            return res.status(200).json({
-                success: 1,
-                data: results
-            });
-        })
-    },
-    HODInsert: (req, res) => {
-        const body = req.body;
-        HODInsert(body, (err, results) => {
-            if (err) {
-                logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 0,
-                    message: err
-                });
-            }
-            if (!results) {
-                return res.status(200).json({
-                    success: 0,
-                    message: "No Results Found"
-                });
-            }
-            return res.status(200).json({
-                success: 1,
-                message: "Data Created Successfully"
-            });
-
-        });
-    },
-    selecthod: (req, res) => {
-        selecthod((err, results) => {
-            if (err) {
-                logger.errorLogger(err)
+                // logger.errorLogger(err)
                 return res.status(200).json({
                     success: 2,
                     message: err
@@ -213,108 +225,84 @@ module.exports = {
             });
         });
     },
-    getAppraisalRightByHOD: (req, res) => {
-        const id = req.params.id;
-        getAppraisalRightByHOD(id, (err, results) => {
+    getChallanRegistrationCombined: (req, res) => {
+        getChallanRegistrationCombined((err, results) => {
             if (err) {
-                logger.errorLogger(err)
+                // logger.errorLogger(err)
                 return res.status(200).json({
-                    success: 0,
+                    success: 2,
                     message: err
                 });
             }
 
-            if (results.length == 0) {
-                return res.status(200).json({
-                    success: 0,
-                    message: "No Record Found"
-                });
-            }
-
-            return res.status(200).json({
-                success: 1,
-                data: results
-            });
-        })
-    },
-    updatehod: (req, res) => {
-        const body = req.body;
-        updatehod(body, (err, results) => {
-
-            if (err) {
-                logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 0,
-                    message: err
-                });
-            }
-
-            if (!results) {
-                return res.status(200).json({
-                    success: 1,
-                    message: "Record Not Found"
-                });
-            }
-
-            return res.status(200).json({
-                success: 2,
-                message: "Data Updated Successfully"
-            });
-
-        });
-    },
-    getUserRights: (req, res) => {
-        const id = req.params.id;
-        getUserRights(id, (err, results) => {
-            if (err) {
-                logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 0,
-                    message: err
-                });
-            }
-
-            if (results.length == 0) {
-                return res.status(200).json({
-                    success: 0,
-                    message: "No Record Found"
-                });
-            }
-
-            return res.status(200).json({
-                success: 1,
-                data: results
-            });
-        })
-    },
-    createPerformanceAppraisal: (req, res) => {
-        const body = req.body;
-        createPerformanceAppraisal(body, (err, results) => {
-            if (err) {
-                logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 0,
-                    message: err
-                });
-            }
             if (!results) {
                 return res.status(200).json({
                     success: 0,
                     message: "No Results Found"
                 });
             }
+
             return res.status(200).json({
                 success: 1,
-                message: "Data Created Successfully"
+                data: results
             });
-
         });
     },
-    getAllProbAppraisalEmployee: (req, res) => {
-
-        const body = req.body;
-        getAllProbAppraisalEmployee(body, (err, results) => {
+    /** Get challan number with date */
+    challanNumberWithDate: (req, res) => {
+        const body = req.body
+        challanNumberWithDate(body, (err, results) => {
             if (err) {
+                // logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    getCombinedRegType: (req, res) => {
+        const body = req.body
+        getCombinedRegType(body, (err, results) => {
+            if (err) {
+                // logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    /** Both challan and registration number details with date, register type */
+    getCombinedWithdate: (req, res) => {
+        const body = req.body
+        getCombinedWithdate(body, (err, results) => {
+            if (err) {
+                // logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err
