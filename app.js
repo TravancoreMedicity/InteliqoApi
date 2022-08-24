@@ -112,6 +112,7 @@ const AppraisalRoightsRouter = require("./api/performanceappriasalrights/perform
 
 
 
+
 app.use(express.json());
 app.use((req, res, next) => {
     //     res.header("Access-Control-Allow-Origin", "http://192.168.10.170:8080
@@ -258,6 +259,7 @@ app.use("/api/KraMast", KRARouter)//KRA
 app.use("/api/performanceGrade", performanceGradeRouter)//performance grade master
 app.use("/api/Performance", PerformanceAppraisalRouter)
 app.use("/api/performanceappriasalrights", AppraisalRoightsRouter)
+
 
 
 // ------ Database Connection --------

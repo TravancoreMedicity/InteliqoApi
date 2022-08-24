@@ -6,8 +6,7 @@ const { getResignCount, getContractCloseCount, OtRequestCount, OtReqInchargeCoun
     ResignReqHodCount, ResignReqCeoCount, contractrenewalCount, trainingconformationCount,
     getLeaveRequestID, RegistrationPending, RegistrationPendingList, probationEndCount,
     annualAppraisalCount,
-    trainingAppraisalCount, contractEndCount } = require('../dashboardcount/count.controller');
-
+    trainingAppraisalCount, contractEndCount ,getpunchCount,getActiveEmpCount} = require('../dashboardcount/count.controller');
 
 router.get("/", checkToken, getResignCount);
 router.get("/:id", checkToken, getLeaveRequestID);
@@ -30,10 +29,16 @@ router.get("/contractrenewalCount", checkToken, contractrenewalCount);
 router.get("/trainingconformationCount", checkToken, trainingconformationCount);
 router.get("/registration/pending", checkToken, RegistrationPending);
 router.get("/registration/pending/list", checkToken, RegistrationPendingList);
+
 router.get("/probCount/list", checkToken, probationEndCount)
 router.get("/annualempcount/list", checkToken, annualAppraisalCount)
 router.get("/trainingcount/list", checkToken, trainingAppraisalCount)
 router.get("/contractcount/list", checkToken, contractEndCount)
 
+router.get("/activecount/countlist", checkToken, getActiveEmpCount);
+router.get("/punch/count", getpunchCount)
+
 
 module.exports = router;
+
+

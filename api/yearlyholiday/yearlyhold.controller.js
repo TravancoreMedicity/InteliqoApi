@@ -1,5 +1,5 @@
 const { create, update, deleteByID, getData, getDataById, getSelect, getDatabyYear,
-    getHolidayByDate } = require('../yearlyholiday/yearlyhold.service');
+    getHolidayByDate, getyearholiday } = require('../yearlyholiday/yearlyhold.service');
 const { validateyearlyholidaylist } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -218,5 +218,28 @@ module.exports = {
 
         });
     },
+    getyearholiday: (req, res) => {
+        const body = req.body;
+        getyearholiday(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: res.err
+                });
+            }
+            if (!results) {
+                return res.status(400).json({
+                    success: 1,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 2,
+                data: results
+            });
+        });
+    }
 
 }
