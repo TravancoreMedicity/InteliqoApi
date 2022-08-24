@@ -38,7 +38,8 @@ module.exports = {
                 hrm_pin2, 
                 hrm_region2, 
                 blood_slno,
-                hrm_religion,contract_status
+                hrm_religion,
+                contract_status
             )
             VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
@@ -702,6 +703,78 @@ module.exports = {
             where em_id=?`,
             [
                 data.em_id,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getDataByEmpno: (id, callBack) => {
+        pool.query(
+            `SELECT 
+                em_id,
+                em_no,
+                em_salutation,
+                em_name,
+                em_gender,
+                em_dob,
+                em_age_year,
+                em_age_month,
+                em_age_day,
+                em_doj,
+                em_mobile,
+                em_phone,
+                em_email,
+                em_branch,
+                em_department,
+                em_dept_section,
+                em_institution_type,
+                em_designation,
+                em_doc_type,
+                em_category,
+                em_prob_end_date,
+                em_conf_end_date,
+                em_retirement_date,
+                em_contract_end_date,
+                em_status,
+                create_user,
+                addressPermnt1,
+                addressPermnt2, 
+                hrm_pin1,
+                em_region,
+                addressPresent1,
+                addressPresent2,
+                hrm_pin2, 
+                hrm_region2, 
+                blood_slno,
+                hrm_religion,
+                contract_status    
+                FROM hrm_emp_master
+                WHERE em_no = ? `,
+            [
+                id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getDataByEmpID: (id, callBack) => {
+        pool.query(
+            `SELECT 
+                em_id,
+                em_no,
+                em_category
+                from hrm_emp_master
+            WHERE em_id = ? `,
+            [
+                id
             ],
             (error, results, feilds) => {
                 if (error) {

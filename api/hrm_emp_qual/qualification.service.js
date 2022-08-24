@@ -234,4 +234,37 @@ module.exports = {
             }
         )
     },
+    getDataByEmpno: (id, callBack) => {
+        pool.query(
+            `SELECT 
+            em_no,
+            em_id,               
+            em_education,
+            em_course,
+            em_specialization,
+            em_univ_institute,
+            em_board,
+            em_year,
+            em_mark_grade,
+            em_reg_type,
+            em_reg_no,
+            em_exp_date,
+            em_chellan,
+            em_chellan_exp_date,
+            create_user,
+            pass_fail   
+            FROM hrm_emp_qual
+            WHERE em_no = ?`,
+            [
+                id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+
 }
