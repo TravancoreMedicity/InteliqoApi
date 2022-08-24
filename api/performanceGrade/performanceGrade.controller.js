@@ -1,21 +1,22 @@
-const { create, update, getDataById, getSelectAllDataById, getDataByEmpno } = require('../hrm_emp_exp/empexp.service');
-const { validateempexperience_ } = require('../../validation/validation_schema');
+const { createPerformanceGrade, getPerformanceGrade, getPerGradeByID, updatePerformanceGrade, performanceAppraisalEmployee } = require('../performanceGrade/performanceGrade.service');
+const { validationPerformanceGrade } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
-module.exports = {
-    createExp: (req, res) => {
-        const body = req.body;
-        const body_result = validateempexperience_.validate(body);
 
+module.exports = {
+    createPerformanceGrade: (req, res) => {
+        const body = req.body;
+        //validate performance grade
+        const body_result = validationPerformanceGrade.validate(body);
         if (body_result.error) {
             return res.status(200).json({
                 success: 2,
                 message: body_result.error.details[0].message
             });
         }
+        // let body.dept_name = body_result
+        //body.sect_name = body_result.value.sect_name;
 
-        body.relg_name = body_result.value.relg_name;
-
-        create(body, (err, results) => {
+        createPerformanceGrade(body, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
@@ -26,15 +27,63 @@ module.exports = {
 
             return res.status(200).json({
                 success: 1,
-                message: "Data Created Successfully"
+                message: "Record Updated Successfully"
             });
-
         });
     },
-    updateExp: (req, res) => {
+    getPerformanceGrade: (req, res) => {
+
+        getPerformanceGrade((err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    getPerGradeByID: (req, res) => {
+        const id = req.params.id;
+        getPerGradeByID(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(400).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+
+    },
+    updatePerformanceGrade: (req, res) => {
 
         const body = req.body;
-        const body_result = validateempexperience_.validate(body);
+        const body_result = validationPerformanceGrade.validate(body);
 
         if (body_result.error) {
             return res.status(200).json({
@@ -43,9 +92,7 @@ module.exports = {
             });
         }
 
-        body.relg_name = body_result.value.relg_name;
-
-        update(body, (err, results) => {
+        updatePerformanceGrade(body, (err, results) => {
 
             if (err) {
                 logger.errorLogger(err)
@@ -69,48 +116,21 @@ module.exports = {
 
         });
     },
-    getExpByID: (req, res) => {
+    performanceAppraisalEmployee: (req, res) => {
 
-        const id = req.params.id;
-        getDataById(id, (err, results) => {
+        performanceAppraisalEmployee((err, results) => {
             if (err) {
                 logger.errorLogger(err)
-                return res.status(400).json({
-                    success: 0,
-                    message: err
-                });
-            }
-
-            if (results.length == 0) {
                 return res.status(200).json({
-                    success: 0,
-                    message: "No Record Found"
-                });
-            }
-
-            return res.status(200).json({
-                success: 1,
-                data: results
-            });
-        });
-
-    },
-    getSelectAllExpByID: (req, res) => {
-
-        const id = req.params.id;
-        getSelectAllDataById(id, (err, results) => {
-            if (err) {
-                logger.errorLogger(err)
-                return res.status(400).json({
                     success: 2,
                     message: err
                 });
             }
 
-            if (results.length == 0) {
+            if (!results) {
                 return res.status(200).json({
                     success: 0,
-                    message: "No Record Found"
+                    message: "No Results Found"
                 });
             }
 
@@ -119,32 +139,5 @@ module.exports = {
                 data: results
             });
         });
-
-    },
-    getDataByEmpno: (req, res) => {
-
-        const id = req.params.id;
-        getDataByEmpno(id, (err, results) => {
-            if (err) {
-                logger.errorLogger(err)
-                return res.status(400).json({
-                    success: 0,
-                    message: err
-                });
-            }
-
-            if (results.length == 0) {
-                return res.status(200).json({
-                    success: 0,
-                    message: "No Record Found"
-                });
-            }
-
-            return res.status(200).json({
-                success: 1,
-                data: results
-            });
-        });
-
     },
 }

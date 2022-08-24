@@ -2,8 +2,8 @@ const { getResignCount, getContractCloseCount, OtRequestCount, OtReqInchargeCoun
     OtReqCEOCount, OtReqHRCount, OtRequestCountID, LeaveReqInchargeCount, LeaveReqHodCount,
     LeaveReqCeoCount, LeaveReqHrCount, OtRequestCountUser, LeaveReqCountUser, ResignReqInchargeCount,
     ResignReqHodCount, ResignReqCeoCount, contractrenewalCount, RegistrationPendingList,
-    trainingconformationCount, getLeaveRequestID, RegistrationPending, getActiveEmpCount,
-    getpunchCount } = require('../dashboardcount/count.service');
+    trainingconformationCount, getLeaveRequestID, RegistrationPending, probationEndCount, annualAppraisalCount,
+    trainingAppraisalCount, contractEndCount,getActiveEmpCount, getpunchCount } = require('../dashboardcount/count.service');
 const logger = require('../../logger/logger')
 module.exports = {
     getResignCount: (req, res) => {
@@ -521,7 +521,99 @@ module.exports = {
             });
         });
     },
-    getActiveEmpCount: (req, res) => {
+    probationEndCount: (req, res) => {
+        probationEndCount((err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    annualAppraisalCount: (req, res) => {
+        annualAppraisalCount((err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    trainingAppraisalCount: (req, res) => {
+        trainingAppraisalCount((err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    contractEndCount: (req, res) => {
+        contractEndCount((err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+  getActiveEmpCount: (req, res) => {
         getActiveEmpCount((err, results) => {
 
             if (err) {
@@ -545,8 +637,7 @@ module.exports = {
             });
         });
     },
-
-    getpunchCount: (req, res) => {
+getpunchCount: (req, res) => {
         getpunchCount((err, results) => {
 
             if (err) {
@@ -569,5 +660,5 @@ module.exports = {
                 data: results
             });
         });
-    }
+    },
 }

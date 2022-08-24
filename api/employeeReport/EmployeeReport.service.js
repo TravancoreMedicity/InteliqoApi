@@ -49,7 +49,6 @@ module.exports = {
                 data.dept_id
             ],
             (error, results, feilds) => {
-                console.log(results)
                 if (error) {
                     return callBack(error);
                 }
@@ -79,7 +78,6 @@ module.exports = {
                 data.sect_id
             ],
             (error, results, feilds) => {
-                console.log(results)
                 if (error) {
                     return callBack(error);
                 }
@@ -109,7 +107,6 @@ module.exports = {
                 data.date_of_join_end
             ],
             (error, results, feilds) => {
-                console.log(results);
                 if (error) {
                     return callBack(error);
                 }
@@ -140,7 +137,6 @@ module.exports = {
                 data.date_of_join_end
             ],
             (error, results, feilds) => {
-                console.log(results);
                 if (error) {
                     return callBack(error);
                 }
@@ -173,7 +169,6 @@ module.exports = {
                 data.date_of_join_end
             ],
             (error, results, feilds) => {
-                console.log(results);
                 if (error) {
                     return callBack(error);
                 }
@@ -218,7 +213,6 @@ module.exports = {
                 data
             ],
             (error, results, feilds) => {
-                console.log(results)
                 if (error) {
                     return callBack(error);
                 }
@@ -241,7 +235,7 @@ module.exports = {
             left join designation on designation.desg_slno=hrm_emp_master.em_designation
             left join doctor_type on doctor_type.doctype_slno=hrm_emp_master.em_doc_type
             left join hrm_emp_category on hrm_emp_category.category_slno=hrm_emp_master.em_category
-             where hrm_branch.branch_slno IN (?) and hrm_department.dept_id IN(?)
+             where em_branch IN (?) and em_department IN(?)
              union all
              select hrm_emp_master.em_id,hrm_emp_master.em_no,em_name,em_dob,if(em_gender=1,'Male','Female')em_gender,em_doj,em_mobile,em_email,branch_name,dept_name,
             sect_name,inst_emp_type,desg_name,doctype_desc,ecat_name,em_contract_end_date,em_adhar_no,
@@ -256,12 +250,12 @@ module.exports = {
             left join designation on designation.desg_slno=hrm_emp_master.em_designation
             left join doctor_type on doctor_type.doctype_slno=hrm_emp_master.em_doc_type
             left join hrm_emp_category on hrm_emp_category.category_slno=hrm_emp_master.em_category
-            where hrm_employee.emp_status=0 and hrm_branch.branch_slno IN (?) and hrm_department.dept_id IN (?)`,
+            where hrm_employee.emp_status=0 and em_branch IN (?) and em_department IN(?)`,
             [
-                data.branch_slno,
-                data.branch_slno,
-                data.dept_id,
-                data.dept_id
+                data.em_branch,
+                data.em_department,
+                data.em_branch,
+                data.em_department
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -286,7 +280,7 @@ module.exports = {
             left join designation on designation.desg_slno=hrm_emp_master.em_designation
             left join doctor_type on doctor_type.doctype_slno=hrm_emp_master.em_doc_type
             left join hrm_emp_category on hrm_emp_category.category_slno=hrm_emp_master.em_category
-             where hrm_branch.branch_slno IN (?) and hrm_department.dept_id IN(?) and hrm_dept_section.sect_id IN(?)
+             where  em_branch  IN (?) and em_department IN (?) and em_dept_section IN (?)
              union all
              select hrm_emp_master.em_id,hrm_emp_master.em_no,em_name,em_dob,if(em_gender=1,'Male','Female')em_gender,em_doj,em_mobile,em_email,branch_name,dept_name,
             sect_name,inst_emp_type,desg_name,doctype_desc,ecat_name,em_contract_end_date,em_adhar_no,
@@ -301,14 +295,14 @@ module.exports = {
             left join designation on designation.desg_slno=hrm_emp_master.em_designation
             left join doctor_type on doctor_type.doctype_slno=hrm_emp_master.em_doc_type
             left join hrm_emp_category on hrm_emp_category.category_slno=hrm_emp_master.em_category
-            where hrm_employee.emp_status=0 and hrm_branch.branch_slno IN (?) and hrm_department.dept_id IN (?) and hrm_dept_section.sect_id IN (?)`,
+            where hrm_employee.emp_status=0 and em_branch IN (?) and em_department IN (?) and em_dept_section IN (?)`,
             [
-                data.branch_slno,
-                data.branch_slno,
-                data.dept_id,
-                data.dept_id,
-                data.sect_id,
-                data.sect_id
+                data.em_branch,
+                data.em_department,
+                data.em_dept_section,
+                data.em_branch,
+                data.em_department,
+                data.em_dept_section
             ],
             (error, results, feilds) => {
                 if (error) {

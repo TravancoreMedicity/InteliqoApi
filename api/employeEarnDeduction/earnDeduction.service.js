@@ -213,4 +213,54 @@ module.exports = {
             }
         )
     },
+    getDataByEmpno: (id, callBack) => {
+        pool.query(
+            `SELECT 
+            em_no,
+            em_id,
+            em_salary_desc,
+            em_earning_type,
+            em_amount,
+            em_start_date,
+            em_end_date,
+            create_user
+            FROM hrm_emp_earn_deduction
+            WHERE em_no =?`,
+            [
+                id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+
+                return callBack(null, results);
+
+            }
+        )
+    },
+    createEmpsalRyContractRenew: (data, callBack) => {
+        pool.query(
+            `INSERT INTO hrm_emp_earn_deduction (
+                em_no,
+                em_id,
+                em_salary_desc,
+                em_earning_type,
+                em_amount,
+                em_start_date,
+                em_end_date,
+                create_user               
+            )
+            VALUES ?`,
+            [
+                data
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }

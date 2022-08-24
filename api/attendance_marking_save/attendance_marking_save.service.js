@@ -68,4 +68,42 @@ module.exports = {
             }
         )
     },
+    attendanceMarkingSaveContract: (data, callBack) => {
+        pool.query(
+            `INSERT INTO hrm_attendance_marking 
+            (em_id, 
+            em_no,
+            attendance_marking_month,
+            attnd_mark_startdate,
+            attnd_mark_enddate,
+            total_working_days,
+            tot_days_present,
+            total_leave,
+            total_lop,
+            total_days,
+            contract_renew_date,
+            updated_user)
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`,
+            [
+                data.em_id,
+                data.em_no,
+                data.attendance_marking_month,
+                data.attnd_mark_startdate,
+                data.attnd_mark_enddate,
+                data.total_working_days,
+                data.tot_days_present,
+                data.total_leave,
+                data.total_lop,
+                data.total_days,
+                data.contract_renew_date,
+                data.updated_user,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }
