@@ -106,10 +106,6 @@ const advancerequestRouter = require("./api/advance_request/advance_request.rout
 const empVerificationRouter = require("./api/EmpVerification/EmpVerification.router")
 const JobSummaryRouter = require("./api/JobSummary/JobSummary.router")
 const KRARouter = require("./api/KRA/KRA.router")
-const performanceGradeRouter = require("./api/performanceGrade/performanceGrade.router")
-const PerformanceAppraisalRouter = require("./api/PerformanceAppraisal/PerformanceAppraisal.router")
-const AppraisalRoightsRouter = require("./api/performanceappriasalrights/performanceappriasalrights.router")
-
 
 
 app.use(express.json());
@@ -255,10 +251,6 @@ app.use("/api/advancerequest", advancerequestRouter)
 app.use("/api/empVerification", empVerificationRouter)
 app.use("/api/jobsummary", JobSummaryRouter)//job summary
 app.use("/api/KraMast", KRARouter)//KRA
-app.use("/api/performanceGrade", performanceGradeRouter)//performance grade master
-app.use("/api/Performance", PerformanceAppraisalRouter)
-app.use("/api/performanceappriasalrights", AppraisalRoightsRouter)
-
 
 // ------ Database Connection --------
 
