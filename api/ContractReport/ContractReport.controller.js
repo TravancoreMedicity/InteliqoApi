@@ -1,41 +1,26 @@
-const { createrights, selectrights, getAppraisalRightByID, update,
-    employeeByDepartment, HodInchargeNames, employeeByID, HODInsert,
-    selecthod, getAppraisalRightByHOD, updatehod, getUserRights, createPerformanceAppraisal,
-    getAllProbAppraisalEmployee } = require('../performanceappriasalrights/performanceappriasalrights.service');
-const { validatePerformanceAppraisalRights } = require('../../validation/validation_schema');
-const logger = require('../../logger/logger')
+const {
+    getContractList,
+    getContractReport,
+    getContractReportWithDate,
+    getBranchWiseContractClosed,
+    getDeptWiseContractClosed,
+    getContractClosedReport,
+    getBranchContractRenew,
+    getDeptContractRenew,
+    getContractRenewReport,
+    getBranchContractRunning,
+    getDeptContractRunning,
+    getContractCurrentRunning,
+    oneYearCurrentRunningBranch,
+    oneYearCurrentRunningDept,
+    oneYearCurrentRunningRpt
+} = require('../ContractReport/ContractReport.service')
+
 module.exports = {
-    createrights: (req, res) => {
-        const body = req.body;
-        var a1 = body.map((value, index) => {
-            return [value.dept_id, value.em_id, JSON.stringify(value.rights_needed)]
-        })
-        createrights(a1, (err, results) => {
+    getContractList: (req, res) => {
+        getContractList((err, results) => {
             if (err) {
-                logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 0,
-                    message: err
-                });
-            }
-            if (!results) {
-                return res.status(200).json({
-                    success: 0,
-                    message: "No Results Found"
-                });
-            }
-            return res.status(200).json({
-                success: 1,
-                message: "Data Created Successfully"
-            });
-
-        });
-    },
-    selectrights: (req, res) => {
-
-        selectrights((err, results) => {
-            if (err) {
-                logger.errorLogger(err)
+                // logger.errorLogger(err)
                 return res.status(200).json({
                     success: 2,
                     message: err
@@ -55,109 +40,22 @@ module.exports = {
             });
         });
     },
-    getAppraisalRightByID: (req, res) => {
-        const id = req.params.id;
-        getAppraisalRightByID(id, (err, results) => {
+    /**contract employee status wise report */
+    getContractReport: (req, res) => {
+        const body = req.body
+        getContractReport(body, (err, results) => {
             if (err) {
-                logger.errorLogger(err)
+                // logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err
                 });
             }
 
-            if (results.length == 0) {
-                return res.status(200).json({
-                    success: 0,
-                    message: "No Record Found"
-                });
-            }
-
-            return res.status(200).json({
-                success: 1,
-                data: results
-            });
-        })
-    },
-    update: (req, res) => {
-
-        const body = req.body;
-        const result = update(body)
-            .then((r) => {
-                return res.status(200).json({
-                    success: 1,
-                    message: r
-                });
-            }).catch((e) => {
-                return res.status(200).json({
-                    success: 0,
-                    message: e.sqlMessage
-                });
-            })
-    },
-    employeeByDepartment: (req, res) => {
-        const id = req.params.id;
-        employeeByDepartment(id, (err, results) => {
-            if (err) {
-                logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 0,
-                    message: err
-                });
-            }
-
-            if (results.length == 0) {
-                return res.status(200).json({
-                    success: 0,
-                    message: "No Record Found"
-                });
-            }
-
-            return res.status(200).json({
-                success: 1,
-                data: results
-            });
-        })
-    },
-    HodInchargeNames: (req, res) => {
-
-        HodInchargeNames((err, results) => {
-            if (err) {
-                logger.errorLogger(err)
+            if (!results) {
                 return res.status(200).json({
                     success: 2,
-                    message: err
-                });
-            }
-
-            if (!results) {
-                return res.status(200).json({
-                    success: 0,
                     message: "No Results Found"
-                });
-            }
-
-            return res.status(200).json({
-                success: 1,
-                data: results
-            });
-        });
-    },
-    employeeByID: (req, res) => {
-        const id = req.params.id;
-        employeeByID(id, (err, results) => {
-            if (err) {
-                logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 0,
-                    message: err
-                });
-            }
-
-            if (results.length == 0) {
-                return res.status(200).json({
-                    success: 0,
-                    message: "No Record Found"
                 });
             }
 
@@ -167,67 +65,22 @@ module.exports = {
             });
         })
     },
-    HODInsert: (req, res) => {
-        const body = req.body;
-        HODInsert(body, (err, results) => {
+    /**contract employee status with date wise report */
+    getContractReportWithDate: (req, res) => {
+        const body = req.body
+        getContractReportWithDate(body, (err, results) => {
             if (err) {
-                logger.errorLogger(err)
+                // logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err
                 });
             }
-            if (!results) {
-                return res.status(200).json({
-                    success: 0,
-                    message: "No Results Found"
-                });
-            }
-            return res.status(200).json({
-                success: 1,
-                message: "Data Created Successfully"
-            });
 
-        });
-    },
-    selecthod: (req, res) => {
-        selecthod((err, results) => {
-            if (err) {
-                logger.errorLogger(err)
+            if (!results) {
                 return res.status(200).json({
                     success: 2,
-                    message: err
-                });
-            }
-
-            if (!results) {
-                return res.status(200).json({
-                    success: 0,
                     message: "No Results Found"
-                });
-            }
-
-            return res.status(200).json({
-                success: 1,
-                data: results
-            });
-        });
-    },
-    getAppraisalRightByHOD: (req, res) => {
-        const id = req.params.id;
-        getAppraisalRightByHOD(id, (err, results) => {
-            if (err) {
-                logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 0,
-                    message: err
-                });
-            }
-
-            if (results.length == 0) {
-                return res.status(200).json({
-                    success: 0,
-                    message: "No Record Found"
                 });
             }
 
@@ -237,12 +90,12 @@ module.exports = {
             });
         })
     },
-    updatehod: (req, res) => {
-        const body = req.body;
-        updatehod(body, (err, results) => {
-
+    /**Branch wise contract closed report */
+    getBranchWiseContractClosed: (req, res) => {
+        const body = req.body
+        getBranchWiseContractClosed(body, (err, results) => {
             if (err) {
-                logger.errorLogger(err)
+                // logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err
@@ -251,33 +104,8 @@ module.exports = {
 
             if (!results) {
                 return res.status(200).json({
-                    success: 1,
-                    message: "Record Not Found"
-                });
-            }
-
-            return res.status(200).json({
-                success: 2,
-                message: "Data Updated Successfully"
-            });
-
-        });
-    },
-    getUserRights: (req, res) => {
-        const id = req.params.id;
-        getUserRights(id, (err, results) => {
-            if (err) {
-                logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 0,
-                    message: err
-                });
-            }
-
-            if (results.length == 0) {
-                return res.status(200).json({
-                    success: 0,
-                    message: "No Record Found"
+                    success: 2,
+                    message: "No Results Found"
                 });
             }
 
@@ -287,34 +115,251 @@ module.exports = {
             });
         })
     },
-    createPerformanceAppraisal: (req, res) => {
-        const body = req.body;
-        createPerformanceAppraisal(body, (err, results) => {
+    getDeptWiseContractClosed: (req, res) => {
+        const body = req.body
+        getDeptWiseContractClosed(body, (err, results) => {
             if (err) {
-                logger.errorLogger(err)
+                // logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err
                 });
             }
+
             if (!results) {
                 return res.status(200).json({
-                    success: 0,
+                    success: 2,
                     message: "No Results Found"
                 });
             }
+
             return res.status(200).json({
                 success: 1,
-                message: "Data Created Successfully"
+                data: results
             });
-
-        });
+        })
     },
-    getAllProbAppraisalEmployee: (req, res) => {
-
-        const body = req.body;
-        getAllProbAppraisalEmployee(body, (err, results) => {
+    getContractClosedReport: (req, res) => {
+        const body = req.body
+        getContractClosedReport(body, (err, results) => {
             if (err) {
+                // logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    getBranchContractRenew: (req, res) => {
+        const body = req.body
+        getBranchContractRenew(body, (err, results) => {
+            if (err) {
+                // logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    getDeptContractRenew: (req, res) => {
+        const body = req.body
+        getDeptContractRenew(body, (err, results) => {
+            if (err) {
+                // logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    getContractRenewReport: (req, res) => {
+        const body = req.body
+        getContractRenewReport(body, (err, results) => {
+            if (err) {
+                // logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    getBranchContractRunning: (req, res) => {
+        const body = req.body
+        getBranchContractRunning(body, (err, results) => {
+            if (err) {
+                // logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    getDeptContractRunning: (req, res) => {
+        const body = req.body
+        getDeptContractRunning(body, (err, results) => {
+            if (err) {
+                // logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    getContractCurrentRunning: (req, res) => {
+        const body = req.body
+        getContractCurrentRunning(body, (err, results) => {
+            if (err) {
+                // logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    oneYearCurrentRunningBranch: (req, res) => {
+        const body = req.body
+        oneYearCurrentRunningBranch(body, (err, results) => {
+            if (err) {
+                // logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    oneYearCurrentRunningDept: (req, res) => {
+        const body = req.body
+        oneYearCurrentRunningDept(body, (err, results) => {
+            if (err) {
+                // logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    oneYearCurrentRunningRpt: (req, res) => {
+        const body = req.body
+        oneYearCurrentRunningRpt(body, (err, results) => {
+            if (err) {
+                // logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err
