@@ -30,7 +30,8 @@ module.exports = {
                 hrm_cmn,
                 hrm_calcu,
                 hrm_process_status,
-                next_updatedate) values (?,?,?,?,?,?,?,?,?,?,?,?)`,
+                next_updatedate)
+                 values (?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
                 data.lv_process_slno,
                 data.em_no,

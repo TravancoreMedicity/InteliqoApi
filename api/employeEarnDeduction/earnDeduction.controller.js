@@ -1,5 +1,6 @@
 const { create, update, checkInsertVal, checkUpdateVal, deleteByID, getDataById,
-    getDataBySlno, createWageLog, updateWageLog, GetFixedAndEarningWage } = require('../employeEarnDeduction/earnDeduction.service');
+    getDataBySlno, createWageLog, updateWageLog, GetFixedAndEarningWage,
+    getDataByEmpno, createEmpsalRyContractRenew } = require('../employeEarnDeduction/earnDeduction.service');
 const { validateearndeduction } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -211,5 +212,57 @@ module.exports = {
             });
         });
 
+    },
+
+    getDataByEmpno: (req, res) => {
+
+        const id = req.params.id;
+        getDataByEmpno(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Results Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    createEmpsalRyContractRenew: (req, res) => {
+        const body = req.body;
+        var a1 = body.map((value, index) => {
+            return [value.em_no, value.em_id, value.em_salary_desc,
+            value.em_earning_type, value.em_amount, value.em_start_date,
+            value.em_end_date, value.create_user]
+        })
+
+        createEmpsalRyContractRenew(a1, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success1: 2,
+                    message: err
+                });
+            }
+            if (!results) {
+                return res.status(200).json({
+                    success1: 0,
+                    message: "No Results Found"
+                });
+            }
+            return res.status(200).json({
+                success1: 1,
+                message: "Data Created Successfully"
+            });
+        });
     },
 }

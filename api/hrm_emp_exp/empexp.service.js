@@ -127,4 +127,31 @@ module.exports = {
             }
         )
     },
+    getDataByEmpno: (id, callBack) => {
+        pool.query(
+            `SELECT
+                em_no,
+                em_id,
+                em_institution,
+                em_designation,
+                em_from,
+                em_to,
+                em_total_year,
+                em_salary,
+                is_tmch,
+                create_user
+            FROM hrm_emp_exp
+            WHERE em_no = ?`,
+            [
+                id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+
 }
