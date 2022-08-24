@@ -1,4 +1,5 @@
-const { createAttendanceMarking, checkInsertVal, checkAttendanceMarking } = require('../attendance_marking_save/attendance_marking_save.service');
+const { createAttendanceMarking, checkInsertVal, checkAttendanceMarking,
+    attendanceMarkingSaveContract } = require('../attendance_marking_save/attendance_marking_save.service');
 const logger = require('../../logger/logger')
 module.exports = {
     createAttendanceMarking: (req, res) => {
@@ -43,6 +44,29 @@ module.exports = {
     checkAttendanceMarking: (req, res) => {
         const body = req.body;
         checkAttendanceMarking(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                logger.infoLogger("No Records Found")
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                dataa: results
+            });
+        });
+    },
+    attendanceMarkingSaveContract: (req, res) => {
+        const body = req.body;
+        attendanceMarkingSaveContract(body, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
                 return res.status(400).json({

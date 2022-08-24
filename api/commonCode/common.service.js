@@ -1321,6 +1321,24 @@ module.exports = {
             }
         )
     },
+    getApprovalLevel: (id, callBack) => {
+        pool.query(
+            `select hod,incharge,authorization_incharge,authorization_hod,ifnull(co_assign,0)co_assign
+            from hrm_emp_master
+            left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
+            left join hrm_co_assign on hrm_co_assign.emp_id=hrm_emp_master.em_id
+            where em_id=?;`,
+            [
+                id, id, id, id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 
 }
 

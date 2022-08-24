@@ -17,7 +17,10 @@ const {
     updateserialnum,
     getEmpBybranch,
     getEmpByDeptartment,
-    updateEmpRegister
+    updateEmpRegister,
+    getDataByEmpno,
+    getDataByEmpID,
+    checkidvaluedate
 } = require('../hrm_emp_master/empmast.controller');
 
 router.post("/", checkToken, createempmast)
@@ -38,6 +41,8 @@ router.post("/empmast/serialnum", checkToken, updateserialnum)
 router.post("/empmaster/getdeptByBranch", checkToken, getEmpBybranch)
 router.post("/empmaster/getdeptByDept", checkToken, getEmpByDeptartment)
 router.patch("/empregister/Edit", checkToken, updateEmpRegister)
-
+router.get("/databyempno/getemid/:id", checkToken, getDataByEmpno)
+router.get("/databyempid/:id", checkToken, getDataByEmpID)
+router.post("/checkEmno/contracterenew", checkToken, checkidvaluedate)
 
 module.exports = router;
