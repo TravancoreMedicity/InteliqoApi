@@ -254,4 +254,21 @@ module.exports = {
             }
         )
     },
+    getAllProbAppraisalEmployee: (data, callBack) => {
+        pool.query(
+            `SELECT dept_id, performance_appriasal_rights.em_id, rights_needed ,em_no
+            FROM medi_hrm.performance_appriasal_rights 
+            LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=performance_appriasal_rights.em_id
+            where performance_appriasal_rights.em_id IN (?);`,
+            [
+                data
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }

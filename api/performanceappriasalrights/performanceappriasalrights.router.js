@@ -2,7 +2,8 @@ const router = require("express").Router();
 const { checkToken } = require("../../auth/token_validation");
 const { createrights, selectrights, getAppraisalRightByID, update,
     employeeByDepartment, HodInchargeNames, employeeByID, HODInsert,
-    selecthod, getAppraisalRightByHOD, updatehod, getUserRights, createPerformanceAppraisal } = require('../performanceappriasalrights/performanceappriasalrights.controller');
+    selecthod, getAppraisalRightByHOD, updatehod, getUserRights, createPerformanceAppraisal,
+    getAllProbAppraisalEmployee } = require('../performanceappriasalrights/performanceappriasalrights.controller');
 
 
 router.post("/insert", checkToken, createrights);
@@ -19,5 +20,6 @@ router.patch("/updatehodin", checkToken, updatehod)
 
 router.get("/userrights/:id", checkToken, getUserRights)
 router.post("/createappraisal", checkToken, createPerformanceAppraisal)
+router.post("/allappraisalemp/list", checkToken, getAllProbAppraisalEmployee)
 
 module.exports = router;

@@ -1,3 +1,4 @@
+const { log } = require('winston');
 const { Console } = require('winston/lib/winston/transports');
 const pool = require('../../config/database');
 
@@ -51,6 +52,7 @@ module.exports = {
                 data.designation
             ],
             (error, results, feilds) => {
+                console.log(results);
                 if (error) {
                     return callBack(error);
                 }
@@ -259,4 +261,78 @@ module.exports = {
             }
         )
     },
+    createJobCompetency: (data, callBack) => {
+        pool.query(
+            `INSERT INTO job_competency (
+                job_id,
+                key_result_area,
+                competency_desc,
+                dept_id,
+                designation
+                )
+            VALUES ?`,
+            [
+                data
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+
+    getJobSummarydetl: (data, callBack) => {
+        pool.query(
+            `SELECT * FROM medi_hrm.job_summary
+            where dept_id = ? and designation = ?`,
+            [
+                data.dept_id,
+                data.designation
+            ],
+
+            (error, results, feilds) => {
+                if (error) {
+
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    updatejobsummarydetl: (data, callBack) => {
+        pool.query(
+            `UPDATE medi_hrm.job_summary
+        set objective= "?",
+        scope="?",
+        work_place=?,
+        reporting_dept=?,
+        reporting_designation=?,
+        equipment_used ="?",
+        working_hour = "?"
+        where dept_id =? and designation =?`,
+            [
+                data.objective,
+                data.scope,
+                data.work_place,
+                data.reporting_dept,
+                data.reporting_designation,
+                data.equipment_used,
+                JSON.stringify(data.working_hour),
+                data.dept_id,
+                data.designation
+            ],
+
+            (error, results, feilds) => {
+                if (error) {
+
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    }
+
+
 }

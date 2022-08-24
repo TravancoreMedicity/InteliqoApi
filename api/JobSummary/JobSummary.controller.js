@@ -1,6 +1,7 @@
 const { createJobSummary, CheckInsertValue, createJobDuties, getjobId,
     createJobSpecification, createJobQualification, createJobGeneric,
-    getJobSummary, getJobDuties, getJobSpecification, getJobGeneric, getJobQualification } = require('../JobSummary/JobSummary.service');
+    getJobSummary, getJobDuties, getJobSpecification, getJobGeneric, getJobQualification,
+    createJobCompetency, getJobSummarydetl, updatejobsummarydetl } = require('../JobSummary/JobSummary.service');
 // const { validatereligion } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -302,4 +303,79 @@ module.exports = {
         });
 
     },
+    createJobCompetency: (req, res) => {
+        const body = req.body;
+        var a1 = body.map((value, index) => {
+            return [value.job_id, value.key_result_area, value.competency_desc, value.dept_id, value.designation]
+        })
+        createJobCompetency(a1, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+            if (!results) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Results Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                message: "Data Created Successfully"
+            });
+        });
+    },
+    getJobSummarydetl: (req, res) => {
+        const body = req.body;
+        getJobSummarydetl(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    updatejobsummarydetl: (req, res) => {
+        const body = req.body;
+        updatejobsummarydetl(body, (err, results) => {
+
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 2,
+                message: "Data Updated Successfully"
+            });
+
+        });
+    }
 }
