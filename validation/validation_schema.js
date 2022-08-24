@@ -1230,6 +1230,26 @@ const validateAdvanceRequest = Joi.object({
         ceo_level: Joi.number().required(),
         adv_req_date: Joi.date().required(),
 })
+const validationPerformanceGrade = Joi.object({
+        p_score: Joi.string().required(),
+        p_grade: Joi.number().required(),
+        p_descrption: Joi.number().required(),
+        fixed_pay_inc: Joi.number().required(),
+        variable_pay_inc: Joi.number().required(),
+        p_status: Joi.number().min(0).max(1),
+        pgrade_slno: Joi.number().optional()
+})
+
+
+// VALIDATION PerformanceAppraisalRights
+const validatePerformanceAppraisalRights = Joi.object({
+        dept_id: Joi.number().required(),
+        em_id: Joi.number().required(),
+        rights_needed: Joi.optional(),
+        p_rights_slno: Joi.number().optional()
+})
+
+
 module.exports = {
         authSchema,  //authSchema:authSchema
         validateEmployee,
@@ -1314,5 +1334,7 @@ module.exports = {
         validatempprotax,
         validateadvanceSettings,
         validateAdvanceRequest,
-        validateempmasterEdit
+        validateempmasterEdit,
+        validationPerformanceGrade,
+        validatePerformanceAppraisalRights
 }

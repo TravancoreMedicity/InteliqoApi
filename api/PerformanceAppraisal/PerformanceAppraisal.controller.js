@@ -1,60 +1,70 @@
-const { insertannouncement, getAnnouncement, getBirthdayEmployee } = require('../hrm_Announcement/hrm_Announcement.service')
-const logger = require('../../logger/logger')
+const {
+    getProbationEndList,
+    getAnnualList,
+    getTrainingList
+} = require('../PerformanceAppraisal/PerformanceAppraisal.service')
+
 module.exports = {
-    insertannouncement: (req, res) => {
-        const body = req.body;
-        insertannouncement(body, (err, results) => {
+    getProbationEndList: (req, res) => {
+        getProbationEndList((err, results) => {
             if (err) {
-                logger.errorLogger(err)
-                return res.status(400).json({
+                return res.status(200).json({
                     success: 0,
                     message: err
                 });
             }
-            return res.status(200).json({
-                success: 1,
-                message: "Announcement Saved Successfully"
-            });
-        });
-    },
-    getAnnouncement: (req, res) => {
 
-        getAnnouncement((err, results) => {
-            if (err) {
-                logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 2,
-                    message: err
-                });
-            }
             if (!results) {
                 return res.status(200).json({
-                    success: 0,
+                    success: 2,
                     message: "No Results Found"
                 });
             }
+
             return res.status(200).json({
                 success: 1,
                 data: results
             });
         });
     },
-    getBirthdayEmployee: (req, res) => {
-
-        getBirthdayEmployee((err, results) => {
+    getAnnualList: (req, res) => {
+        getAnnualList((err, results) => {
             if (err) {
-                logger.errorLogger(err)
                 return res.status(200).json({
-                    success: 2,
+                    success: 0,
                     message: err
                 });
             }
+
             if (!results) {
                 return res.status(200).json({
-                    success: 0,
+                    success: 2,
                     message: "No Results Found"
                 });
             }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    getTrainingList: (req, res) => {
+        getTrainingList((err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Results Found"
+                });
+            }
+
             return res.status(200).json({
                 success: 1,
                 data: results
