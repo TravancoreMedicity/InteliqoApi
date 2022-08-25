@@ -313,7 +313,7 @@ module.exports = {
     },
     probationEndCount: (callBack) => {
         pool.query(
-            `select count(*) 'probationcount' from hrm_emp_master where em_category IN (4,7,9) and em_prob_end_date<=curdate() and em_prob_end_date!="2000-01-01"; `,
+            `select count(*) 'probationcount' from hrm_emp_master where em_category IN (4,7,9) and em_prob_end_date<=curdate() and em_prob_end_date!="2000-01-01" and em_status=1 ;   `,
             [],
             (error, results, feilds) => {
                 if (error) {
@@ -325,7 +325,7 @@ module.exports = {
     },
     annualAppraisalCount: (callBack) => {
         pool.query(
-            `SELECT count(*) 'annualcount' FROM medi_hrm.hrm_emp_master  where em_category=1 and em_prob_end_date<=curdate();`,
+            `SELECT count(*) 'annualcount' FROM medi_hrm.hrm_emp_master  where em_category=1 and DATE_ADD(em_doj, INTERVAL 12 MONTH) <=curdate()  and em_status=1 ;`,
             [],
             (error, results, feilds) => {
                 if (error) {
@@ -337,7 +337,7 @@ module.exports = {
     },
     trainingAppraisalCount: (callBack) => {
         pool.query(
-            `SELECT count(*) 'trainingcount' FROM medi_hrm.hrm_emp_master  where em_category IN (3,4) and em_prob_end_date<=curdate();`,
+            `SELECT count(*) 'trainingcount' FROM medi_hrm.hrm_emp_master  where em_category IN (2,3) and em_prob_end_date<=curdate() and em_status=1 ;`,
             [],
             (error, results, feilds) => {
                 if (error) {
@@ -349,11 +349,9 @@ module.exports = {
     },
     contractEndCount: (callBack) => {
         pool.query(
-            `select count(*) 'contractcount' 
-            from hrm_emp_master
-            left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
-            left join designation on designation.desg_slno=hrm_emp_master.em_designation
-            where em_contract_end_date<=CURDATE() and contract_status=1 and em_status=1 and em_contract_end_date!='2000-01-01';`,
+            `select count(*) 'contractcount' from hrm_emp_contract_detl
+            left join hrm_emp_master on hrm_emp_contract_detl.em_id=hrm_emp_master.em_id
+                        where em_cont_end<=curdate() and contract_renew_appr=1 and em_status=1 ;`,
             [],
             (error, results, feilds) => {
                 if (error) {
@@ -363,7 +361,7 @@ module.exports = {
             }
         )
     },
-getActiveEmpCount: (callBack) => {
+    getActiveEmpCount: (callBack) => {
         pool.query(
             `SELECT LPAD(count(*),4,'0') 'ActiveEmpCount'  FROM medi_hrm.hrm_emp_master where em_status = 1;`,
             [],
