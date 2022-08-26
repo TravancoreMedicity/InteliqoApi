@@ -219,6 +219,7 @@ module.exports = {
                 em_id, 
                 em_no,
                 appraisal_start_date,
+                appraisal_type,
                 incharge_required,
                 hod_required,
                 gm_required,
@@ -230,11 +231,12 @@ module.exports = {
                 ed_required,
                 md_required
                 )
-              VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?);`,
+              VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?);`,
             [
                 data.em_id,
                 data.em_no,
                 data.appraisal_start_date,
+                data.appraisal_type,
                 data.incharge_required,
                 data.hod_required,
                 data.gm_required,
