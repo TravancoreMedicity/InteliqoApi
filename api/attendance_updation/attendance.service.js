@@ -145,8 +145,10 @@ module.exports = {
         }
     },
     getpunchmastdataupload: (data, callBack) => {
+
         pool.query(
-            `SELECT punch_slno, duty_day,
+            `SELECT punch_slno, 
+            duty_day,
             shift_id,
             hrm_shift_mast.shft_duty_day,shift_duration_in_min,
             emp_id,

@@ -67,11 +67,13 @@ module.exports = {
             data.map((val) => {
                 pool.query(
                     `update hrm_duty_plan
-                        set shift_id=?
+                        set shift_id=?,
+                        offday_flag=?
                         where plan_slno=?
                         and attendance_update_flag!=1`,
                     [
                         val.shiftId,
+                        val.offday,
                         val.shiftSlno
                     ],
                     (error, results, fields) => {
@@ -138,7 +140,8 @@ module.exports = {
             data.map((val) => {
                 pool.query(
                     `update hrm_duty_plan
-                    set shift_id=5
+                    set shift_id=1002,
+                    offday_flag=1
                     where emp_id=?
                      and date(duty_day) IN (?)`,
                     [

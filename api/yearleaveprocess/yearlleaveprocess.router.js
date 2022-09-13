@@ -6,7 +6,7 @@ const {
     updateholiday, insertCommonleave, updatecommon, insertearnleave,
     updateearnleave, updateholidayupdateslno, updatecasualleaveupdateslno, creditCasualLeave, updateeanleaveupdate,
     allowableCasualLeave, allowableholiday, allowablefesitval, allowableearnleave, dataannualcalculation,
-    allowableconleave, holidaylistyear, insertyearly, select_yearlyprocess
+    allowableconleave, holidaylistyear, insertyearly, select_yearlyprocess, dataannualcalculationEmployee
 } = require('../yearleaveprocess/yearleaveprocess.controller');
 
 router.post("/", checkToken, checkprocesstable)
@@ -35,5 +35,6 @@ router.post("/dataannualcalculation", checkToken, dataannualcalculation)
 router.post("/holidaylistyear", checkToken, holidaylistyear)
 router.post("/insertyearly", checkToken, insertyearly)
 router.post("/select_yearlyprocess", checkToken, select_yearlyprocess)
+router.post("/dataannualcalculationemp", checkToken, dataannualcalculationEmployee)
 
 module.exports = router;

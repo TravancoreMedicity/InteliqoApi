@@ -462,7 +462,6 @@ module.exports = {
     },
 
     allowableearnleave: (data, callBack) => {
-        console.log(data)
         pool.query(
             `select hrm_ernlv_slno,em_no,em_id,MONTHNAME(ernlv_mnth)ernlv_mnth,ernlv_taken
             From hrm_leave_earnlv
@@ -580,6 +579,31 @@ module.exports = {
             }
         )
 
-    }
+    },
+    dataannualcalculationEmployee: (data, callBack) => {
+        pool.query(
+            `SELECT em_id,em_name,hrm_emp_master.em_no,ecat_el,ecat_cl,
+            SUM(duty_status) duty_day,ecat_sl,ecat_nh,
+            ecat_fh,ecat_esi_allow,ecat_confere ,em_gender,
+            ecat_cont,ecat_doff_allow,ecat_lop,ecat_mate,ecat_woff_allow,em_category
+            FROM medi_hrm.punch_master
+            LEFT JOIN hrm_emp_master ON punch_master.emp_id=hrm_emp_master.em_id 
+            LEFT JOIN hrm_emp_category ON hrm_emp_master.em_category=hrm_emp_category.category_slno 
+            WHERE DATE(duty_day) between ? AND ? and emp_id=? and em_status=1
+             GROUP BY  em_id,em_name,hrm_emp_master.em_no,ecat_el;`,
+            [
+                data.startdate,
+                data.endate,
+                data.emp_id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+
+    },
 
 }

@@ -633,6 +633,7 @@ module.exports = {
             from hrm_emp_master
             where em_dept_section=?
             and em_department=?
+            and em_branch=1
             and em_status=1`,
             [
                 data.em_dept_section,

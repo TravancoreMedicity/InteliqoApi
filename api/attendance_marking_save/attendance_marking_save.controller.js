@@ -13,7 +13,6 @@ module.exports = {
             return { em_id: value.em_id, month: value.attendance_marking_month }
         })
         checkInsertVal(a2, (err, results) => {
-            console.log(results)
             logger.errorLogger(err)
             const value = JSON.parse(JSON.stringify(results))
             if (Object.keys(value).length === 0) {
