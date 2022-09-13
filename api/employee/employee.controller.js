@@ -18,8 +18,6 @@ module.exports = {
 
         const salt = genSaltSync(10);
         let new_password = body.emp_password;
-        console.log(salt);
-        console.log(new_password);
         body.emp_password = hashSync(new_password, salt);
 
         employeeinsert(body, (err, results) => {

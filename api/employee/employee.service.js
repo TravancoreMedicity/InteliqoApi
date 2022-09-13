@@ -31,7 +31,6 @@ module.exports = {
         )
     },
     employeeupdate: (data, callBack) => {
-        console.log(data)
         pool.query(
             `UPDATE hrm_employee
                 SET

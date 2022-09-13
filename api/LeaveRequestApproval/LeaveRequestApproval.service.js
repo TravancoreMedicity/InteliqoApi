@@ -374,8 +374,6 @@ module.exports = {
                 data.slno
             ],
             (error, results, feilds) => {
-                console.log(error)
-                console.log(results)
                 if (error) {
                     return callBack(error);
                 }

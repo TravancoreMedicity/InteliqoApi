@@ -587,7 +587,7 @@ module.exports = {
                 em_institution_type = ?,
                 em_category = ?,
                 contract_status=?,
-                em_conf_end_date=?,
+                em_prob_end_date=?,
                 probation_status=?
                 WHERE em_no = ?`,
             [
@@ -597,7 +597,7 @@ module.exports = {
                 data.em_institution_type,
                 data.em_category,
                 data.contract_status,
-                data.em_conf_end_date,
+                data.em_prob_end_date,
                 data.probation_status,
                 data.em_no
             ],
@@ -633,6 +633,7 @@ module.exports = {
             from hrm_emp_master
             where em_dept_section=?
             and em_department=?
+            and em_branch=1
             and em_status=1`,
             [
                 data.em_dept_section,

@@ -325,7 +325,7 @@ module.exports = {
             left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
             left join designation on designation.desg_slno=hrm_emp_master.em_designation
             where em_cont_close is null and em_cont_renew is null and contract_renew_appr=0 and em_cont_end<=CURDATE() or 
-            em_cont_end between CURDATE() and  ADDDATE(CURDATE(),30) and em_status=1 and contract_renew_appr!=1`,
+            em_cont_end between CURDATE() and  ADDDATE(CURDATE(),30) and em_status=1 and contract_renew_appr!=1 and em_cont_close is null`,
             [],
             (error, results, feilds) => {
                 if (error) {

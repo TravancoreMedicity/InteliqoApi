@@ -29,7 +29,6 @@ module.exports = {
         )
     },
     checkInsertVal: (data, callBack) => {
-        console.log(data[0].month)
         pool.query(
             `SELECT attendance_marking_month,
                  em_id
@@ -51,7 +50,6 @@ module.exports = {
     },
     //checking whether the attendance marking is saved
     checkAttendanceMarking: (data, callBack) => {
-        console.log(data)
         pool.query(
             `select em_id,em_no
             from hrm_attendance_marking
