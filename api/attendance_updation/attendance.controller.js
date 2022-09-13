@@ -128,6 +128,7 @@ const functionPunchOut = (punchdata, punchtmast, shiftdata, startDate, endDate,)
 
     })
     // })
+    console.log(punshift)
     const punchserachdata = punshift.flat(Infinity)
     // punch out data
     const punch_out_data = punchdata.map((punchmap) => {
@@ -148,6 +149,7 @@ const functionPunchOut = (punchdata, punchtmast, shiftdata, startDate, endDate,)
             }
         })
     })
+
     //punch out time
     const punchout = punch_out_data.flat(Infinity).filter((val => {
         return (val.slno != 0)
