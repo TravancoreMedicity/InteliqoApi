@@ -65,7 +65,8 @@ module.exports = {
                 job_id,
                 dept_id,
                 designation,
-                duties_and_resp)
+                duties_and_resp
+                )
             VALUES ?`,
             [
                 data
@@ -191,7 +192,7 @@ module.exports = {
     },
     getJobDuties: (data, callBack) => {
         pool.query(
-            `select duties_slno,job_id,duties_and_resp from job_duties
+            `select duties_slno,job_id,LOWER(duties_and_resp) as duties_and_resp from job_duties
             where dept_id=? and designation=?`,
             [
                 data.dept_id,
@@ -242,8 +243,7 @@ module.exports = {
     },
     getJobQualification: (data, callBack) => {
         pool.query(
-            `
-            select course,cour_desc,specialization,spec_desc from job_qualification
+            `select course,cour_desc,specialization,spec_desc from job_qualification
             left join hrm_mast_course on hrm_mast_course.cour_slno=job_qualification.course
             left join hrm_mast_specializtion on hrm_mast_specializtion.spec_slno=job_qualification.specialization
             where dept_id=? and designation=?`,
@@ -273,7 +273,6 @@ module.exports = {
                 data
             ],
             (error, results, feilds) => {
-                console.log(results);
                 if (error) {
                     return callBack(error);
                 }
@@ -335,7 +334,7 @@ module.exports = {
         pool.query(
             `select competency_desc,kra_desc from job_competency
             left join hrm_kra on job_competency.key_result_area = hrm_kra.kra_slno
-                    where dept_id = ? and designation = ?`,
+            where dept_id = ? and designation = ?`,
             [
                 data.dept_id,
                 data.designation
