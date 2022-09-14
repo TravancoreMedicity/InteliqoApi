@@ -19,7 +19,9 @@ module.exports = {
              ifnull(lvreq_type,0)lvreq_type, leave_type,updation_flag,
              sublvreq_type 
              FROM medi_hrm.punch_master where emp_id=? and duty_day between ? and ?`,
-            [data.emp_id, data.start, data.end
+            [data.emp_id,
+            data.start,
+            data.end
             ],
             (error, results, feilds) => {
                 if (error) {
