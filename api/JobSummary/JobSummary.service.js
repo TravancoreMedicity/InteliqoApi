@@ -52,7 +52,6 @@ module.exports = {
                 data.designation
             ],
             (error, results, feilds) => {
-                console.log(results);
                 if (error) {
                     return callBack(error);
                 }
@@ -99,7 +98,6 @@ module.exports = {
                 key_result_area,
                 kpi,
                 kpi_score,
-                competency,
                 dept_id,
                 designation)
             VALUES ?`,
@@ -193,7 +191,7 @@ module.exports = {
     },
     getJobDuties: (data, callBack) => {
         pool.query(
-            `select job_id,duties_and_resp from job_duties
+            `select duties_slno,job_id,duties_and_resp from job_duties
             where dept_id=? and designation=?`,
             [
                 data.dept_id,
@@ -209,7 +207,7 @@ module.exports = {
     },
     getJobSpecification: (data, callBack) => {
         pool.query(
-            `select kra_desc,kpi,kpi_score,competency
+            `select key_result_area,kra_desc,kpi,kpi_score
             from job_specification
             left join hrm_kra on hrm_kra.kra_slno=job_specification.key_result_area
             where dept_id=? and designation=?`,
@@ -275,6 +273,7 @@ module.exports = {
                 data
             ],
             (error, results, feilds) => {
+                console.log(results);
                 if (error) {
                     return callBack(error);
                 }
@@ -283,13 +282,12 @@ module.exports = {
         )
     },
 
-    getJobSummarydetl: (data, callBack) => {
+    getJobSummarydetl: (id, callBack) => {
         pool.query(
             `SELECT * FROM medi_hrm.job_summary
-            where dept_id = ? and designation = ?`,
+            where summary_slno=?`,
             [
-                data.dept_id,
-                data.designation
+                id
             ],
 
             (error, results, feilds) => {
@@ -304,14 +302,15 @@ module.exports = {
     updatejobsummarydetl: (data, callBack) => {
         pool.query(
             `UPDATE medi_hrm.job_summary
-        set objective= "?",
-        scope="?",
+        set 
+        objective= ?,
+        scope=?,
         work_place=?,
         reporting_dept=?,
         reporting_designation=?,
-        equipment_used ="?",
-        working_hour = "?"
-        where dept_id =? and designation =?`,
+        equipment_used =?,
+        working_hour = ?
+        where summary_slno=?`,
             [
                 data.objective,
                 data.scope,
@@ -320,8 +319,7 @@ module.exports = {
                 data.reporting_designation,
                 data.equipment_used,
                 JSON.stringify(data.working_hour),
-                data.dept_id,
-                data.designation
+                data.summary_slno
             ],
 
             (error, results, feilds) => {
@@ -332,7 +330,22 @@ module.exports = {
                 return callBack(null, results);
             }
         )
+    },
+    getjobcompetency: (data, callBack) => {
+        pool.query(
+            `select competency_desc,kra_desc from job_competency
+            left join hrm_kra on job_competency.key_result_area = hrm_kra.kra_slno
+                    where dept_id = ? and designation = ?`,
+            [
+                data.dept_id,
+                data.designation
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
     }
-
-
 }

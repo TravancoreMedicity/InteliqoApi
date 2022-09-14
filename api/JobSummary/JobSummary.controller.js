@@ -1,7 +1,7 @@
 const { createJobSummary, CheckInsertValue, createJobDuties, getjobId,
     createJobSpecification, createJobQualification, createJobGeneric,
     getJobSummary, getJobDuties, getJobSpecification, getJobGeneric, getJobQualification,
-    createJobCompetency, getJobSummarydetl, updatejobsummarydetl } = require('../JobSummary/JobSummary.service');
+    createJobCompetency, getJobSummarydetl, updatejobsummarydetl, getjobcompetency } = require('../JobSummary/JobSummary.service');
 // const { validatereligion } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -89,7 +89,7 @@ module.exports = {
         const body = req.body;
         var a1 = body.map((value, index) => {
             return [value.job_id, value.kra, value.kpi, value.kpi_score,
-            value.competency, value.dept_id, value.designation]
+            value.dept_id, value.designation]
         })
         createJobSpecification(a1, (err, results) => {
             if (err) {
@@ -329,8 +329,8 @@ module.exports = {
         });
     },
     getJobSummarydetl: (req, res) => {
-        const body = req.body;
-        getJobSummarydetl(body, (err, results) => {
+        const id = req.params.id;
+        getJobSummarydetl(id, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
@@ -377,5 +377,30 @@ module.exports = {
             });
 
         });
+    },
+    getjobcompetency: (req, res) => {
+        const body = req.body
+        getjobcompetency(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+
     }
 }
