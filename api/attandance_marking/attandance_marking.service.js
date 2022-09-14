@@ -45,7 +45,8 @@ module.exports = {
             sum(late_in)late_in, 
             sum(early_out)early_out, 
            ifnull( sum(duty_status),0)duty_status,
-           ifnull(gross_salary,0)gross_salary
+           ifnull(gross_salary,0)gross_salary,
+           sum(offday_falg)offday
             FROM medi_hrm.punch_master 
             left join hrm_emp_master on hrm_emp_master.em_id=punch_master.emp_id
             where emp_id=?
@@ -112,7 +113,8 @@ module.exports = {
             count(if(leave_type!=0,leave_type,null))leave_type,
             sum(late_in)late_in, 
             sum(early_out)early_out, 
-           ifnull( sum(duty_status),0)duty_status
+           ifnull( sum(duty_status),0)duty_status,
+           sum(offday_falg)offday,
             FROM medi_hrm.punch_master 
             where emp_id IN(?) 
             and duty_day between ? and ?
