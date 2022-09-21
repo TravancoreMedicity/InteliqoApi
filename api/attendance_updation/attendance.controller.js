@@ -8,7 +8,8 @@ const { getEmployeeDetl, getEmployeeShiftDetl, getDepartmentShiftMast,
     getpunchmastdataupload, updatePunchDetails, updatePunchdata,
     getattandancecaldata, latecomingupdate, GetEmployeeShiftDetails,
     getPunchDetailsEmp, updatePunchInandPunchOut, updatePunchState,
-    getCommonSettings, updateholidaycredit, updateholidaytaken } = require("../attendance_updation/attendance.service")
+    getCommonSettings, updateholidaycredit, updateholidaytaken }
+    = require("../attendance_updation/attendance.service")
 //SHIFT DETAILS
 //get the shift details 
 const shiftMasterDetl = (section, cb) => {
@@ -128,6 +129,7 @@ const functionPunchOut = (punchdata, punchtmast, shiftdata, startDate, endDate,)
 
     })
     // })
+    console.log(punshift)
     const punchserachdata = punshift.flat(Infinity)
     // punch out data
     const punch_out_data = punchdata.map((punchmap) => {
@@ -148,6 +150,7 @@ const functionPunchOut = (punchdata, punchtmast, shiftdata, startDate, endDate,)
             }
         })
     })
+
     //punch out time
     const punchout = punch_out_data.flat(Infinity).filter((val => {
         return (val.slno != 0)
@@ -211,7 +214,6 @@ module.exports = {
                         //Check if, at least one shift is marked as 0 
                         const shiftMark = data.map(val => val.shift_id).find(ele => ele < 1);
                         if (shiftMark === 0) {
-
                             return res.status(200).json({
                                 success: 0,
                                 message: "Shift Marking Pending"
@@ -242,7 +244,6 @@ module.exports = {
                                     leave_type,
                                     late_in,
                                     early_out,
-                                    ot_request_flag,
                                     holiday_flag,
                                     gross_salary,
                                     duty_worked,
@@ -282,7 +283,6 @@ module.exports = {
             if (empDetl_result) {
                 //Get the Employee and Department Details and Parse the Data
                 const empDetl = JSON.parse(empDetl_result);
-
                 //Employee Id Push To array for Send to database For getting the att-detl
                 var empId = []
                 if (emp_code === 0) {
@@ -568,7 +568,7 @@ module.exports = {
                                                 latein: latein,
                                                 earlygo: earlygo,
                                                 duty_status: duty_stat,
-                                                duty_worked: dutyworked
+                                                duty_worked: dutyworked,
 
                                             }
                                             return datatosave

@@ -5,8 +5,8 @@ const {
     updateearnleave, updateholidayupdateslno, updatecasualleaveupdateslno,
     updateeanleaveupdate, creditCasualLeave, allowableCasualLeave,
     allowableholiday, allowablefesitval, allowableearnleave, allowableconleave,
-    dataannualcalculation, holidaylistyear, insertyearly, select_yearlyprocess
-
+    dataannualcalculation, holidaylistyear, insertyearly, select_yearlyprocess,
+    dataannualcalculationEmployee
 } = require('../yearleaveprocess/yearllraveprocess.service');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -754,6 +754,34 @@ module.exports = {
                 success: 2,
                 data: results
             });
+        });
+    },
+    dataannualcalculationEmployee: (req, res) => {
+        const body = req.body;
+
+
+        dataannualcalculationEmployee(body, (err, results) => {
+
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 2,
+                data: results
+            });
+
         });
     },
 }

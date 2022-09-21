@@ -236,7 +236,6 @@ app.use("/api/attedancemarkSave", attedancemarkRouter)//attendance marking save
 app.use("/api/payrollprocess", payrollprocess)//payroll Process
 app.use("/api/jobdescription", JobdescriptionRouter)//job description
 // app.use("/api/reports", reportsRouter)//Reports
-
 app.use("/api/advanceSettings", advance_settingsRouter)
 app.use("/api/advancerequest", advancerequestRouter)
 app.use("/api/CategoryReport", CategoryReportRouter)
