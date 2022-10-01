@@ -94,13 +94,24 @@ module.exports = {
     getDataById: (id, callBack) => {
         pool.query(
             `SELECT ernded_slno,
-                    hrm_earning_deduction.earnded_name,
-                    hrm_earning_type.earning_type_name,
-                    em_amount
-                FROM hrm_emp_earn_deduction
-                LEFT JOIN  hrm_earning_deduction ON hrm_earning_deduction.earnded_id= hrm_emp_earn_deduction.em_salary_desc
-                LEFT JOIN   hrm_earning_type ON  hrm_earning_deduction.erning_type_id= hrm_earning_type.erning_type_id 
-                WHERE em_no = ? `,
+            hrm_earning_deduction.earnded_name,
+            hrm_earning_type.earning_type_name,
+            em_salary_desc,
+            em_status,
+            em_id,
+            em_earning_type,
+            em_salary_desc,
+            hrm_earning_deduction.include_esi,
+            hrm_earning_deduction.include_pf,
+            hrm_earning_deduction.include_lwf,
+            hrm_earning_deduction.include_protax,
+            em_amount,
+            em_start_date,
+            em_end_date
+            FROM hrm_emp_earn_deduction
+            LEFT JOIN  hrm_earning_deduction ON hrm_earning_deduction.earnded_id= hrm_emp_earn_deduction.em_salary_desc
+            LEFT JOIN   hrm_earning_type ON  hrm_earning_deduction.erning_type_id= hrm_earning_type.erning_type_id 
+            WHERE em_no  = ?`,
             [
                 id
             ],

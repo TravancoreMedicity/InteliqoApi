@@ -113,10 +113,24 @@ module.exports = {
     },
     getDataById: (id, callBack) => {
         pool.query(
-            `SELECT emqual_slno,
+            `SELECT row_number() over(order by em_year)as emqual_slno,
             em_no,
             edu_desc, 
-            if(pass_fail = 1 ,'Fail','Pass') pass_fail,
+            em_course,
+            em_specialization,
+            em_univ_institute,
+            em_year,
+            em_board,
+            em_mark_grade,
+            em_reg_no,
+            em_exp_date,
+            em_chellan,
+            em_reg_type,
+            em_chellan_exp_date,
+            em_no,
+			em_education,
+			pass_fail,
+            if(pass_fail=1,'Pass','Fail') pass,
             IFNULL(unver_name,"NILL" ) unver_name,            
             IFNULL( cour_desc, "NILL") cour_desc,                    
             IFNULL( spec_desc, "NILL") spec_desc
@@ -253,6 +267,7 @@ module.exports = {
             em_chellan_exp_date,
             create_user,
             pass_fail   
+
             FROM hrm_emp_qual
             WHERE em_no = ?`,
             [

@@ -195,12 +195,16 @@ module.exports = {
     getFineByIDStatus: (data, callBack) => {
         pool.query(
             `SELECT 
-                hrm_emp_fine_mast.fine_slno,
-                hrm_fine_master.fine_desc,
-                fine_descp,
-                fine_amount,
-                fine_remark,
-                if(fine_status  = 0 ,'Pending','Collected')  fine_status 
+            hrm_emp_fine_mast.fine_slno,
+            hrm_fine_master.fine_desc,
+            fine_descp,
+            fine_amount,
+            fine_remark,
+            fine_type,
+            fine_start,
+            fine_end,
+            fine_period,
+            if(fine_status  = 0 ,'Pending','Collected')  fine_status
             FROM hrm_emp_fine_mast
             LEFT JOIN hrm_fine_master ON  hrm_emp_fine_mast.fine_type =hrm_fine_master.fine_slno                   
             WHERE hrm_emp_fine_mast.fine_emp_no = ? AND fine_status=?` ,
