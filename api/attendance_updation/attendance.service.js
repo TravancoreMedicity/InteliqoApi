@@ -32,7 +32,7 @@ module.exports = {
             `SELECT 
             punch_slno,duty_day,shift_id,emp_id,punch_master.em_no,punch_in,punch_out,duty_status,lvreq_type,leave_type,
             shift_in,shift_out,hrs_worked,over_time,late_in,early_out,ot_request_flag,ot_request_flag,mis_punch_flag,
-            holiday_flag,gross_salary,duty_worked
+            holiday_flag,gross_salary,duty_worked,offday_falg
             FROM punch_master 
             left join hrm_emp_master on hrm_emp_master.em_id=punch_master.emp_id
              WHERE emp_id IN (?) AND  date(duty_day) BETWEEN ? AND ?`,
@@ -145,7 +145,6 @@ module.exports = {
         }
     },
     getpunchmastdataupload: (data, callBack) => {
-
         pool.query(
             `SELECT punch_slno, 
             duty_day,
@@ -160,6 +159,7 @@ module.exports = {
             ot_request_flag,
             mis_punch_flag, 
             holiday_flag,
+            offday_falg,
             lvreq_type, 
             leave_type, 
             gross_salary,
@@ -254,6 +254,7 @@ module.exports = {
              duty_worked, 
              hrs_worked, 
              holiday_flag,
+             offday_falg,
              over_time,
              late_in, 
              early_out, 

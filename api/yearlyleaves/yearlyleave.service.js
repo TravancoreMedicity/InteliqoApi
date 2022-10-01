@@ -58,7 +58,7 @@ module.exports = {
         )
     },
     update: (data, callBack) => {
-              pool.query(
+        pool.query(
             `UPDATE hrm_yearly_leaves
                 SET
                 max_allowed_count_cl=?,

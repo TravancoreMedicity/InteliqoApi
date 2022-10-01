@@ -141,7 +141,6 @@ module.exports = {
         });
     },
     getYearlyLeaveByID: (req, res) => {
-
         const id = req.params.id;
         getDataById(id, (err, results) => {
             if (err) {
@@ -167,9 +166,7 @@ module.exports = {
 
     },
     getcommonleave: (req, res) => {
-
         getcommonleave((err, results) => {
-
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
