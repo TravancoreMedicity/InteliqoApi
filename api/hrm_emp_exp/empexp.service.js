@@ -98,15 +98,15 @@ module.exports = {
     },
     getSelectAllDataById: (id, callBack) => {
         pool.query(
-            `            SELECT
+            `SELECT
             emexp_slno, 
             em_no,
             em_institution,
             is_tmch,
             em_designation,
-            DATE_FORMAT(em_from, '%d-%m-%Y')em_from,
-            DATE_FORMAT(em_to, '%d-%m-%Y')em_to,
-              TIMESTAMPDIFF( YEAR, hrm_emp_exp.em_from, hrm_emp_exp.em_to ) as 'year',
+            em_from,
+            em_to,
+            TIMESTAMPDIFF( YEAR, hrm_emp_exp.em_from, hrm_emp_exp.em_to ) as 'year',
             TIMESTAMPDIFF( MONTH, hrm_emp_exp.em_from, hrm_emp_exp.em_to ) % 12 as 'month',
             FLOOR( TIMESTAMPDIFF( DAY, hrm_emp_exp.em_from, hrm_emp_exp.em_to ) % 30.4375 ) as 'day',
             em_total_year,

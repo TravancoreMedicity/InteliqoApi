@@ -110,7 +110,8 @@ const performanceGradeRouter = require("./api/performanceGrade/performanceGrade.
 const PerformanceAppraisalRouter = require("./api/PerformanceAppraisal/PerformanceAppraisal.router")
 const AppraisalRoightsRouter = require("./api/performanceappriasalrights/performanceappriasalrights.router")
 const ActiveEmpReportRouter = require("./api/ActiveEmpReport/ActiveEmpReport.router")
-
+const HighLevelRouter = require("./api/HighLevelMaster/HighLevel.router")
+const HierarchyLevelRouter = require("./api/HeirarchyLevelMaster/HeirarchyLevel.router")
 
 
 app.use(express.json());
@@ -259,6 +260,8 @@ app.use("/api/performanceGrade", performanceGradeRouter)//performance grade mast
 app.use("/api/Performance", PerformanceAppraisalRouter)
 app.use("/api/performanceappriasalrights", AppraisalRoightsRouter)
 app.use("/api/ActiveEmpReport", ActiveEmpReportRouter)
+app.use("/api/HighLevel", HighLevelRouter)
+app.use("/api/HierarchyLevel", HierarchyLevelRouter)
 
 
 
