@@ -561,12 +561,14 @@ module.exports = {
             SET lvreq_type =?,
             leave_type=?,
             sublvreq_type=?,
+            duty_status=?,
             duty_worked=?
             WHERE duty_day=? AND em_no=?`,
                     [
                         val.req_type,
                         val.leave,
                         val.leave_subreq,
+                        1,
                         1,
                         val.date,
                         val.em_no
@@ -603,12 +605,16 @@ module.exports = {
                     `UPDATE punch_master
             SET lvreq_type =?,
             leave_type=?,
-            sublvreq_type=?
+            sublvreq_type=?,
+            duty_status=?,
+            duty_worked=?
             WHERE duty_day=? AND em_no=?`,
                     [
                         val.req_type,
                         val.leave,
                         val.leave_subreq,
+                        1,
+                        1,
                         val.date,
                         val.em_no
                     ],
@@ -642,11 +648,15 @@ module.exports = {
                 pool.query(
                     `UPDATE punch_master
                         SET lvreq_type =?,
-                        punch_in=?
+                        punch_in=?,
+                        duty_status=?,
+                        duty_worked=?
                        WHERE duty_day=? AND em_no=?`,
                     [
                         val.req_type,
                         val.punch,
+                        1,
+                        1,
                         val.date,
                         val.em_no
                     ],
@@ -704,12 +714,16 @@ module.exports = {
                 pool.query(
                     `UPDATE punch_master
                         SET lvreq_type =?,
-                        punch_out=?
+                        punch_out=?,
+                        duty_status=?,
+                        duty_worked=?
                        WHERE duty_day=? AND em_no=?`,
                     [
                         val.req_type,
                         val.punch,
                         val.date,
+                        1,
+                        1,
                         val.em_no
                     ],
                     (error, results, feilds) => {

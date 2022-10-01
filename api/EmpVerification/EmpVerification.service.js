@@ -63,16 +63,15 @@ module.exports = {
     },
     getSecondlevelVerification: (callBack) => {
         pool.query(
-            `select emp_verify_slno,hrm_emp_verification.em_id,verification_status,ifnull(second_level_remarks,'pending')verification_Remark,second_level_verification,
+            `select emp_verify_slno,hrm_emp_verification.em_id,verification_status,ifnull(second_level_remarks,'second level pending')verification_Remark,second_level_verification,
             em_no,em_name,hrm_branch.branch_name, hrm_department.dept_name,hrm_dept_section.sect_name,em_doj,
-            (case when verification_status='0' then "Pending" when verification_status='2' then "Not Verified" else "Verified" end ) as verify_remark
+            (case when verification_status='0' then "First level pending" when verification_status='2' then "Not Verified" else "Verified" end ) as verify_remark
              from hrm_emp_verification
             left join hrm_emp_master on hrm_emp_master.em_id=hrm_emp_verification.em_id
             left join  hrm_branch ON hrm_branch.branch_slno = hrm_emp_master.em_branch
             left join hrm_department ON hrm_department.dept_id = hrm_emp_master.em_department
             left join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
-            where verification_required=1 
-            and second_level_required=1 and second_level_verification!=1`,
+            where second_level_required=1 and second_level_verification!=1`,
             [],
             (error, results, feilds) => {
                 if (error) {

@@ -129,7 +129,6 @@ const functionPunchOut = (punchdata, punchtmast, shiftdata, startDate, endDate,)
 
     })
     // })
-    console.log(punshift)
     const punchserachdata = punshift.flat(Infinity)
     // punch out data
     const punch_out_data = punchdata.map((punchmap) => {
@@ -222,7 +221,7 @@ module.exports = {
                             const newShiftDetl = data.map((element, index) => {
                                 const { punch_slno, duty_day, shift_id, emp_id, em_no, punch_in, punch_out,
                                     shift_in, shift_out, hrs_worked, over_time, late_in, early_out, ot_request_flag,
-                                    duty_status, lvreq_type, leave_type, holiday_flag, gross_salary, duty_worked
+                                    duty_status, lvreq_type, leave_type, holiday_flag, offday_falg, gross_salary, duty_worked
                                 } = element;
                                 const shiftin = moment(shift_in).format('HH:mm');
                                 const shiftout = moment(shift_out).format('HH:mm');
@@ -245,6 +244,7 @@ module.exports = {
                                     late_in,
                                     early_out,
                                     holiday_flag,
+                                    offday_falg,
                                     gross_salary,
                                     duty_worked,
                                     name: empDetl.find((val) => val.em_id === element.emp_id).em_name

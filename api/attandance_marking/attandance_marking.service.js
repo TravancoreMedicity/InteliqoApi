@@ -14,6 +14,8 @@ module.exports = {
              over_time,
              late_in, 
              early_out, 
+             holiday_flag,
+             offday_falg,
              duty_status,
              ot_request_flag, mis_punch_flag,
              ifnull(lvreq_type,0)lvreq_type, leave_type,updation_flag,
@@ -69,12 +71,13 @@ module.exports = {
 
     },
     getnightoffdata: (data, callBack) => {
-
         pool.query(
             `SELECT night_off_flag,shift_id,duty_status FROM medi_hrm.punch_master 
             left join hrm_shift_mast on punch_master.shift_id=hrm_shift_mast.shft_slno
             where emp_id=? and date(duty_day)between ? and ? and night_off_flag=1;`,
-            [data.em_id, data.fromDate, data.todate
+            [data.em_id,
+            data.fromDate,
+            data.todate
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -86,10 +89,21 @@ module.exports = {
 
     },
     updatenightoff: (data, callBack) => {
-
         pool.query(
-            `update punch_master set lvreq_type=? , leave_type=?,duty_worked=1 where duty_day=? and emp_id=?`,
-            [data.lvreq_type, data.leave_type, data.fordate, data.emp_id
+            `update punch_master 
+            set lvreq_type=?,
+             leave_type=?,
+             duty_status=?,
+             duty_worked=?
+              where duty_day=? 
+              and emp_id=?`,
+            [
+                data.lvreq_type,
+                data.leave_type,
+                1,
+                1,
+                data.fordate,
+                data.emp_id
             ],
             (error, results, feilds) => {
 
