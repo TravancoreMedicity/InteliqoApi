@@ -70,6 +70,27 @@ module.exports = {
             }
         )
     },
+
+    checkInsertVal: (data, callBack) => {
+        pool.query(
+            `SELECT shft_desc,
+            shft_code,
+            shft_slno     
+                FROM hrm_shift_mast
+                WHERE shft_desc = ? and shft_code=?`,
+            [
+                data.shft_desc,
+                data.shft_code
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error)
+                }
+                return callBack(null, results)
+            }
+        )
+    },
+
     update: (data, callBack) => {
         pool.query(
             `UPDATE hrm_shift_mast

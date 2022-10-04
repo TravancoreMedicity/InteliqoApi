@@ -22,6 +22,24 @@ module.exports = {
             }
         )
     },
+    checkInsertVal: (data, callBack) => {
+        pool.query(
+            `SELECT empstat_name,
+            emstats_slno     
+                FROM employee_status
+                WHERE empstat_name = ?`,
+            [
+                data.empstat_name
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error)
+                }
+                return callBack(null, results)
+            }
+        )
+    },
+
     update: (data, callBack) => {
 
         pool.query(

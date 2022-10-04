@@ -27,6 +27,23 @@ module.exports = {
         )
     },
 
+    checkInsertVal: (data, callBack) => {
+        pool.query(
+            `SELECT earning_type_name,
+            erning_type_id     
+                FROM hrm_earning_type
+                WHERE earning_type_name = ?`,
+            [
+                data.earn_type
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error)
+                }
+                return callBack(null, results)
+            }
+        )
+    },
     getData: (callBack) => {
         pool.query(
             `SELECT erning_type_id,

@@ -70,7 +70,7 @@ module.exports = {
             `SELECT spec_desc,
                 spec_slno
                 FROM hrm_mast_specializtion
-                WHERE spec_desc = ?  AND spec_slno != ? `,
+                WHERE spec_desc = ?  AND spec_slno = ? `,
             [
                 data.spec_desc,
                 data.spec_slno

@@ -1,5 +1,5 @@
 const { createDueClearenceDept, updateDueDepartment, getSelect,
-    getDueClearenceDeptByID, GetDueClearenceDeptBydept } = require('../DueaClearenceDepartment/DueaClearenceDepartment.service');
+    getDueClearenceDeptByID, GetDueClearenceDeptBydept, checkInsertVal } = require('../DueaClearenceDepartment/DueaClearenceDepartment.service');
 const { validatedepartmentdueclearencedept } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -15,21 +15,35 @@ module.exports = {
         }
 
         body.dept_id = body_result.value.dept_id;
-        createDueClearenceDept(body, (err, results) => {
-            if (err) {
-                logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 0,
-                    message: err
+
+        checkInsertVal(body, (err, results) => {
+            const value = JSON.parse(JSON.stringify(results))
+            if (Object.keys(value).length === 0) {
+
+
+                createDueClearenceDept(body, (err, results) => {
+                    if (err) {
+                        logger.errorLogger(err)
+                        return res.status(200).json({
+                            success: 0,
+                            message: err
+                        });
+                    }
+
+                    return res.status(200).json({
+                        success: 1,
+                        message: "Data Created Successfully"
+                    });
+
                 });
+
+            } else {
+                return res.status(200).json({
+                    success: 7,
+                    message: "Due Clearence Department Already Exist"
+                })
             }
-
-            return res.status(200).json({
-                success: 1,
-                message: "Data Created Successfully"
-            });
-
-        });
+        })
     },
     updateDueDepartment: (req, res) => {
 

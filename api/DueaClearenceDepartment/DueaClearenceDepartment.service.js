@@ -24,6 +24,25 @@ module.exports = {
             }
         )
     },
+
+    checkInsertVal: (data, callBack) => {
+        pool.query(
+            `SELECT dept_id,
+            sect_id     
+                FROM hrm_due_clearence_dept_master
+                WHERE dept_id = ?`,
+            [
+                data.dept_id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error)
+                }
+                return callBack(null, results)
+            }
+        )
+    },
+
     updateDueDepartment: (data, callBack) => {
         pool.query(
             `UPDATE hrm_due_clearence_dept_master 

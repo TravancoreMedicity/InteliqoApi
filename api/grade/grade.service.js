@@ -18,6 +18,24 @@ module.exports = {
             }
         )
     },
+    checkInsertVal: (data, callBack) => {
+        pool.query(
+            `SELECT grade_desc,
+            grade_slno     
+                FROM grade
+                WHERE grade_desc = ?`,
+            [
+                data.grade_desc
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error)
+                }
+                return callBack(null, results)
+            }
+        )
+    },
+
     update: (data, callBack) => {
         pool.query(
             `UPDATE grade 

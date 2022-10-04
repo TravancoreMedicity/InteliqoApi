@@ -18,6 +18,23 @@ module.exports = {
             }
         )
     },
+    checkInsertVal: (data, callBack) => {
+        pool.query(
+            `SELECT qual_name,
+            qual_slno     
+                FROM hrm_qualification
+                WHERE qual_name = ?`,
+            [
+                data.qual_name
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error)
+                }
+                return callBack(null, results)
+            }
+        )
+    },
     update: (data, callBack) => {
         pool.query(
             `UPDATE hrm_qualification 

@@ -1,4 +1,4 @@
-const { create, updateBranch, deleteBranch, getBranch, getBranchById } = require('../branch/branch.service');
+const { create, updateBranch, deleteBranch, getBranch, getBranchById, checkInsertVal } = require('../branch/branch.service');
 const { validateBranch } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -19,21 +19,32 @@ module.exports = {
         body.esiNumber = body_result.value.esiNumber;
         body.pfNumber = body_result.value.pfNumber;
 
+        checkInsertVal(body, (err, results) => {
+            const value = JSON.parse(JSON.stringify(results))
+            if (Object.keys(value).length === 0) {
 
-        create(body, (err, results) => {
-            if (err) {
-                logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 0,
-                    message: err
+                create(body, (err, results) => {
+                    if (err) {
+                        logger.errorLogger(err)
+                        return res.status(200).json({
+                            success: 0,
+                            message: err
+                        });
+                    }
+
+                    return res.status(200).json({
+                        success: 1,
+                        message: "Branch Inserted Successfully"
+                    });
                 });
+            } else {
+                return res.status(200).json({
+                    success: 7,
+                    message: "Branch Already Exist"
+                })
             }
+        })
 
-            return res.status(200).json({
-                success: 1,
-                message: "Branch Inserted Successfully"
-            });
-        });
     },
     updateBranch: (req, res) => {
 

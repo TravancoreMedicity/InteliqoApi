@@ -73,6 +73,25 @@ module.exports = {
             }
         )
     },
+
+    checkInsertVal: (data, callBack) => {
+        pool.query(
+            `SELECT ecat_name,
+            category_slno     
+                FROM hrm_emp_category
+                WHERE ecat_name = ?`,
+            [
+                data.ecat_name
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error)
+                }
+                return callBack(null, results)
+            }
+        )
+    },
+
     update: (data, callBack) => {
 
         pool.query(

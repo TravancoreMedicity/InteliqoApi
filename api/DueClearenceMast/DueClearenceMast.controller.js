@@ -1,4 +1,4 @@
-const { create, update, deleteByID, getData, getDataById } = require('../DueClearenceMast/DueClearenceMast.service');
+const { create, update, deleteByID, getData, getDataById, checkInsertVal } = require('../DueClearenceMast/DueClearenceMast.service');
 const { validatedueClearenceMaster } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -15,21 +15,34 @@ module.exports = {
 
         body.due_desc = body_result.value.due_desc;
 
-        create(body, (err, results) => {
-            if (err) {
-                logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 0,
-                    message: err
+        checkInsertVal(body, (err, results) => {
+            const value = JSON.parse(JSON.stringify(results))
+            if (Object.keys(value).length === 0) {
+
+                create(body, (err, results) => {
+                    if (err) {
+                        logger.errorLogger(err)
+                        return res.status(200).json({
+                            success: 0,
+                            message: err
+                        });
+                    }
+
+                    return res.status(200).json({
+                        success: 1,
+                        message: "Data Created Successfully"
+                    });
+
                 });
+
+            } else {
+                return res.status(200).json({
+                    success: 7,
+                    message: "Due Clearence Already Exist"
+                })
             }
+        })
 
-            return res.status(200).json({
-                success: 1,
-                message: "Data Created Successfully"
-            });
-
-        });
     },
     update: (req, res) => {
 

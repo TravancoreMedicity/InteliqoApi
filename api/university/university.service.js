@@ -19,6 +19,23 @@ module.exports = {
             }
         )
     },
+    checkInsertVal: (data, callBack) => {
+        pool.query(
+            `SELECT unver_name,
+            unver_slno     
+                FROM hrm_university
+                WHERE unver_name = ?`,
+            [
+                data.unver_name
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error)
+                }
+                return callBack(null, results)
+            }
+        )
+    },
 
     update: (data, callBack) => {
         pool.query(

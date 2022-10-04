@@ -1,5 +1,5 @@
 const { create, update, deleteByID, getData, getDataById, getSelect, getDatabyYear,
-    getHolidayByDate, getyearholiday } = require('../yearlyholiday/yearlyhold.service');
+    getHolidayByDate, getyearholiday, checkInsertVal } = require('../yearlyholiday/yearlyhold.service');
 const { validateyearlyholidaylist } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -15,22 +15,32 @@ module.exports = {
         }
 
         body.hld_desc = body_result.value.hld_desc;
+        checkInsertVal(body, (err, results) => {
+            const value = JSON.parse(JSON.stringify(results))
+            if (Object.keys(value).length === 0) {
 
-        create(body, (err, results) => {
-            if (err) {
-                logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 0,
-                    message: err
+                create(body, (err, results) => {
+                    if (err) {
+                        logger.errorLogger(err)
+                        return res.status(200).json({
+                            success: 0,
+                            message: err
+                        });
+                    }
+
+                    return res.status(200).json({
+                        success: 1,
+                        message: "Data Created Successfully"
+                    });
+
                 });
+            } else {
+                return res.status(200).json({
+                    success: 7,
+                    message: "Yearly Leave Already Exist"
+                })
             }
-
-            return res.status(200).json({
-                success: 1,
-                message: "Data Created Successfully"
-            });
-
-        });
+        })
     },
     updateYearlyHoiliday: (req, res) => {
 

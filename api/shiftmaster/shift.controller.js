@@ -1,4 +1,4 @@
-const { create, update, deleteByID, getData, getDataById, getSelect } = require('../shiftmaster/shift.service');
+const { create, update, deleteByID, getData, getDataById, getSelect, checkInsertVal } = require('../shiftmaster/shift.service');
 const { validateshiftmaster } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -12,24 +12,35 @@ module.exports = {
                 message: body_result.error.details[0].message
             });
         }
-
         body.shft_desc = body_result.value.shft_desc;
 
-        create(body, (err, results) => {
-            if (err) {
-                logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 0,
-                    message: err
+        checkInsertVal(body, (err, results) => {
+            const value = JSON.parse(JSON.stringify(results))
+            if (Object.keys(value).length === 0) {
+
+                create(body, (err, results) => {
+                    if (err) {
+                        logger.errorLogger(err)
+                        return res.status(200).json({
+                            success: 0,
+                            message: err
+                        });
+                    }
+
+                    return res.status(200).json({
+                        success: 1,
+                        message: "Data Created Successfully"
+                    });
+
                 });
+
+            } else {
+                return res.status(200).json({
+                    success: 7,
+                    message: "Shift Already Exist"
+                })
             }
-
-            return res.status(200).json({
-                success: 1,
-                message: "Data Created Successfully"
-            });
-
-        });
+        })
     },
     updateShift: (req, res) => {
 
