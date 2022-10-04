@@ -20,6 +20,24 @@ module.exports = {
             }
         )
     },
+    checkInsertVal: (data, callBack) => {
+        pool.query(
+            `SELECT kra_desc,
+            kra_slno     
+                FROM hrm_kra
+                WHERE kra_desc = ?`,
+            [
+                data.kra_desc
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error)
+                }
+                return callBack(null, results)
+            }
+        )
+    },
+
     update: (data, callBack) => {
         pool.query(
             `UPDATE hrm_kra
@@ -57,7 +75,8 @@ module.exports = {
         pool.query(
             `SELECT kra_slno,
             kra_desc,
-             if(kra_status = 1 ,'Yes','No') kra_status
+            kra_status,
+             if(kra_status = 1 ,'Yes','No') status
         FROM hrm_kra`,
             [],
             (error, results, feilds) => {

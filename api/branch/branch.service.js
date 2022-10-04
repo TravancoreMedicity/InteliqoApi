@@ -30,6 +30,24 @@ module.exports = {
             }
         )
     },
+
+    checkInsertVal: (data, callBack) => {
+        pool.query(
+            `SELECT branch_name,
+            branch_slno     
+                FROM hrm_branch
+                WHERE branch_name = ?`,
+            [
+                data.branch_name
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error)
+                }
+                return callBack(null, results)
+            }
+        )
+    },
     updateBranch: (data, callBack) => {
         pool.query(
             `UPDATE hrm_branch 

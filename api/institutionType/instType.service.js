@@ -18,6 +18,25 @@ module.exports = {
             }
         )
     },
+
+    checkInsertVal: (data, callBack) => {
+        pool.query(
+            `SELECT inst_emp_type,
+            inst_slno     
+                FROM institution_type
+                WHERE inst_emp_type = ?`,
+            [
+                data.inst_emp_type
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error)
+                }
+                return callBack(null, results)
+            }
+        )
+    },
+
     update: (data, callBack) => {
         pool.query(
             `UPDATE institution_type

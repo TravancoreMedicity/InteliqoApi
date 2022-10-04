@@ -18,6 +18,23 @@ module.exports = {
             }
         )
     },
+    checkInsertVal: (data, callBack) => {
+        pool.query(
+            `SELECT relg_name,
+            relg_slno     
+                FROM hrm_religion
+                WHERE relg_name = ?`,
+            [
+                data.relg_name
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error)
+                }
+                return callBack(null, results)
+            }
+        )
+    },
     update: (data, callBack) => {
         pool.query(
             `UPDATE hrm_religion

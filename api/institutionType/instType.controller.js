@@ -1,4 +1,4 @@
-const { create, update, deleteByID, getData, getDataById } = require('../institutionType/instType.service');
+const { create, update, deleteByID, getData, getDataById, checkInsertVal } = require('../institutionType/instType.service');
 const { validateInstitutionType } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -15,22 +15,33 @@ module.exports = {
 
         body.inst_emp_type = body_result.value.inst_emp_type;
         body.inst_emp_status = body_result.value.inst_emp_status;
+        checkInsertVal(body, (err, results) => {
+            const value = JSON.parse(JSON.stringify(results))
+            if (Object.keys(value).length === 0) {
 
-        create(body, (err, results) => {
-            if (err) {
-                logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 0,
-                    message: err
+                create(body, (err, results) => {
+                    if (err) {
+                        logger.errorLogger(err)
+                        return res.status(200).json({
+                            success: 0,
+                            message: err
+                        });
+                    }
+
+                    return res.status(200).json({
+                        success: 1,
+                        message: "Data Created Successfully"
+                    });
+
                 });
+            } else {
+                return res.status(200).json({
+                    success: 7,
+                    message: "Institution Type Already Exist"
+                })
             }
+        })
 
-            return res.status(200).json({
-                success: 1,
-                message: "Data Created Successfully"
-            });
-
-        });
     },
     updateInst: (req, res) => {
 

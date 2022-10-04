@@ -33,6 +33,24 @@ module.exports = {
             }
         )
     },
+    checkInsertVal: (data, callBack) => {
+        pool.query(
+            `SELECT earnded_name,
+            earnded_id     
+                FROM hrm_earning_deduction
+                WHERE earnded_name = ?`,
+            [
+                data.earnded_name
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error)
+                }
+                return callBack(null, results)
+            }
+        )
+    },
+
     update: (data, callBack) => {
 
         pool.query(

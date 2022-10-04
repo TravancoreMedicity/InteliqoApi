@@ -22,6 +22,25 @@ module.exports = {
             }
         )
     },
+
+    checkInsertVal: (data, callBack) => {
+        pool.query(
+            `SELECT due_desc,
+            duemast_slno     
+                FROM due_clearence_mastrer
+                WHERE due_desc = ?`,
+            [
+                data.due_desc
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error)
+                }
+                return callBack(null, results)
+            }
+        )
+    },
+
     update: (data, callBack) => {
         pool.query(
             `UPDATE due_clearence_mastrer

@@ -1250,6 +1250,13 @@ const validatePerformanceAppraisalRights = Joi.object({
 })
 
 
+const validateKRA = Joi.object({
+        kra_desc: Joi.string().required(),
+        kra_status: Joi.number().min(0).max(1),
+        kra_slno: Joi.number().required(),
+});
+
+
 module.exports = {
         authSchema,  //authSchema:authSchema
         validateEmployee,
@@ -1336,5 +1343,6 @@ module.exports = {
         validateAdvanceRequest,
         validateempmasterEdit,
         validationPerformanceGrade,
-        validatePerformanceAppraisalRights
+        validatePerformanceAppraisalRights,
+        validateKRA
 }

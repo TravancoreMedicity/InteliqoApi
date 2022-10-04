@@ -1,6 +1,6 @@
 const { create, update, deleteByID, getData, getDataById, getSelect,
     getSelectContract, checkemptpe, getProbationEndDetl, getProbationEndDetlbyDate,
-    getcontractEndDetlByDate, getContractEndDetl } = require('../employcategory/empcat.service');
+    getcontractEndDetlByDate, getContractEndDetl, checkInsertVal } = require('../employcategory/empcat.service');
 const { validateempcategory } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -18,22 +18,33 @@ module.exports = {
 
         body.ecat_name = body_result.value.ecat_name;
 
-        // Insert the values
-        create(body, (err, results) => {
-            if (err) {
-                logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 0,
-                    message: err
+        checkInsertVal(body, (err, results) => {
+            const value = JSON.parse(JSON.stringify(results))
+            if (Object.keys(value).length === 0) {
+
+                // Insert the values
+                create(body, (err, results) => {
+                    if (err) {
+                        logger.errorLogger(err)
+                        return res.status(200).json({
+                            success: 0,
+                            message: err
+                        });
+                    }
+
+                    return res.status(200).json({
+                        success: 1,
+                        message: "Data Created Successfully"
+                    });
+
                 });
+            } else {
+                return res.status(200).json({
+                    success: 7,
+                    message: "Category Already Exist"
+                })
             }
-
-            return res.status(200).json({
-                success: 1,
-                message: "Data Created Successfully"
-            });
-
-        });
+        })
     },
     updateEmpCategory: (req, res) => {
 

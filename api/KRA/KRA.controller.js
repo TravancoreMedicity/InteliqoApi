@@ -1,27 +1,43 @@
-const { create, update, deleteByID, getData, getDataById, getDataByStatus } = require('../KRA/KRA.service');
+const { create, update, deleteByID, getData, getDataById, getDataByStatus, checkInsertVal } = require('../KRA/KRA.service');
 // const { validateRegion } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
+const { validateKRA } = require('../../validation/validation_schema');
+
 module.exports = {
     create: (req, res) => {
         const body = req.body;
-        create(body, (err, results) => {
-            if (err) {
-                logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 0,
-                    message: err
+        const body_result = validateKRA.validate(body);
+        body.kra_desc = body_result.value.kra_desc;
+        checkInsertVal(body, (err, results) => {
+            const value = JSON.parse(JSON.stringify(results))
+            if (Object.keys(value).length === 0) {
+
+                create(body, (err, results) => {
+
+                    if (err) {
+                        logger.errorLogger(err)
+                        return res.status(200).json({
+                            success: 0,
+                            message: err
+                        });
+                    }
+
+                    return res.status(200).json({
+                        success: 1,
+                        message: "Data Created Successfully"
+                    });
+
                 });
+            } else {
+                return res.status(200).json({
+                    success: 7,
+                    message: "KRA Already Exist"
+                })
             }
+        })
 
-            return res.status(200).json({
-                success: 1,
-                message: "Data Created Successfully"
-            });
-
-        });
     },
     update: (req, res) => {
-
         const body = req.body;
         update(body, (err, results) => {
 

@@ -1,4 +1,4 @@
-const { create, update, deleteByID, getData, getDataById, getSelect } = require('../earnings/earn.service');
+const { create, update, deleteByID, getData, getDataById, getSelect, checkInsertVal } = require('../earnings/earn.service');
 const { validateearnings } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -15,22 +15,32 @@ module.exports = {
         }
 
         body.earnded_name = body_result.value.earnded_name;
+        checkInsertVal(body, (err, results) => {
+            const value = JSON.parse(JSON.stringify(results))
+            if (Object.keys(value).length === 0) {
 
-        create(body, (err, results) => {
-            if (err) {
-                logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 0,
-                    message: err
+                create(body, (err, results) => {
+                    if (err) {
+                        logger.errorLogger(err)
+                        return res.status(200).json({
+                            success: 0,
+                            message: err
+                        });
+                    }
+
+                    return res.status(200).json({
+                        success: 1,
+                        message: "Data Created Successfully"
+                    });
+
                 });
+            } else {
+                return res.status(200).json({
+                    success: 7,
+                    message: "Earning/ Deduction Already Exist"
+                })
             }
-
-            return res.status(200).json({
-                success: 1,
-                message: "Data Created Successfully"
-            });
-
-        });
+        })
     },
     updateEarning: (req, res) => {
 

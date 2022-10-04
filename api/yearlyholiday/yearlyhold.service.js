@@ -21,6 +21,23 @@ module.exports = {
             }
         )
     },
+    checkInsertVal: (data, callBack) => {
+        pool.query(
+            `SELECT hld_desc,
+            hld_slno     
+                FROM hrm_yearly_holiday_list
+                WHERE hld_desc = ?`,
+            [
+                data.hld_desc
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error)
+                }
+                return callBack(null, results)
+            }
+        )
+    },
     update: (data, callBack) => {
         pool.query(
             `UPDATE hrm_yearly_holiday_list
