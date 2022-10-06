@@ -30,7 +30,7 @@ module.exports = {
             FROM hrm_emp_master
             left join designation on hrm_emp_master.em_designation=designation.desg_slno
             where em_department=? and em_dept_section=? and em_branch=?
-            and em_status=1`,
+            and em_status=1 and em_id!=1 and em_no!=2 `,
             [
                 data.em_department,
                 data.em_dept_section,
@@ -140,7 +140,7 @@ module.exports = {
             data.map((val) => {
                 pool.query(
                     `update hrm_duty_plan
-                    set shift_id=1002,
+                    set shift_id=6,
                     offday_flag=1
                     where emp_id=?
                      and date(duty_day) IN (?)`,
