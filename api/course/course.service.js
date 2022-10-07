@@ -29,9 +29,10 @@ module.exports = {
             `SELECT cour_desc,
             cour_status
                 FROM hrm_mast_course
-                WHERE cour_desc = ?`,
+                WHERE cour_desc = ? and edu_slno=?`,
             [
                 data.cour_desc,
+                data.edu_slno
             ],
             (error, results, feilds) => {
                 if (error) {
