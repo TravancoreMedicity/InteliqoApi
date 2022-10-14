@@ -12,6 +12,7 @@ const {
     getInchargeAppraisalList,
     getHODAppraisalList,
     getCEODepartments,
+    getContractRenewList
 } = require('../PerformanceAppraisal/PerformanceAppraisal.controller')
 
 
@@ -27,6 +28,8 @@ router.post("/create", checkToken, createAppraisal)
 router.post("/incharge/apprlist", checkToken, getInchargeAppraisalList)
 router.post("/HOD/appraisalList", checkToken, getHODAppraisalList)
 router.get("/CEO/DeptList", checkToken, getCEODepartments)
+
+router.get("/contractrenew", checkToken, getContractRenewList)
 
 
 module.exports = router;

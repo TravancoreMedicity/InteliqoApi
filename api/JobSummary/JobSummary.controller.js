@@ -1,7 +1,8 @@
 const { createJobSummary, CheckInsertValue, createJobDuties, getjobId,
     createJobSpecification, createJobQualification, createJobGeneric,
     getJobSummary, getJobDuties, getJobSpecification, getJobGeneric, getJobQualification,
-    createJobCompetency, getJobSummarydetl, updatejobsummarydetl, getjobcompetency } = require('../JobSummary/JobSummary.service');
+    createJobCompetency, getJobSummarydetl, updatejobsummarydetl, getjobcompetency,
+    getjobDescView } = require('../JobSummary/JobSummary.service');
 // const { validatereligion } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -402,5 +403,29 @@ module.exports = {
             });
         });
 
-    }
+    },
+    getjobDescView: (req, res) => {
+        getjobDescView((err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+
+    },
 }

@@ -17,9 +17,10 @@ module.exports = {
                 reporting_designation,
                 equipment_used,
                 create_user,
-                created_date
+                created_date,
+                sect_id
                 )
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`,
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
                 data.summary_slno,
                 data.dept_id,
@@ -32,7 +33,8 @@ module.exports = {
                 data.reporting_designation,
                 data.equipment_used,
                 data.create_user,
-                data.created_date
+                data.created_date,
+                data.sect_id
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -46,10 +48,11 @@ module.exports = {
         pool.query(
             `select summary_slno
             from job_summary
-            where dept_id=? and designation=?`,
+            where dept_id=? and designation=? and sect_id=?`,
             [
                 data.dept_id,
-                data.designation
+                data.designation,
+                data.sect_id
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -346,5 +349,32 @@ module.exports = {
                 return callBack(null, results);
             }
         )
-    }
+    },
+    getjobDescView: (callBack) => {
+        pool.query(
+            `select 
+            ROW_NUMBER() OVER() as no,
+            summary_slno,
+            job_summary.dept_id,
+            job_summary.designation,
+            hrm_department.dept_name as dpname,
+            designation.desg_name as dsname,
+            objective,
+            scope,
+            job_summary.sect_id,
+            hrm_dept_section.sect_name as dpsname
+            from job_summary
+            left join hrm_department on hrm_department.dept_id=job_summary.dept_id
+            left join designation on designation.desg_slno=job_summary.designation
+            left join hrm_dept_section on hrm_dept_section.sect_id=job_summary.sect_id`,
+            [],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+
+    },
 }
