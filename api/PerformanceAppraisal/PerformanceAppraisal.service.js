@@ -12,12 +12,14 @@ module.exports = {
             em_doj,
             sect_name,
             sect_id,
-            em_prob_end_date
+            em_prob_end_date,
+             ecat_name
             from hrm_emp_master
             LEFT JOIN hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
             LEFT JOIN designation ON hrm_emp_master.em_designation=designation.desg_slno
             LEFT JOIN hrm_dept_section ON hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
-             where em_category IN (4,7,9) and em_prob_end_date<=curdate() and em_prob_end_date!="2000-01-01" and em_status=1;`,
+              LEFT JOIN hrm_emp_category on hrm_emp_master.em_category= hrm_emp_category.category_slno
+             where em_category IN (4,7,9) and em_prob_end_date<=curdate() and em_prob_end_date!="2000-01-01" and em_status=1 and em_id!=1;`,
             [],
             (error, results, fields) => {
                 if (error) {
@@ -38,11 +40,13 @@ module.exports = {
             sect_id,
             em_doj,
             hod,
-            incharge
+            incharge,
+            ecat_name
             from hrm_emp_master
             LEFT JOIN hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
             LEFT JOIN designation ON hrm_emp_master.em_designation=designation.desg_slno
             LEFT JOIN hrm_dept_section ON hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
+            LEFT JOIN hrm_emp_category on hrm_emp_master.em_category= hrm_emp_category.category_slno
             where em_category=1 and DATE_ADD(em_doj, INTERVAL 12 MONTH) <=curdate() and em_status=1 ;`,
             [],
             (error, results, fields) => {
@@ -245,6 +249,36 @@ module.exports = {
             FROM medi_hrm.hrm_hierarchylevel_master
             left join hrm_dept_section on hrm_hierarchylevel_master.sect_id=hrm_dept_section.sect_id
             where highlevel_slno=4;`,
+            [],
+            (error, results, fields) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getContractRenewList: (callBack) => {
+        pool.query(
+            `select hrm_emp_contract_detl.em_id,
+            hrm_emp_contract_detl.em_no,
+            em_name,
+            sect_name,
+            desg_name,
+            em_status,
+            em_doj,
+            em_cont_start,
+            em_cont_end ,
+            ecat_name,
+            dept_name
+            from hrm_emp_contract_detl
+            left join hrm_emp_master on hrm_emp_master.em_id=hrm_emp_contract_detl.em_id
+             LEFT JOIN hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
+            left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
+            left join designation on designation.desg_slno=hrm_emp_master.em_designation
+            LEFT JOIN hrm_emp_category on hrm_emp_master.em_category= hrm_emp_category.category_slno
+            where em_cont_close is null and em_cont_renew is null and em_status=1 and contract_renew_appr!=1  
+            and em_cont_end<=CURDATE() or (em_cont_end between DATEDIFF(CURDATE(),30) and  ADDDATE(CURDATE(),30)) ;`,
             [],
             (error, results, fields) => {
                 if (error) {

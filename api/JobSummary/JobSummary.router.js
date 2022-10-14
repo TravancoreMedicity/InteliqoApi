@@ -4,7 +4,7 @@ const { createJobSummary, CheckInsertValue, createJobDuties, getjobId,
     createJobSpecification, createJobQualification, createJobGeneric,
     getJobSummary, getJobDuties, getJobSpecification, getJobGeneric,
     getJobQualification, createJobCompetency, getJobSummarydetl,
-    updatejobsummarydetl, getjobcompetency, } = require('../JobSummary/JobSummary.controller');
+    updatejobsummarydetl, getjobcompetency, getjobDescView } = require('../JobSummary/JobSummary.controller');
 
 router.post("/", checkToken, createJobSummary);
 router.post("/check", checkToken, CheckInsertValue);
@@ -22,5 +22,7 @@ router.get("/getjobSummary/:id", checkToken, getJobSummarydetl)
 router.post("/jobcompetency", checkToken, createJobCompetency)
 router.patch("/updatejobsummary", checkToken, updatejobsummarydetl)
 router.post('/get/jobcompetency', checkToken, getjobcompetency)
+
+router.get("/jobview", checkToken, getjobDescView)
 
 module.exports = router;
