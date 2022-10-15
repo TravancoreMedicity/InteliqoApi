@@ -350,8 +350,9 @@ module.exports = {
     contractEndCount: (callBack) => {
         pool.query(
             `select count(*) 'contractcount' from hrm_emp_contract_detl
-            left join hrm_emp_master on hrm_emp_contract_detl.em_id=hrm_emp_master.em_id
-                        where em_cont_end<=curdate() and contract_renew_appr=1 and em_status=1 ;`,
+            left join hrm_emp_master on hrm_emp_master.em_id=hrm_emp_contract_detl.em_id
+            where em_cont_close is null and em_cont_renew is null and em_status=1 and contract_renew_appr!=1  
+            and em_cont_end<=CURDATE() or (em_cont_end between DATEDIFF(CURDATE(),30) and  ADDDATE(CURDATE(),30)) ;`,
             [],
             (error, results, feilds) => {
                 if (error) {
