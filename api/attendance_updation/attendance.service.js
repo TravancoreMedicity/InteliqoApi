@@ -35,7 +35,7 @@ module.exports = {
             holiday_flag,gross_salary,duty_worked,offday_falg
             FROM punch_master 
             left join hrm_emp_master on hrm_emp_master.em_id=punch_master.emp_id
-             WHERE emp_id IN (?) AND  date(duty_day) BETWEEN ? AND ?`,
+             WHERE emp_id IN (?) AND  date(duty_day) BETWEEN ? AND ? AND hrm_emp_master.em_no NOT IN (1,2) `,
             [
                 data,
                 start,
