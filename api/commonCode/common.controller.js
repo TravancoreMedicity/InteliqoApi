@@ -60,7 +60,8 @@ const {
     getEmployeeSection,
     getadvancerequestSlno,
     getContractDetl,
-    getApprovalLevel
+    getApprovalLevel,
+    getDeptsecthod
 } = require('../commonCode/common.service');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -1762,6 +1763,29 @@ module.exports = {
             return res.status(200).json({
                 success: 1,
                 data: results
+            });
+        })
+    },
+    getDeptsecthod: (req, res) => {
+        const id = req.params.id;
+        getDeptsecthod(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data1: results
             });
         })
     },

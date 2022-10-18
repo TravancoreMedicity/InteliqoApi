@@ -62,7 +62,8 @@ const {
     getEmployeeSection,
     getadvancerequestSlno,
     getContractDetl,
-    getApprovalLevel
+    getApprovalLevel,
+    getDeptsecthod
 } = require('../commonCode/common.controller');
 
 router.get("/getdept", checkToken, getDepartmentName)
@@ -134,5 +135,6 @@ router.post("/getsecEmp", checkToken, getEmployeeSection)
 router.get("/getadvanceslno", checkToken, getadvancerequestSlno) //get serialno for advance request
 router.get("/getcontract/detl/:id", checkToken, getContractDetl)
 router.get("/getapproval/levels/:id", checkToken, getApprovalLevel)
+router.get("/hoddeptSect/:id", checkToken, getDeptsecthod)
 
 module.exports = router;
