@@ -895,6 +895,24 @@ module.exports = {
             }
         )
     },
+    getDeptsecthod: (id, callBack) => {
+        pool.query(
+            `select dept_section, sect_name from 
+            medi_hrm.hrm_authorization_assign
+            left join hrm_dept_section on hrm_dept_section.sect_id = hrm_authorization_assign.dept_section
+            where emp_id =?
+            and auth_post = 1`,
+            [
+                id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
     getCEOlevel: (id, callBack) => {
         pool.query(
             `select co_assign from hrm_co_assign
