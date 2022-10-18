@@ -378,7 +378,7 @@ module.exports = {
 
     getpunchCount: (callBack) => {
         pool.query(
-            `SELECT LPAD(count(*),4,'0') 'punchcount' FROM punch_data
+            `SELECT LPAD(count(distinct(emp_code)),4,'0') 'punchcount' FROM punch_data
             where DATE(punch_time) = curdate()`,
             [],
             (error, results, feilds) => {
