@@ -3,7 +3,7 @@ const { getResignCount, getContractCloseCount, OtRequestCount, OtReqInchargeCoun
     LeaveReqCeoCount, LeaveReqHrCount, OtRequestCountUser, LeaveReqCountUser, ResignReqInchargeCount,
     ResignReqHodCount, ResignReqCeoCount, contractrenewalCount, RegistrationPendingList,
     trainingconformationCount, getLeaveRequestID, RegistrationPending, probationEndCount, annualAppraisalCount,
-    trainingAppraisalCount, contractEndCount,getActiveEmpCount, getpunchCount } = require('../dashboardcount/count.service');
+    trainingAppraisalCount, contractEndCount, getActiveEmpCount, getpunchCount, contractAppraisalCount } = require('../dashboardcount/count.service');
 const logger = require('../../logger/logger')
 module.exports = {
     getResignCount: (req, res) => {
@@ -30,6 +30,7 @@ module.exports = {
         });
     },
     getContractCloseCount: (req, res) => {
+        console.log("controller");
         getContractCloseCount((err, results) => {
             if (err) {
                 logger.errorLogger(err)
@@ -39,7 +40,7 @@ module.exports = {
                 });
             }
 
-            if (!results) {
+            if (results.length === 0) {
                 return res.status(200).json({
                     success: 0,
                     message: "No Results Found"
@@ -613,7 +614,7 @@ module.exports = {
             });
         });
     },
-  getActiveEmpCount: (req, res) => {
+    getActiveEmpCount: (req, res) => {
         getActiveEmpCount((err, results) => {
 
             if (err) {
@@ -637,9 +638,32 @@ module.exports = {
             });
         });
     },
-getpunchCount: (req, res) => {
+    getpunchCount: (req, res) => {
         getpunchCount((err, results) => {
 
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    contractAppraisalCount: (req, res) => {
+        contractAppraisalCount((err, results) => {
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({

@@ -15,9 +15,11 @@ module.exports = {
         )
     },
     getContractCloseCount: (callBack) => {
+        console.log("service");
         pool.query(
             `select count(*) 'contractcloseCount' from hrm_emp_contract_detl
-            where contract_close_hr_appr is null and em_cont_close='C' and em_cont_renew is null`,
+            left join hrm_emp_master on hrm_emp_master.em_id=hrm_emp_contract_detl.em_id
+            where em_cont_close is null and em_cont_renew is null and contract_renew_appr=0 and em_cont_end<=CURDATE() and em_status=1;`,
             [],
             (error, results, feilds) => {
                 if (error) {
@@ -388,6 +390,21 @@ module.exports = {
                 return callBack(null, results);
             }
         )
-    }
+    },
+    contractAppraisalCount: (callBack) => {
+        pool.query(
+            `select count(*) 'contractappraisalcount' from hrm_emp_contract_detl
+            left join hrm_emp_master on hrm_emp_master.em_id=hrm_emp_contract_detl.em_id
+            where em_cont_close is null and em_cont_renew is null and em_status=1 and contract_renew_appr!=1  
+            and em_cont_end<=CURDATE() or (em_cont_end between DATEDIFF(CURDATE(),30) and  ADDDATE(CURDATE(),30)) ;`,
+            [],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 
 }
