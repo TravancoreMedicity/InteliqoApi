@@ -140,7 +140,7 @@ module.exports = {
             data.map((val) => {
                 pool.query(
                     `update hrm_duty_plan
-                    set shift_id=4,
+                    set shift_id=1002,
                     offday_flag=1
                     where emp_id=?
                      and date(duty_day) IN (?)`,

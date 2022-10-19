@@ -143,14 +143,12 @@ module.exports = {
         pool.query(
             `update hrm_emp_master
             set em_no=?,
-            em_doj=?,
             em_category=?,
             em_contract_end_date=?,
             em_prob_end_date=?
             where em_id=?`,
             [
                 data.em_no,
-                data.em_doj,
                 data.em_category,
                 data.em_contract_end_date,
                 data.em_prob_end_date,
