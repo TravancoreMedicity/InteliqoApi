@@ -3,7 +3,6 @@ const pool = require("../../config/database");
 module.exports = {
 
     create: (data, callBack) => {
-        console.log(data);
         pool.query(
             `INSERT INTO hrm_hierarchylevel_master (
                 highlevel_slno,

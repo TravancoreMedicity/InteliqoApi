@@ -4,7 +4,6 @@ const logger = require('../../logger/logger')
 module.exports = {
     create: (req, res) => {
         const body = req.body;
-        console.log(body);
         var a1 = body.map((value, index) => {
             return [value.highlevel_slno, value.sect_id]
         })
