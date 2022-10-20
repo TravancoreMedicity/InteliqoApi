@@ -23,6 +23,8 @@ module.exports = {
                 esi_employer,
                 noofadvanceinyear,
                 verification_level,
+                default_shift,
+                notapplicable_shift,
                 creat_user)
             VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
@@ -45,7 +47,9 @@ module.exports = {
                 data.esi_employer,
                 data.noofadvanceinyear,
                 data.verification_level,
-                data.creat_user
+                data.creat_user,
+                data.default_shift,
+                data.notapplicable_shift
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -89,7 +93,9 @@ module.exports = {
                 esi_employer=?,
                 noofadvanceinyear=?,
                 verification_level=?,
-                update_user=?
+                update_user=?,
+                default_shift=?,
+                notapplicable_shift=?
                 WHERE setting_slno =?`,
             [
                 data.cmmn_grace_period,
@@ -112,6 +118,8 @@ module.exports = {
                 data.noofadvanceinyear,
                 data.verification_level,
                 data.update_user,
+                data.default_shift,
+                data.notapplicable_shift,
                 data.setting_slno
             ],
             (error, results, feilds) => {

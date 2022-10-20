@@ -1163,6 +1163,8 @@ const validatecommonsettings = Joi.object({
         setting_slno: Joi.number().optional(),
         noofadvanceinyear: Joi.number().optional(),
         verification_level: Joi.number().optional(),
+        notapplicable_shift: Joi.number().optional(),
+        default_shift: Joi.number().optional(),
 })
 //validate carryforward
 const validatecarryforward = Joi.object({
