@@ -39,7 +39,8 @@ module.exports = {
             left join designation on hrm_emp_master.em_designation = designation.desg_slno
             left join hrm_religion on  hrm_emp_master.hrm_religion = hrm_religion.relg_slno
             left join hrm_emp_category on hrm_emp_master.em_category = hrm_emp_category.category_slno
-            left join hrm_emp_personal on hrm_emp_master.em_id = hrm_emp_personal.em_id where  hrm_emp_master.em_status=1 and bloodgroup.group_slno IN (?)`,
+            left join hrm_emp_personal on hrm_emp_master.em_id = hrm_emp_personal.em_id 
+            where hrm_emp_master.em_status=1 and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2 and bloodgroup.group_slno IN (?)`,
             [
                 data
             ],
