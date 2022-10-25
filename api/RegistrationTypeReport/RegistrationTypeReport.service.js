@@ -18,7 +18,7 @@ module.exports = {
             left join hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
             left join hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
             left join hrm_emp_registrationtype on hrm_emp_qual.em_reg_type=hrm_emp_registrationtype.reg_id
-            where em_status=1 and hrm_department.dept_id IN(?) and not registration_name is null and not registration_name='NOT REQUIRED' and hrm_dept_section.sect_id IN(?)`,
+            where em_status=1 and hrm_department.dept_id IN(?) and not registration_name is null and not registration_name='NOT REQUIRED' and hrm_dept_section.sect_id IN(?) and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2`,
             [
                 data.dept_id,
                 data.sect_id
@@ -48,7 +48,7 @@ module.exports = {
             left join hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
             left join hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
             left join hrm_emp_registrationtype on hrm_emp_qual.em_reg_type=hrm_emp_registrationtype.reg_id
-            where em_status=1 and hrm_department.dept_id IN(?) and not registration_name is null and not registration_name='NOT REQUIRED'`,
+            where em_status=1 and hrm_department.dept_id IN(?) and not registration_name is null and not registration_name='NOT REQUIRED' and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2`,
             [
                 data
             ],
@@ -78,7 +78,7 @@ module.exports = {
             LEFT JOIN hrm_dept_section ON hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
             LEFT JOIN hrm_emp_qual ON hrm_emp_master.em_id=hrm_emp_qual.em_id
             LEFT JOIN hrm_emp_registrationtype ON hrm_emp_qual.em_reg_type=hrm_emp_registrationtype.reg_id
-            WHERE em_status=1 AND hrm_emp_registrationtype.reg_id IN(?)`,
+            WHERE em_status=1 AND hrm_emp_registrationtype.reg_id IN(?) and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2`,
             [
                 data
             ],
@@ -122,7 +122,7 @@ module.exports = {
             left join hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
             left join hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
             left join hrm_emp_registrationtype on hrm_emp_qual.em_reg_type=hrm_emp_registrationtype.reg_id
-            WHERE  hrm_emp_qual.em_reg_type !=0 AND hrm_emp_registrationtype.reg_id IN (?)`,
+            WHERE  hrm_emp_qual.em_reg_type !=0 AND hrm_emp_registrationtype.reg_id IN (?) and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2`,
             [
                 data
             ],
@@ -154,7 +154,7 @@ module.exports = {
             left join hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
             left join hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
             left join hrm_emp_registrationtype on hrm_emp_qual.em_reg_type=hrm_emp_registrationtype.reg_id
-            WHERE  hrm_emp_registrationtype.reg_id IN (?) AND hrm_emp_qual.em_reg_type !=0`,
+            WHERE  hrm_emp_registrationtype.reg_id IN (?) AND hrm_emp_qual.em_reg_type !=0 and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2`,
             [
                 data
             ],
@@ -187,7 +187,7 @@ module.exports = {
             left join hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
             left join hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
             left join hrm_emp_registrationtype on hrm_emp_qual.em_reg_type=hrm_emp_registrationtype.reg_id
-            WHERE hrm_emp_registrationtype.reg_id IN (?) AND hrm_emp_qual.em_reg_type !=0  AND DATE(em_exp_date) between curdate() AND ?`,
+            WHERE hrm_emp_registrationtype.reg_id IN (?) AND hrm_emp_qual.em_reg_type !=0  AND DATE(em_exp_date) between curdate() AND ? and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2`,
             [
                 data.reg_id,
                 data.em_exp_date
@@ -259,7 +259,7 @@ module.exports = {
             left join hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
             left join hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
             left join hrm_emp_registrationtype on hrm_emp_qual.em_reg_type=hrm_emp_registrationtype.reg_id
-            WHERE hrm_emp_registrationtype.reg_id IN (?) AND hrm_emp_qual.em_reg_type !=0  AND DATE(em_exp_date) between curdate() AND ?`,
+            WHERE hrm_emp_registrationtype.reg_id IN (?) AND hrm_emp_qual.em_reg_type !=0  AND DATE(em_exp_date) between curdate() AND ? and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2`,
             [
                 data.reg_id,
                 data.em_exp_date
@@ -292,7 +292,7 @@ module.exports = {
             left join hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
             left join hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
             left join hrm_emp_registrationtype on hrm_emp_qual.em_reg_type=hrm_emp_registrationtype.reg_id
-            WHERE (hrm_emp_qual.em_reg_no OR hrm_emp_qual.em_chellan) AND hrm_emp_qual.em_reg_type !=0 AND hrm_emp_registrationtype.reg_id IN (?) `,
+            WHERE (hrm_emp_qual.em_reg_no OR hrm_emp_qual.em_chellan) AND hrm_emp_qual.em_reg_type !=0 AND hrm_emp_registrationtype.reg_id IN (?) and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2`,
             [
                 data
             ],
@@ -325,7 +325,7 @@ module.exports = {
             left join hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
             left join hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
             left join hrm_emp_registrationtype on hrm_emp_qual.em_reg_type=hrm_emp_registrationtype.reg_id
-            WHERE (hrm_emp_qual.em_reg_no OR hrm_emp_qual.em_chellan) AND hrm_emp_qual.em_reg_type !=0 AND hrm_emp_registrationtype.reg_id IN (?) AND DATE(em_exp_date) between curdate() AND ? `,
+            WHERE (hrm_emp_qual.em_reg_no OR hrm_emp_qual.em_chellan) AND hrm_emp_qual.em_reg_type !=0 AND hrm_emp_registrationtype.reg_id IN (?) AND DATE(em_exp_date) between curdate() AND ? and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2 `,
             [
                 data.reg_id,
                 data.em_exp_date

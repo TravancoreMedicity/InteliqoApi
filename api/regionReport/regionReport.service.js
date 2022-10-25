@@ -43,7 +43,7 @@ module.exports = {
             left join hrm_emp_personal on hrm_emp_master.em_id = hrm_emp_personal.em_id
             left join hrm_region on hrm_emp_master.hrm_region2=hrm_region.reg_slno
             left join hrm_district on hrm_region.reg_dist_slno=hrm_district.dist_slno
-            where hrm_region.reg_slno=? and hrm_emp_master.em_status = 1`,
+            where hrm_region.reg_slno=? and hrm_emp_master.em_status = 1 and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2`,
             [
                 id
             ],
@@ -85,7 +85,7 @@ module.exports = {
             left join hrm_emp_personal on hrm_emp_master.em_id = hrm_emp_personal.em_id
             left join hrm_region on hrm_emp_master.hrm_region2=hrm_region.reg_slno
             left join hrm_district on hrm_region.reg_dist_slno=hrm_district.dist_slno
-            where hrm_district.dist_slno IN (?) and hrm_emp_master.em_status = 1`,
+            where hrm_district.dist_slno IN (?) and hrm_emp_master.em_status = 1 and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2`,
             [
                 data
             ],
@@ -142,7 +142,7 @@ module.exports = {
             left join hrm_region on hrm_emp_master.hrm_region2=hrm_region.reg_slno
             left join hrm_district on hrm_region.reg_dist_slno=hrm_district.dist_slno
             where hrm_district.dist_slno IN (?) 
-            and hrm_region.reg_slno IN (?) and hrm_emp_master.em_status = 1`,
+            and hrm_region.reg_slno IN (?) and hrm_emp_master.em_status = 1 and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2`,
             [
                 data.district,
                 data.region
