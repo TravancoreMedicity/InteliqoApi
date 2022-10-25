@@ -1165,6 +1165,7 @@ const validatecommonsettings = Joi.object({
         verification_level: Joi.number().optional(),
         notapplicable_shift: Joi.number().optional(),
         default_shift: Joi.number().optional(),
+        week_off_day: Joi.number().optional(),
 })
 //validate carryforward
 const validatecarryforward = Joi.object({

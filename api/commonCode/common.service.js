@@ -676,13 +676,14 @@ module.exports = {
     //get Company Details
     getCompanyById: (id, callBack) => {
         pool.query(
-            `SELECT 
+            `SELECT      em_name,
             em_branch,
             em_department,
             em_dept_section,
             em_institution_type,
             em_category,
-            em_prob_end_date
+            em_prob_end_date,
+            em_designation
             FROM hrm_emp_master 
             WHERE em_no=?`,
             [

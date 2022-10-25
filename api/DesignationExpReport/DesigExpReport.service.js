@@ -37,7 +37,7 @@ module.exports = {
             left join hrm_emp_category on hrm_emp_master.em_category = hrm_emp_category.category_slno
             left join hrm_emp_personal on hrm_emp_master.em_id = hrm_emp_personal.em_id
             left join hrm_emp_exp on designation.desg_slno =  hrm_emp_exp.em_designation
-            where hrm_emp_master.em_status = 1 and  designation.desg_slno IN (?)`,
+            where hrm_emp_master.em_status = 1 and  designation.desg_slno IN (?) and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2`,
             [
                 data
             ],
@@ -86,7 +86,7 @@ module.exports = {
             left join hrm_emp_category on hrm_emp_master.em_category = hrm_emp_category.category_slno
             left join hrm_emp_personal on hrm_emp_master.em_id = hrm_emp_personal.em_id
             left join hrm_emp_exp on designation.desg_slno =  hrm_emp_exp.em_designation
-            where hrm_emp_master.em_status = 1 and hrm_emp_exp.em_total_year < ? and designation.desg_slno IN (?) `,
+            where hrm_emp_master.em_status = 1 and hrm_emp_exp.em_total_year < ? and designation.desg_slno IN (?) and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2`,
             [
 
                 data.em_total_year,
@@ -138,7 +138,7 @@ module.exports = {
             left join hrm_emp_category on hrm_emp_master.em_category = hrm_emp_category.category_slno
             left join hrm_emp_personal on hrm_emp_master.em_id = hrm_emp_personal.em_id
             left join hrm_emp_exp on designation.desg_slno =  hrm_emp_exp.em_designation
-            where hrm_emp_master.em_status = 1 and   hrm_emp_exp.em_total_year >= ? and designation.desg_slno IN (?)`,
+            where hrm_emp_master.em_status = 1 and   hrm_emp_exp.em_total_year >= ? and designation.desg_slno IN (?) and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2`,
             [
 
                 data.em_total_year,
@@ -190,7 +190,7 @@ module.exports = {
             left join hrm_emp_category on hrm_emp_master.em_category = hrm_emp_category.category_slno
             left join hrm_emp_personal on hrm_emp_master.em_id = hrm_emp_personal.em_id
             left join hrm_emp_exp on designation.desg_slno =  hrm_emp_exp.em_designation
-            where hrm_emp_master.em_status = 1 and hrm_emp_exp.is_tmch = 0 and designation.desg_slno IN (?)`,
+            where hrm_emp_master.em_status = 1 and hrm_emp_exp.is_tmch = 0 and designation.desg_slno IN (?) and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2`,
             [
                 data
             ],
@@ -239,7 +239,7 @@ module.exports = {
             left join hrm_emp_category on hrm_emp_master.em_category = hrm_emp_category.category_slno
             left join hrm_emp_personal on hrm_emp_master.em_id = hrm_emp_personal.em_id
             left join hrm_emp_exp on designation.desg_slno =  hrm_emp_exp.em_designation
-            where hrm_emp_master.em_status = 1  and hrm_emp_exp.is_tmch = 1 and designation.desg_slno IN (?)`,
+            where hrm_emp_master.em_status = 1  and hrm_emp_exp.is_tmch = 1 and designation.desg_slno IN (?) and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2`,
             [
                 data
 
@@ -289,7 +289,7 @@ module.exports = {
             left join hrm_emp_category on hrm_emp_master.em_category = hrm_emp_category.category_slno
             left join hrm_emp_personal on hrm_emp_master.em_id = hrm_emp_personal.em_id
             left join hrm_emp_exp on designation.desg_slno =  hrm_emp_exp.em_designation
-            where hrm_emp_master.em_status = 1  and designation.desg_slno IN (?)`,
+            where hrm_emp_master.em_status = 1  and designation.desg_slno IN (?) and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2`,
             [
                 data
             ],
@@ -338,7 +338,7 @@ module.exports = {
             left join hrm_emp_category on hrm_emp_master.em_category = hrm_emp_category.category_slno
             left join hrm_emp_personal on hrm_emp_master.em_id = hrm_emp_personal.em_id
             left join hrm_emp_exp on designation.desg_slno =  hrm_emp_exp.em_designation
-            where hrm_emp_master.em_status = 1  and designation.desg_slno IN (?) and is_tmch = 1`,
+            where hrm_emp_master.em_status = 1  and designation.desg_slno IN (?) and is_tmch = 1 and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2`,
             [
                 data
             ],
@@ -387,7 +387,7 @@ module.exports = {
             left join hrm_emp_category on hrm_emp_master.em_category = hrm_emp_category.category_slno
             left join hrm_emp_personal on hrm_emp_master.em_id = hrm_emp_personal.em_id
             left join hrm_emp_exp on designation.desg_slno =  hrm_emp_exp.em_designation
-            where hrm_emp_master.em_status = 1  and designation.desg_slno IN (?) and is_tmch = 0`,
+            where hrm_emp_master.em_status = 1  and designation.desg_slno IN (?) and is_tmch = 0 and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2`,
             [
                 data
             ],
@@ -436,7 +436,7 @@ module.exports = {
             left join hrm_emp_category on hrm_emp_master.em_category = hrm_emp_category.category_slno
             left join hrm_emp_personal on hrm_emp_master.em_id = hrm_emp_personal.em_id
             left join hrm_emp_exp on designation.desg_slno =  hrm_emp_exp.em_designation
-            where hrm_emp_master.em_status = 1  and hrm_emp_exp.is_tmch = 1 and designation.desg_slno IN (?)`,
+            where hrm_emp_master.em_status = 1  and hrm_emp_exp.is_tmch = 1 and designation.desg_slno IN (?) and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2`,
             [
                 data
             ],
@@ -485,7 +485,7 @@ module.exports = {
             left join hrm_emp_category on hrm_emp_master.em_category = hrm_emp_category.category_slno
             left join hrm_emp_personal on hrm_emp_master.em_id = hrm_emp_personal.em_id
             left join hrm_emp_exp on designation.desg_slno =  hrm_emp_exp.em_designation
-            where hrm_emp_master.em_status = 1  and hrm_emp_exp.is_tmch = 1 and designation.desg_slno IN (?) and hrm_emp_exp.em_total_year < ?`,
+            where hrm_emp_master.em_status = 1  and hrm_emp_exp.is_tmch = 1 and designation.desg_slno IN (?) and hrm_emp_exp.em_total_year < ? and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2`,
             [
                 data.desg_slno,
                 data.em_total_year
@@ -535,7 +535,7 @@ module.exports = {
             left join hrm_emp_category on hrm_emp_master.em_category = hrm_emp_category.category_slno
             left join hrm_emp_personal on hrm_emp_master.em_id = hrm_emp_personal.em_id
             left join hrm_emp_exp on designation.desg_slno =  hrm_emp_exp.em_designation
-            where hrm_emp_master.em_status = 1  and hrm_emp_exp.is_tmch = 1 and designation.desg_slno IN (?) and hrm_emp_exp.em_total_year >= ?`,
+            where hrm_emp_master.em_status = 1  and hrm_emp_exp.is_tmch = 1 and designation.desg_slno IN (?) and hrm_emp_exp.em_total_year >= ? and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2`,
             [
                 data.desg_slno,
                 data.em_total_year
@@ -585,7 +585,7 @@ module.exports = {
             left join hrm_emp_category on hrm_emp_master.em_category = hrm_emp_category.category_slno
             left join hrm_emp_personal on hrm_emp_master.em_id = hrm_emp_personal.em_id
             left join hrm_emp_exp on designation.desg_slno =  hrm_emp_exp.em_designation
-            where hrm_emp_master.em_status = 1  and hrm_emp_exp.is_tmch = 0 and designation.desg_slno IN (?) and hrm_emp_exp.em_total_year < ?`,
+            where hrm_emp_master.em_status = 1  and hrm_emp_exp.is_tmch = 0 and designation.desg_slno IN (?) and hrm_emp_exp.em_total_year < ? and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2`,
             [
                 data.desg_slno,
                 data.em_total_year
@@ -635,7 +635,7 @@ module.exports = {
             left join hrm_emp_category on hrm_emp_master.em_category = hrm_emp_category.category_slno
             left join hrm_emp_personal on hrm_emp_master.em_id = hrm_emp_personal.em_id
             left join hrm_emp_exp on designation.desg_slno =  hrm_emp_exp.em_designation
-            where hrm_emp_master.em_status = 1  and hrm_emp_exp.is_tmch = 0 and designation.desg_slno IN (?) and hrm_emp_exp.em_total_year >= ?`,
+            where hrm_emp_master.em_status = 1  and hrm_emp_exp.is_tmch = 0 and designation.desg_slno IN (?) and hrm_emp_exp.em_total_year >= ? and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2`,
             [
                 data.desg_slno,
                 data.em_total_year
@@ -682,7 +682,7 @@ module.exports = {
             left join hrm_emp_category on hrm_emp_master.em_category = hrm_emp_category.category_slno
             left join hrm_emp_personal on hrm_emp_master.em_id = hrm_emp_personal.em_id
             left join hrm_emp_exp on designation.desg_slno =  hrm_emp_exp.em_designation
-            where hrm_emp_master.em_status = 1  and designation.desg_slno IN (?) and hrm_emp_exp.em_total_year < ?`,
+            where hrm_emp_master.em_status = 1  and designation.desg_slno IN (?) and hrm_emp_exp.em_total_year < ? and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2`,
             [
                 data.desg_slno,
                 data.em_total_year
@@ -728,7 +728,7 @@ module.exports = {
             left join hrm_emp_category on hrm_emp_master.em_category = hrm_emp_category.category_slno
             left join hrm_emp_personal on hrm_emp_master.em_id = hrm_emp_personal.em_id
             left join hrm_emp_exp on designation.desg_slno =  hrm_emp_exp.em_designation
-            where hrm_emp_master.em_status = 1  and designation.desg_slno IN (?) and hrm_emp_exp.em_total_year >= ?`,
+            where hrm_emp_master.em_status = 1  and designation.desg_slno IN (?) and hrm_emp_exp.em_total_year >= ? and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2`,
             [
                 data.desg_slno,
                 data.em_total_year
@@ -774,7 +774,7 @@ module.exports = {
             left join hrm_emp_category on hrm_emp_master.em_category = hrm_emp_category.category_slno
             left join hrm_emp_personal on hrm_emp_master.em_id = hrm_emp_personal.em_id
             left join hrm_emp_exp on designation.desg_slno =  hrm_emp_exp.em_designation
-            where hrm_emp_master.em_status = 1  and designation.desg_slno IN (?) and is_tmch = 0 and hrm_emp_exp.em_total_year < ?`,
+            where hrm_emp_master.em_status = 1  and designation.desg_slno IN (?) and is_tmch = 0 and hrm_emp_exp.em_total_year < ? and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2`,
             [
                 data.desg_slno,
                 data.em_total_year
@@ -819,7 +819,7 @@ module.exports = {
             left join hrm_emp_category on hrm_emp_master.em_category = hrm_emp_category.category_slno
             left join hrm_emp_personal on hrm_emp_master.em_id = hrm_emp_personal.em_id
              left join hrm_emp_exp on designation.desg_slno =  hrm_emp_exp.em_designation
-            where hrm_emp_master.em_status = 1  and designation.desg_slno IN (?) and is_tmch = 0 and hrm_emp_exp.em_total_year >= ?`,
+            where hrm_emp_master.em_status = 1  and designation.desg_slno IN (?) and is_tmch = 0 and hrm_emp_exp.em_total_year >= ? and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2`,
             [
                 data.desg_slno,
                 data.em_total_year
@@ -869,7 +869,7 @@ module.exports = {
             left join hrm_emp_category on hrm_emp_master.em_category = hrm_emp_category.category_slno
             left join hrm_emp_personal on hrm_emp_master.em_id = hrm_emp_personal.em_id
             left join hrm_emp_exp on designation.desg_slno =  hrm_emp_exp.em_designation
-            where hrm_emp_master.em_status = 1  and designation.desg_slno IN (?) and is_tmch = 1 and hrm_emp_exp.em_total_year < ? `,
+            where hrm_emp_master.em_status = 1  and designation.desg_slno IN (?) and is_tmch = 1 and hrm_emp_exp.em_total_year < ? and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2 `,
             [
                 data.desg_slno,
                 data.em_total_year
@@ -919,7 +919,7 @@ module.exports = {
             left join hrm_emp_category on hrm_emp_master.em_category = hrm_emp_category.category_slno
             left join hrm_emp_personal on hrm_emp_master.em_id = hrm_emp_personal.em_id
             left join hrm_emp_exp on designation.desg_slno =  hrm_emp_exp.em_designation
-            where hrm_emp_master.em_status = 1  and designation.desg_slno IN (?) and is_tmch = 1 and hrm_emp_exp.em_total_year >= ? `,
+            where hrm_emp_master.em_status = 1  and designation.desg_slno IN (?) and is_tmch = 1 and hrm_emp_exp.em_total_year >= ? and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2 `,
             [
                 data.desg_slno,
                 data.em_total_year
@@ -969,7 +969,7 @@ module.exports = {
             left join hrm_emp_category on hrm_emp_master.em_category = hrm_emp_category.category_slno
             left join hrm_emp_personal on hrm_emp_master.em_id = hrm_emp_personal.em_id
             left join hrm_emp_exp on designation.desg_slno =  hrm_emp_exp.em_designation
-            where hrm_emp_master.em_status = 1  and hrm_emp_exp.is_tmch = 1 and designation.desg_slno IN (?) and hrm_emp_exp.em_total_year < ?`,
+            where hrm_emp_master.em_status = 1  and hrm_emp_exp.is_tmch = 1 and designation.desg_slno IN (?) and hrm_emp_exp.em_total_year < ? and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2`,
             [
                 data.desg_slno,
                 data.em_total_year
@@ -1019,7 +1019,7 @@ module.exports = {
             left join hrm_emp_category on hrm_emp_master.em_category = hrm_emp_category.category_slno
             left join hrm_emp_personal on hrm_emp_master.em_id = hrm_emp_personal.em_id
             left join hrm_emp_exp on designation.desg_slno =  hrm_emp_exp.em_designation
-            where hrm_emp_master.em_status = 1  and hrm_emp_exp.is_tmch = 1 and designation.desg_slno IN (?) and hrm_emp_exp.em_total_year >= ?`,
+            where hrm_emp_master.em_status = 1  and hrm_emp_exp.is_tmch = 1 and designation.desg_slno IN (?) and hrm_emp_exp.em_total_year >= ? and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2`,
             [
                 data.desg_slno,
                 data.em_total_year

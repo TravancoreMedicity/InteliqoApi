@@ -25,8 +25,9 @@ module.exports = {
                 verification_level,
                 default_shift,
                 notapplicable_shift,
+                week_off_day,
                 creat_user)
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
                 data.cmmn_grace_period,
                 data.cmmn_late_in,
@@ -49,7 +50,8 @@ module.exports = {
                 data.verification_level,
                 data.creat_user,
                 data.default_shift,
-                data.notapplicable_shift
+                data.notapplicable_shift,
+                data.week_off_day
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -95,7 +97,8 @@ module.exports = {
                 verification_level=?,
                 update_user=?,
                 default_shift=?,
-                notapplicable_shift=?
+                notapplicable_shift=?,
+                week_off_day=?
                 WHERE setting_slno =?`,
             [
                 data.cmmn_grace_period,
@@ -120,6 +123,7 @@ module.exports = {
                 data.update_user,
                 data.default_shift,
                 data.notapplicable_shift,
+                data.week_off_day,
                 data.setting_slno
             ],
             (error, results, feilds) => {
