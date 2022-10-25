@@ -24,13 +24,34 @@ module.exports = {
             }
         )
     },
-    getEmpdetl: (data, callBack) => {
-        pool.query(
-            `select em_no,em_name,em_id,em_doj,desg_name
+    /****
+     * 
+     * `select em_no,em_name,em_id,em_doj,desg_name
             FROM hrm_emp_master
             left join designation on hrm_emp_master.em_designation=designation.desg_slno
             where em_department=? and em_dept_section=? and em_branch=?
             and em_status=1 and em_id!=1 and em_no!=2 `,
+     * 
+     * 
+     */
+    getEmpdetl: (data, callBack) => {
+        pool.query(
+            `select hrm_emp_master.em_no,
+                    hrm_emp_master.em_name,
+                    hrm_emp_master.em_id,
+                    hrm_emp_master.em_doj,
+                    designation.desg_name,
+                    hrm_emp_contract_detl.em_cont_start,
+                    hrm_emp_master.contract_status
+            FROM hrm_emp_master
+            left join designation on hrm_emp_master.em_designation=designation.desg_slno
+            left join hrm_emp_contract_detl on hrm_emp_contract_detl.em_no = hrm_emp_master.em_no
+            where hrm_emp_master.em_department=1 
+                and hrm_emp_master.em_dept_section=?
+                and hrm_emp_master.em_branch=?
+                and hrm_emp_master.em_status=? 
+                and hrm_emp_master.em_id!=1 
+                and hrm_emp_master.em_no!=2`,
             [
                 data.em_department,
                 data.em_dept_section,
@@ -140,11 +161,12 @@ module.exports = {
             data.map((val) => {
                 pool.query(
                     `update hrm_duty_plan
-                    set shift_id=1002,
+                    set shift_id=?,
                     offday_flag=1
                     where emp_id=?
                      and date(duty_day) IN (?)`,
                     [
+                        val.weekOffShiftId,
                         val.emp_id,
                         val.dutydate,
                     ],

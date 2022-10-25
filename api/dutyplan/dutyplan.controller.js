@@ -56,8 +56,6 @@ module.exports = {
             return [value.date, value.emp_id, value.shift]
         })
 
-        console.log(a1)
-
         insertDutyplan(a1, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
