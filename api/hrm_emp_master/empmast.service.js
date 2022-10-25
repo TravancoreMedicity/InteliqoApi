@@ -553,9 +553,12 @@ module.exports = {
                 create_user,
                 edit_user,
                 em_id,
-                em_no
+                em_no,
+                com_designation,
+                com_designation_new,
+                ineffective_date
             )
-            VALUES(?,?,?,?,?,?,?,?,?,?)`,
+            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
                 data.em_branch,
                 data.em_department,
@@ -566,7 +569,10 @@ module.exports = {
                 data.create_user,
                 data.edit_user,
                 data.em_id,
-                data.em_no
+                data.em_no,
+                data.com_designation,
+                data.com_designation_new,
+                data.ineffective_date
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -588,7 +594,8 @@ module.exports = {
                 em_category = ?,
                 contract_status=?,
                 em_prob_end_date=?,
-                probation_status=?
+                probation_status=?,
+                em_designation=?
                 WHERE em_no = ?`,
             [
                 data.em_branch,
@@ -599,6 +606,7 @@ module.exports = {
                 data.contract_status,
                 data.em_prob_end_date,
                 data.probation_status,
+                data.em_designation,
                 data.em_no
             ],
             (error, results, feilds) => {

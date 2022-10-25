@@ -35,7 +35,7 @@ module.exports = {
             left join designation on hrm_emp_exp.em_designation=designation.desg_slno
             left join hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
             left join hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.dept_id
-            where hrm_emp_master.em_status=1 and hrm_department.dept_id IN (?) and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2`,
+            where (hrm_emp_master.em_status=1  and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2) and hrm_department.dept_id IN (?)`,
             [
                 data
             ],
@@ -98,11 +98,11 @@ module.exports = {
             left join designation on hrm_emp_exp.em_designation=designation.desg_slno
             left join hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
             left join hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.dept_id
-            where hrm_emp_master.em_status=1 and hrm_department.dept_id IN (?) and hrm_dept_section.sect_id IN (?) and hrm_emp_master.em_id IN (?) and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2`,
+            where (hrm_emp_master.em_status=1 and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2)  and hrm_department.dept_id IN (?) and hrm_dept_section.sect_id IN (?) and hrm_emp_master.em_id IN (?)`,
             [
                 data.dept_id,
                 data.sect_id,
-                data.em_name
+                data.em_id
             ],
             (error, results, feilds) => {
                 if (error) {
