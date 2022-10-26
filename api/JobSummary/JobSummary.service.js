@@ -174,13 +174,19 @@ module.exports = {
     },
     getJobSummary: (data, callBack) => {
         pool.query(
-            `select job_summary.dept_id,job_summary.designation,objective,
-            scope,branch_name,dept_name as 'report_dept',desg_name as 'reportingdesignation',equipment_used,working_hour
-            from job_summary
-            left join hrm_department on hrm_department.dept_id=job_summary.reporting_dept
-            left join designation on designation.desg_slno=job_summary.reporting_designation
-            left join hrm_branch on hrm_branch.branch_slno=job_summary.work_place
-            where job_summary.dept_id=? and job_summary.designation=?`,
+            `select job_summary.dept_id,
+            job_summary.designation,
+            objective,
+                        scope,
+                        branch_name,
+                       job_summary.reporting_dept,
+                        desg_name as 'reportingdesignation',
+                        equipment_used,
+                        working_hour
+                        from job_summary           
+                        left join designation on designation.desg_slno=job_summary.reporting_designation
+                        left join hrm_branch on hrm_branch.branch_slno=job_summary.work_place
+                        where job_summary.dept_id=? and job_summary.designation=?;`,
             [
                 data.dept_id,
                 data.designation
