@@ -139,12 +139,13 @@ module.exports = {
                     `update hrm_duty_plan
                     set shift_id=?
                     where emp_id=?
-                     and date(duty_day) between ? and ?`,
+                     and date(duty_day) between ? and ? and shift_id != ? `,
                     [
                         val.shiftid,
                         val.emp_id,
                         val.startdate,
-                        val.enddate
+                        val.enddate,
+                        val.notApplicable
                     ],
                     (error, results, fields) => {
                         if (error) {
@@ -164,11 +165,12 @@ module.exports = {
                     set shift_id=?,
                     offday_flag=1
                     where emp_id=?
-                     and date(duty_day) IN (?)`,
+                     and date(duty_day) IN (?) and shift_id != ? `,
                     [
                         val.weekOffShiftId,
                         val.emp_id,
                         val.dutydate,
+                        val.notApplicable
                     ],
                     (error, results, fields) => {
                         if (error) {
