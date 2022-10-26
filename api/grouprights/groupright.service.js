@@ -71,9 +71,9 @@ module.exports = {
         pool.query(
             `SELECT menu_slno
             FROM menu_name 
-            WHERE menu_module_slno  = ?`,
+            WHERE menu_module= ?`,
             [
-                data.menu_module_slno,
+                data.module_slno,
             ],
             (error, results, feilds) => {
                 if (error) {
