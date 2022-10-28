@@ -46,10 +46,10 @@ module.exports = {
             FROM hrm_emp_master
             left join designation on hrm_emp_master.em_designation=designation.desg_slno
             left join hrm_emp_contract_detl on hrm_emp_contract_detl.em_no = hrm_emp_master.em_no
-            where hrm_emp_master.em_department=1 
+            where hrm_emp_master.em_department=? 
                 and hrm_emp_master.em_dept_section=?
                 and hrm_emp_master.em_branch=?
-                and hrm_emp_master.em_status=? 
+                and hrm_emp_master.em_status=1
                 and hrm_emp_master.em_id!=1 
                 and hrm_emp_master.em_no!=2`,
             [
