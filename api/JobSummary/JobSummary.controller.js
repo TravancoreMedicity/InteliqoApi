@@ -2,7 +2,8 @@ const { createJobSummary, CheckInsertValue, createJobDuties, getjobId,
     createJobSpecification, createJobQualification, createJobGeneric,
     getJobSummary, getJobDuties, getJobSpecification, getJobGeneric, getJobQualification,
     createJobCompetency, getJobSummarydetl, updatejobsummarydetl, getjobcompetency,
-    getjobDescView } = require('../JobSummary/JobSummary.service');
+    getjobDescView, updateDutiesEach, checkalreadyinsert, deleteduties, updateCompeteEach,
+    deletecompetency, deletePerformance, updatePerforEach, deleteQualifi, updateGeneric } = require('../JobSummary/JobSummary.service');
 // const { validatereligion } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -63,34 +64,45 @@ module.exports = {
     createJobDuties: (req, res) => {
         const body = req.body;
         var a1 = body.map((value, index) => {
-            return [value.jobdescid, value.dept_id, value.designation, value.dutiesandres]
+            return [value.jobdescid, value.dept_id, value.designation, value.dutiesandres, value.duties_id]
+        })
+        checkalreadyinsert(a1, (err, results) => {
+            const value = JSON.parse(JSON.stringify(results))
+            if (Object.keys(value).length === 0) {
+                createJobDuties(a1, (err, results) => {
+                    if (err) {
+                        logger.errorLogger(err)
+                        return res.status(200).json({
+                            success: 2,
+                            message: err
+                        });
+                    }
+                    if (!results) {
+                        return res.status(200).json({
+                            success: 0,
+                            message: "No Results Found"
+                        });
+                    }
+                    return res.status(200).json({
+                        success: 1,
+                        message: "Data Created Successfully"
+                    });
+                });
+
+
+            }
+            else {
+
+            }
+
         })
 
-        createJobDuties(a1, (err, results) => {
-            if (err) {
-                logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 2,
-                    message: err
-                });
-            }
-            if (!results) {
-                return res.status(200).json({
-                    success: 0,
-                    message: "No Results Found"
-                });
-            }
-            return res.status(200).json({
-                success: 1,
-                message: "Data Created Successfully"
-            });
-        });
     },
     createJobSpecification: (req, res) => {
         const body = req.body;
         var a1 = body.map((value, index) => {
             return [value.job_id, value.kra, value.kpi, value.kpi_score,
-            value.dept_id, value.designation]
+            value.dept_id, value.designation, value.kpi_id]
         })
         createJobSpecification(a1, (err, results) => {
             if (err) {
@@ -115,7 +127,7 @@ module.exports = {
     createJobQualification: (req, res) => {
         const body = req.body;
         var a1 = body.map((value, index) => {
-            return [value.job_id, value.course, value.specialization, value.dept_id, value.designation]
+            return [value.job_id, value.course, value.specialization, value.dept_id, value.designation, value.qualification_id]
         })
         createJobQualification(a1, (err, results) => {
             if (err) {
@@ -307,7 +319,7 @@ module.exports = {
     createJobCompetency: (req, res) => {
         const body = req.body;
         var a1 = body.map((value, index) => {
-            return [value.job_id, value.key_result_area, value.competency_desc, value.dept_id, value.designation]
+            return [value.job_id, value.key_result_area, value.competency_desc, value.dept_id, value.designation, value.competency_id]
         })
         createJobCompetency(a1, (err, results) => {
             if (err) {
@@ -426,6 +438,202 @@ module.exports = {
                 data: results
             });
         });
+    },
+    updateDutiesEach: (req, res) => {
+        const body = req.body;
+        updateDutiesEach(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
 
+            if (!results) {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 2,
+                message: "Data Updated Successfully"
+            });
+
+        });
+    },
+    deleteduties: (req, res) => {
+        const id = req.params.id;
+        deleteduties(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 5,
+                message: "Data Delete Successfully"
+            });
+        });
+    },
+    updateCompeteEach: (req, res) => {
+        const body = req.body;
+        updateCompeteEach(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 4,
+                message: "Data Updated Successfully"
+            });
+
+        });
+    },
+    deletecompetency: (req, res) => {
+        const id = req.params.id;
+        deletecompetency(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 5,
+                message: "Data Delete Successfully"
+            });
+        });
+    },
+    deletePerformance: (req, res) => {
+        const id = req.params.id;
+        deletePerformance(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 5,
+                message: "Data Delete Successfully"
+            });
+        });
+    },
+    updatePerforEach: (req, res) => {
+        const body = req.body;
+        updatePerforEach(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 4,
+                message: "Data Updated Successfully"
+            });
+
+        });
+    },
+    deleteQualifi: (req, res) => {
+        const id = req.params.id;
+        deleteQualifi(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 5,
+                message: "Data Delete Successfully"
+            });
+        });
+    },
+    updateGeneric: (req, res) => {
+        const body = req.body;
+        updateGeneric(body, (err, results) => {
+
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 2,
+                message: "Data Updated Successfully"
+            });
+
+        });
     },
 }
