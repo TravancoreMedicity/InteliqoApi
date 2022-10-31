@@ -311,7 +311,8 @@ module.exports = {
                 cmn_lv_balance, 
                 Iv_process_slno,
                 update_user,
-                em_id
+                em_id,
+                cmn_lv_year
                 ) 
                 values ?`,
             [

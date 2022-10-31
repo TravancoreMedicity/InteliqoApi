@@ -353,13 +353,11 @@ module.exports = {
         var a1 = body.map((value, index) => {
 
             return [value.em_no, value.llvetype_slno, value.cmn_lv_allowedflag, value.cmn_lv_allowed,
-            value.cmn_lv_taken, value.cmn_lv_balance, value.Iv_process_slno, value.update_user, value.em_id]
+            value.cmn_lv_taken, value.cmn_lv_balance, value.Iv_process_slno, value.update_user, value.em_id, value.cmn_lv_year]
 
         })
 
         insertCommonleave(a1, (err, results) => {
-
-
 
             if (err) {
                 logger.errorLogger(err)
