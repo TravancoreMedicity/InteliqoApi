@@ -38,11 +38,13 @@ router.delete('/deletecompet/:id', checkToken, deletecompetency)
 
 //job qualication
 router.post("/jobqualification", checkToken, createJobQualification);
+router.post("/getjobQual", checkToken, getJobQualification);
+router.delete('/deleteQualification/:id', checkToken, deleteQualifi)
+
+//generic
 router.post("/jobGeneric", checkToken, createJobGeneric);
 router.post("/getjobgeneric", checkToken, getJobGeneric);
-router.post("/getjobQual", checkToken, getJobQualification);
 router.get("/jobview", checkToken, getjobDescView)
-router.delete('/deleteQualification/:id', checkToken, deleteQualifi)
 router.patch('/updategeneric', checkToken, updateGeneric)
 router.post('/getscore', checkToken, getKPIScore)
 

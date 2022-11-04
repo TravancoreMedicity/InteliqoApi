@@ -60,22 +60,22 @@ module.exports = {
             }
         )
     },
-    checkalreadyinsert: (data, callBack) => {
-        pool.query(
-            `select duties_id
-            from job_duties
-            where duties_id!=? `,
-            [
-                data.duties_id
-            ],
-            (error, results, feilds) => {
-                if (error) {
-                    return callBack(error);
-                }
-                return callBack(null, results);
-            }
-        )
-    },
+    // checkalreadyinsert: (data, callBack) => {
+    //     pool.query(
+    //         `select duties_id
+    //         from job_duties
+    //         where duties_id!=? `,
+    //         [
+    //             data.duties_id
+    //         ],
+    //         (error, results, feilds) => {
+    //             if (error) {
+    //                 return callBack(error);
+    //             }
+    //             return callBack(null, results);
+    //         }
+    //     )
+    // },
     createJobDuties: (data, callBack) => {
         pool.query(
             `INSERT INTO job_duties (
@@ -230,7 +230,6 @@ module.exports = {
             duties_slno,
             job_id,
             LOWER(duties_and_resp) as duties_and_resp,
-            duties_id,
             dept_name,
             desg_name
             from job_duties
@@ -257,7 +256,6 @@ module.exports = {
             kra_desc,
             kpi,
             kpi_score,
-            kpi_id,
             specification_slno,
             dept_name,
             desg_name
@@ -402,7 +400,6 @@ module.exports = {
             competency_desc,
             kra_desc,
             job_id,
-            competency_id ,
             key_result_area,
             competency_slno,
             desg_name,
