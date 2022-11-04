@@ -561,23 +561,24 @@ module.exports = {
     getannprocess: (id, callBack) => {
         pool.query(
             `SELECT em_category,
-            em_contract_end_date,
-            em_retirement_date,
-            em_conf_end_date,
-            em_prob_end_date,
-            ecat_cont,
-            ecat_prob,
-            ecat_cl,
-            ecat_el,
-            ecat_nh,
-            ecat_fh,
-            ecat_woff_allow,
-            ecat_doff_allow,
-            ecat_esi_allow,
-            ecat_confere,
-            ecat_lop,ecat_sl,em_doj,
-            ecat_mate
-              FROM medi_hrm.hrm_emp_master,hrm_emp_category where em_id=? 
+                em_contract_end_date,
+                em_retirement_date,
+                em_conf_end_date,
+                em_prob_end_date,
+                ecat_cont,
+                ecat_prob,
+                ecat_cl,
+                ecat_el,
+                ecat_nh,
+                ecat_fh,
+                ecat_woff_allow,
+                ecat_doff_allow,
+                ecat_esi_allow,
+                ecat_confere,
+                ecat_lop,ecat_sl,em_doj,
+                ecat_mate
+              FROM hrm_emp_master,hrm_emp_category 
+              where hrm_emp_master.em_id=? 
               and hrm_emp_master.em_category = hrm_emp_category.category_slno`,
             [
                 id
@@ -594,11 +595,19 @@ module.exports = {
     // get data for casualleave
     getcasual: (id, callBack) => {
 
-
         pool.query(
-            `SELECT hrm_cl_slno, em_no, em_id,DATE_FORMAT(cl_lv_mnth, "%M")cl_lv_mnth , cl_lv_year, cl_lv_allowed, 
-            cl_lv_credit, cl_lv_taken, 
-            lv_process_slno, update_user, update_date FROM hrm_leave_cl where em_id=? and cl_lv_active='0'`,
+            `SELECT 
+                hrm_cl_slno, 
+                em_no, 
+                em_id,DATE_FORMAT(cl_lv_mnth, "%M")cl_lv_mnth , 
+                cl_lv_year, 
+                cl_lv_allowed, 
+                cl_lv_credit, 
+                cl_lv_taken, 
+                lv_process_slno, 
+                update_user, 
+                update_date 
+            FROM hrm_leave_cl where em_id=? and cl_lv_active='0'`,
             [
                 id
             ],
@@ -1118,9 +1127,12 @@ module.exports = {
     //get compansatory leave
     getCompansatoryLeave: (id, callBack) => {
         pool.query(
-            `select calculated_date,credited,taken
+            `select 
+                calculated_date,
+                credited,
+                taken
             from hrm_leave_calculated
-            where emp_id=?`,
+                where emp_id=?`,
             [id],
             (error, results, fields) => {
                 if (error) {
@@ -1271,7 +1283,7 @@ module.exports = {
             where emp_id=?
             union all
             select carry_hdl 'Credited', carry_hdl 'Taken','Holiday Leave' name from hrm_leave_carry_count
-            where emp_id=?;`,
+            where emp_id=?`,
             [
                 id, id, id, id
             ],
