@@ -17,10 +17,9 @@ module.exports = {
                 reporting_designation,
                 equipment_used,
                 create_user,
-                created_date,
-                sect_id
+                created_date
                 )
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
                 data.summary_slno,
                 data.dept_id,
@@ -33,8 +32,7 @@ module.exports = {
                 data.reporting_designation,
                 data.equipment_used,
                 data.create_user,
-                data.created_date,
-                data.sect_id
+                data.created_date
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -48,7 +46,7 @@ module.exports = {
         pool.query(
             `select summary_slno
             from job_summary
-            where dept_id=? and designation=? and sect_id=?`,
+            where dept_id=? and designation=?`,
             [
                 data.dept_id,
                 data.designation,
@@ -84,12 +82,14 @@ module.exports = {
                 job_id,
                 dept_id,
                 designation,
-                duties_and_resp,
-                duties_id
+                duties_and_resp
                 )
-            VALUES ?`,
+            VALUES (?,?,?,?)`,
             [
-                data
+                data.job_id,
+                data.dept_id,
+                data.designation,
+                data.duties_and_resp
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -120,12 +120,16 @@ module.exports = {
                 kpi,
                 kpi_score,
                 dept_id,
-                designation,
-                kpi_id
+                designation
                 )
-            VALUES ?`,
+            VALUES (?,?,?,?,?,?)`,
             [
-                data
+                data.job_id,
+                data.key_result_area,
+                data.kpi,
+                data.kpi_score,
+                data.dept_id,
+                data.designation
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -221,13 +225,18 @@ module.exports = {
     },
     getJobDuties: (data, callBack) => {
         pool.query(
-            `select 
+            `select
+            ROW_NUMBER() OVER (ORDER BY duties_slno) as slno, 
             duties_slno,
             job_id,
             LOWER(duties_and_resp) as duties_and_resp,
-            duties_id 
+            duties_id,
+            dept_name,
+            desg_name
             from job_duties
-            where dept_id=? and designation=?`,
+            left join hrm_department on job_duties.dept_id=hrm_department.dept_id
+            left join designation on job_duties.designation=designation.desg_slno
+            where job_duties.dept_id=? and job_duties.designation=?`,
             [
                 data.dept_id,
                 data.designation
@@ -243,15 +252,20 @@ module.exports = {
     getJobSpecification: (data, callBack) => {
         pool.query(
             `select 
+            ROW_NUMBER() OVER (ORDER BY specification_slno) as slno,
             key_result_area,
             kra_desc,
             kpi,
             kpi_score,
             kpi_id,
-            specification_slno
+            specification_slno,
+            dept_name,
+            desg_name
             from job_specification
             left join hrm_kra on hrm_kra.kra_slno=job_specification.key_result_area
-            where dept_id=? and designation=?`,
+            left join hrm_department on job_specification.dept_id=hrm_department.dept_id
+            left join designation on job_specification.designation=designation.desg_slno
+            where job_specification.dept_id=? and job_specification.designation=?`,
             [
                 data.dept_id,
                 data.designation
@@ -313,12 +327,15 @@ module.exports = {
                 key_result_area,
                 competency_desc,
                 dept_id,
-                designation,
-                competency_id
+                designation
                 )
-            VALUES ?`,
+            VALUES (?,?,?,?,?)`,
             [
-                data
+                data.job_id,
+                data.key_result_area,
+                data.competency_desc,
+                data.designation,
+                data.dept_id
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -381,18 +398,24 @@ module.exports = {
     getjobcompetency: (data, callBack) => {
         pool.query(
             `select 
+            ROW_NUMBER() OVER (ORDER BY competency_slno) as slno,
             competency_desc,
             kra_desc,
             job_id,
             competency_id ,
             key_result_area,
-            competency_slno
+            competency_slno,
+            desg_name,
+            dept_name
             from job_competency
             left join hrm_kra on job_competency.key_result_area = hrm_kra.kra_slno
-            where dept_id = ? and designation = ?`,
+			left join hrm_department on job_competency.dept_id=hrm_department.dept_id
+            left join designation on job_competency.designation=designation.desg_slno
+            where job_competency.dept_id = ? and job_competency.designation = ?`,
             [
+                data.designation,
                 data.dept_id,
-                data.designation
+
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -433,11 +456,9 @@ module.exports = {
             `UPDATE 
             medi_hrm.job_duties 
             set duties_and_resp=?
-            where duties_id=?
-            and duties_slno=?;`,
+            where  duties_slno=?;`,
             [
                 data.duties_and_resp,
-                data.duties_id,
                 data.duties_slno
             ],
 
@@ -470,12 +491,10 @@ module.exports = {
             medi_hrm.job_competency 
             set key_result_area=?,
             competency_desc=?
-            where competency_id= ?
-            and competency_slno=?;`,
+            where competency_slno=?;`,
             [
                 data.key_result_area,
                 data.competency_desc,
-                data.competency_id,
                 data.competency_slno
             ],
 
@@ -522,12 +541,11 @@ module.exports = {
             set key_result_area=?,
             kpi=?, 
             kpi_score=? 
-            where kpi_id= ? and specification_slno=?;`,
+            where specification_slno=?;`,
             [
                 data.key_result_area,
                 data.kpi,
                 data.kpi_score,
-                data.kpi_id,
                 data.specification_slno
             ],
 
@@ -580,6 +598,54 @@ module.exports = {
             (error, results, feilds) => {
                 if (error) {
 
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    updateGeneric: (data, callBack) => {
+        pool.query(
+            `UPDATE medi_hrm.job_generic
+            set 
+            experience= ?,
+            experience_year=?,
+            age_from=?,
+            age_to=?,
+            is_female=?,
+            is_male =?,
+            special_comment = ?
+            where job_generic_slno=?`,
+            [
+                data.experience,
+                data.experience_year,
+                data.age_from,
+                data.age_to,
+                data.is_female,
+                data.is_male,
+                data.special_comment,
+                data.job_generic_slno
+            ],
+
+            (error, results, feilds) => {
+                if (error) {
+
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getKPIScore: (data, callBack) => {
+        pool.query(
+            `select sum(kpi_score) as 'total' from job_specification where job_specification.dept_id=? and job_specification.designation=? ;`,
+            [
+                data.designation,
+                data.dept_id,
+
+            ],
+            (error, results, feilds) => {
+                if (error) {
                     return callBack(error);
                 }
                 return callBack(null, results);
