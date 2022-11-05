@@ -17,9 +17,10 @@ module.exports = {
                 reporting_designation,
                 equipment_used,
                 create_user,
-                created_date
+                created_date,
+                sect_id
                 )
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`,
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
                 data.summary_slno,
                 data.dept_id,
@@ -32,7 +33,8 @@ module.exports = {
                 data.reporting_designation,
                 data.equipment_used,
                 data.create_user,
-                data.created_date
+                data.created_date,
+                data.sect_id
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -46,7 +48,7 @@ module.exports = {
         pool.query(
             `select summary_slno
             from job_summary
-            where dept_id=? and designation=?`,
+            where dept_id=? and designation=? and sect_id=? `,
             [
                 data.dept_id,
                 data.designation,
@@ -82,14 +84,16 @@ module.exports = {
                 job_id,
                 dept_id,
                 designation,
-                duties_and_resp
+                duties_and_resp,
+                sect_id
                 )
-            VALUES (?,?,?,?)`,
+            VALUES (?,?,?,?,?)`,
             [
                 data.job_id,
                 data.dept_id,
                 data.designation,
-                data.duties_and_resp
+                data.duties_and_resp,
+                data.sect_id
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -200,20 +204,24 @@ module.exports = {
         pool.query(
             `select job_summary.dept_id,
             job_summary.designation,
+            job_summary.sect_id,
             objective,
-                        scope,
-                        branch_name,
-                       job_summary.reporting_dept,
-                        desg_name as 'reportingdesignation',
-                        equipment_used,
-                        working_hour
-                        from job_summary           
-                        left join designation on designation.desg_slno=job_summary.reporting_designation
-                        left join hrm_branch on hrm_branch.branch_slno=job_summary.work_place
-                        where job_summary.dept_id=? and job_summary.designation=?;`,
+			scope,
+			branch_name,
+			job_summary.reporting_dept,
+			designation.desg_name as 'desig',
+            hrm_department.dept_name as 'dept',
+			equipment_used,
+			working_hour
+			from job_summary           
+			left join hrm_branch on hrm_branch.branch_slno=job_summary.work_place
+            left join hrm_department on job_summary.dept_id=hrm_department.dept_id
+            left join designation on job_summary.designation=designation.desg_slno
+			where job_summary.dept_id=? and job_summary.designation=? and job_summary.sect_id=?;`,
             [
                 data.dept_id,
-                data.designation
+                data.designation,
+                data.sect_id
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -229,16 +237,17 @@ module.exports = {
             ROW_NUMBER() OVER (ORDER BY duties_slno) as slno, 
             duties_slno,
             job_id,
-            LOWER(duties_and_resp) as duties_and_resp,
+            duties_and_resp,
             dept_name,
             desg_name
             from job_duties
             left join hrm_department on job_duties.dept_id=hrm_department.dept_id
             left join designation on job_duties.designation=designation.desg_slno
-            where job_duties.dept_id=? and job_duties.designation=?`,
+            where job_duties.dept_id=? and job_duties.designation=? and job_duties.sect_id=?`,
             [
                 data.dept_id,
-                data.designation
+                data.designation,
+                data.sect_id
             ],
             (error, results, feilds) => {
                 if (error) {
