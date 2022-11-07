@@ -118,7 +118,7 @@ module.exports = {
     createJobQualification: (req, res) => {
         const body = req.body;
         var a1 = body.map((value, index) => {
-            return [value.job_id, value.course, value.specialization, value.dept_id, value.designation, value.qualification_id]
+            return [value.job_id, value.course, value.specialization, value.dept_id, value.designation, value.qualification_id, value.sect_id]
         })
         createJobQualification(a1, (err, results) => {
             if (err) {
@@ -185,6 +185,7 @@ module.exports = {
     getJobSummary: (req, res) => {
         const body = req.body
         getJobSummary(body, (err, results) => {
+            console.log(results);
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
@@ -193,7 +194,7 @@ module.exports = {
                 });
             }
 
-            if (results.length == 0) {
+            if (!results) {
                 return res.status(200).json({
                     success: 0,
                     message: "No Record Found"

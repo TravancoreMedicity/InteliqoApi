@@ -30,7 +30,7 @@ router.post("/getjobspecific", checkToken, getJobSpecification);
 router.delete('/deletePerf/:id', checkToken, deletePerformance)
 router.patch('/updateperf', checkToken, updatePerforEach)
 
-//job competency
+//job competencym
 router.post("/jobcompetency", checkToken, createJobCompetency)
 router.post('/get/jobcompetency', checkToken, getjobcompetency)
 router.patch('/updatecompeteEach', checkToken, updateCompeteEach)
