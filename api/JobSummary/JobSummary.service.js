@@ -124,16 +124,18 @@ module.exports = {
                 kpi,
                 kpi_score,
                 dept_id,
-                designation
+                designation,
+                sect_id
                 )
-            VALUES (?,?,?,?,?,?)`,
+            VALUES (?,?,?,?,?,?,?)`,
             [
                 data.job_id,
                 data.key_result_area,
                 data.kpi,
                 data.kpi_score,
                 data.dept_id,
-                data.designation
+                data.designation,
+                data.sect_id
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -151,7 +153,8 @@ module.exports = {
                 specialization,
                 dept_id,
                 designation,
-                qualification_id
+                qualification_id,
+                sect_id
             )
             VALUES ?`,
             [
@@ -177,9 +180,10 @@ module.exports = {
             is_male,
             special_comment,
             dep_id,
-            designation
+            designation,
+            sect_id
                 )
-            VALUES (?,?,?,?,?,?,?,?,?,?)`,
+            VALUES (?,?,?,?,?,?,?,?,?,?,?)`,
             [
                 data.job_id,
                 data.experience,
@@ -190,7 +194,8 @@ module.exports = {
                 data.is_male,
                 data.special_comment,
                 data.dept_id,
-                data.designation
+                data.designation,
+                data.sect_id
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -272,10 +277,11 @@ module.exports = {
             left join hrm_kra on hrm_kra.kra_slno=job_specification.key_result_area
             left join hrm_department on job_specification.dept_id=hrm_department.dept_id
             left join designation on job_specification.designation=designation.desg_slno
-            where job_specification.dept_id=? and job_specification.designation=?`,
+            where job_specification.dept_id=? and job_specification.designation=? and job_specification.sect_id=?`,
             [
                 data.dept_id,
-                data.designation
+                data.designation,
+                data.sect_id
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -289,10 +295,11 @@ module.exports = {
         pool.query(
             `
             select * from job_generic
-            where dep_id=? and designation=?`,
+            where dep_id=? and designation=? and sect_id=?`,
             [
                 data.dept_id,
-                data.designation
+                data.designation,
+                data.sect_id
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -314,10 +321,11 @@ module.exports = {
             from job_qualification
             left join hrm_mast_course on hrm_mast_course.cour_slno=job_qualification.course
             left join hrm_mast_specializtion on hrm_mast_specializtion.spec_slno=job_qualification.specialization
-            where dept_id=? and designation=?`,
+            where dept_id=? and designation=? and sect_id=?`,
             [
                 data.dept_id,
-                data.designation
+                data.designation,
+                data.sect_id
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -334,15 +342,17 @@ module.exports = {
                 key_result_area,
                 competency_desc,
                 dept_id,
-                designation
+                designation,
+                sect_id
                 )
-            VALUES (?,?,?,?,?)`,
+            VALUES (?,?,?,?,?,?)`,
             [
                 data.job_id,
                 data.key_result_area,
                 data.competency_desc,
+                data.dept_id,
                 data.designation,
-                data.dept_id
+                data.sect_id
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -417,10 +427,11 @@ module.exports = {
             left join hrm_kra on job_competency.key_result_area = hrm_kra.kra_slno
 			left join hrm_department on job_competency.dept_id=hrm_department.dept_id
             left join designation on job_competency.designation=designation.desg_slno
-            where job_competency.dept_id = ? and job_competency.designation = ?`,
+            where job_competency.dept_id = ? and job_competency.designation = ? and job_competency.sect_id=?`,
             [
-                data.designation,
                 data.dept_id,
+                data.designation,
+                data.sect_id
 
             ],
             (error, results, feilds) => {
