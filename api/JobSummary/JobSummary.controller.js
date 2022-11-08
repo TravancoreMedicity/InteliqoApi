@@ -185,7 +185,6 @@ module.exports = {
     getJobSummary: (req, res) => {
         const body = req.body
         getJobSummary(body, (err, results) => {
-            console.log(results);
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
@@ -630,7 +629,6 @@ module.exports = {
     },
     getKPIScore: (req, res) => {
         const body = req.body
-        console.log(body);
         getKPIScore(body, (err, results) => {
             if (err) {
                 logger.errorLogger(err)

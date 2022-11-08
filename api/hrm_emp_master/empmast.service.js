@@ -556,9 +556,10 @@ module.exports = {
                 em_no,
                 com_designation,
                 com_designation_new,
-                ineffective_date
+                ineffective_date,
+                category_ineffect_date
             )
-            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
                 data.em_branch,
                 data.em_department,
@@ -572,7 +573,8 @@ module.exports = {
                 data.em_no,
                 data.com_designation,
                 data.com_designation_new,
-                data.ineffective_date
+                data.ineffective_date,
+                data.category_ineffect_date
             ],
             (error, results, feilds) => {
                 if (error) {

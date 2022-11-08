@@ -216,12 +216,14 @@ module.exports = {
 			job_summary.reporting_dept,
 			designation.desg_name as 'desig',
             hrm_department.dept_name as 'dept',
+            hrm_dept_section.sect_name as 'sect',
 			equipment_used,
 			working_hour
 			from job_summary           
 			left join hrm_branch on hrm_branch.branch_slno=job_summary.work_place
             left join hrm_department on job_summary.dept_id=hrm_department.dept_id
             left join designation on job_summary.designation=designation.desg_slno
+            left join hrm_dept_section on job_summary.sect_id=hrm_dept_section.sect_id
 			where job_summary.dept_id=? and job_summary.designation=? and job_summary.sect_id=?;`,
             [
                 data.dept_id,

@@ -701,12 +701,13 @@ module.exports = {
     getcompanylogId: (id, callBack) => {
         pool.query(
             ` SELECT 
-                    DATE_FORMAT(update_date, '%d-%m-%Y %h:%i:%s')update_date,
-                    hrm_emp_category.ecat_name,
-                    hrm_emp_company_log.edit_user
-              FROM hrm_emp_company_log
-              LEFT JOIN hrm_emp_category ON hrm_emp_category.category_slno=hrm_emp_company_log.com_category_new
-              WHERE em_no=?`,
+            DATE_FORMAT(ineffective_date, '%d-%m-%Y %h:%i:%s')ineffective_date,
+            hrm_emp_company_log.edit_user,
+            designation.desg_name
+            FROM hrm_emp_company_log
+            LEFT JOIN hrm_emp_category ON hrm_emp_category.category_slno=hrm_emp_company_log.com_category_new
+            left join designation on designation.desg_slno=hrm_emp_company_log.com_designation_new
+                          WHERE em_no=? and com_designation!=com_designation_new;`,
             [
                 id
             ],
