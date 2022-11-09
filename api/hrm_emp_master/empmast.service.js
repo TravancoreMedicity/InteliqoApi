@@ -373,12 +373,10 @@ module.exports = {
             WHERE
                 hrm_department.dept_id = ?
                     AND hrm_dept_section.sect_id = ?
-                    AND hrm_branch.branch_slno = ?
                     AND em_status=1  and em_id !=1 and em_no!=2`,
             [
                 data.dept_id,
                 data.sect_id,
-                data.branch_slno
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -421,12 +419,10 @@ module.exports = {
             WHERE
                 hrm_department.dept_id = ?
                     AND hrm_dept_section.sect_id = ?
-                    AND hrm_branch.branch_slno = ?
                     AND em_status=0 and em_id !=1 and em_no!=2`,
             [
                 data.dept_id,
                 data.sect_id,
-                data.branch_slno
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -513,11 +509,9 @@ module.exports = {
                 hrm_emp_category ON hrm_emp_category.category_slno = hrm_emp_master.em_category
             WHERE
                 hrm_department.dept_id = ?
-                AND hrm_branch.branch_slno = ?
                 AND em_status=1 and em_id!=1 and em_no!=2`,
             [
                 data.dept_id,
-                data.branch_slno
             ],
             (error, results, feilds) => {
                 if (error) {
