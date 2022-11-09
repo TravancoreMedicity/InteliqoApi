@@ -373,12 +373,10 @@ module.exports = {
             WHERE
                 hrm_department.dept_id = ?
                     AND hrm_dept_section.sect_id = ?
-                    AND hrm_branch.branch_slno = ?
                     AND em_status=1  and em_id !=1 and em_no!=2`,
             [
                 data.dept_id,
                 data.sect_id,
-                data.branch_slno
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -421,12 +419,10 @@ module.exports = {
             WHERE
                 hrm_department.dept_id = ?
                     AND hrm_dept_section.sect_id = ?
-                    AND hrm_branch.branch_slno = ?
                     AND em_status=0 and em_id !=1 and em_no!=2`,
             [
                 data.dept_id,
                 data.sect_id,
-                data.branch_slno
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -513,11 +509,9 @@ module.exports = {
                 hrm_emp_category ON hrm_emp_category.category_slno = hrm_emp_master.em_category
             WHERE
                 hrm_department.dept_id = ?
-                AND hrm_branch.branch_slno = ?
                 AND em_status=1 and em_id!=1 and em_no!=2`,
             [
                 data.dept_id,
-                data.branch_slno
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -556,9 +550,10 @@ module.exports = {
                 em_no,
                 com_designation,
                 com_designation_new,
-                ineffective_date
+                ineffective_date,
+                category_ineffect_date
             )
-            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
                 data.em_branch,
                 data.em_department,
@@ -572,7 +567,8 @@ module.exports = {
                 data.em_no,
                 data.com_designation,
                 data.com_designation_new,
-                data.ineffective_date
+                data.ineffective_date,
+                data.category_ineffect_date
             ],
             (error, results, feilds) => {
                 if (error) {
