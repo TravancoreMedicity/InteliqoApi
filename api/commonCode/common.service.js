@@ -701,7 +701,7 @@ module.exports = {
     getcompanylogId: (id, callBack) => {
         pool.query(
             ` SELECT 
-            DATE_FORMAT(ineffective_date, '%d-%m-%Y %h:%i:%s')ineffective_date,
+            DATE_FORMAT(ineffective_date, '%d-%m-%Y')ineffective_date,
             hrm_emp_company_log.edit_user,
             designation.desg_name
             FROM hrm_emp_company_log
