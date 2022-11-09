@@ -71,7 +71,7 @@ module.exports = {
             left join designation on designation.desg_slno=hrm_emp_master.em_designation
             left join doctor_type on doctor_type.doctype_slno=hrm_emp_master.em_doc_type
             left join hrm_emp_category on hrm_emp_category.category_slno=hrm_emp_master.em_category
-            where (hrm_emp_master.em_status=1 and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2) and (hrm_branch.branch_slno IN (?) and hrm_department.dept_id IN (?) and hrm_dept_section.sect_id IN (?))`,
+            where (hrm_emp_master.em_status=1 and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2) and (hrm_branch.branch_slno IN (?) AND hrm_department.dept_id IN (?) AND hrm_dept_section.sect_id IN (?))`,
             [
                 data.branch_slno,
                 data.dept_id,

@@ -63,7 +63,7 @@ module.exports = {
                 desg_notice_prd,
                 desg_status,
                 if(desg_status = 1 ,'Yes','No') status
-            FROM designation`,
+            FROM designation order by desg_name ASC`,
             [],
             (error, results, feilds) => {
                 if (error) {
