@@ -184,7 +184,7 @@ module.exports = {
         getholidaylist((err, results) => {
             if (err) {
                 logger.errorLogger(err)
-                return res.status(400).json({
+                return res.status(200).json({
                     success: 0,
                     message: err
                 });
@@ -736,20 +736,20 @@ module.exports = {
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
-                    success: 0,
+                    successStatus: 0,
                     message: err
                 });
             }
 
             if (results.length == 0) {
                 return res.status(200).json({
-                    success: 1,
+                    successStatus: 1,
                     message: "Record Not Found"
                 });
             }
 
             return res.status(200).json({
-                success: 2,
+                successStatus: 2,
                 data: results
             });
         });

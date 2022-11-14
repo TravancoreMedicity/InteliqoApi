@@ -575,7 +575,9 @@ module.exports = {
                 ecat_doff_allow,
                 ecat_esi_allow,
                 ecat_confere,
-                ecat_lop,ecat_sl,em_doj,
+                ecat_lop,
+                ecat_sl,
+                em_doj,
                 ecat_mate
               FROM hrm_emp_master,hrm_emp_category 
               where hrm_emp_master.em_id=? 

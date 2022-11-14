@@ -221,7 +221,14 @@ module.exports = {
 
     getcommonleave: (callBack) => {
         pool.query(
-            `SELECT lvetype_slno,lvetype_desc,leave_credit_policy_count FROM medi_hrm.hrm_leave_type where common_leave='1'`,
+            `SELECT 
+                lvetype_slno,
+                lvetype_desc,
+                leave_credit_policy_count 
+            FROM 
+                medi_hrm.hrm_leave_type 
+            where 
+                common_leave='1'`,
             [
 
             ],

@@ -161,11 +161,8 @@ module.exports = {
     // get holiday list
     getholidaylist: (callBack) => {
         pool.query(
-            `SELECT * FROM medi_hrm.hrm_yearly_holiday_list  where hld_date>current_date()`,
-            [
-
-
-            ],
+            `SELECT * FROM medi_hrm.hrm_yearly_holiday_list  where  year(hld_date) = year(current_date())`,
+            [],
             (error, results, feilds) => {
                 if (error) {
                     return callBack(error);
@@ -350,10 +347,11 @@ module.exports = {
     //Update Holiday Leave inactive (as "1" ) // inactive status --> "1" consider for the leave carry forward
     updateholidayupdateslno: (data, callBack) => {
         pool.query(
-            `update hrm_leave_holiday set 
-            hl_lv_active='1'
-                where 
-                lv_process_slno=? and  hl_lv_active='0'`,
+            `update hrm_leave_holiday 
+                set hl_lv_active='1'
+            where 
+                lv_process_slno=? 
+            and  hl_lv_active='0'`,
             [
                 data.oldprocessslno
 
@@ -549,8 +547,8 @@ module.exports = {
             [
                 data.em_no,
                 data.em_id,
-                data.proceeuser,
-                data.year_of_process
+                data.processUser,
+                data.currentYear
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -563,12 +561,10 @@ module.exports = {
     },
     select_yearlyprocess: (data, callBack) => {
         pool.query(
-            `SELECT * FROM medi_hrm.yearly_leave_process where DATE(year_of_process) between ? AND ? and em_id=? `,
+            `SELECT * FROM medi_hrm.yearly_leave_process where year(year_of_process) = ? and em_id= ?`,
             [
-                data.startdate,
-                data.endate,
-                data.emp_no
-
+                data.em_id,
+                data.currentYear,
             ],
             (error, results, feilds) => {
 

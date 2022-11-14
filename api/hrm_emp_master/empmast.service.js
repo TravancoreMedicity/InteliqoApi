@@ -39,9 +39,10 @@ module.exports = {
                 hrm_region2, 
                 blood_slno,
                 hrm_religion,
-                contract_status
+                contract_status,
+                probation_status
             )
-            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
                 data.em_no,
                 data.em_salutation,
@@ -78,7 +79,8 @@ module.exports = {
                 data.hrm_region2,
                 data.blood_slno,
                 data.hrm_religion,
-                data.contractflag
+                data.contractflag,
+                data.probationStatus
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -126,7 +128,8 @@ module.exports = {
                 hrm_region2=?, 
                 blood_slno=?,
                 hrm_religion=?,
-                contract_status=?
+                contract_status=?,
+                probation_status=?
                 WHERE em_no = ?`,
             [
                 data.em_salutation,
@@ -164,6 +167,7 @@ module.exports = {
                 data.blood_slno,
                 data.hrm_religion,
                 data.contractflag,
+                data.probationStatus,
                 data.em_no
             ],
             (error, results, feilds) => {
@@ -282,37 +286,43 @@ module.exports = {
     getDataById: (id, callBack) => {
         pool.query(
             `SELECT 
-            ifnull(em_no,'')em_no,
-            ifnull(em_id,'')em_id,
-            ifnull(em_salutation,'0')em_salutation,
-            ifnull(em_name,'')em_name,
-            ifnull( em_gender,'0')em_gender,
-            ifnull(em_dob,'')em_dob,
-            ifnull(em_age_year,'')em_age_year,
-            ifnull(em_age_month,'')em_age_month,
-            em_age_day,
-            em_prob_end_date,
-            em_conf_end_date,
-            em_retirement_date,
-            em_contract_end_date,
-            ifnull(em_doj,'')em_doj,
-            ifnull(em_mobile,'')em_mobile,
-            ifnull(em_phone,'')em_phone,
-            ifnull(em_email,'')em_email,
-            ifnull(addressPermnt1,'')addressPermnt1,
-            ifnull(addressPermnt2,'')addressPermnt2, 
-            ifnull(hrm_pin1,'')hrm_pin1,
-            ifnull(em_region,'0')em_region,
-            ifnull(addressPresent1,'')addressPresent1,
-            ifnull(addressPresent2,'')addressPresent2,
-            ifnull(hrm_pin2,'')hrm_pin2, 
-            ifnull(hrm_region2,'0')hrm_region2, 
-            ifnull(blood_slno,'0')blood_slno,
-            ifnull(hrm_religion,'0')hrm_religion,
-            em_branch,em_department,em_dept_section,em_institution_type,em_designation,em_doc_type,em_category
-                FROM hrm_emp_master
-                WHERE em_no = ?
-                AND em_status=1 `,
+                ifnull(em_no,'')em_no,
+                ifnull(em_id,'')em_id,
+                ifnull(em_salutation,'0')em_salutation,
+                ifnull(em_name,'')em_name,
+                ifnull( em_gender,'0')em_gender,
+                ifnull(em_dob,'')em_dob,
+                ifnull(em_age_year,'')em_age_year,
+                ifnull(em_age_month,'')em_age_month,
+                em_age_day,
+                em_prob_end_date,
+                em_conf_end_date,
+                em_retirement_date,
+                em_contract_end_date,
+                ifnull(em_doj,'')em_doj,
+                ifnull(em_mobile,'')em_mobile,
+                ifnull(em_phone,'')em_phone,
+                ifnull(em_email,'')em_email,
+                ifnull(addressPermnt1,'')addressPermnt1,
+                ifnull(addressPermnt2,'')addressPermnt2, 
+                ifnull(hrm_pin1,'')hrm_pin1,
+                ifnull(em_region,'0')em_region,
+                ifnull(addressPresent1,'')addressPresent1,
+                ifnull(addressPresent2,'')addressPresent2,
+                ifnull(hrm_pin2,'')hrm_pin2, 
+                ifnull(hrm_region2,'0')hrm_region2, 
+                ifnull(blood_slno,'0')blood_slno,
+                ifnull(hrm_religion,'0')hrm_religion,
+                em_branch,
+                em_department,
+                em_dept_section,
+                em_institution_type,
+                em_designation,
+                em_doc_type,
+                em_category
+            FROM hrm_emp_master
+            WHERE em_no = ?
+            AND em_status=1 `,
             [
                 id
             ],
