@@ -117,11 +117,12 @@ module.exports = {
         pool.query(
             `UPDATE hrm_emp_contract_detl
                 SET 
-                em_cont_close=?,
-                em_cont_compl_status = ?,
-                em_cont_renew=?,
-                em_cont_close_date=?,
-                em_cont_renew_date=?
+                    em_cont_close=?,
+                    em_cont_compl_status = ?,
+                    em_cont_renew=?,
+                    em_cont_close_date=?,
+                    em_cont_renew_date=?,
+                    status= 1
                 WHERE em_no =?`,
             [
                 data.em_cont_close,
@@ -142,10 +143,10 @@ module.exports = {
     updateEmpMaster: (data, callBack) => {
         pool.query(
             `update hrm_emp_master
-            set em_no=?,
-            em_category=?,
-            em_contract_end_date=?,
-            em_prob_end_date=?
+                set em_no=?,
+                em_category=?,
+                em_contract_end_date=?,
+                em_prob_end_date=?
             where em_id=?`,
             [
                 data.em_no,

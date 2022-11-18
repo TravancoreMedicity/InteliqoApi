@@ -1,11 +1,39 @@
 const pool = require('../../config/database');
 
 module.exports = {
-
+    getLeaveProccedData: (data, callBack) => {
+        pool.query(
+            `SELECT * FROM hrm_leave_process WHERE em_no = ?  and hrm_process_status ='A' AND year(next_updatedate) = ?`,
+            [
+                data.em_no,
+                data.year
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    inactiveLastYearProcessData: (data, callBack) => {
+        pool.query(
+            `UPDATE hrm_leave_process SET hrm_process_status = 'N' WHERE lv_process_slno = ?`,
+            [
+                data.lv_process_slno,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
     checkTable: (data, callBack) => {
         pool.query(
             `SELECT * FROM hrm_leave_process
-            WHERE em_id = ?  and hrm_process_status ='A'`,
+                WHERE em_id = ?  and hrm_process_status ='A' AND year(next_updatedate) = year(curdate());`,
             [data.em_no],
             (error, results, feilds) => {
                 if (error) {
@@ -542,13 +570,15 @@ module.exports = {
                 em_no,
                 em_id,
                 proceeuser,
-                year_of_process
+                year_of_process,
+                year
                 ) values (?,?,?,?)`,
             [
                 data.em_no,
                 data.em_id,
                 data.processUser,
-                data.currentYear
+                data.currentYear,
+                data.year
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -561,9 +591,9 @@ module.exports = {
     },
     select_yearlyprocess: (data, callBack) => {
         pool.query(
-            `SELECT * FROM medi_hrm.yearly_leave_process where year(year_of_process) = ? and em_id= ?`,
+            `SELECT * FROM medi_hrm.yearly_leave_process where year(year_of_process) = ? and em_no= ?`,
             [
-                data.em_id,
+                data.em_no,
                 data.currentYear,
             ],
             (error, results, feilds) => {
@@ -601,6 +631,82 @@ module.exports = {
             }
         )
 
+    },
+    creditPrivilegeLeave: (data, callBack) => {
+        pool.query(
+            `UPDATE hrm_leave_earnlv SET credit_status = 1 ,credit_year = ?  WHERE year(ernlv_year) = ? AND em_no = ?`,
+            [
+                data.currentYear,
+                data.creditYear,
+                data.em_no
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    inactiveCasualLeave: (data, callBack) => {
+        pool.query(
+            `UPDATE hrm_leave_cl SET cl_lv_active = 1 WHERE year(cl_lv_mnth) = ? AND em_no = ?`,
+            [
+                data.lastYear,
+                data.em_no
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    inactiveHoliday: (data, callBack) => {
+        pool.query(
+            `UPDATE hrm_leave_holiday SET hl_lv_active = 1 WHERE year(hl_date) = ? AND em_no = ?`,
+            [
+                data.lastYear,
+                data.em_no
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    inactiveCommonLeave: (data, callBack) => {
+        pool.query(
+            `UPDATE hrm_leave_common SET cmn_status = 1 WHERE year(cm_lv_year) = ? AND em_no = ? `,
+            [
+                data.lastYear,
+                data.em_no
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    inactiveEarnLeave: (data, callBack) => {
+        pool.query(
+            `UPDATE hrm_leave_earnlv SET earn_lv_active = 1 WHERE year(ernlv_year) = ? AND em_no = ? AND credit_status = 1`,
+            [
+                data.lastYear,
+                data.em_no
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
     },
 
 }

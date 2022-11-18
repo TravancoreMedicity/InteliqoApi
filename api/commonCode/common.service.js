@@ -609,7 +609,10 @@ module.exports = {
                 lv_process_slno, 
                 update_user, 
                 update_date 
-            FROM hrm_leave_cl where em_id=? and cl_lv_active='0'`,
+            FROM hrm_leave_cl 
+            where em_id=? 
+            and cl_lv_active='0'
+            and year(cl_lv_year) = year(curdate())`,
             [
                 id
             ],
@@ -626,10 +629,30 @@ module.exports = {
     getearnleave: (id, callBack) => {
 
         pool.query(
-            `SELECT DATE_FORMAT(ernlv_mnth, "%M")ernlv_mnth,ernlv_allowed,
-            ernlv_credit,ernlv_taken FROM hrm_leave_earnlv where em_id=? and earn_lv_active=0`,
+            `
+            SELECT 
+                DATE_FORMAT(ernlv_mnth, "%M")ernlv_mnth,
+                DATE_FORMAT(ernlv_mnth, "%Y")year,
+                ernlv_allowed,
+                ernlv_credit,
+                ernlv_taken 
+            FROM hrm_leave_earnlv 
+            where em_id=?
+            and earn_lv_active=0
+            and year(ernlv_mnth) = year(curdate())
+            union all
+            SELECT 
+                DATE_FORMAT(ernlv_mnth, "%M")ernlv_mnth,
+                DATE_FORMAT(ernlv_mnth, "%Y")year,
+                ernlv_allowed,
+                ernlv_credit,
+                ernlv_taken 
+            FROM hrm_leave_earnlv 
+            where em_id=?
+            and earn_lv_active=0
+            and credit_status = 1`,
             [
-                id
+                id, id
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -642,11 +665,14 @@ module.exports = {
     // get data for leave holiday list
     getleaveholiday: (id, callBack) => {
         pool.query(
-            `SELECT hrm_hl_slno,em_no,hd_slno,hl_lv_year,hl_date,hl_lv_credit,hl_lv_taken,
-            lv_process_slno,em_id,hld_desc,hl_lv_allowed
+            `SELECT hrm_hl_slno,em_no,hd_slno,
+            hl_lv_year,hl_date,hl_lv_credit,hl_lv_taken,
+                lv_process_slno,em_id,hld_desc,hl_lv_allowed
             FROM hrm_leave_holiday 
             left join hrm_yearly_holiday_list on hrm_leave_holiday.hd_slno=hrm_yearly_holiday_list.hld_slno
-            where em_id=? and hl_lv_active='0'`,
+            where em_id=? 
+            and hl_lv_active='0'
+            and year(hl_lv_year) = year(curdate())`,
             [
                 id
             ],
@@ -661,17 +687,22 @@ module.exports = {
     // get data for leave common list
     getleavecommon: (id, callBack) => {
         pool.query(
-            `SELECT hrm_lv_cmn,
-            em_no, lvetype_desc,
-            cmn_lv_allowed,
-            cmn_lv_taken,
-            cmn_lv_balance,
-            Iv_process_slno, 
-            em_id, 
-            cmn_lv_year,
-            cmn_lv_allowedflag 
+            `SELECT 
+                hrm_lv_cmn,
+                em_no, 
+                lvetype_desc,
+                cmn_lv_allowed,
+                cmn_lv_taken,
+                cmn_lv_balance,
+                Iv_process_slno, 
+                em_id, 
+                cmn_lv_year,
+                cmn_lv_allowedflag 
             FROM hrm_leave_common
-            left join hrm_leave_type on hrm_leave_common.llvetype_slno=hrm_leave_type.lvetype_slno where em_id=?`,
+            left join hrm_leave_type on hrm_leave_common.llvetype_slno=hrm_leave_type.lvetype_slno 
+            where em_id=? 
+            and cmn_status = 0
+            and year(cmn_lv_year) = year(curdate())`,
             [
                 id
             ],
@@ -1342,8 +1373,11 @@ module.exports = {
     },
     getContractDetl: (id, callBack) => {
         pool.query(
-            `select em_cont_start,em_cont_end from hrm_emp_contract_detl
-            where em_cont_compl_status is null and em_cont_close is null and em_id=?`,
+            `select 
+                em_cont_start,em_cont_end 
+            from hrm_emp_contract_detl
+            where em_cont_compl_status is null 
+            and em_cont_close is null and em_id=? and status = 0 `,
             [
                 id
             ],
