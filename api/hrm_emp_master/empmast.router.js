@@ -20,7 +20,10 @@ const {
     updateEmpRegister,
     getDataByEmpno,
     getDataByEmpID,
-    checkidvaluedate
+    checkidvaluedate,
+    createContractDetl,
+    UpdateContractDetlStatus,
+    UpdateContractDetl
 } = require('../hrm_emp_master/empmast.controller');
 
 router.post("/", checkToken, createempmast)
@@ -44,5 +47,10 @@ router.patch("/empregister/Edit", checkToken, updateEmpRegister)
 router.get("/databyempno/getemid/:id", checkToken, getDataByEmpno)
 router.get("/databyempid/:id", checkToken, getDataByEmpID)
 router.post("/checkEmno/contracterenew", checkToken, checkidvaluedate)
+
+
+router.post("/createContract", checkToken, createContractDetl)//contract detl entry if contract_status=1
+router.patch('/contractdetl/inactive', checkToken, UpdateContractDetlStatus)
+router.patch('/update/contractdetl', checkToken, UpdateContractDetl)
 
 module.exports = router;

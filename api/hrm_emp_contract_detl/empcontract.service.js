@@ -351,4 +351,72 @@ module.exports = {
             }
         )
     },
+    updateQualEmpId: (data, callBack) => {
+        pool.query(
+            `UPDATE hrm_emp_qual
+            SET em_no=?
+            WHERE em_id =?`,
+            [
+                data.em_no,
+                data.em_id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    EmpIDExpUpdate: (data, callBack) => {
+        pool.query(
+            `UPDATE hrm_emp_exp
+            SET em_no=?
+            WHERE em_id =?`,
+            [
+                data.em_no,
+                data.em_id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    UpdateEMpIdEarnDeduction: (data, callBack) => {
+        pool.query(
+            `UPDATE hrm_emp_earn_deduction
+            SET em_no=?
+            WHERE em_id =?`,
+            [
+                data.em_no,
+                data.em_id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    UpdateEMpIdPersonal: (data, callBack) => {
+        pool.query(
+            `UPDATE hrm_emp_personal
+            SET em_no=?
+            WHERE em_id =?`,
+            [
+                data.em_no,
+                data.em_id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }

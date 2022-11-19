@@ -39,9 +39,10 @@ module.exports = {
                 hrm_region2, 
                 blood_slno,
                 hrm_religion,
-                contract_status
+                contract_status,
+                probation_status
             )
-            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
                 data.em_no,
                 data.em_salutation,
@@ -78,7 +79,8 @@ module.exports = {
                 data.hrm_region2,
                 data.blood_slno,
                 data.hrm_religion,
-                data.contractflag
+                data.contractflag,
+                data.probation_status
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -126,7 +128,8 @@ module.exports = {
                 hrm_region2=?, 
                 blood_slno=?,
                 hrm_religion=?,
-                contract_status=?
+                contract_status=?,
+                probation_status=?
                 WHERE em_no = ?`,
             [
                 data.em_salutation,
@@ -164,6 +167,7 @@ module.exports = {
                 data.blood_slno,
                 data.hrm_religion,
                 data.contractflag,
+                data.probation_status,
                 data.em_no
             ],
             (error, results, feilds) => {
@@ -309,7 +313,14 @@ module.exports = {
             ifnull(hrm_region2,'0')hrm_region2, 
             ifnull(blood_slno,'0')blood_slno,
             ifnull(hrm_religion,'0')hrm_religion,
-            em_branch,em_department,em_dept_section,em_institution_type,em_designation,em_doc_type,em_category
+            em_branch,em_department,
+            em_dept_section,
+            em_institution_type,
+            em_designation,
+            em_doc_type,
+            em_category,
+            contract_status,
+            probation_status
                 FROM hrm_emp_master
                 WHERE em_no = ?
                 AND em_status=1 `,
@@ -551,9 +562,13 @@ module.exports = {
                 com_designation,
                 com_designation_new,
                 ineffective_date,
-                category_ineffect_date
+                category_ineffect_date,
+                training_conf_date,
+                probation_conf_date,
+                training_extend_date,
+                probation_extend_date
             )
-            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
                 data.em_branch,
                 data.em_department,
@@ -568,7 +583,11 @@ module.exports = {
                 data.com_designation,
                 data.com_designation_new,
                 data.ineffective_date,
-                data.category_ineffect_date
+                data.category_ineffect_date,
+                data.training_conf_date,
+                data.probation_conf_date,
+                data.training_extend_date,
+                data.probation_extend_date
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -591,7 +610,8 @@ module.exports = {
                 contract_status=?,
                 em_prob_end_date=?,
                 probation_status=?,
-                em_designation=?
+                em_designation=?,
+                em_conf_end_date=?
                 WHERE em_no = ?`,
             [
                 data.em_branch,
@@ -603,6 +623,7 @@ module.exports = {
                 data.em_prob_end_date,
                 data.probation_status,
                 data.em_designation,
+                data.em_conf_end_date,
                 data.em_no
             ],
             (error, results, feilds) => {
@@ -789,6 +810,71 @@ module.exports = {
             }
         )
     },
-
+    createContractDetl: (data, callBack) => {
+        pool.query(
+            `INSERT INTO hrm_emp_contract_detl (
+                em_id,
+                em_no,
+                em_cont_start,
+                em_cont_end,
+                em_prob_end_date,
+                em_conf_end_date
+                )
+                VALUES (?,?,?,?,?,?);`,
+            [
+                data.em_id,
+                data.em_no,
+                data.em_cont_start,
+                data.em_cont_end,
+                data.em_prob_end_date,
+                data.em_age_year,
+                data.em_conf_end_date,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    UpdateContractDetlStatus: (data, callBack) => {
+        pool.query(
+            `update hrm_emp_contract_detl
+            set status=1
+            where em_id=?`,
+            [
+                data.em_id,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    UpdateContractDetl: (data, callBack) => {
+        pool.query(
+            `update hrm_emp_contract_detl
+            set 
+            em_prob_end_date=?,
+            em_cont_end=?,
+            em_conf_end_date=?
+            where em_id=?`,
+            [
+                data.em_prob_end_date,
+                data.em_cont_end,
+                data.em_conf_end_date,
+                data.em_id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 
 }

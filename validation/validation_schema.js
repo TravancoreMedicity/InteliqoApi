@@ -521,6 +521,7 @@ const validateempmaster = Joi.object({
         addressPermnt2: Joi.string().trim().uppercase().required(),
         perPincode: Joi.number().max(999999).required(),
         blood_slno: Joi.number().min(1).required(),
+        probation_status: Joi.number().required(),
 })
 
 // VALIDATE EMPLOYEE MASTER EDIT
@@ -563,6 +564,7 @@ const validateempmasterEdit = Joi.object({
         addressPermnt2: Joi.string().trim().uppercase().required(),
         perPincode: Joi.number().max(999999).required(),
         blood_slno: Joi.number().min(1).required(),
+        probation_status: Joi.number().required(),
 })
 // VALIDATE EMPLOYEupdate
 const validateempmasterupdate = Joi.object({
