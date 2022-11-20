@@ -9,7 +9,7 @@ module.exports = {
             FROM
                 hrm_department
             WHERE
-                dept_status = '1'`,
+                dept_status = '1' ORDER BY dept_name ASC `,
             [],
             (error, results, feilds) => {
                 if (error) {

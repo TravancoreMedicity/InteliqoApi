@@ -120,7 +120,7 @@ module.exports = {
                 sect_id,
                 sect_name
             FROM hrm_dept_section 
-            WHERE dept_id = ?`,
+            WHERE dept_id = ? ORDER BY sect_name ASC`,
             [id],
             (error, results, feilds) => {
                 if (error) {
