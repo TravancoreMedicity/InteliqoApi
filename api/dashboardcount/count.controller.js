@@ -30,7 +30,6 @@ module.exports = {
         });
     },
     getContractCloseCount: (req, res) => {
-        console.log("controller");
         getContractCloseCount((err, results) => {
             if (err) {
                 logger.errorLogger(err)

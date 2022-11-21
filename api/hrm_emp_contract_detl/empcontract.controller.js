@@ -3,8 +3,12 @@ const { create, update, getDataById,
     updateContractComplete, updateEmpMaster,
     getContractCloseDetl, getContractCloseDetlById, createContractlog,
     InsertArrearSalaryContractRenew, updateConreactrenewAppr,
-    getContractRenewApprovalList
-} = require('../hrm_emp_contract_detl/empcontract.service');
+    getContractRenewApprovalList,
+    updateQualEmpId,
+    EmpIDExpUpdate,
+    UpdateEMpIdEarnDeduction,
+    UpdateEMpIdPersonal } = require('../hrm_emp_contract_detl/empcontract.service');
+
 const { validateempcontract } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -326,6 +330,110 @@ module.exports = {
             });
         });
 
+    },
+    updateQualEmpId: (req, res) => {
+        const body = req.body;
+        updateQualEmpId(body, (err, results) => {
+
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 2,
+                message: "Contract Renew Process Started"
+            });
+
+        });
+    },
+    EmpIDExpUpdate: (req, res) => {
+        const body = req.body;
+        EmpIDExpUpdate(body, (err, results) => {
+
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 2,
+                message: "Contract Renew Process Started"
+            });
+
+        });
+    },
+    UpdateEMpIdEarnDeduction: (req, res) => {
+        const body = req.body;
+        UpdateEMpIdEarnDeduction(body, (err, results) => {
+
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 2,
+                message: "Contract Renew Process Started"
+            });
+
+        });
+    },
+    UpdateEMpIdPersonal: (req, res) => {
+        const body = req.body;
+        UpdateEMpIdPersonal(body, (err, results) => {
+
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 2,
+                message: "Contract Renew Process Started"
+            });
+
+        });
     },
 }
 

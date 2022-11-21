@@ -15,7 +15,6 @@ module.exports = {
         )
     },
     getContractCloseCount: (callBack) => {
-        console.log("service");
         pool.query(
             `select count(*) 'contractcloseCount' from hrm_emp_contract_detl
             left join hrm_emp_master on hrm_emp_master.em_id=hrm_emp_contract_detl.em_id
@@ -315,7 +314,10 @@ module.exports = {
     },
     probationEndCount: (callBack) => {
         pool.query(
-            `select count(*) 'probationcount' from hrm_emp_master where em_category IN (4,7,9) and em_prob_end_date<=curdate() and em_prob_end_date!="2000-01-01" and em_status=1 ;   `,
+            `select count(*) 'probationcount' 
+            from hrm_emp_master
+            LEFT JOIN hrm_emp_category on hrm_emp_master.em_category= hrm_emp_category.category_slno
+             where des_type=1 and emp_type!=1 and em_prob_end_date<=curdate() and em_prob_end_date!="2000-01-01" and em_status=1 and em_id!=1 and probation_status=1;   `,
             [],
             (error, results, feilds) => {
                 if (error) {
@@ -339,7 +341,9 @@ module.exports = {
     },
     trainingAppraisalCount: (callBack) => {
         pool.query(
-            `SELECT count(*) 'trainingcount' FROM medi_hrm.hrm_emp_master  where em_category IN (2,3) and em_prob_end_date<=curdate() and em_status=1 ;`,
+            `SELECT count(*) 'trainingcount' FROM medi_hrm.hrm_emp_master  
+            LEFT JOIN hrm_emp_category on hrm_emp_master.em_category= hrm_emp_category.category_slno
+            where des_type=2 and emp_type!=1 and em_prob_end_date<=curdate() and em_prob_end_date!="2000-01-01" and em_status=1 and em_id!=1 and probation_status=1; `,
             [],
             (error, results, feilds) => {
                 if (error) {

@@ -8,15 +8,17 @@ module.exports = {
                 em_id,
                 em_cont_start,
                 em_cont_end,
+                em_prob_end_date,
                 create_user
                                                     
             )
-            VALUES (?,?,?,?,?)`,
+            VALUES (?,?,?,?,?,?)`,
             [
                 data.em_no,
                 data.em_id,
                 data.em_cont_start,
                 data.em_cont_end,
+                data.em_prob_end_date,
                 data.create_user
 
             ],
@@ -121,7 +123,8 @@ module.exports = {
                 em_cont_compl_status = ?,
                 em_cont_renew=?,
                 em_cont_close_date=?,
-                em_cont_renew_date=?
+                em_cont_renew_date=?,
+                status=?
                 WHERE em_no =?`,
             [
                 data.em_cont_close,
@@ -129,6 +132,7 @@ module.exports = {
                 data.em_cont_renew,
                 data.em_cont_close_date,
                 data.em_cont_renew_date,
+                data.status,
                 data.em_no
             ],
             (error, results, feilds) => {
@@ -343,6 +347,74 @@ module.exports = {
             left join designation on designation.desg_slno=hrm_emp_master.em_designation
             where em_cont_close is null and em_cont_renew is null and contract_renew_appr=1`,
             [],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    updateQualEmpId: (data, callBack) => {
+        pool.query(
+            `UPDATE hrm_emp_qual
+            SET em_no=?
+            WHERE em_id =?`,
+            [
+                data.em_no,
+                data.em_id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    EmpIDExpUpdate: (data, callBack) => {
+        pool.query(
+            `UPDATE hrm_emp_exp
+            SET em_no=?
+            WHERE em_id =?`,
+            [
+                data.em_no,
+                data.em_id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    UpdateEMpIdEarnDeduction: (data, callBack) => {
+        pool.query(
+            `UPDATE hrm_emp_earn_deduction
+            SET em_no=?
+            WHERE em_id =?`,
+            [
+                data.em_no,
+                data.em_id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    UpdateEMpIdPersonal: (data, callBack) => {
+        pool.query(
+            `UPDATE hrm_emp_personal
+            SET em_no=?
+            WHERE em_id =?`,
+            [
+                data.em_no,
+                data.em_id
+            ],
             (error, results, feilds) => {
                 if (error) {
                     return callBack(error);
