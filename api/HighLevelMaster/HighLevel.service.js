@@ -24,7 +24,8 @@ module.exports = {
         pool.query(
             `SELECT highlevel_slno,
             highlevel_name,
-            if(highlevel_status = 1 ,'Yes','No') highlevel_status
+            highlevel_status,
+            if(highlevel_status = 1 ,'Yes','No') status
                     FROM hrm_highlevel_master;`,
             [],
             (error, results, feilds) => {

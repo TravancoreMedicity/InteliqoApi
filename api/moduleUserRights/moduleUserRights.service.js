@@ -108,21 +108,18 @@ module.exports = {
     getuserModuleRights: (callBack) => {
         pool.query(
             `SELECT 
-                mdrte_slno,
-                emp_slno,
-                hrm_emp_master.em_name,
-                hrm_emp_master.em_department,
-                module_group_mast.module_group_name,
-                user_group_mast.user_group_name,
-                IF(status = 1, 'Active', 'Inactive') status
-            FROM
-                module_group_user_rights
-                    LEFT JOIN
-                hrm_emp_master ON hrm_emp_master.em_id = module_group_user_rights.emp_slno
-                    LEFT JOIN
-                module_group_mast ON module_group_mast.mdgrp_slno = module_group_user_rights.mdgrp_slno
-                    LEFT JOIN 
-                user_group_mast ON user_group_mast.user_grp_slno = module_group_user_rights.user_grp_slno`,
+            mdrte_slno,
+            hrm_emp_master.em_no as 'emp_slno',
+            hrm_emp_master.em_name,
+            hrm_emp_master.em_department,
+            module_group_mast.module_group_name,
+            user_group_mast.user_group_name,
+            IF(status = 1, 'Active', 'Inactive') status
+        FROM module_group_user_rights
+        LEFT JOIN  hrm_emp_master ON hrm_emp_master.em_id = module_group_user_rights.emp_slno
+        LEFT JOIN module_group_mast ON module_group_mast.mdgrp_slno = module_group_user_rights.mdgrp_slno
+        LEFT JOIN 
+            user_group_mast ON user_group_mast.user_grp_slno = module_group_user_rights.user_grp_slno`,
             [],
             (error, results, feilds) => {
                 if (error) {

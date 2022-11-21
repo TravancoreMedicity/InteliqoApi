@@ -16,7 +16,10 @@ const {
     getEmpByDeptartment,
     updateEmpRegister,
     getDataByEmpno,
-    getDataByEmpID
+    getDataByEmpID,
+    createContractDetl,
+    UpdateContractDetlStatus,
+    UpdateContractDetl
 } = require('../hrm_emp_master/empmast.service');
 const { validateempmaster, validateempmasterupdate, validateempmasterEdit } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
@@ -613,6 +616,80 @@ module.exports = {
                 success: 1,
                 data: results
             });
+        });
+    },
+    createContractDetl: (req, res) => {
+        const body = req.body;
+        createContractDetl(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+            if (!results) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Results Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                message: "Data Created Successfully"
+            });
+        });
+    },
+    UpdateContractDetlStatus: (req, res) => {
+        const body = req.body;
+        UpdateContractDetlStatus(body, (err, results) => {
+
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 2,
+                message: "Data Updated Successfully"
+            });
+
+        });
+    },
+    UpdateContractDetl: (req, res) => {
+        const body = req.body;
+        UpdateContractDetl(body, (err, results) => {
+
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 2,
+                message: "Data Updated Successfully"
+            });
+
         });
     },
 }

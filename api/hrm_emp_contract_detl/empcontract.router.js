@@ -3,7 +3,8 @@ const { checkToken } = require("../../auth/token_validation");
 const { creatempcontract, updateempcontract, getempcontractByID, updatecontractclose,
     getContractCloseDetl, getContractCloseDetlById, createContractlog, updateEmpMaster,
     InsertArrearSalaryContractRenew, updateContractComplete, updateConreactrenewAppr,
-    getContractRenewApprovalList } = require('../hrm_emp_contract_detl/empcontract.controller');
+    getContractRenewApprovalList, updateQualEmpId,
+    EmpIDExpUpdate, UpdateEMpIdEarnDeduction, UpdateEMpIdPersonal } = require('../hrm_emp_contract_detl/empcontract.controller');
 
 router.post("/", checkToken, creatempcontract);
 router.patch("/", checkToken, updateempcontract);
@@ -17,5 +18,10 @@ router.post("/arrearSalary", checkToken, InsertArrearSalaryContractRenew);
 router.patch("/contractrenew", checkToken, updateContractComplete);
 router.patch("/contractrenewapprove", checkToken, updateConreactrenewAppr);
 router.get("/contractrenewapprlist/renewlist", checkToken, getContractRenewApprovalList);
+
+router.patch("/updateQual", checkToken, updateQualEmpId);
+router.patch("/updateExp", checkToken, EmpIDExpUpdate)
+router.patch("/updateEarn", checkToken, UpdateEMpIdEarnDeduction)
+router.patch("/updatePersonal", checkToken, UpdateEMpIdPersonal)
 
 module.exports = router;

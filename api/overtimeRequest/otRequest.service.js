@@ -269,7 +269,7 @@ module.exports = {
     },
     gethodBySlno: (id, callBack) => {
         pool.query(
-            ` SELECT 
+            `SELECT 
             DATE_FORMAT(ot_days,'%d-%m-%Y ')ot_days,         
             if( ot_new_time is null ,  over_time ,  ot_new_time ) over_time, 
           	ot_reson,

@@ -13,13 +13,14 @@ module.exports = {
             sect_name,
             sect_id,
             em_prob_end_date,
-             ecat_name
+             ecat_name,
+             em_contract_end_date
             from hrm_emp_master
             LEFT JOIN hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
             LEFT JOIN designation ON hrm_emp_master.em_designation=designation.desg_slno
             LEFT JOIN hrm_dept_section ON hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
-              LEFT JOIN hrm_emp_category on hrm_emp_master.em_category= hrm_emp_category.category_slno
-             where em_category IN (4,7,9) and em_prob_end_date<=curdate() and em_prob_end_date!="2000-01-01" and em_status=1 and em_id!=1;`,
+			LEFT JOIN hrm_emp_category on hrm_emp_master.em_category= hrm_emp_category.category_slno
+			where des_type=1 and emp_type!=1 and em_prob_end_date<=curdate() and em_prob_end_date!="2000-01-01" and em_status=1 and em_id!=1 and probation_status=1;`,
             [],
             (error, results, fields) => {
                 if (error) {
@@ -68,13 +69,13 @@ module.exports = {
             em_doj,
             ecat_name,
             sect_id,
-           case when em_category=2 then DATE_ADD(em_doj, INTERVAL 3 MONTH) when em_category=3 then DATE_ADD(em_doj, INTERVAL 6 MONTH)  end as training_end
+            em_prob_end_date as training_end
             from hrm_emp_master
             LEFT JOIN hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
             LEFT JOIN designation ON hrm_emp_master.em_designation=designation.desg_slno
             LEFT JOIN hrm_emp_category on hrm_emp_master.em_category= hrm_emp_category.category_slno
             LEFT JOIN hrm_dept_section ON hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
-            where em_category IN (2,3) and em_prob_end_date<=curdate() and em_status=1 ;`,
+            where des_type=2 and emp_type!=1 and em_prob_end_date<=curdate() and em_prob_end_date!="2000-01-01" and em_status=1 and em_id!=1 and probation_status=1; `,
             [],
             (error, results, fields) => {
                 if (error) {
