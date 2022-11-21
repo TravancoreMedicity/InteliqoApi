@@ -796,7 +796,8 @@ module.exports = {
             `SELECT 
                 em_id,
                 em_no,
-                em_category
+                em_category,
+                em_email
                 from hrm_emp_master
             WHERE em_id = ? `,
             [
@@ -858,11 +859,13 @@ module.exports = {
         pool.query(
             `update hrm_emp_contract_detl
             set 
+            em_cont_start=?,
             em_prob_end_date=?,
             em_cont_end=?,
             em_conf_end_date=?
             where em_id=?`,
             [
+                data.em_cont_start,
                 data.em_prob_end_date,
                 data.em_cont_end,
                 data.em_conf_end_date,

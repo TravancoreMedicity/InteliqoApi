@@ -615,7 +615,8 @@ const validateempcontract = Joi.object({
         em_cont_close: Joi.string().max(1).optional(),
         em_cont_close_date: Joi.date().optional(),
         old_emno: Joi.date().optional(),
-        changed_date: Joi.date().optional()
+        changed_date: Joi.date().optional(),
+        em_prob_end_date: Joi.date().optional()
 
 
 })
