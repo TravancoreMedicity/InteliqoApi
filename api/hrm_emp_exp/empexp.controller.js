@@ -13,7 +13,7 @@ module.exports = {
             });
         }
 
-        body.relg_name = body_result.value.relg_name;
+        body.em_id = body_result.value.em_id;
 
         create(body, (err, results) => {
             if (err) {
@@ -43,7 +43,7 @@ module.exports = {
             });
         }
 
-        body.relg_name = body_result.value.relg_name;
+        body.em_id = body_result.value.em_id;
 
         update(body, (err, results) => {
 
