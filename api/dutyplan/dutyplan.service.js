@@ -24,6 +24,26 @@ module.exports = {
             }
         )
     },
+    getPlanDetl: (data, callBack) => {
+        pool.query(
+            `SELECT 
+                    plan_slno, emp_id, shift_id, duty_day,attendance_update_flag,holiday
+                FROM
+                    hrm_duty_plan
+                WHERE  DATE(duty_day) BETWEEN ? AND ?
+                ORDER BY DATE(duty_day) ASC`,
+            [
+                data.start_date,
+                data.end_date
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
     /****
      * 
      * `select em_no,em_name,em_id,em_doj,desg_name
@@ -81,7 +101,11 @@ module.exports = {
             `insert  into hrm_duty_plan(
                 duty_day, 
                 emp_id,
-                shift_id
+                em_no,
+                shift_id,
+                holiday,
+                holiday_name,
+                holiday_slno
             ) values ?`,
             [
                 data
