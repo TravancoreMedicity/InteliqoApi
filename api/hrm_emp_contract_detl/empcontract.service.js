@@ -149,13 +149,17 @@ module.exports = {
             set em_no=?,
             em_category=?,
             em_contract_end_date=?,
-            em_prob_end_date=?
+            em_prob_end_date=?,
+            probation_status=?,
+            contract_status=?
             where em_id=?`,
             [
                 data.em_no,
                 data.em_category,
                 data.em_contract_end_date,
                 data.em_prob_end_date,
+                data.probation_status,
+                data.contract_status,
                 data.em_id
             ],
             (error, results, feilds) => {

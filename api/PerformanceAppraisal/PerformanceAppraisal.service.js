@@ -20,7 +20,7 @@ module.exports = {
             LEFT JOIN designation ON hrm_emp_master.em_designation=designation.desg_slno
             LEFT JOIN hrm_dept_section ON hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
 			LEFT JOIN hrm_emp_category on hrm_emp_master.em_category= hrm_emp_category.category_slno
-			where des_type=1 and emp_type!=1 and em_prob_end_date<=curdate() and em_prob_end_date!="2000-01-01" and em_status=1 and em_id!=1 and probation_status=1;`,
+			where des_type=1 and em_prob_end_date<=curdate() and em_prob_end_date!="2000-01-01" and em_status=1 and em_id!=1 and probation_status=1;`,
             [],
             (error, results, fields) => {
                 if (error) {
