@@ -31,12 +31,7 @@ module.exports = {
             left join designation on hrm_emp_master.em_designation=designation.desg_slno
             where em_department=? and em_dept_section=? and em_branch=?
             and em_status=1 and em_id!=1 and em_no!=2 `,
-     * 
-     * 
-     */
-    getEmpdetl: (data, callBack) => {
-        pool.query(
-            `select hrm_emp_master.em_no,
+     * `select hrm_emp_master.em_no,
                     hrm_emp_master.em_name,
                     hrm_emp_master.em_id,
                     hrm_emp_master.em_doj,
@@ -51,11 +46,27 @@ module.exports = {
                 and hrm_emp_master.em_branch=?
                 and hrm_emp_master.em_status=1
                 and hrm_emp_master.em_id!=1 
-                and hrm_emp_master.em_no!=2`,
+                and hrm_emp_master.em_no!=2`
+     * 
+     */
+    getEmpdetl: (data, callBack) => {
+        pool.query(
+            `select hrm_emp_master.em_no,
+                    hrm_emp_master.em_name,
+                    hrm_emp_master.em_id,
+                    hrm_emp_master.em_doj,
+                    hrm_emp_contract_detl.em_cont_start,
+                    hrm_emp_master.contract_status
+            FROM hrm_emp_master
+            left join hrm_emp_contract_detl on hrm_emp_contract_detl.em_no = hrm_emp_master.em_no and hrm_emp_contract_detl.status = 0
+            where hrm_emp_master.em_department=? 
+                and hrm_emp_master.em_dept_section=?
+                and hrm_emp_master.em_status=1
+                and hrm_emp_master.em_no not in (1 ,2) `,
             [
                 data.em_department,
                 data.em_dept_section,
-                data.em_branch
+                // data.em_branch
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -112,10 +123,10 @@ module.exports = {
     CheckInsertVal: (data, callBack) => {
         pool.query(
             `SELECT 
-            plan_slno, emp_id, shift_id, duty_day
-        FROM
-            hrm_duty_plan
-        WHERE
+                plan_slno, emp_id, shift_id, duty_day
+            FROM
+                hrm_duty_plan
+            WHERE
             DATE(duty_day) BETWEEN ? AND ? 
             AND emp_id IN (?)
                 ORDER BY DATE(duty_day) ASC`,
