@@ -237,4 +237,25 @@ module.exports = {
             })
         })
     },
+    updateMultiShift: (data) => {
+        const { newPlan, naShift } = data;
+        return new Promise((resolve, reject) => {
+            newPlan.map((val) => {
+                pool.query(
+                    `UPDATE hrm_duty_plan SET shift_id = ? WHERE plan_slno = ? AND shift_id  != ?`,
+                    [
+                        val.shift_id,
+                        val.plan_slno,
+                        naShift
+                    ],
+                    (error, results, fields) => {
+                        if (error) {
+                            return reject(error)
+                        }
+                        return resolve(results)
+                    }
+                )
+            })
+        })
+    },
 }

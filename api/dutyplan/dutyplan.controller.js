@@ -1,5 +1,5 @@
 const { getData, getEmpdetl, insertDutyplan, updateDutyPlan,
-    CheckInsertVal, updateDefaultShift, updateWoffShift, updateholiday, getPlanDetl } = require('../dutyplan/dutyplan.service');
+    CheckInsertVal, updateDefaultShift, updateWoffShift, updateholiday, getPlanDetl, updateMultiShift } = require('../dutyplan/dutyplan.service');
 const logger = require('../../logger/logger')
 module.exports = {
     getDutyPlan: (req, res) => {
@@ -172,6 +172,21 @@ module.exports = {
     updateholiday: (req, res) => {
         const body = req.body;
         const result = updateholiday(body)
+            .then((r) => {
+                return res.status(200).json({
+                    success: 1,
+                    message: r
+                });
+            }).catch((e) => {
+                return res.status(200).json({
+                    success: 0,
+                    message: e.sqlMessage
+                });
+            })
+    },
+    updateMultiShift: (req, res) => {
+        const body = req.body;
+        updateMultiShift(body)
             .then((r) => {
                 return res.status(200).json({
                     success: 1,
