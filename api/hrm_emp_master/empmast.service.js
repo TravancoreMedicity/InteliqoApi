@@ -863,13 +863,13 @@ module.exports = {
             em_prob_end_date=?,
             em_cont_end=?,
             em_conf_end_date=?
-            where em_id=?`,
+            where em_no=?`,
             [
                 data.em_cont_start,
                 data.em_prob_end_date,
                 data.em_cont_end,
                 data.em_conf_end_date,
-                data.em_id
+                data.em_no
             ],
             (error, results, feilds) => {
                 if (error) {

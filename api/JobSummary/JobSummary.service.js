@@ -17,10 +17,9 @@ module.exports = {
                 reporting_designation,
                 equipment_used,
                 create_user,
-                created_date,
                 sect_id
                 )
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
                 data.summary_slno,
                 data.dept_id,
@@ -33,7 +32,6 @@ module.exports = {
                 data.reporting_designation,
                 data.equipment_used,
                 data.create_user,
-                data.created_date,
                 data.sect_id
             ],
             (error, results, feilds) => {
@@ -218,7 +216,9 @@ module.exports = {
             hrm_department.dept_name as 'dept',
             hrm_dept_section.sect_name as 'sect',
 			equipment_used,
-			working_hour
+			working_hour,
+            summary_slno,
+            LPAD(summary_slno,7,'0') 'docno'
 			from job_summary           
 			left join hrm_branch on hrm_branch.branch_slno=job_summary.work_place
             left join hrm_department on job_summary.dept_id=hrm_department.dept_id
@@ -665,6 +665,174 @@ module.exports = {
             ],
             (error, results, feilds) => {
                 if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getJobDutiesById: (id, callBack) => {
+        pool.query(
+            `SELECT ROW_NUMBER() OVER (ORDER BY duties_slno) as slno, 
+            duties_slno,
+            job_id,
+            duties_and_resp,
+            dept_name,
+            desg_name
+            from job_duties
+            left join hrm_department on job_duties.dept_id=hrm_department.dept_id
+            left join designation on job_duties.designation=designation.desg_slno where job_id=?;`,
+            [
+                id
+            ],
+
+            (error, results, feilds) => {
+                if (error) {
+
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getJobCompetencyById: (id, callBack) => {
+        pool.query(
+            `SELECT ROW_NUMBER() OVER (ORDER BY competency_slno) as slno,
+            competency_desc,
+            kra_desc,
+            job_id,
+            key_result_area,
+            competency_slno,
+            desg_name,
+            dept_name
+            from job_competency
+            left join hrm_kra on job_competency.key_result_area = hrm_kra.kra_slno
+			left join hrm_department on job_competency.dept_id=hrm_department.dept_id
+            left join designation on job_competency.designation=designation.desg_slno where job_id=?;`,
+            [
+                id
+            ],
+
+            (error, results, feilds) => {
+                if (error) {
+
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getJobPerformanceById: (id, callBack) => {
+        pool.query(
+            `SELECT * FROM medi_hrm.job_specification
+            left join hrm_kra on hrm_kra.kra_slno=job_specification.key_result_area
+            where job_id=?;`,
+            [
+                id
+            ],
+
+            (error, results, feilds) => {
+                if (error) {
+
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getJobPerformanceById: (id, callBack) => {
+        pool.query(
+            `SELECT  ROW_NUMBER() OVER (ORDER BY specification_slno) as slno,
+            key_result_area,
+            kra_desc,
+            kpi,
+            kpi_score,
+            specification_slno,
+            dept_name,
+            desg_name
+            from job_specification
+            left join hrm_kra on hrm_kra.kra_slno=job_specification.key_result_area
+            left join hrm_department on job_specification.dept_id=hrm_department.dept_id
+            left join designation on job_specification.designation=designation.desg_slno
+            where job_id=?;`,
+            [
+                id
+            ],
+
+            (error, results, feilds) => {
+                if (error) {
+
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getJobGenericById: (id, callBack) => {
+        pool.query(
+            `SELECT * FROM medi_hrm.job_generic where job_id=?;`,
+            [
+                id
+            ],
+
+            (error, results, feilds) => {
+                if (error) {
+
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getJobQualifiById: (id, callBack) => {
+        pool.query(
+            `
+            SELECT * FROM medi_hrm.job_qualification
+            left join hrm_mast_course on hrm_mast_course.cour_slno=job_qualification.course
+                        left join hrm_mast_specializtion on hrm_mast_specializtion.spec_slno=job_qualification.specialization
+             where job_id=?;`,
+            [
+                id
+            ],
+
+            (error, results, feilds) => {
+                if (error) {
+
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getJobSummaryById: (id, callBack) => {
+        pool.query(
+            `
+            SELECT 
+CONCAT(UCASE(LEFT(designation.desg_name,1)),LCASE(SUBSTRING(designation.desg_name,2))) as 'desig',
+  CONCAT(UCASE(LEFT(hrm_department.dept_name,1)),LCASE(SUBSTRING(hrm_department.dept_name,2)))  as 'dept',
+  CONCAT(UCASE(LEFT(hrm_dept_section.sect_name,1)),LCASE(SUBSTRING(hrm_dept_section.sect_name,2)))  as 'sect',
+            objective,
+            scope,
+            reporting_dept,
+            equipment_used,     
+            branch_name,
+            working_hour ,
+            summary_slno ,
+            DATE_FORMAT(job_summary.create_date, '%d-%m-%Y') as 'date',
+            DATE_FORMAT(edit_date, '%d-%m-%Y')edit_date,
+            LPAD(summary_slno,7,'0') 'Docno' 
+            FROM medi_hrm.job_summary
+            left join hrm_branch on hrm_branch.branch_slno=job_summary.work_place
+            left join hrm_department on job_summary.dept_id=hrm_department.dept_id
+            left join designation on job_summary.designation=designation.desg_slno
+            left join hrm_dept_section on job_summary.sect_id=hrm_dept_section.sect_id where summary_slno=?;`,
+            [
+                id
+            ],
+
+            (error, results, feilds) => {
+                if (error) {
+
                     return callBack(error);
                 }
                 return callBack(null, results);

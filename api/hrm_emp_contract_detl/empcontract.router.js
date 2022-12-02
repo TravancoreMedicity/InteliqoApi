@@ -4,7 +4,8 @@ const { creatempcontract, updateempcontract, getempcontractByID, updatecontractc
     getContractCloseDetl, getContractCloseDetlById, createContractlog, updateEmpMaster,
     InsertArrearSalaryContractRenew, updateContractComplete, updateConreactrenewAppr,
     getContractRenewApprovalList, updateQualEmpId,
-    EmpIDExpUpdate, UpdateEMpIdEarnDeduction, UpdateEMpIdPersonal } = require('../hrm_emp_contract_detl/empcontract.controller');
+    EmpIDExpUpdate, UpdateEMpIdEarnDeduction, UpdateEMpIdPersonal,
+    getContractByEmno, getContractDetlId } = require('../hrm_emp_contract_detl/empcontract.controller');
 
 router.post("/", checkToken, creatempcontract);
 router.patch("/", checkToken, updateempcontract);
@@ -23,5 +24,7 @@ router.patch("/updateQual", checkToken, updateQualEmpId);
 router.patch("/updateExp", checkToken, EmpIDExpUpdate)
 router.patch("/updateEarn", checkToken, UpdateEMpIdEarnDeduction)
 router.patch("/updatePersonal", checkToken, UpdateEMpIdPersonal)
+router.get("/contractByno/:id", checkToken, getContractByEmno)
+router.get("/detailByid/:id", checkToken, getContractDetlId)
 
 module.exports = router;

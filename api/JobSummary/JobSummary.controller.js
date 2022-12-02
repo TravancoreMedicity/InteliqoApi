@@ -3,7 +3,9 @@ const { createJobSummary, CheckInsertValue, createJobDuties, getjobId,
     getJobSummary, getJobDuties, getJobSpecification, getJobGeneric, getJobQualification,
     createJobCompetency, getJobSummarydetl, updatejobsummarydetl, getjobcompetency,
     getjobDescView, updateDutiesEach, checkalreadyinsert, deleteduties, updateCompeteEach,
-    deletecompetency, deletePerformance, updatePerforEach, deleteQualifi, updateGeneric, getKPIScore } = require('../JobSummary/JobSummary.service');
+    deletecompetency, deletePerformance, updatePerforEach, deleteQualifi, updateGeneric,
+    getKPIScore, getJobDutiesById, getJobCompetencyById, getJobPerformanceById,
+    getJobGenericById, getJobQualifiById, getJobSummaryById } = require('../JobSummary/JobSummary.service');
 // const { validatereligion } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -651,5 +653,149 @@ module.exports = {
             });
         });
 
+    },
+    getJobDutiesById: (req, res) => {
+        const id = req.params.id;
+        getJobDutiesById(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    dutysuccess: 2,
+                    dutymessage: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    dutysuccess: 0,
+                    dutymessage: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                dutysuccess: 1,
+                duty: results
+            });
+        });
+    },
+    getJobCompetencyById: (req, res) => {
+        const id = req.params.id;
+        getJobCompetencyById(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    comsuccess: 2,
+                    commessage: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    comsuccess: 0,
+                    commessage: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                comsuccess: 1,
+                competency: results
+            });
+        });
+    },
+    getJobPerformanceById: (req, res) => {
+        const id = req.params.id;
+        getJobPerformanceById(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    persuccess: 2,
+                    perfmessage: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    persuccess: 0,
+                    perfmessage: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                persuccess: 1,
+                performance: results
+            });
+        });
+    },
+    getJobGenericById: (req, res) => {
+        const id = req.params.id;
+        getJobGenericById(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    genericsuccess: 2,
+                    genricmessage: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    genericsuccess: 0,
+                    genricmessage: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                genericsuccess: 1,
+                genricdata: results
+            });
+        });
+    },
+    getJobQualifiById: (req, res) => {
+        const id = req.params.id;
+        getJobQualifiById(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    qualifsuccess: 2,
+                    qualimessage: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    qualifsuccess: 0,
+                    qualimessage: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                qualifsuccess: 1,
+                Qualify: results
+            });
+        });
+    },
+    getJobSummaryById: (req, res) => {
+        const id = req.params.id;
+        getJobSummaryById(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
     },
 }

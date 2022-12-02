@@ -1,6 +1,7 @@
 const { create, update, deleteByID, getData, getDataById, getSelect,
     getSelectContract, checkemptpe, getProbationEndDetl, getProbationEndDetlbyDate,
-    getcontractEndDetlByDate, getContractEndDetl, checkInsertVal } = require('../employcategory/empcat.service');
+    getcontractEndDetlByDate, getContractEndDetl, checkInsertVal, permanentCate,
+    renewCategory } = require('../employcategory/empcat.service');
 const { validateempcategory } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -300,6 +301,52 @@ module.exports = {
                 data: results
             });
 
+        });
+    },
+    permanentCate: (req, res) => {
+        permanentCate((err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    renewCategory: (req, res) => {
+        renewCategory((err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
         });
     },
 }
