@@ -96,7 +96,8 @@ module.exports = {
             em_cont_renew_date,
             em_cont_close,cont_grace,
             em_cont_close_date,em_category,
-            dept_name,sect_name,desg_name
+            dept_name,sect_name,desg_name,
+            hrm_emp_contract_detl.em_prob_end_date as 'pro_end_date'
         FROM hrm_emp_contract_detl
         left join hrm_emp_master on hrm_emp_master.em_no=hrm_emp_contract_detl.em_no
         left join hrm_emp_category on hrm_emp_category.category_slno=hrm_emp_master.em_category
@@ -151,7 +152,9 @@ module.exports = {
             em_contract_end_date=?,
             em_prob_end_date=?,
             probation_status=?,
-            contract_status=?
+            contract_status=?,
+            em_doj=?,
+            actual_doj=?
             where em_id=?`,
             [
                 data.em_no,
@@ -160,6 +163,8 @@ module.exports = {
                 data.em_prob_end_date,
                 data.probation_status,
                 data.contract_status,
+                data.em_doj,
+                data.actual_doj,
                 data.em_id
             ],
             (error, results, feilds) => {
@@ -418,6 +423,34 @@ module.exports = {
             [
                 data.em_no,
                 data.em_id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getContractByEmno: (id, callBack) => {
+        pool.query(
+            `SELECT * FROM medi_hrm.hrm_emp_contract_detl where em_no=?;`,
+            [
+                id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getContractDetlId: (id, callBack) => {
+        pool.query(
+            `SELECT * FROM medi_hrm.hrm_emp_contract_detl where em_id=?;`,
+            [
+                id
             ],
             (error, results, feilds) => {
                 if (error) {

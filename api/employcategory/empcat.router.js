@@ -3,7 +3,8 @@ const { checkToken } = require("../../auth/token_validation");
 const { createEmpCategory, updateEmpCategory, inactiveEmpCategory,
     getEmpCateSelect, getEmpCategoryByID, getempCategoryData,
     getSelectContract, getProbationEndDetl, getProbationEndDetlbyDate,
-    getContractEndDetl, getcontractEndDetlByDate } = require('../employcategory/empcat.controller');
+    getContractEndDetl, getcontractEndDetlByDate,
+    permanentCate, renewCategory } = require('../employcategory/empcat.controller');
 
 router.post("/", checkToken, createEmpCategory);
 router.patch("/", checkToken, updateEmpCategory);
@@ -16,5 +17,9 @@ router.get("/probation/detl", checkToken, getProbationEndDetl);
 router.post("/probationdetl", checkToken, getProbationEndDetlbyDate);
 router.get("/contract/detl", checkToken, getContractEndDetl);
 router.post("/contractdetl", checkToken, getcontractEndDetlByDate);
+
+
+router.get('/permanent/data', checkToken, permanentCate)
+router.get('/rewnewCate/List', checkToken, renewCategory)
 
 module.exports = router;
