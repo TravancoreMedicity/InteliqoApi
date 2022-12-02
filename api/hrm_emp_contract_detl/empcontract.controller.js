@@ -7,7 +7,8 @@ const { create, update, getDataById,
     updateQualEmpId,
     EmpIDExpUpdate,
     UpdateEMpIdEarnDeduction,
-    UpdateEMpIdPersonal } = require('../hrm_emp_contract_detl/empcontract.service');
+    UpdateEMpIdPersonal, getContractByEmno,
+    getContractDetlId } = require('../hrm_emp_contract_detl/empcontract.service');
 
 const { validateempcontract } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
@@ -223,7 +224,7 @@ module.exports = {
             }
 
             return res.status(200).json({
-                success: 2,
+                success: 6,
                 message: "Data Updated Successfully"
             });
 
@@ -434,6 +435,56 @@ module.exports = {
             });
 
         });
+    },
+    getContractByEmno: (req, res) => {
+        const id = req.params.id;
+        getContractByEmno(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 2,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+
+    },
+    getContractDetlId: (req, res) => {
+        const id = req.params.id;
+        getContractDetlId(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 2,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+
     },
 }
 

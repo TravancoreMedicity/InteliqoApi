@@ -8,7 +8,6 @@ module.exports = {
     employeeinsert: (req, res) => {
 
         const body = req.body;
-
         //Validate requested body data
         const body_data = validateEmployee.validate(body);
         // if (body_data.error) {
@@ -19,7 +18,6 @@ module.exports = {
         const salt = genSaltSync(10);
         let new_password = body.emp_password;
         body.emp_password = hashSync(new_password, salt);
-
         employeeinsert(body, (err, results) => {
             if (err) {
                 logger.errorLogger(err)

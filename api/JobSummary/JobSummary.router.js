@@ -7,7 +7,9 @@ const { createJobSummary, CheckInsertValue, createJobDuties, getjobId,
     updatejobsummarydetl, getjobcompetency, getjobDescView,
     updateDutiesEach, deleteduties, updateCompeteEach,
     deletecompetency, deletePerformance, updatePerforEach,
-    deleteQualifi, updateGeneric, getKPIScore } = require('../JobSummary/JobSummary.controller');
+    deleteQualifi, updateGeneric, getKPIScore, getJobDutiesById,
+    getJobCompetencyById, getJobPerformanceById, getJobGenericById,
+    getJobQualifiById, getJobSummaryById } = require('../JobSummary/JobSummary.controller');
 
 //job summery    
 router.post("/", checkToken, createJobSummary);
@@ -47,5 +49,14 @@ router.post("/getjobgeneric", checkToken, getJobGeneric);
 router.get("/jobview", checkToken, getjobDescView)
 router.patch('/updategeneric', checkToken, updateGeneric)
 router.post('/getscore', checkToken, getKPIScore)
+
+
+//pdfreport
+router.get("/getduties/:id", checkToken, getJobDutiesById)
+router.get("/getcompbyid/:id", checkToken, getJobCompetencyById)
+router.get("/getperfombyid/:id", checkToken, getJobPerformanceById)
+router.get("/getgenricByid/:id", checkToken, getJobGenericById)
+router.get("/getqualibyid/:id", checkToken, getJobQualifiById)
+router.get("/getsummByid/:id", checkToken, getJobSummaryById)
 
 module.exports = router;

@@ -375,6 +375,30 @@ module.exports = {
             }
         )
     },
+    permanentCate: (callBack) => {
+        pool.query(
+            `SELECT * FROM medi_hrm.hrm_emp_category where ecat_cont=0;`,
+            [],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    renewCategory: (callBack) => {
+        pool.query(
+            `SELECT * FROM medi_hrm.hrm_emp_category where ecat_cl!=0 && ecat_cont=1 &&ecat_sl=1;`,
+            [],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }
 
 
