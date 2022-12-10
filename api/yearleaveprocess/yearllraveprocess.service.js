@@ -507,7 +507,12 @@ module.exports = {
     allowableconleave: (data, callBack) => {
 
         pool.query(
-            `SELECT  hrm_lv_cmn,llvetype_slno, cmn_lv_allowed, cmn_lv_taken, cmn_lv_balance 
+            `SELECT 
+                hrm_lv_cmn,
+                llvetype_slno, 
+                cmn_lv_allowed, 
+                cmn_lv_taken, 
+                cmn_lv_balance 
             FROM medi_hrm.hrm_leave_common where em_id='?' and llvetype_slno='?'`,
             [
                 data.em_id,

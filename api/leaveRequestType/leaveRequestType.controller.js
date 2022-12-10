@@ -1,5 +1,5 @@
 const { create, update, checkInsertVal, checkUpdateVal,
-    deleteByID, getData, getDataById, getSelect, emplv_list } = require('../leaveRequestType/leaveRequestType.service')
+    deleteByID, getData, getDataById, getSelect, emplv_list, employeeCommonLveType } = require('../leaveRequestType/leaveRequestType.service')
 const { validateleaverequest } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -197,6 +197,32 @@ module.exports = {
 
         const id = req.params.id;
         emplv_list(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+
+    },
+    employeeCommonLveType: (req, res) => {
+
+        const no = req.params.no;
+        employeeCommonLveType(no, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({

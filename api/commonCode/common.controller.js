@@ -61,7 +61,9 @@ const {
     getadvancerequestSlno,
     getContractDetl,
     getApprovalLevel,
-    getDeptsecthod
+    getDeptsecthod,
+    getDepartSetionHodIncharge,
+    getSectionBasedEmpoyeeHodIncharge
 } = require('../commonCode/common.service');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -1789,5 +1791,50 @@ module.exports = {
             });
         })
     },
+    getDepartSetionHodIncharge: (req, res) => {
+        const id = req.params.id;
+        getDepartSetionHodIncharge(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
 
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    getSectionBasedEmpoyeeHodIncharge: (req, res) => {
+        const id = req.params.id;
+        getSectionBasedEmpoyeeHodIncharge(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
 }

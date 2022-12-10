@@ -157,4 +157,25 @@ module.exports = {
             }
         )
     },
+    employeeCommonLveType: (no, callBack) => {
+        pool.query(
+            `SELECT 
+                C.hrm_lv_cmn,
+                C.llvetype_slno, 
+                L.lvetype_desc,
+                C.cmn_lv_allowed, 
+                C.cmn_lv_taken, 
+                C.cmn_lv_balance 
+            FROM hrm_leave_common C
+            LEFT JOIN hrm_leave_type L ON C.llvetype_slno = L.lvetype_slno 
+            WHERE C.em_no = ? AND C.cmn_status = 0 AND year(cmn_lv_year) = year(curdate())`,
+            [no],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }

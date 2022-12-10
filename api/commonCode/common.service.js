@@ -927,9 +927,11 @@ module.exports = {
     },
     getDeptsectIncharge: (id, callBack) => {
         pool.query(
-            `select dept_section, sect_name from 
-            hrm_authorization_assign
-            left join hrm_dept_section on hrm_dept_section.sect_id = hrm_authorization_assign.dept_section
+            `select 
+                dept_section, 
+                sect_name 
+            from hrm_authorization_assign
+                left join hrm_dept_section on hrm_dept_section.sect_id = hrm_authorization_assign.dept_section
             where emp_id =?
             and auth_post = 2`,
             [
@@ -1395,11 +1397,16 @@ module.exports = {
     },
     getApprovalLevel: (id, callBack) => {
         pool.query(
-            `select hod,incharge,authorization_incharge,authorization_hod,ifnull(co_assign,0)co_assign
+            `select 
+                hod,
+                incharge,
+                authorization_incharge,
+                authorization_hod,
+                ifnull(co_assign,0)co_assign
             from hrm_emp_master
-            left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
-            left join hrm_co_assign on hrm_co_assign.emp_id=hrm_emp_master.em_id
-            where em_id=?;`,
+                left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
+                left join hrm_co_assign on hrm_co_assign.emp_id=hrm_emp_master.em_id
+            where em_id=?`,
             [
                 id, id, id, id
             ],
@@ -1411,6 +1418,48 @@ module.exports = {
             }
         )
     },
-
+    getDepartSetionHodIncharge: (id, callBack) => {
+        pool.query(
+            `SELECT 
+                dept_section, 
+                sect_name 
+            FROM hrm_authorization_assign
+                LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id = hrm_authorization_assign.dept_section
+            WHERE emp_id = ?`,
+            [
+                id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getSectionBasedEmpoyeeHodIncharge: (id, callBack) => {
+        pool.query(
+            `SELECT 
+                em_id,
+                em_no,
+                em_dept_section,
+                em_name
+            FROM hrm_emp_master 
+            WHERE em_status = 1 
+            AND em_dept_section IN (select 
+                dept_section
+            from hrm_authorization_assign
+            where emp_id =?)`,
+            [
+                id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }
 
