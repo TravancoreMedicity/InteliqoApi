@@ -8,7 +8,7 @@ const { create, update, getDataById,
     EmpIDExpUpdate,
     UpdateEMpIdEarnDeduction,
     UpdateEMpIdPersonal, getContractByEmno,
-    getContractDetlId } = require('../hrm_emp_contract_detl/empcontract.service');
+    getContractDetlId, updateEmpmastSatus } = require('../hrm_emp_contract_detl/empcontract.service');
 
 const { validateempcontract } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
@@ -79,15 +79,14 @@ module.exports = {
     updatecontractclose: (req, res) => {
 
         const body = req.body;
-        const body_result = validateempcontract.validate(body);
+        // const body_result = validateempcontract.validate(body);
 
-        if (body_result.error) {
-            return res.status(200).json({
-                success: 1,
-                message: body_result.error.details[0].message
-            });
-        }
-
+        // if (body_result.error) {
+        //     return res.status(200).json({
+        //         success: 1,
+        //         message: body_result.error.details[0].message
+        //     });
+        // }
         updatecontractclose(body, (err, results) => {
 
             if (err) {
@@ -98,17 +97,29 @@ module.exports = {
                 });
             }
 
-            if (!results) {
-                return res.status(200).json({
-                    success: 1,
-                    message: "Record Not Found"
-                });
-            }
+            else {
+                updateEmpmastSatus(body, (err, results) => {
+                    if (err) {
+                        logger.errorLogger(err)
+                        return res.status(200).json({
+                            success: 0,
+                            message: err
+                        });
+                    }
+                    if (!results) {
+                        return res.status(200).json({
+                            success: 2,
+                            message: "Record Not Found"
+                        });
+                    }
+                    return res.status(200).json({
+                        success: 1,
+                        message: "Contract Closed Successfully"
+                    });
 
-            return res.status(200).json({
-                success: 2,
-                message: "Contract Closed Successfully"
-            });
+                });
+
+            }
 
         });
     },

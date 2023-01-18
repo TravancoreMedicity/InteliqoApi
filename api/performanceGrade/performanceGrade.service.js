@@ -31,7 +31,7 @@ module.exports = {
             `SELECT 
             pgrade_slno,
             p_score,
-            grade.grade_desc,
+            grade.grade_desc as p_grade,
             case when p_descrption = 1 then 'Key Performer' when  p_descrption = 2 then 'Star Performer' when p_descrption=3 then 'Potential Performer' when p_descrption=4 then 'General Category' when p_descrption=5 then 'Need Improvement' when p_descrption=6 then 'Poor Performer' else 'Not Updated' end as 'p_descrption',
             fixed_pay_inc,
             variable_pay_inc,
@@ -88,29 +88,4 @@ module.exports = {
             }
         )
     },
-    performanceAppraisalEmployee: (callBack) => {
-        pool.query(
-            `SELECT 
-            em_id,
-            em_no,
-            em_name,
-            dept_name,
-            desg_name,
-            em_doj,
-            em_prob_end_date,
-            em_contract_end_date
-            FROM hrm_emp_master
-            LEFT JOIN hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
-            LEFT JOIN designation ON designation.desg_slno=hrm_emp_master.em_designation
-            where (TIMESTAMPDIFF(MONTH,  em_doj, CURRENT_DATE())=3) and em_status=1 or (TIMESTAMPDIFF(MONTH,  em_doj, CURRENT_DATE())=6) or contract_status=1;`,
-            [],
-            (error, results, feilds) => {
-                if (error) {
-                    return callBack(error);
-                }
-                return callBack(null, results);
-            }
-        )
-    },
-
 }

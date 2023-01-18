@@ -1,4 +1,7 @@
-const { createPerformanceGrade, getPerformanceGrade, getPerGradeByID, updatePerformanceGrade, performanceAppraisalEmployee } = require('../performanceGrade/performanceGrade.service');
+const { createPerformanceGrade,
+    getPerformanceGrade,
+    getPerGradeByID,
+    updatePerformanceGrade } = require('../performanceGrade/performanceGrade.service');
 const { validationPerformanceGrade } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
 
@@ -114,30 +117,6 @@ module.exports = {
                 message: "Data Updated Successfully"
             });
 
-        });
-    },
-    performanceAppraisalEmployee: (req, res) => {
-
-        performanceAppraisalEmployee((err, results) => {
-            if (err) {
-                logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 2,
-                    message: err
-                });
-            }
-
-            if (!results) {
-                return res.status(200).json({
-                    success: 0,
-                    message: "No Results Found"
-                });
-            }
-
-            return res.status(200).json({
-                success: 1,
-                data: results
-            });
         });
     },
 }

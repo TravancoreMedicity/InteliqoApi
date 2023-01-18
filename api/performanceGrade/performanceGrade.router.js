@@ -5,7 +5,6 @@ const {
     getPerformanceGrade,
     getPerGradeByID,
     updatePerformanceGrade,
-    performanceAppraisalEmployee
 } = require('../performanceGrade/performanceGrade.controller');
 
 router.post("/submit", checkToken, createPerformanceGrade)
@@ -14,7 +13,7 @@ router.get("/dataById/:id", checkToken, getPerGradeByID)
 router.patch("/update", checkToken, updatePerformanceGrade)
 
 
-router.get('/appraisalemp', performanceAppraisalEmployee)
+
 
 
 
