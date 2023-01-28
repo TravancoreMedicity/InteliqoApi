@@ -42,6 +42,18 @@ module.exports = {
             }
         )
     },
+    updateserialnum: (callBack) => {
+        pool.query(
+            `update master_serialno set serial_current=serial_current+1 where serial_slno=7`,
+            [],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
     CheckInsertValue: (data, callBack) => {
         pool.query(
             `select summary_slno

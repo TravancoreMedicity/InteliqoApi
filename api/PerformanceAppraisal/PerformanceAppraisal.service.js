@@ -310,20 +310,26 @@ module.exports = {
                 dept_id,
                 sect_id,
                 incharge_id,
+                incharge_status,
                 hod_id,
+                hod_status,
                 ceo_flag,
+                ceo_status,
                 appraisal_status,
                 last_appraisal_date
                 )
-                VALUES (?,?,?,?,?,?,?,?,?);`,
+                VALUES (?,?,?,?,?,?,?,?,?,?,?,?);`,
             [
                 data.em_id,
                 data.em_no,
                 data.dept_id,
                 data.sect_id,
                 data.incharge_id,
+                data.incharge_status,
                 data.hod_id,
+                data.hod_status,
                 data.ceo_flag,
+                data.ceo_status,
                 data.appraisal_status,
                 data.last_appraisal_date
             ],
@@ -337,7 +343,33 @@ module.exports = {
     },
     checkIdExist: (data, callBack) => {
         pool.query(
-            `SELECT * FROM medi_hrm.hrm_performance_apprsl where em_id=?`,
+            `SELECT 
+            hrm_performance_apprsl.em_id,
+            hrm_performance_apprsl.em_no,
+            hrm_performance_apprsl.dept_id,
+            hrm_performance_apprsl.sect_id,
+            incharge_id,
+            hod_id,
+            ceo_id,
+            incharge_appraisal_date,
+            hod_apprasial_date,
+            ceo_appraisal_time,
+            hrm_performance_apprsl.create_date,
+            CONCAT(UPPER(SUBSTRING(a1.em_name,1,1)),LOWER(SUBSTRING(a1.em_name,2)))  as 'hod_name',
+           CONCAT(UPPER(SUBSTRING( a2.em_name,1,1)),LOWER(SUBSTRING( a2.em_name,2)))  as 'incahrge_name',
+            CONCAT(UPPER(SUBSTRING(a3.em_name,1,1)),LOWER(SUBSTRING(a3.em_name,2)))  as 'ceo_name',
+           CONCAT(UPPER(SUBSTRING(a4.desg_name ,1,1)),LOWER(SUBSTRING(a4.desg_name ,2)))  'hod_desg',
+          CONCAT(UPPER(SUBSTRING(a5.desg_name,1,1)),LOWER(SUBSTRING(a5.desg_name,2)))    'incharge_desg',
+            CONCAT(UPPER(SUBSTRING(a6.desg_name ,1,1)),LOWER(SUBSTRING(a6.desg_name ,2))) 'ceo_desg'
+            FROM medi_hrm.hrm_performance_apprsl
+            inner join hrm_emp_master a1 on a1.em_id=hrm_performance_apprsl.hod_id
+            inner join hrm_emp_master a2 on a2.em_id=hrm_performance_apprsl.incharge_id
+            inner join hrm_emp_master a3 on a3.em_id=hrm_performance_apprsl.ceo_id
+            inner join designation a4 on a1.em_designation=a4.desg_slno
+			inner join designation a5 on a2.em_designation=a5.desg_slno
+            inner join designation a6 on a3.em_designation=a6.desg_slno
+            where hrm_performance_apprsl.em_id=?;
+            `,
             [
                 data.em_id
                 //id
@@ -407,7 +439,7 @@ module.exports = {
             LEFT JOIN hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
             LEFT JOIN designation ON hrm_emp_master.em_designation=designation.desg_slno
             LEFT JOIN hrm_dept_section ON hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
-            where hod_id=? and hod_status is null`,
+            where hod_id=? and hod_status=0`,
             [
                 id
             ],
@@ -437,7 +469,7 @@ module.exports = {
             LEFT JOIN hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
             LEFT JOIN designation ON hrm_emp_master.em_designation=designation.desg_slno
             LEFT JOIN hrm_dept_section ON hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
-            where incharge_id=? and incharge_status is null`,
+            where incharge_id=? and incharge_status=0`,
             [
                 id
             ],
@@ -453,10 +485,10 @@ module.exports = {
         pool.query(
             `SELECT 
             hrm_emp_master.em_id,
-            em_name,
-            dept_name,
-            sect_name,
-            desg_name,
+            CONCAT(UPPER(SUBSTRING( em_name,1,1)),LOWER(SUBSTRING( em_name,2))) as  em_name ,
+            CONCAT(UPPER(SUBSTRING( dept_name,1,1)),LOWER(SUBSTRING( dept_name,2))) as dept_name,
+            CONCAT(UPPER(SUBSTRING( sect_name,1,1)),LOWER(SUBSTRING( sect_name,2))) as sect_name,
+           CONCAT(UPPER(SUBSTRING( desg_name,1,1)),LOWER(SUBSTRING( desg_name,2))) as  desg_name,
             em_doj,
             em_amount,
             sum(em_total_year) as exp_year,
@@ -637,15 +669,16 @@ module.exports = {
             dept_name,
             sect_name,
             desg_name,
+            em_department,
+            em_dept_section,
+            em_designation,
             em_doj
             FROM medi_hrm.hrm_performance_apprsl 
             left join hrm_emp_master on hrm_emp_master.em_id=hrm_performance_apprsl.em_id
             LEFT JOIN hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
             LEFT JOIN designation ON hrm_emp_master.em_designation=designation.desg_slno
             LEFT JOIN hrm_dept_section ON hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
-            where ceo_flag=1  and ceo_status is null 
-            group by em_id
-            order by em_id;`,
+            where ceo_flag=1  and ceo_status=0 `,
             [],
             (error, results, fields) => {
                 if (error) {
@@ -685,10 +718,12 @@ module.exports = {
         pool.query(
             `UPDATE hrm_performance_apprsl 
             SET 
-            incharge_status=?
+            incharge_status=?,
+            incharge_appraisal_date=?
             WHERE em_id = ?`,
             [
                 data.incharge_status,
+                data.incharge_appraisal_date,
                 data.em_id,
             ],
             (error, results, feilds) => {
@@ -764,10 +799,12 @@ module.exports = {
     updateHodStatus: (data, callBack) => {
         pool.query(
             `UPDATE hrm_performance_apprsl 
-            SET  hod_status=?
+            SET  hod_status=?,
+            hod_apprasial_date=?
             WHERE em_id = ?`,
             [
                 data.hod_status,
+                data.hod_apprasial_date,
                 data.em_id,
             ],
             (error, results, feilds) => {
@@ -852,10 +889,14 @@ module.exports = {
     updateCeoStatus: (data, callBack) => {
         pool.query(
             `UPDATE hrm_performance_apprsl 
-            SET  ceo_status=?
+            SET  ceo_status=?,
+            ceo_id=?,
+            ceo_appraisal_time=?
             WHERE em_id = ?`,
             [
                 data.ceo_status,
+                data.ceo_id,
+                data.ceo_appraisal_time,
                 data.em_id,
             ],
             (error, results, feilds) => {
