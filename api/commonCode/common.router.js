@@ -65,7 +65,8 @@ const {
     getApprovalLevel,
     getDeptsecthod,
     getDepartSetionHodIncharge,
-    getSectionBasedEmpoyeeHodIncharge
+    getSectionBasedEmpoyeeHodIncharge,
+    getEmployeeInformation
 } = require('../commonCode/common.controller');
 
 router.get("/getdept", checkToken, getDepartmentName)
@@ -140,5 +141,6 @@ router.get("/getapproval/levels/:id", checkToken, getApprovalLevel)
 router.get("/hoddeptSect/:id", checkToken, getDeptsecthod)
 router.get("/getDepartSetionHodIncharge/:id", checkToken, getDepartSetionHodIncharge)
 router.get("/getSectionBasedEmpoyeeHodIncharge/:id", checkToken, getSectionBasedEmpoyeeHodIncharge)
+router.get("/getEmpoyeeInfomation/:id", checkToken, getEmployeeInformation)
 
 module.exports = router;

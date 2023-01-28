@@ -45,7 +45,7 @@ module.exports = {
         checkAttendanceMarking(body, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
-                return res.status(400).json({
+                return res.status(200).json({
                     success: 0,
                     message: err
                 });
@@ -59,7 +59,7 @@ module.exports = {
             }
             return res.status(200).json({
                 success: 1,
-                dataa: results
+                dataa: 1
             });
         });
     },

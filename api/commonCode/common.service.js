@@ -1404,11 +1404,11 @@ module.exports = {
                 authorization_hod,
                 ifnull(co_assign,0)co_assign
             from hrm_emp_master
-                left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
+                inner join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
                 left join hrm_co_assign on hrm_co_assign.emp_id=hrm_emp_master.em_id
             where em_id=?`,
             [
-                id, id, id, id
+                id
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -1450,6 +1450,51 @@ module.exports = {
                 dept_section
             from hrm_authorization_assign
             where emp_id =?)`,
+            [
+                id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getEmployeeInformation: (id, callBack) => {
+        pool.query(
+            `SELECT  
+                E.em_no,
+                E.em_id,
+                E.em_doj,
+                E.em_branch,
+                E.em_designation,
+                E.em_retirement_date,
+                E.em_prob_end_date,
+                E.em_conf_end_date,
+                E.em_contract_end_date,
+                E.em_department,
+                E.em_dept_section,
+                C.ecat_esi_allow,
+                E.em_conf_end_date,
+                E.em_retirement_date,
+                E.em_contract_end_date,
+                E.blood_slno,
+                E.hrm_religion,
+                E.hrm_profile,
+                E.contract_status,
+                E.hod,
+                E.incharge,
+                E.emp__ot,
+                E.ot_amount,
+                E.gross_salary,
+                E.em_category,
+                C.category_slno,
+                C.emp_type,
+                C.des_type,
+                E.probation_status
+            FROM hrm_emp_master E LEFT JOIN hrm_emp_category C ON C.category_slno = E.em_category
+            WHERE E.em_status = 1 AND E.em_id = ?`,
             [
                 id
             ],
