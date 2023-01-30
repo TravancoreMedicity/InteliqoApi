@@ -66,12 +66,14 @@ module.exports = {
             `UPDATE hrm_emp_contract_detl
                 SET em_cont_close=?,
                     em_cont_close_date=?,
-                    edit_user=?
+                    edit_user=?,
+                    status=?
                 WHERE em_no =?`,
             [
                 data.em_cont_close,
                 data.em_cont_close_date,
                 data.edit_user,
+                data.status,
                 data.em_no
             ],
             (error, results, feilds) => {
@@ -453,6 +455,24 @@ module.exports = {
             `SELECT * FROM medi_hrm.hrm_emp_contract_detl where em_id=?;`,
             [
                 id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    updateEmpmastSatus: (data, callBack) => {
+        pool.query(
+            `UPDATE hrm_emp_master
+                SET 
+                em_status=?
+                WHERE em_id =?`,
+            [
+                data.em_status,
+                data.em_id
             ],
             (error, results, feilds) => {
                 if (error) {

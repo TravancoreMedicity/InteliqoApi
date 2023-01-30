@@ -4,7 +4,7 @@ const { createJobSummary, CheckInsertValue, createJobDuties, getjobId,
     createJobCompetency, getJobSummarydetl, updatejobsummarydetl, getjobcompetency,
     getjobDescView, updateDutiesEach, checkalreadyinsert, deleteduties, updateCompeteEach,
     deletecompetency, deletePerformance, updatePerforEach, deleteQualifi, updateGeneric,
-    getKPIScore, getJobDutiesById, getJobCompetencyById, getJobPerformanceById,
+    getKPIScore, getJobDutiesById, getJobCompetencyById, getJobPerformanceById, updateserialnum,
     getJobGenericById, getJobQualifiById, getJobSummaryById } = require('../JobSummary/JobSummary.service');
 // const { validatereligion } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
@@ -22,11 +22,33 @@ module.exports = {
                             message: err
                         });
                     }
-
-                    return res.status(200).json({
-                        success: 1,
-                        message: "Data Created Successfully"
+                    updateserialnum((err, results) => {
+                        if (err) {
+                            //logger.errorLogger(err)
+                            return res.status(400).json({
+                                success: 0,
+                                message: res.err
+                            });
+                        }
+                        if (!results) {
+                            return res.status(400).json({
+                                success: 1,
+                                message: "Record Not Found"
+                            });
+                        }
+                        return res.status(200).json({
+                            success: 1,
+                            message: "Data Created Successfully"
+                        });
                     });
+
+
+
+
+                    // return res.status(200).json({
+                    //     success: 1,
+                    //     message: "Data Created Successfully"
+                    // });
 
                 });
             }

@@ -184,6 +184,25 @@ module.exports = {
         )
     },
 
+    getAuthorizationDetls: (data, callBack) => {
+
+        pool.query(
+            `SELECT * FROM 
+            medi_hrm.hrm_authorization_assign 
+            where dept_section=?;`,
+            [
+                data.dept_section
+
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error)
+                }
+                return callBack(null, results)
+            }
+        )
+    },
+
 
 
 }
