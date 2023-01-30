@@ -126,19 +126,23 @@ module.exports = {
     },
     noExperienceReport: (data, callBack) => {
         pool.query(
-            `SELECT  hrm_emp_master.em_no,
+            `SELECT 
+            ROW_NUMBER() OVER () as slno, 
+            hrm_emp_master.em_no,
+            hrm_emp_master.em_id,
             hrm_emp_master.em_name,
-             hrm_department.dept_name,
-             hrm_dept_section.sect_name,
-              designation.desg_name,
-              hrm_emp_master.em_doj FROM hrm_emp_master
-            left join hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
-            left join hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
-          left join designation on hrm_emp_master.em_designation=designation.desg_slno
-          WHERE NOT EXISTS (SELECT * FROM hrm_emp_exp
-          WHERE hrm_emp_exp.em_id=hrm_emp_master.em_id) 
-          and hrm_emp_master.em_status=1 and hrm_emp_master.em_no!=1 
-          and hrm_emp_master.em_no!=2 and hrm_department.dept_id IN (?);`,
+            hrm_department.dept_name,
+            hrm_dept_section.sect_name,
+            designation.desg_name,
+            hrm_emp_master.em_doj 
+            FROM hrm_emp_master
+            inner join hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
+            inner join hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
+            inner join designation on hrm_emp_master.em_designation=designation.desg_slno
+            WHERE NOT EXISTS (SELECT * FROM hrm_emp_exp
+            WHERE hrm_emp_exp.em_id=hrm_emp_master.em_id) 
+            and hrm_emp_master.em_status=1 and hrm_emp_master.em_no!=1 
+            and hrm_emp_master.em_no!=2 and hrm_department.dept_id IN (?);`,
             [
                 data
             ],
