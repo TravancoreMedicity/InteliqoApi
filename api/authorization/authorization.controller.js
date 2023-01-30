@@ -1,5 +1,5 @@
 const { create, updatecoassign, deleteByID, getData, getHod,
-    getIncharge, createCoAssign, checkInsertVal, checkInsertValauth } = require('../authorization/authoroization.service');
+    getIncharge, createCoAssign, checkInsertVal, checkInsertValauth, getAuthorizationDetls } = require('../authorization/authoroization.service');
 const { validateauthorization, validatecoassign } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -199,6 +199,28 @@ module.exports = {
             }
         })
     },
+    getAuthorizationDetls: (req, res) => {
+        const body = req.body
+        getAuthorizationDetls(body, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
 
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
 
 }

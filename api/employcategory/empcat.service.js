@@ -338,12 +338,30 @@ module.exports = {
     //get Contract End Details
     getContractEndDetl: (callBack) => {
         pool.query(
-            `select hrm_emp_contract_detl.em_id,hrm_emp_contract_detl.em_no,em_name,sect_name,desg_name,em_status,
-            em_doj,em_cont_start,em_cont_end from hrm_emp_contract_detl
+            `select 
+            ROW_NUMBER() OVER () as slno,
+            hrm_emp_contract_detl.em_id,
+            hrm_emp_contract_detl.em_no,
+            em_name,
+            dept_name,
+            sect_name,
+            desg_name,
+            em_status,
+            em_doj,
+            em_cont_start,
+            em_cont_end, 
+            hrm_dept_section.sect_id,
+            hrm_department.dept_id,
+            hod,
+            incharge
+            from hrm_emp_contract_detl
             left join hrm_emp_master on hrm_emp_master.em_id=hrm_emp_contract_detl.em_id
+            left join hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
             left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
             left join designation on designation.desg_slno=hrm_emp_master.em_designation
-            where em_cont_close is null and em_cont_renew is null and contract_renew_appr=0 and em_cont_end<=CURDATE() and em_status=1`,
+            LEFT JOIN hrm_performance_apprsl ON hrm_emp_master.em_id=hrm_performance_apprsl.em_id
+            where em_cont_close is null and em_cont_renew is null and contract_renew_appr=0 and em_cont_end<=CURDATE() 
+            and em_status=1 and appraisal_status is null`,
             [],
             (error, results, feilds) => {
                 if (error) {

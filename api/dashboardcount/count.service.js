@@ -16,9 +16,19 @@ module.exports = {
     },
     getContractCloseCount: (callBack) => {
         pool.query(
-            `select count(*) 'contractcloseCount' from hrm_emp_contract_detl
-            left join hrm_emp_master on hrm_emp_master.em_id=hrm_emp_contract_detl.em_id
-            where em_cont_close is null and em_cont_renew is null and contract_renew_appr=0 and em_cont_end<=CURDATE() and em_status=1;`,
+            `SELECT hrm_emp_master.em_id,
+            hrm_emp_master.em_no,
+            hrm_emp_master.em_name,
+            dept_name,
+            sect_name,
+            desg_name,
+            em_doj
+             FROM medi_hrm.hrm_emp_master
+             INNER JOIN hrm_emp_contract_detl on hrm_emp_master.em_id=hrm_emp_contract_detl.em_id
+             INNER JOIN hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
+             INNER JOIN hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
+             INNER JOIN designation on hrm_emp_master.em_designation=designation.desg_slno
+             WHERE em_cont_close='C' and em_status=0; `,
             [],
             (error, results, feilds) => {
                 if (error) {
@@ -314,10 +324,26 @@ module.exports = {
     },
     probationEndCount: (callBack) => {
         pool.query(
-            `select count(*) 'probationcount' 
+            `select 
+            hrm_emp_master.em_id,
+            hrm_emp_master.em_no,
+            em_name,
+            dept_name,
+            desg_name,
+            em_doj,
+            sect_name,
+            hrm_dept_section.sect_id,
+            em_prob_end_date,
+             ecat_name,
+             em_contract_end_date
             from hrm_emp_master
-            LEFT JOIN hrm_emp_category on hrm_emp_master.em_category= hrm_emp_category.category_slno
-             where des_type=1 and emp_type!=1 and em_prob_end_date<=curdate() and em_prob_end_date!="2000-01-01" and em_status=1 and em_id!=1 and probation_status=1;   `,
+            LEFT JOIN hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
+            LEFT JOIN designation ON hrm_emp_master.em_designation=designation.desg_slno
+            LEFT JOIN hrm_dept_section ON hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
+			LEFT JOIN hrm_emp_category on hrm_emp_master.em_category= hrm_emp_category.category_slno
+            LEFT JOIN hrm_performance_apprsl ON hrm_emp_master.em_id=hrm_performance_apprsl.em_id
+			where des_type=1 and em_prob_end_date<=curdate() and em_prob_end_date!="2000-01-01" 
+            and em_status=1 and hrm_emp_master.em_id!=1 and probation_status=1 and appraisal_status is null`,
             [],
             (error, results, feilds) => {
                 if (error) {
@@ -329,7 +355,21 @@ module.exports = {
     },
     annualAppraisalCount: (callBack) => {
         pool.query(
-            `SELECT count(*) 'annualcount' FROM medi_hrm.hrm_emp_master  where em_category=1 and DATE_ADD(em_doj, INTERVAL 12 MONTH) <=curdate()  and em_status=1 ;`,
+            `SELECT hrm_emp_master.em_id,
+            hrm_emp_master.em_no,
+            hrm_emp_master.em_name,
+            dept_name,
+            desg_name,
+            em_doj,
+            sect_name,
+             ecat_name
+            FROM medi_hrm.hrm_emp_master
+            inner join hrm_emp_category on hrm_emp_master.em_category=hrm_emp_category.category_slno
+            inner join hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
+            inner join designation ON hrm_emp_master.em_designation=designation.desg_slno
+            inner join hrm_dept_section ON hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
+            left join hrm_performance_apprsl on hrm_emp_master.em_id = hrm_performance_apprsl.em_id
+            where (em_status=1 and emp_type=1) and hrm_emp_master.last_appraisal_date<=curdate() and appraisal_status is null ;`,
             [],
             (error, results, feilds) => {
                 if (error) {
@@ -341,9 +381,27 @@ module.exports = {
     },
     trainingAppraisalCount: (callBack) => {
         pool.query(
-            `SELECT count(*) 'trainingcount' FROM medi_hrm.hrm_emp_master  
+            `select 
+            hrm_emp_master.em_id,
+            hrm_emp_master.em_no,
+            em_name,
+            dept_name,
+            desg_name,
+            em_doj,
+            ecat_name,
+            em_prob_end_date as training_end,
+            incharge,
+            hod,
+            hrm_department.dept_id as dept_id,
+            hrm_dept_section.sect_id as sect_id
+            from hrm_emp_master
+            LEFT JOIN hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
+            LEFT JOIN designation ON hrm_emp_master.em_designation=designation.desg_slno
             LEFT JOIN hrm_emp_category on hrm_emp_master.em_category= hrm_emp_category.category_slno
-            where des_type=2 and emp_type!=1 and em_prob_end_date<=curdate() and em_prob_end_date!="2000-01-01" and em_status=1 and em_id!=1 and probation_status=1; `,
+            LEFT JOIN hrm_dept_section ON hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
+            LEFT JOIN hrm_performance_apprsl ON hrm_emp_master.em_id=hrm_performance_apprsl.em_id
+            where des_type=2 and emp_type!=1 and em_prob_end_date<=curdate() and em_prob_end_date!="2000-01-01" 
+            and hrm_emp_master.em_status=1 and hrm_emp_master.em_id!=1 and probation_status=1 and appraisal_status is null;`,
             [],
             (error, results, feilds) => {
                 if (error) {
@@ -355,10 +413,28 @@ module.exports = {
     },
     contractEndCount: (callBack) => {
         pool.query(
-            `select count(*) 'contractcount' from hrm_emp_contract_detl
+            `select hrm_emp_contract_detl.em_id,
+            hrm_emp_contract_detl.em_no,
+            em_name,
+            dept_name,
+            sect_name,
+            desg_name,
+            em_status,
+            em_doj,
+            em_cont_start,
+            em_cont_end, 
+            hrm_dept_section.sect_id,
+            hrm_department.dept_id,
+            hod,
+            incharge
+            from hrm_emp_contract_detl
             left join hrm_emp_master on hrm_emp_master.em_id=hrm_emp_contract_detl.em_id
-            where em_cont_close is null and em_cont_renew is null and em_status=1 and contract_renew_appr!=1  
-            and em_cont_end<=CURDATE() or (em_cont_end between DATEDIFF(CURDATE(),30) and  ADDDATE(CURDATE(),30)) ;`,
+            left join hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
+            left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
+            left join designation on designation.desg_slno=hrm_emp_master.em_designation
+            LEFT JOIN hrm_performance_apprsl ON hrm_emp_master.em_id=hrm_performance_apprsl.em_id
+            where em_cont_close is null and em_cont_renew is null and contract_renew_appr=0 and em_cont_end<=CURDATE() 
+            and em_status=1 and appraisal_status is null`,
             [],
             (error, results, feilds) => {
                 if (error) {

@@ -42,6 +42,18 @@ module.exports = {
             }
         )
     },
+    updateserialnum: (callBack) => {
+        pool.query(
+            `update master_serialno set serial_current=serial_current+1 where serial_slno=7`,
+            [],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
     CheckInsertValue: (data, callBack) => {
         pool.query(
             `select summary_slno
@@ -697,18 +709,21 @@ module.exports = {
     },
     getJobCompetencyById: (id, callBack) => {
         pool.query(
-            `SELECT ROW_NUMBER() OVER (ORDER BY competency_slno) as slno,
-            competency_desc,
-            kra_desc,
-            job_id,
-            key_result_area,
-            competency_slno,
-            desg_name,
-            dept_name
-            from job_competency
-            left join hrm_kra on job_competency.key_result_area = hrm_kra.kra_slno
-			left join hrm_department on job_competency.dept_id=hrm_department.dept_id
-            left join designation on job_competency.designation=designation.desg_slno where job_id=?;`,
+            `select 
+            ROW_NUMBER() OVER () as slno, job_comp.* from (SELECT 
+                      group_concat(competency_desc) as competency_desc ,
+                        kra_desc,
+                        job_id,
+                        key_result_area,
+                        competency_slno,
+                        desg_name,
+                        dept_name
+                        from job_competency
+                        left join hrm_kra on job_competency.key_result_area = hrm_kra.kra_slno
+                        left join hrm_department on job_competency.dept_id=hrm_department.dept_id
+                        left join designation on job_competency.designation=designation.desg_slno where job_id=?
+                        group by kra_desc
+                        order by max(key_result_area)) as job_comp;`,
             [
                 id
             ],
@@ -742,19 +757,20 @@ module.exports = {
     },
     getJobPerformanceById: (id, callBack) => {
         pool.query(
-            `SELECT  ROW_NUMBER() OVER (ORDER BY specification_slno) as slno,
-            key_result_area,
-            kra_desc,
-            kpi,
-            kpi_score,
-            specification_slno,
-            dept_name,
-            desg_name
-            from job_specification
-            left join hrm_kra on hrm_kra.kra_slno=job_specification.key_result_area
-            left join hrm_department on job_specification.dept_id=hrm_department.dept_id
-            left join designation on job_specification.designation=designation.desg_slno
-            where job_id=?;`,
+            `select ROW_NUMBER() OVER () as slno, job_spec.* from (SELECT 
+                key_result_area,
+                kra_desc,
+                group_concat(kpi) as kpi, 
+                kpi_score,
+                specification_slno,
+                dept_name,
+                desg_name
+                from job_specification
+                left join hrm_kra on hrm_kra.kra_slno=job_specification.key_result_area
+                left join hrm_department on job_specification.dept_id=hrm_department.dept_id
+                left join designation on job_specification.designation=designation.desg_slno
+                where job_id=? group by kra_desc
+                order by max(key_result_area)) as job_spec;`,
             [
                 id
             ],
