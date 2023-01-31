@@ -629,30 +629,18 @@ module.exports = {
     getearnleave: (id, callBack) => {
 
         pool.query(
-            `
-            SELECT 
-                DATE_FORMAT(ernlv_mnth, "%M")ernlv_mnth,
+            `SELECT DATE_FORMAT(ernlv_mnth, "%M")ernlv_mnth,
                 DATE_FORMAT(ernlv_mnth, "%Y")year,
                 ernlv_allowed,
                 ernlv_credit,
                 ernlv_taken 
             FROM hrm_leave_earnlv 
-            where em_id=?
-            and earn_lv_active=0
-            and year(ernlv_mnth) = year(curdate())
-            union all
-            SELECT 
-                DATE_FORMAT(ernlv_mnth, "%M")ernlv_mnth,
-                DATE_FORMAT(ernlv_mnth, "%Y")year,
-                ernlv_allowed,
-                ernlv_credit,
-                ernlv_taken 
-            FROM hrm_leave_earnlv 
-            where em_id=?
-            and earn_lv_active=0
-            and credit_status = 1`,
+                    where em_id= ?
+                    and earn_lv_active=0
+                    and credit_status = 1
+            and credit_year = year(curdate())`,
             [
-                id, id
+                id
             ],
             (error, results, feilds) => {
                 if (error) {
