@@ -2,22 +2,23 @@ const pool = require('../../config/database');
 module.exports = {
     createmastleave: (data, callBack) => {
         pool.query(
-            `INSERT INTO hrm_leave_request (
-                lve_uniq_no,
-                em_id,
-                em_no,
-                dept_id,
-                dept_section,
-                leave_date,
-                rejoin_date,
-                request_status,
-                leavetodate,
-                inc_apprv_req,
-                hod_apprv_req,
-                hr_aprrv_requ,
-                ceo_req_status,
-                longleave_spclleave,
-                leave_reason
+            `INSERT INTO hrm_leave_request 
+                (
+                    lve_uniq_no,
+                    em_id,
+                    em_no,
+                    dept_id,
+                    dept_section,
+                    leave_date,
+                    rejoin_date,
+                    request_status,
+                    leavetodate,
+                    inc_apprv_req,
+                    hod_apprv_req,
+                    hr_aprrv_requ,
+                    ceo_req_status,
+                    longleave_spclleave,
+                    leave_reason
                 )
             VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [

@@ -95,15 +95,15 @@ module.exports = {
     getDepartmentShiftbyshiftid: (data, callBack) => {
         pool.query(
             `SELECT 
-            dept_shift_Slno,
-        shft_code                 
-       FROM hrm_department_shift_master 
-       left join hrm_department
-       on hrm_department.dept_id=hrm_department_shift_master.dept_id
-        left join hrm_dept_section
-       on hrm_dept_section.sect_id=hrm_department_shift_master.sect_id
-       where hrm_department_shift_master.dept_id=?
-       and hrm_department_shift_master.sect_id=?`,
+                dept_shift_Slno,
+                shft_code                 
+            FROM hrm_department_shift_master 
+            left join hrm_department
+            on hrm_department.dept_id=hrm_department_shift_master.dept_id
+                left join hrm_dept_section
+            on hrm_dept_section.sect_id=hrm_department_shift_master.sect_id
+            where hrm_department_shift_master.dept_id=?
+            and hrm_department_shift_master.sect_id=?`,
             [
                 data.dept_id,
                 data.sect_id

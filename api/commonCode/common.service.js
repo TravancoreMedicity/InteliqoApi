@@ -9,7 +9,7 @@ module.exports = {
             FROM
                 hrm_department
             WHERE
-                dept_status = '1'`,
+                dept_status = '1' ORDER BY dept_name ASC `,
             [],
             (error, results, feilds) => {
                 if (error) {
@@ -561,23 +561,26 @@ module.exports = {
     getannprocess: (id, callBack) => {
         pool.query(
             `SELECT em_category,
-            em_contract_end_date,
-            em_retirement_date,
-            em_conf_end_date,
-            em_prob_end_date,
-            ecat_cont,
-            ecat_prob,
-            ecat_cl,
-            ecat_el,
-            ecat_nh,
-            ecat_fh,
-            ecat_woff_allow,
-            ecat_doff_allow,
-            ecat_esi_allow,
-            ecat_confere,
-            ecat_lop,ecat_sl,em_doj,
-            ecat_mate
-              FROM medi_hrm.hrm_emp_master,hrm_emp_category where em_id=? 
+                em_contract_end_date,
+                em_retirement_date,
+                em_conf_end_date,
+                em_prob_end_date,
+                ecat_cont,
+                ecat_prob,
+                ecat_cl,
+                ecat_el,
+                ecat_nh,
+                ecat_fh,
+                ecat_woff_allow,
+                ecat_doff_allow,
+                ecat_esi_allow,
+                ecat_confere,
+                ecat_lop,
+                ecat_sl,
+                em_doj,
+                ecat_mate
+              FROM hrm_emp_master,hrm_emp_category 
+              where hrm_emp_master.em_id=? 
               and hrm_emp_master.em_category = hrm_emp_category.category_slno`,
             [
                 id
@@ -594,11 +597,22 @@ module.exports = {
     // get data for casualleave
     getcasual: (id, callBack) => {
 
-
         pool.query(
-            `SELECT hrm_cl_slno, em_no, em_id,DATE_FORMAT(cl_lv_mnth, "%M")cl_lv_mnth , cl_lv_year, cl_lv_allowed, 
-            cl_lv_credit, cl_lv_taken, 
-            lv_process_slno, update_user, update_date FROM hrm_leave_cl where em_id=? and cl_lv_active='0'`,
+            `SELECT 
+                hrm_cl_slno, 
+                em_no, 
+                em_id,DATE_FORMAT(cl_lv_mnth, "%M")cl_lv_mnth , 
+                cl_lv_year, 
+                cl_lv_allowed, 
+                cl_lv_credit, 
+                cl_lv_taken, 
+                lv_process_slno, 
+                update_user, 
+                update_date 
+            FROM hrm_leave_cl 
+            where em_id=? 
+            and cl_lv_active='0'
+            and year(cl_lv_year) = year(curdate())`,
             [
                 id
             ],
@@ -615,8 +629,16 @@ module.exports = {
     getearnleave: (id, callBack) => {
 
         pool.query(
-            `SELECT DATE_FORMAT(ernlv_mnth, "%M")ernlv_mnth,ernlv_allowed,
-            ernlv_credit,ernlv_taken FROM hrm_leave_earnlv where em_id=? and earn_lv_active=0`,
+            `SELECT DATE_FORMAT(ernlv_mnth, "%M")ernlv_mnth,
+                DATE_FORMAT(ernlv_mnth, "%Y")year,
+                ernlv_allowed,
+                ernlv_credit,
+                ernlv_taken 
+            FROM hrm_leave_earnlv 
+                    where em_id= ?
+                    and earn_lv_active=0
+                    and credit_status = 1
+            and credit_year = year(curdate())`,
             [
                 id
             ],
@@ -631,11 +653,14 @@ module.exports = {
     // get data for leave holiday list
     getleaveholiday: (id, callBack) => {
         pool.query(
-            `SELECT hrm_hl_slno,em_no,hd_slno,hl_lv_year,hl_date,hl_lv_credit,hl_lv_taken,
-            lv_process_slno,em_id,hld_desc,hl_lv_allowed
+            `SELECT hrm_hl_slno,em_no,hd_slno,
+            hl_lv_year,hl_date,hl_lv_credit,hl_lv_taken,
+                lv_process_slno,em_id,hld_desc,hl_lv_allowed
             FROM hrm_leave_holiday 
             left join hrm_yearly_holiday_list on hrm_leave_holiday.hd_slno=hrm_yearly_holiday_list.hld_slno
-            where em_id=? and hl_lv_active='0'`,
+            where em_id=? 
+            and hl_lv_active='0'
+            and year(hl_lv_year) = year(curdate())`,
             [
                 id
             ],
@@ -650,17 +675,22 @@ module.exports = {
     // get data for leave common list
     getleavecommon: (id, callBack) => {
         pool.query(
-            `SELECT hrm_lv_cmn,
-            em_no, lvetype_desc,
-            cmn_lv_allowed,
-            cmn_lv_taken,
-            cmn_lv_balance,
-            Iv_process_slno, 
-            em_id, 
-            cmn_lv_year,
-            cmn_lv_allowedflag 
+            `SELECT 
+                hrm_lv_cmn,
+                em_no, 
+                lvetype_desc,
+                cmn_lv_allowed,
+                cmn_lv_taken,
+                cmn_lv_balance,
+                Iv_process_slno, 
+                em_id, 
+                cmn_lv_year,
+                cmn_lv_allowedflag 
             FROM hrm_leave_common
-            left join hrm_leave_type on hrm_leave_common.llvetype_slno=hrm_leave_type.lvetype_slno where em_id=?`,
+            left join hrm_leave_type on hrm_leave_common.llvetype_slno=hrm_leave_type.lvetype_slno 
+            where em_id=? 
+            and cmn_status = 0
+            and year(cmn_lv_year) = year(curdate())`,
             [
                 id
             ],
@@ -885,9 +915,11 @@ module.exports = {
     },
     getDeptsectIncharge: (id, callBack) => {
         pool.query(
-            `select dept_section, sect_name from 
-            hrm_authorization_assign
-            left join hrm_dept_section on hrm_dept_section.sect_id = hrm_authorization_assign.dept_section
+            `select 
+                dept_section, 
+                sect_name 
+            from hrm_authorization_assign
+                left join hrm_dept_section on hrm_dept_section.sect_id = hrm_authorization_assign.dept_section
             where emp_id =?
             and auth_post = 2`,
             [
@@ -1123,9 +1155,12 @@ module.exports = {
     //get compansatory leave
     getCompansatoryLeave: (id, callBack) => {
         pool.query(
-            `select calculated_date,credited,taken
+            `select 
+                calculated_date,
+                credited,
+                taken
             from hrm_leave_calculated
-            where emp_id=?`,
+                where emp_id=?`,
             [id],
             (error, results, fields) => {
                 if (error) {
@@ -1276,7 +1311,7 @@ module.exports = {
             where emp_id=?
             union all
             select carry_hdl 'Credited', carry_hdl 'Taken','Holiday Leave' name from hrm_leave_carry_count
-            where emp_id=?;`,
+            where emp_id=?`,
             [
                 id, id, id, id
             ],
@@ -1332,8 +1367,11 @@ module.exports = {
     },
     getContractDetl: (id, callBack) => {
         pool.query(
-            `select em_cont_start,em_cont_end from hrm_emp_contract_detl
-            where em_cont_compl_status is null and em_cont_close is null and em_id=?`,
+            `select 
+                em_cont_start,em_cont_end 
+            from hrm_emp_contract_detl
+            where em_cont_compl_status is null 
+            and em_cont_close is null and em_id=? and status = 0 `,
             [
                 id
             ],
@@ -1347,13 +1385,18 @@ module.exports = {
     },
     getApprovalLevel: (id, callBack) => {
         pool.query(
-            `select hod,incharge,authorization_incharge,authorization_hod,ifnull(co_assign,0)co_assign
+            `select 
+                hod,
+                incharge,
+                authorization_incharge,
+                authorization_hod,
+                ifnull(co_assign,0)co_assign
             from hrm_emp_master
-            left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
-            left join hrm_co_assign on hrm_co_assign.emp_id=hrm_emp_master.em_id
-            where em_id=?;`,
+                inner join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
+                left join hrm_co_assign on hrm_co_assign.emp_id=hrm_emp_master.em_id
+            where em_id=?`,
             [
-                id, id, id, id
+                id
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -1363,6 +1406,93 @@ module.exports = {
             }
         )
     },
-
+    getDepartSetionHodIncharge: (id, callBack) => {
+        pool.query(
+            `SELECT 
+                dept_section, 
+                sect_name 
+            FROM hrm_authorization_assign
+                LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id = hrm_authorization_assign.dept_section
+            WHERE emp_id = ?`,
+            [
+                id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getSectionBasedEmpoyeeHodIncharge: (id, callBack) => {
+        pool.query(
+            `SELECT 
+                em_id,
+                em_no,
+                em_dept_section,
+                em_name
+            FROM hrm_emp_master 
+            WHERE em_status = 1 
+            AND em_dept_section IN (select 
+                dept_section
+            from hrm_authorization_assign
+            where emp_id =?)`,
+            [
+                id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getEmployeeInformation: (id, callBack) => {
+        pool.query(
+            `SELECT  
+                E.em_no,
+                E.em_id,
+                E.em_doj,
+                E.em_branch,
+                E.em_designation,
+                E.em_retirement_date,
+                E.em_prob_end_date,
+                E.em_conf_end_date,
+                E.em_contract_end_date,
+                E.em_department,
+                E.em_dept_section,
+                C.ecat_esi_allow,
+                E.em_conf_end_date,
+                E.em_retirement_date,
+                E.em_contract_end_date,
+                E.blood_slno,
+                E.hrm_religion,
+                E.hrm_profile,
+                E.contract_status,
+                E.hod,
+                E.incharge,
+                E.emp__ot,
+                E.ot_amount,
+                E.gross_salary,
+                E.em_category,
+                C.category_slno,
+                C.emp_type,
+                C.des_type,
+                E.probation_status
+            FROM hrm_emp_master E LEFT JOIN hrm_emp_category C ON C.category_slno = E.em_category
+            WHERE E.em_status = 1 AND E.em_id = ?`,
+            [
+                id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }
 

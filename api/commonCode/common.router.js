@@ -63,7 +63,10 @@ const {
     getadvancerequestSlno,
     getContractDetl,
     getApprovalLevel,
-    getDeptsecthod
+    getDeptsecthod,
+    getDepartSetionHodIncharge,
+    getSectionBasedEmpoyeeHodIncharge,
+    getEmployeeInformation
 } = require('../commonCode/common.controller');
 
 router.get("/getdept", checkToken, getDepartmentName)
@@ -136,5 +139,8 @@ router.get("/getadvanceslno", checkToken, getadvancerequestSlno) //get serialno 
 router.get("/getcontract/detl/:id", checkToken, getContractDetl)
 router.get("/getapproval/levels/:id", checkToken, getApprovalLevel)
 router.get("/hoddeptSect/:id", checkToken, getDeptsecthod)
+router.get("/getDepartSetionHodIncharge/:id", checkToken, getDepartSetionHodIncharge)
+router.get("/getSectionBasedEmpoyeeHodIncharge/:id", checkToken, getSectionBasedEmpoyeeHodIncharge)
+router.get("/getEmpoyeeInfomation/:id", checkToken, getEmployeeInformation)
 
 module.exports = router;

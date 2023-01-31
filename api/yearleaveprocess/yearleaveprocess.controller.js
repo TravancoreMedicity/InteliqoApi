@@ -6,10 +6,61 @@ const {
     updateeanleaveupdate, creditCasualLeave, allowableCasualLeave,
     allowableholiday, allowablefesitval, allowableearnleave, allowableconleave,
     dataannualcalculation, holidaylistyear, insertyearly, select_yearlyprocess,
-    dataannualcalculationEmployee
+    dataannualcalculationEmployee, creditPrivilegeLeave, getLeaveProccedData, inactiveLastYearProcessData,
+    inactiveCasualLeave, inactiveEarnLeave, inactiveHoliday, inactiveCommonLeave
 } = require('../yearleaveprocess/yearllraveprocess.service');
 const logger = require('../../logger/logger')
 module.exports = {
+    getLeaveProccedData: (req, res) => {
+        const body = req.body;
+        getLeaveProccedData(body, (err, results) => {
+
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    msge: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    msge: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                msge: results[0]
+            });
+        });
+
+    },
+    inactiveLastYearProcessData: (req, res) => {
+        const body = req.body;
+        inactiveLastYearProcessData(body, (err, results) => {
+
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    updateMessage: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    updateMessage: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                updateMessage: "Data Inactive Successfully"
+            });
+        });
+
+    },
     checkprocesstable: (req, res) => {
         const body = req.body;
         checkTable(body, (err, results) => {
@@ -184,7 +235,7 @@ module.exports = {
         getholidaylist((err, results) => {
             if (err) {
                 logger.errorLogger(err)
-                return res.status(400).json({
+                return res.status(200).json({
                     success: 0,
                     message: err
                 });
@@ -736,20 +787,20 @@ module.exports = {
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
-                    success: 0,
+                    successStatus: 0,
                     message: err
                 });
             }
 
             if (results.length == 0) {
                 return res.status(200).json({
-                    success: 1,
+                    successStatus: 1,
                     message: "Record Not Found"
                 });
             }
 
             return res.status(200).json({
-                success: 2,
+                successStatus: 2,
                 data: results
             });
         });
@@ -782,6 +833,131 @@ module.exports = {
 
         });
     },
+    creditPrivilegeLeave: (req, res) => {
+        const body = req.body;
+        creditPrivilegeLeave(body, (err, results) => {
+
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 2,
+                data: results
+            });
+        })
+    },
+    inactiveCasualLeave: (req, res) => {
+        const body = req.body;
+        inactiveCasualLeave(body, (err, results) => {
+
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 2,
+                message: "Inactive Successfully"
+            });
+        })
+    },
+    inactiveEarnLeave: (req, res) => {
+        const body = req.body;
+        inactiveEarnLeave(body, (err, results) => {
+
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 2,
+                message: "Inactive Successfully"
+            });
+        })
+    },
+    inactiveHoliday: (req, res) => {
+        const body = req.body;
+        inactiveHoliday(body, (err, results) => {
+
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 2,
+                message: "Inactive Successfully"
+            });
+        })
+    },
+    inactiveCommonLeave: (req, res) => {
+        const body = req.body;
+        inactiveCommonLeave(body, (err, results) => {
+
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 2,
+                message: "Inactive Successfully"
+            });
+        })
+    }
 }
 
 

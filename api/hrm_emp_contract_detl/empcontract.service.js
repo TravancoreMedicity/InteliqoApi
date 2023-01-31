@@ -149,14 +149,14 @@ module.exports = {
     updateEmpMaster: (data, callBack) => {
         pool.query(
             `update hrm_emp_master
-            set em_no=?,
-            em_category=?,
-            em_contract_end_date=?,
-            em_prob_end_date=?,
-            probation_status=?,
-            contract_status=?,
-            em_doj=?,
-            actual_doj=?
+                set em_no=?,
+                em_category=?,
+                em_contract_end_date=?,
+                em_prob_end_date=?,
+                probation_status=?,
+                contract_status=?,
+                em_doj=?,
+                actual_doj=?
             where em_id=?`,
             [
                 data.em_no,
@@ -351,12 +351,14 @@ module.exports = {
     },
     getContractRenewApprovalList: (callBack) => {
         pool.query(
-            `select hrm_emp_contract_detl.em_id,hrm_emp_contract_detl.em_no,em_name,sect_name,desg_name,em_status,contract_renew_appr,
-            em_doj,em_cont_start,em_cont_end from hrm_emp_contract_detl
+            `select 
+                hrm_emp_contract_detl.em_id,hrm_emp_contract_detl.em_no,em_name,
+                sect_name,desg_name,em_status,contract_renew_appr,
+                em_doj,em_cont_start,em_cont_end from hrm_emp_contract_detl
             left join hrm_emp_master on hrm_emp_master.em_id=hrm_emp_contract_detl.em_id
             left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
             left join designation on designation.desg_slno=hrm_emp_master.em_designation
-            where em_cont_close is null and em_cont_renew is null and contract_renew_appr=1`,
+                where em_cont_close is null and em_cont_renew is null and contract_renew_appr=1`,
             [],
             (error, results, feilds) => {
                 if (error) {

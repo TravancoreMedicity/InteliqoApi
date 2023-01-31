@@ -51,12 +51,17 @@ module.exports = {
     //checking whether the attendance marking is saved
     checkAttendanceMarking: (data, callBack) => {
         pool.query(
-            `select em_id,em_no
-            from hrm_attendance_marking
-            where attendance_marking_month=? and em_id in (?)`,
+            `SELECT 
+                em_id,
+                em_no,
+                attendance_marking_month,
+                attnd_mark_enddate
+            FROM hrm_attendance_marking 
+            WHERE em_no = ? AND attendance_marking_month BETWEEN ? AND ? `,
             [
-                data.attenddate,
-                data.empId,
+                data.empNo,
+                data.fromDate,
+                data.toDate,
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -69,18 +74,18 @@ module.exports = {
     attendanceMarkingSaveContract: (data, callBack) => {
         pool.query(
             `INSERT INTO hrm_attendance_marking 
-            (em_id, 
-            em_no,
-            attendance_marking_month,
-            attnd_mark_startdate,
-            attnd_mark_enddate,
-            total_working_days,
-            tot_days_present,
-            total_leave,
-            total_lop,
-            total_days,
-            contract_renew_date,
-            updated_user)
+                (em_id, 
+                em_no,
+                attendance_marking_month,
+                attnd_mark_startdate,
+                attnd_mark_enddate,
+                total_working_days,
+                tot_days_present,
+                total_leave,
+                total_lop,
+                total_days,
+                contract_renew_date,
+                updated_user)
             VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
                 data.em_id,
