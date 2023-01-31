@@ -967,9 +967,7 @@ module.exports = {
             LEFT JOIN designation ON hrm_emp_master.em_designation=designation.desg_slno
             LEFT JOIN hrm_dept_section ON hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
             LEFT JOIN hrm_emp_category on hrm_emp_master.em_category= hrm_emp_category.category_slno
-            where appraisal_status=1 
-            group by em_id
-            order by em_id`,
+            where appraisal_status=1`,
             [],
             (error, results, fields) => {
                 if (error) {
@@ -987,17 +985,16 @@ module.exports = {
             hrm_emp_master.em_no,
             hrm_emp_master.em_name,
             dept_name,
+            sect_name,
             desg_name,
-              ecat_name
+			ecat_name
             FROM medi_hrm.hrm_performance_apprsl
-            LEFT JOIN hrm_emp_master on hrm_performance_apprsl.em_id=hrm_emp_master.em_id
-            LEFT JOIN hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
-            LEFT JOIN designation ON hrm_emp_master.em_designation=designation.desg_slno
-            LEFT JOIN hrm_dept_section ON hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
-            LEFT JOIN hrm_emp_category on hrm_emp_master.em_category= hrm_emp_category.category_slno
-            where appraisal_status=1 and employee_status=1 and incharge_status=1 and ceo_status=1 and hod_status=1
-            group by em_id
-            order by em_id`,
+            inner JOIN hrm_emp_master on hrm_performance_apprsl.em_id=hrm_emp_master.em_id
+            inner JOIN hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
+            inner JOIN designation ON hrm_emp_master.em_designation=designation.desg_slno
+            inner JOIN hrm_dept_section ON hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
+            inner JOIN hrm_emp_category on hrm_emp_master.em_category= hrm_emp_category.category_slno
+            where appraisal_status=1 and employee_status=1 and incharge_status=1 and ceo_status=1 and hod_status=1`,
             [],
             (error, results, fields) => {
                 if (error) {
@@ -1024,9 +1021,7 @@ module.exports = {
             INNER JOIN designation ON hrm_emp_master.em_designation=designation.desg_slno
             INNER JOIN hrm_dept_section ON hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
             INNER JOIN hrm_emp_category on hrm_emp_master.em_category= hrm_emp_category.category_slno
-			where appraisal_status=1 and  ceo_status is null or employee_status is null or incharge_status is null or hod_status is null
-            group by em_id
-            order by em_id`,
+			where appraisal_status=1 and  ceo_status is null or employee_status is null or incharge_status is null or hod_status is null`,
             [],
             (error, results, fields) => {
                 if (error) {
@@ -1093,9 +1088,7 @@ module.exports = {
             INNER JOIN hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
             INNER JOIN designation ON hrm_emp_master.em_designation=designation.desg_slno
             INNER JOIN hrm_dept_section ON hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
-            where des_type=2 and emp_type=2 and (employee_status is null or ceo_status is null or incharge_status is null or hod_status is null)
-                        group by em_id
-                        order by em_id;
+            where des_type=2 and emp_type=2 and (employee_status is null or ceo_status is null or incharge_status is null or hod_status is null);
             `,
             [],
             (error, results, fields) => {
@@ -1120,8 +1113,6 @@ module.exports = {
             INNER JOIN designation ON hrm_emp_master.em_designation=designation.desg_slno
             INNER JOIN hrm_dept_section ON hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
             where des_type=1  and (employee_status is null or ceo_status is null or incharge_status is null or hod_status is null)
-                        group by em_id
-                        order by em_id;
             `,
             [],
             (error, results, fields) => {
@@ -1147,8 +1138,6 @@ module.exports = {
             INNER JOIN designation ON hrm_emp_master.em_designation=designation.desg_slno
             INNER JOIN hrm_dept_section ON hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
             where emp_type=1 and (employee_status is null or ceo_status is null or incharge_status is null or hod_status is null)
-                        group by em_id
-                        order by em_id;;
             `,
             [],
             (error, results, fields) => {
@@ -1173,8 +1162,6 @@ module.exports = {
             INNER JOIN designation ON hrm_emp_master.em_designation=designation.desg_slno
             INNER JOIN hrm_dept_section ON hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
             where emp_type=2 and (employee_status is null or ceo_status is null or incharge_status is null or hod_status is null)
-                        group by em_id
-                        order by em_id
             `,
             [],
             (error, results, fields) => {
