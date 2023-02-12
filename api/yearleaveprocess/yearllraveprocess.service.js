@@ -433,9 +433,15 @@ module.exports = {
     //getting casual leave allowed to a comployye
     allowableCasualLeave: (data, callBack) => {
         pool.query(
-            `select hrm_cl_slno,em_no,em_id,MONTHNAME(cl_lv_mnth)cl_lv_mnth
+            `select 
+                hrm_cl_slno,
+                em_no,
+                em_id,
+                MONTHNAME(cl_lv_mnth)cl_lv_mnth,
+                cl_bal_leave
             From hrm_leave_cl
-            where cl_lv_credit=1 and em_id=? and cl_lv_taken=0`,
+            where cl_lv_credit=1 and em_id=? and cl_lv_taken < 1
+            and year(cl_lv_year) = year(curdate())`,
             [
                 data
             ],
@@ -451,9 +457,16 @@ module.exports = {
     //getting holiday allowed to a comployye
     allowableholiday: (data, callBack) => {
         pool.query(
-            `SELECT hrm_hl_slno,hd_slno,hld_desc,hl_lv_taken FROM hrm_leave_holiday
+            `SELECT 
+                hrm_hl_slno,
+                hd_slno,
+                hld_desc,
+                hl_lv_taken,
+                lvetype_slno
+            FROM hrm_leave_holiday
             left join hrm_yearly_holiday_list on hrm_yearly_holiday_list.hld_slno=hrm_leave_holiday.hd_slno
-             where lvetype_slno=3 and em_id=? and  hl_lv_active=0`,
+            where  em_id=? and  hl_lv_active = 0 and hl_lv_taken < 1
+            and year( hl_lv_year ) = year(curdate())`,
             [
                 data
             ],
@@ -490,9 +503,19 @@ module.exports = {
 
     allowableearnleave: (data, callBack) => {
         pool.query(
-            `select hrm_ernlv_slno,em_no,em_id,MONTHNAME(ernlv_mnth)ernlv_mnth,ernlv_taken
-            From hrm_leave_earnlv
-            where ernlv_credit=0 and em_id=? and ernlv_taken=0 and earn_lv_active=0`,
+            `SELECT 
+                hrm_ernlv_slno,
+                em_no,
+                em_id,
+                ernlv_mnth,
+                MONTHNAME(ernlv_mnth)ernlv_mnth,
+                ernlv_taken
+            FROM hrm_leave_earnlv
+            WHERE ernlv_credit=1 
+            AND em_id=? 
+            AND ernlv_taken < 1
+            AND earn_lv_active=0
+            AND credit_year = year(curdate())`,
             [
                 data
             ],
@@ -505,7 +528,6 @@ module.exports = {
         )
     },
     allowableconleave: (data, callBack) => {
-
         pool.query(
             `SELECT 
                 hrm_lv_cmn,
@@ -513,10 +535,11 @@ module.exports = {
                 cmn_lv_allowed, 
                 cmn_lv_taken, 
                 cmn_lv_balance 
-            FROM medi_hrm.hrm_leave_common where em_id='?' and llvetype_slno='?'`,
+            FROM medi_hrm.hrm_leave_common 
+            WHERE em_id='?'
+            AND year(cmn_lv_year) = year(curdate())`,
             [
-                data.em_id,
-                data.value
+                data.em_id
             ],
             (error, results, feilds) => {
                 if (error) {

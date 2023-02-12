@@ -1219,9 +1219,14 @@ module.exports = {
     },
     getCoffDetails: (id, callBack) => {
         pool.query(
-            `
-            select hrm_calc_holiday,calculated_date,credited from hrm_leave_calculated
-            where emp_id=? and taken=0`,
+            `SELECT 
+                hrm_calc_holiday,
+                calculated_date,
+                credited 
+            FROM hrm_leave_calculated
+            WHERE emp_id = ?
+            AND sysdate() <  DATE_ADD(credited_date , interval 30 day)
+            AND taken=0`,
             [
                 id
             ],

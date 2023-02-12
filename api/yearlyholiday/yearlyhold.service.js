@@ -24,9 +24,9 @@ module.exports = {
     checkInsertVal: (data, callBack) => {
         pool.query(
             `SELECT hld_desc,
-            hld_slno     
-                FROM hrm_yearly_holiday_list
-                WHERE hld_desc = ?`,
+                    hld_slno     
+            FROM hrm_yearly_holiday_list
+            WHERE hld_desc = ? AND hld_year = year(sysdate()) `,
             [
                 data.hld_desc
             ],
