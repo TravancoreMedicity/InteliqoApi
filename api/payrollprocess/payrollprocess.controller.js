@@ -2,7 +2,9 @@ const { empDeptdata, empDeptSecdata, empNameBasedata, getFixedByEmid,
     getTotalFineByEmid, getTotalFixedByEmid, getTotalEarningsByEmid,
     getTotalDeductionByEmid, getDeductionByEmid, getEarningByEmid,
     getLopByEmid, getTotalGrosssalaryById, GetPfStatus, getPFcalcalculatingamt,
-    GetEsiStatus, getESIcalculatingamt } = require('../payrollprocess/payrollprocess.service');
+    GetEsiStatus, getESIcalculatingamt,
+    createAttendanceManual,
+    getPaySlipTableData } = require('../payrollprocess/payrollprocess.service');
 const logger = require('../../logger/logger')
 module.exports = {
     empDeptdata: (req, res) => {
@@ -344,6 +346,69 @@ module.exports = {
     getESIcalculatingamt: (req, res) => {
         const id = req.params.id;
         getESIcalculatingamt(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    createAttendanceManual: (req, res) => {
+        var values = req.body.map((value, index) => {
+            return [value.em_no,
+            value.em_id,
+            value.dept_id,
+            value.sect_id,
+            value.attnd_mark_startdate,
+            value.attnd_mark_enddate,
+            value.total_working_days,
+            value.tot_days_present,
+            value.calculated_worked,
+            value.off_days,
+            value.total_leave,
+            value.total_lwp,
+            value.total_lop,
+            value.calculated_lop,
+            value.total_days,
+            value.total_holidays,
+            value.holiday_worked
+            ]
+        })
+        createAttendanceManual(values, (err, results) => {
+            if (err) {
+                //logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (!results) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Results Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                message: "Data Submitted Successfully"
+            });
+        });
+    },
+    getPaySlipTableData: (req, res) => {
+        const body = req.body
+        getPaySlipTableData(body, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
                 return res.status(400).json({

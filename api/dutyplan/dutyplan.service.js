@@ -72,11 +72,12 @@ module.exports = {
     getEmpdetl: (data, callBack) => {
         pool.query(
             `select hrm_emp_master.em_no,
-                    hrm_emp_master.em_name,
-                    hrm_emp_master.em_id,
-                    hrm_emp_master.em_doj,
-                    hrm_emp_contract_detl.em_cont_start,
-                    hrm_emp_master.contract_status
+            hrm_emp_master.em_name,
+            hrm_emp_master.em_id,
+            hrm_emp_master.em_doj,
+            hrm_emp_contract_detl.em_cont_start,
+            hrm_emp_master.contract_status,
+            hrm_emp_master.gross_salary
             FROM hrm_emp_master
             left join hrm_emp_contract_detl on hrm_emp_contract_detl.em_no = hrm_emp_master.em_no and hrm_emp_contract_detl.status = 0
             where hrm_emp_master.em_department=? 

@@ -288,4 +288,71 @@ module.exports = {
             }
         )
     },
+    createAttendanceManual: (data, callBack) => {
+        pool.query(
+            `INSERT INTO hrm_attendance_marking (
+                em_no,
+                em_id,
+                dept_id,
+                sect_id,
+                attnd_mark_startdate,
+                attnd_mark_enddate,
+                total_working_days,
+                tot_days_present,
+                calculated_worked,
+                off_days,
+                total_leave,
+                total_lwp,
+                total_lop,
+                calculated_lop,
+                total_days,
+                total_holidays,
+                holiday_worked
+                )
+            VALUES ?;`,
+            [
+                data
+            ],
+            (error, results, feilds) => {
+                console.log(results);
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getPaySlipTableData: (data, callBack) => {
+        pool.query(
+            `SELECT 
+            em_name,
+            total_working_days,
+            calculated_worked,
+            hrm_emp_earn_deduction.em_no,
+            earning_type_name,
+            earnded_name,
+            earnded_id,
+            em_salary_desc,
+            hrm_emp_earn_deduction.em_amount 
+            FROM medi_hrm.hrm_attendance_marking
+            inner join hrm_emp_master on hrm_attendance_marking.em_no=hrm_emp_master.em_no
+            inner join hrm_emp_earn_deduction on hrm_attendance_marking.em_no=hrm_emp_earn_deduction.em_no
+            inner join hrm_earning_deduction on hrm_emp_earn_deduction.em_salary_desc=hrm_earning_deduction.earnded_id
+            inner join hrm_earning_type on hrm_earning_deduction.erning_type_id=hrm_earning_type.erning_type_id
+            where dept_id=? and sect_id=? and attnd_mark_startdate=? and attnd_mark_enddate=?; `,
+            [
+                data.dept_id,
+                data.sect_id,
+                data.attnd_mark_startdate,
+                data.attnd_mark_enddate
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+
 }
