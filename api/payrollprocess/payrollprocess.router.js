@@ -4,7 +4,8 @@ const { checkToken } = require("../../auth/token_validation");
 const { empDeptdata, empDeptSecdata, empNameBasedata, getFixedByEmid, getEarningByEmid,
     getTotalFineByEmid, getTotalFixedByEmid, getTotalEarningsByEmid, getTotalDeductionByEmid,
     getDeductionByEmid, getLopByEmid, getTotalGrosssalaryById, GetPfStatus, getPFcalcalculatingamt,
-    GetEsiStatus, getESIcalculatingamt } = require('../payrollprocess/payrollprocess.controller');
+    GetEsiStatus, getESIcalculatingamt, createAttendanceManual, getPaySlipTableData,
+} = require('../payrollprocess/payrollprocess.controller');
 
 router.post("/EmpDelDept", checkToken, empDeptdata)
 router.post("/EmpDelDeptSec", checkToken, empDeptSecdata)
@@ -22,4 +23,9 @@ router.get("/pfstatus/:id", checkToken, GetPfStatus)
 router.get("/PfcalAmt/:id", checkToken, getPFcalcalculatingamt)
 router.get("/esistatus/:id", checkToken, GetEsiStatus)
 router.get("/EsicalAmt/:id", checkToken, getESIcalculatingamt)
+
+//attendance 
+router.post("/create/manual", checkToken, createAttendanceManual)
+router.post("/getPayslip/data", checkToken, getPaySlipTableData)
+
 module.exports = router;
