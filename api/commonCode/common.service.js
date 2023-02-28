@@ -819,7 +819,10 @@ module.exports = {
     //Shift details for OT
     getShiftdetails: (data, callBack) => {
         pool.query(
-            `SELECT duty_day,punch_slno,mis_punch_flag,
+            `SELECT 
+                duty_day,
+                punch_slno,
+                mis_punch_flag,
                 punch_master.shift_id,
                 hrm_shift_mast.shft_slno,
                 hrm_shift_mast.shft_chkin_time,
@@ -986,9 +989,9 @@ module.exports = {
     },
     getShiftdata: (id, callBack) => {
         pool.query(
-            `SELECT * FROM medi_hrm.punch_data where emp_code =? and date(punch_time)between ? and ? `,
+            `SELECT punch_time FROM medi_hrm.punch_data WHERE emp_code = ? AND punch_time BETWEEN ? AND ?`,
             [
-                id.em_no, id.date1, id.date2
+                id.em_no, id.date2, id.date1
             ],
             (error, results, feilds) => {
                 if (error) {
