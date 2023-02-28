@@ -74,7 +74,8 @@ module.exports = {
     attendanceMarkingSaveContract: (data, callBack) => {
         pool.query(
             `INSERT INTO hrm_attendance_marking 
-                (em_id, 
+                (
+                em_id, 
                 em_no,
                 attendance_marking_month,
                 attnd_mark_startdate,
@@ -85,7 +86,8 @@ module.exports = {
                 total_lop,
                 total_days,
                 contract_renew_date,
-                updated_user)
+                updated_user
+                )
             VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
                 data.em_id,

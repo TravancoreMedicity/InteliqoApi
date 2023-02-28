@@ -128,7 +128,7 @@ module.exports = {
         getDataById(id, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
-                return res.status(400).json({
+                return res.status(200).json({
                     success: 2,
                     message: err
                 });
@@ -177,7 +177,7 @@ module.exports = {
         getContractCloseDetlById(id, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
-                return res.status(400).json({
+                return res.status(200).json({
                     success: 2,
                     message: err
                 });
@@ -452,7 +452,7 @@ module.exports = {
         getContractByEmno(id, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
-                return res.status(400).json({
+                return res.status(200).json({
                     success: 2,
                     message: err
                 });
@@ -477,7 +477,7 @@ module.exports = {
         getContractDetlId(id, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
-                return res.status(400).json({
+                return res.status(200).json({
                     success: 2,
                     message: err
                 });

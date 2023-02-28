@@ -5,6 +5,7 @@ const { empDeptdata, empDeptSecdata, empNameBasedata, getFixedByEmid, getEarning
     getTotalFineByEmid, getTotalFixedByEmid, getTotalEarningsByEmid, getTotalDeductionByEmid,
     getDeductionByEmid, getLopByEmid, getTotalGrosssalaryById, GetPfStatus, getPFcalcalculatingamt,
     GetEsiStatus, getESIcalculatingamt, createAttendanceManual, getPaySlipTableData,
+    getEmpEarningData, getEmpFixedWageData, getEmpDeductionData
 } = require('../payrollprocess/payrollprocess.controller');
 
 router.post("/EmpDelDept", checkToken, empDeptdata)
@@ -27,5 +28,11 @@ router.get("/EsicalAmt/:id", checkToken, getESIcalculatingamt)
 //attendance 
 router.post("/create/manual", checkToken, createAttendanceManual)
 router.post("/getPayslip/data", checkToken, getPaySlipTableData)
+router.get("/empFixedDetl/:id", checkToken, getEmpEarningData)
+
+
+router.post("/empEarning", checkToken, getEmpEarningData)
+router.post("/empFixedDetl", checkToken, getEmpFixedWageData)
+router.post("/empDeduction", checkToken, getEmpDeductionData)
 
 module.exports = router;
