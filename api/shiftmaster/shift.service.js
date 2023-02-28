@@ -73,11 +73,12 @@ module.exports = {
 
     checkInsertVal: (data, callBack) => {
         pool.query(
-            `SELECT shft_desc,
-            shft_code,
-            shft_slno     
-                FROM hrm_shift_mast
-                WHERE shft_desc = ? and shft_code=?`,
+            `SELECT 
+                    shft_desc,
+                    shft_code,
+                    shft_slno     
+            FROM hrm_shift_mast
+            WHERE shft_desc = ? and shft_code=?`,
             [
                 data.shft_desc,
                 data.shft_code

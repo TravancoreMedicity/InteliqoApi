@@ -1,4 +1,4 @@
-const { create, update, getSelect, getdepartmentshiftMasterByID, getDepartmentShiftbyshiftid, checkshiftforDept } = require('../Departmentshiftmaster/Departmentshiftmaster.service');
+const { create, update, getSelect, getdepartmentshiftMasterByID, getDepartmentShiftbyshiftid, checkshiftforDept, getShiftTiming } = require('../Departmentshiftmaster/Departmentshiftmaster.service');
 const { validatedepartmentshiftmaster } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -161,6 +161,30 @@ module.exports = {
             return res.status(200).json({
                 successs: 1,
                 data: results
+            });
+        })
+    },
+    getShiftTiming: (req, res) => {
+        const body = req.body;
+        getShiftTiming(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    succ: 0,
+                    msge: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(200).json({
+                    succ: 0,
+                    msge: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                succ: 1,
+                result: results
             });
         })
     },

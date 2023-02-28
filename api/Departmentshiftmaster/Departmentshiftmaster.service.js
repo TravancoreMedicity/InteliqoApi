@@ -50,16 +50,16 @@ module.exports = {
     getSelect: (callBack) => {
         pool.query(
             `SELECT 
-            dept_shift_Slno,
-              hrm_department_shift_master.dept_id,dept_name,
-               hrm_department_shift_master.sect_id,sect_name,
-               shft_code,
-               updated_user     
-       FROM hrm_department_shift_master 
-       left join hrm_department
-       on hrm_department.dept_id=hrm_department_shift_master.dept_id
-         left join hrm_dept_section
-       on hrm_dept_section.sect_id=hrm_department_shift_master.sect_id`,
+                    dept_shift_Slno,
+                    hrm_department_shift_master.dept_id,dept_name,
+                    hrm_department_shift_master.sect_id,sect_name,
+                    shft_code,
+                    updated_user     
+            FROM hrm_department_shift_master 
+            left join hrm_department
+            on hrm_department.dept_id=hrm_department_shift_master.dept_id
+                left join hrm_dept_section
+            on hrm_dept_section.sect_id=hrm_department_shift_master.sect_id`,
             [],
             (error, results, feilds) => {
                 if (error) {
@@ -125,6 +125,25 @@ module.exports = {
             [
                 data.em_department,
                 data.em_dept_section
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getShiftTiming: (data, callBack) => {
+        pool.query(
+            `SELECT 
+                shft_slno,
+                shft_chkin_time,
+                shft_chkout_time
+            FROM hrm_shift_mast 
+            WHERE shft_slno IN (?)`,
+            [
+                data
             ],
             (error, results, feilds) => {
                 if (error) {

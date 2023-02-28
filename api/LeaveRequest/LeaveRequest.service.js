@@ -10,17 +10,23 @@ module.exports = {
                     dept_id,
                     dept_section,
                     leave_date,
+                    leavetodate,
                     rejoin_date,
                     request_status,
-                    leavetodate,
                     inc_apprv_req,
+                    incapprv_status,
+                    inc_apprv_cmnt,
+                    inc_apprv_time,
                     hod_apprv_req,
+                    hod_apprv_status,
+                    hod_apprv_cmnt,
+                    hod_apprv_time,
                     hr_aprrv_requ,
                     ceo_req_status,
-                    longleave_spclleave,
-                    leave_reason
+                    leave_reason,
+                    no_of_leave
                 )
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
                 data.leaveid,
                 data.em_id,
@@ -28,15 +34,21 @@ module.exports = {
                 data.em_department,
                 data.em_dept_section,
                 data.leavefrom_date,
+                data.leavetodate,
                 data.rejoin_date,
                 data.request_status,
-                data.leavetodate,
-                data.incharge_level,
-                data.hod_level,
-                1,
-                data.ceo_level,
-                data.leavdaystype,
+                data.inc_apprv_req,
+                data.incapprv_status,
+                data.inc_apprv_cmnt,
+                data.inc_apprv_time,
+                data.hod_apprv_req,
+                data.hod_apprv_status,
+                data.hod_apprv_cmnt,
+                data.hod_apprv_time,
+                data.hr_aprrv_requ,
+                data.ceo_req_status,
                 data.resonforleave,
+                data.no_of_leave
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -86,9 +98,20 @@ module.exports = {
     },
     gethafdayshift: (data, callBack) => {
         pool.query(
-            `SELECT plan_slno,emp_id,hrm_duty_plan.shift_id,shft_desc,shft_chkin_time,shft_chkout_time FROM medi_hrm.hrm_duty_plan
-            left join hrm_shift_mast on hrm_shift_mast.shft_slno=hrm_duty_plan.shift_id 
-             where duty_day= ? and emp_id=?`,
+            `SELECT 
+                plan_slno,
+                emp_id,
+                hrm_duty_plan.shift_id,
+                shft_desc,
+                shft_chkin_time,
+                shft_chkout_time,
+                first_half_in,
+                first_half_out,
+                second_half_in,
+                second_half_out
+            FROM medi_hrm.hrm_duty_plan
+            LEFT JOIN hrm_shift_mast ON hrm_shift_mast.shft_slno = hrm_duty_plan.shift_id 
+            WHERE duty_day= ? AND emp_id=?`,
             [data.startDate, data.em_id],
             (error, results, feilds) => {
                 if (error) {
@@ -126,8 +149,8 @@ module.exports = {
     },
     inserthalfdayreque: (data, callBack) => {
         pool.query(
-            `INSERT INTO hrm_halfdayrequest (
-                checkIn, 
+            `INSERT INTO hrm_halfdayrequest(
+                checkIn,
                 checkOut,
                 leavedate,
                 planslno,
@@ -138,13 +161,18 @@ module.exports = {
                 em_no,
                 dept_id,
                 dept_section,
+                hf_reason,
                 hf_inc_apprv_req,
+                hf_incapprv_status,
+                hf_inc_apprv_cmnt,
+                hf_inc_apprv_time,
                 hf_hod_apprv_req,
+                hf_hod_apprv_status,
+                hf_hod_apprv_cmnt,
+                hf_hod_apprv_time,
                 hf_hr_aprrv_requ,
-                hf_ceo_req_status,
-                hf_reason
-                )
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+                hf_ceo_req_status
+            ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
                 data.checkIn,
                 data.checkOut,
@@ -157,11 +185,17 @@ module.exports = {
                 data.em_no,
                 data.em_department,
                 data.em_dept_section,
-                data.incharge_level,
-                data.hod_level,
-                1,
-                data.ceo_level,
-                data.resonforleave
+                data.resonforleave,
+                data.inc_apprv_req,
+                data.incapprv_status,
+                data.inc_apprv_cmnt,
+                data.inc_apprv_time,
+                data.hod_apprv_req,
+                data.hod_apprv_status,
+                data.hod_apprv_cmnt,
+                data.hod_apprv_time,
+                data.hr_aprrv_requ,
+                data.ceo_req_status
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -170,7 +204,6 @@ module.exports = {
                 return callBack(null, results);
             }
         )
-
     },
 
     insertnopunchrequest: (data, callBack) => {
@@ -192,12 +225,18 @@ module.exports = {
                 em_dept_section,
                 punslno,
                 np_inc_apprv_req,
+                np_incapprv_status,
+                np_inc_apprv_cmnt,
+                np_inc_apprv_time,
                 np_hod_apprv_req,
+                np_hod_apprv_status,
+                np_hod_apprv_cmnt,
+                np_hod_apprv_time,
                 np_hr_aprrv_requ,
                 np_ceo_req_status,
                 np_reason
                 )
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
                 data.checkinflag,
                 data.checkintime,
@@ -214,10 +253,16 @@ module.exports = {
                 data.em_department,
                 data.em_dept_section,
                 data.punch_slno,
-                data.incharge_level,
-                data.hod_level,
-                1,
-                data.ceo_level,
+                data.inc_apprv_req,
+                data.incapprv_status,
+                data.inc_apprv_cmnt,
+                data.inc_apprv_time,
+                data.hod_apprv_req,
+                data.hod_apprv_status,
+                data.hod_apprv_cmnt,
+                data.hod_apprv_time,
+                data.hr_aprrv_requ,
+                data.ceo_req_status,
                 data.resonforleave
             ],
             (error, results, feilds) => {
@@ -247,13 +292,18 @@ module.exports = {
                 em_dept_section,
                 shift_id,
                 cf_inc_apprv_req,
+                cf_incapprv_status,
+                cf_inc_apprv_cmnt,
+                cf_inc_apprv_time,
                 cf_hod_apprv_req,
+                cf_hod_apprv_status,
+                cf_hod_apprv_cmnt,
+                cf_hod_apprv_time,
                 cf_hr_aprrv_requ,
                 cf_ceo_req_status,
                 cf_reason
-
                 )
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
                 data.punchindata,
                 data.punchoutdata,
@@ -269,12 +319,17 @@ module.exports = {
                 data.em_department,
                 data.em_dept_section,
                 data.shift_id,
-                data.incharge_level,
-                data.hod_level,
-                1,
-                data.ceo_level,
+                data.inc_apprv_req,
+                data.incapprv_status,
+                data.inc_apprv_cmnt,
+                data.inc_apprv_time,
+                data.hod_apprv_req,
+                data.hod_apprv_status,
+                data.hod_apprv_cmnt,
+                data.hod_apprv_time,
+                data.hr_aprrv_requ,
+                data.ceo_req_status,
                 data.resonforleave
-
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -299,8 +354,55 @@ module.exports = {
             }
         )
     },
-
-
-
+    getPunchMasterSlno: (data, callBack) => {
+        pool.query(
+            `SELECT 
+                punch_slno
+            FROM punch_master
+            WHERE emp_id=? AND duty_day = ?`,
+            [
+                data.em_id,
+                data.date
+            ],
+            (error, result, feild) => {
+                if (error) {
+                    callBack(error)
+                }
+                return callBack(null, result);
+            }
+        )
+    },
+    checkMispunchRequest: (data, callBack) => {
+        pool.query(
+            `SELECT 
+                nopunch_slno
+            FROM nopunchrequest
+            WHERE em_id=? AND month(nopunchdate) = month(?) AND req_status = 0`,
+            [
+                data.em_id,
+                data.date
+            ],
+            (error, result, feild) => {
+                if (error) {
+                    callBack(error)
+                }
+                return callBack(null, result);
+            }
+        )
+    },
+    updatePunchSlno: (data, callBack) => {
+        pool.query(
+            `UPDATE punch_master SET ot_request_flag = 1  WHERE punch_slno = ?`,
+            [
+                data.punchSlno,
+            ],
+            (error, result, feild) => {
+                if (error) {
+                    callBack(error)
+                }
+                return callBack(null, result);
+            }
+        )
+    },
 
 }
