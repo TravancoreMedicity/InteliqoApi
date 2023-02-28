@@ -314,7 +314,6 @@ module.exports = {
                 data
             ],
             (error, results, feilds) => {
-                console.log(results);
                 if (error) {
                     return callBack(error);
                 }
@@ -328,17 +327,9 @@ module.exports = {
             em_name,
             total_working_days,
             calculated_worked,
-            hrm_emp_earn_deduction.em_no,
-            earning_type_name,
-            earnded_name,
-            earnded_id,
-            em_salary_desc,
-            hrm_emp_earn_deduction.em_amount 
+         hrm_emp_master.em_no
             FROM medi_hrm.hrm_attendance_marking
             inner join hrm_emp_master on hrm_attendance_marking.em_no=hrm_emp_master.em_no
-            inner join hrm_emp_earn_deduction on hrm_attendance_marking.em_no=hrm_emp_earn_deduction.em_no
-            inner join hrm_earning_deduction on hrm_emp_earn_deduction.em_salary_desc=hrm_earning_deduction.earnded_id
-            inner join hrm_earning_type on hrm_earning_deduction.erning_type_id=hrm_earning_type.erning_type_id
             where dept_id=? and sect_id=? and attnd_mark_startdate=? and attnd_mark_enddate=?; `,
             [
                 data.dept_id,
@@ -354,5 +345,102 @@ module.exports = {
             }
         )
     },
-
+    // getEmpEarningData: (data, callBack) => {
+    //     pool.query(
+    //         `select 
+    //         hrm_emp_earn_deduction.em_no,
+    //         earning_type_name,
+    //         earnded_name,
+    //         em_salary_desc,
+    //         em_amount
+    //          from hrm_emp_earn_deduction
+    //          inner join hrm_earning_deduction on hrm_emp_earn_deduction.em_salary_desc=hrm_earning_deduction.earnded_id
+    //          inner join hrm_earning_type on hrm_earning_deduction.erning_type_id=hrm_earning_type.erning_type_id
+    //          where hrm_emp_earn_deduction.em_no=? and hrm_earning_deduction.erning_type_id=2; `,
+    //         [
+    //             data.em_no
+    //         ],
+    //         (error, results, feilds) => {
+    //             if (error) {
+    //                 return callBack(error);
+    //             }
+    //             return callBack(null, results);
+    //         }
+    //     )
+    // },
+    getEmpEarningData: (data, callBack) => {
+        pool.query(
+            `select 
+            hrm_emp_earn_deduction.em_no,
+            earning_type_name,
+            earnded_name,
+            em_salary_desc,
+            em_amount
+             from hrm_emp_earn_deduction
+             inner join hrm_earning_deduction on hrm_emp_earn_deduction.em_salary_desc=hrm_earning_deduction.earnded_id
+             inner join hrm_earning_type on hrm_earning_deduction.erning_type_id=hrm_earning_type.erning_type_id
+             inner join hrm_emp_master on hrm_emp_earn_deduction.em_no=hrm_emp_master.em_no
+             where  hrm_earning_deduction.erning_type_id=2 and hrm_emp_master.em_department=? and hrm_emp_master.em_dept_section=?;`,
+            [
+                data.em_department,
+                data.em_dept_section
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getEmpFixedWageData: (data, callBack) => {
+        pool.query(
+            `select 
+            hrm_emp_earn_deduction.em_no,
+            earning_type_name,
+            earnded_name,
+            em_salary_desc,
+            em_amount
+             from hrm_emp_earn_deduction
+             inner join hrm_earning_deduction on hrm_emp_earn_deduction.em_salary_desc=hrm_earning_deduction.earnded_id
+             inner join hrm_earning_type on hrm_earning_deduction.erning_type_id=hrm_earning_type.erning_type_id
+             inner join hrm_emp_master on hrm_emp_earn_deduction.em_no=hrm_emp_master.em_no
+             where  hrm_earning_deduction.erning_type_id=1 and hrm_emp_master.em_department=? and hrm_emp_master.em_dept_section=?;`,
+            [
+                data.em_department,
+                data.em_dept_section
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getEmpDeductionData: (data, callBack) => {
+        pool.query(
+            `select 
+            hrm_emp_earn_deduction.em_no,
+            earning_type_name,
+            earnded_name,
+            em_salary_desc,
+            em_amount
+             from hrm_emp_earn_deduction
+             inner join hrm_earning_deduction on hrm_emp_earn_deduction.em_salary_desc=hrm_earning_deduction.earnded_id
+             inner join hrm_earning_type on hrm_earning_deduction.erning_type_id=hrm_earning_type.erning_type_id
+             inner join hrm_emp_master on hrm_emp_earn_deduction.em_no=hrm_emp_master.em_no
+             where  hrm_earning_deduction.erning_type_id=3 and hrm_emp_master.em_department=? and hrm_emp_master.em_dept_section=?;`,
+            [
+                data.em_department,
+                data.em_dept_section
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }

@@ -4,7 +4,8 @@ const { empDeptdata, empDeptSecdata, empNameBasedata, getFixedByEmid,
     getLopByEmid, getTotalGrosssalaryById, GetPfStatus, getPFcalcalculatingamt,
     GetEsiStatus, getESIcalculatingamt,
     createAttendanceManual,
-    getPaySlipTableData } = require('../payrollprocess/payrollprocess.service');
+    getPaySlipTableData, getEmpEarningData, getEmpFixedWageData,
+    getEmpDeductionData } = require('../payrollprocess/payrollprocess.service');
 const logger = require('../../logger/logger')
 module.exports = {
     empDeptdata: (req, res) => {
@@ -409,6 +410,95 @@ module.exports = {
     getPaySlipTableData: (req, res) => {
         const body = req.body
         getPaySlipTableData(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    getEmpEarningData: (req, res) => {
+        const body = req.body
+        getEmpEarningData(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    // getEmpEarningData: (req, res) => {
+    //     const id = req.params.id;
+    //     getEmpEarningData(id, (err, results) => {
+    //         if (err) {
+    //             logger.errorLogger(err)
+    //             return res.status(400).json({
+    //                 success: 0,
+    //                 message: err
+    //             });
+    //         }
+    //         if (results.length == 0) {
+    //             return res.status(200).json({
+    //                 success: 0,
+    //                 message: "No Record Found"
+    //             });
+    //         }
+    //         return res.status(200).json({
+    //             success: 1,
+    //             data: results
+    //         });
+    //     });
+    // },
+
+    getEmpFixedWageData: (req, res) => {
+        const body = req.body
+        getEmpFixedWageData(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length === 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    getEmpDeductionData: (req, res) => {
+        const body = req.body
+        getEmpDeductionData(body, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
                 return res.status(400).json({

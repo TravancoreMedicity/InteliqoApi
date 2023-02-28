@@ -68,7 +68,7 @@ module.exports = {
         attendanceMarkingSaveContract(body, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
-                return res.status(400).json({
+                return res.status(200).json({
                     success: 0,
                     message: err
                 });
