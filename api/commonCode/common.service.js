@@ -885,10 +885,11 @@ module.exports = {
         pool.query(
             `SELECT 
             em_name,
+            em_no,
         em_id
          FROM medi_hrm.hrm_emp_master
          WHERE em_dept_section =?
-         and em_status=1 `,
+         and em_status=1 and em_id!=1 and em_no!=2 `,
             [
                 id
             ],

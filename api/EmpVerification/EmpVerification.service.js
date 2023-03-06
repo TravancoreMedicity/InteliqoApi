@@ -32,7 +32,7 @@ module.exports = {
             left join  hrm_branch ON hrm_branch.branch_slno = hrm_emp_master.em_branch
             left join hrm_department ON hrm_department.dept_id = hrm_emp_master.em_department
             left join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
-            where verification_required=1  and em_status=1 and verification_status=0 or verification_status=2`,
+            where verification_required=1  and em_status=1 and verification_status is null or verification_status=2`,
             [],
             (error, results, feilds) => {
                 if (error) {
@@ -71,7 +71,7 @@ module.exports = {
             left join  hrm_branch ON hrm_branch.branch_slno = hrm_emp_master.em_branch
             left join hrm_department ON hrm_department.dept_id = hrm_emp_master.em_department
             left join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
-            where second_level_required=1 and second_level_verification!=1 and em_status=1;`,
+            where second_level_required=1 and second_level_verification is null and em_status=1;`,
             [],
             (error, results, feilds) => {
                 if (error) {
