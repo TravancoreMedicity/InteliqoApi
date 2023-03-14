@@ -1,4 +1,5 @@
 const pool = require('../../config/database');
+const moment = require('moment')
 module.exports = {
     createmastleave: (data, callBack) => {
         pool.query(
@@ -401,6 +402,152 @@ module.exports = {
                     callBack(error)
                 }
                 return callBack(null, result);
+            }
+        )
+    },
+    getLeaveCount: (data, callBack) => {
+        pool.query(
+            `SELECT 
+                COUNT(leave_slno) CNT
+            FROM hrm_leave_request R
+            INNER JOIN hrm_leave_request_detl D ON D.lve_uniq_no = R.lve_uniq_no AND R.em_no = ?
+            WHERE D.leave_dates BETWEEN ? AND ?`,
+            [
+                data.em_no,
+                data.fromDate,
+                data.toDate
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    updateCommonLeave: (data, callBack) => {
+        try {
+            data?.map((e) => {
+                pool.query(
+                    `UPDATE hrm_leave_common SET cmn_lv_balance = cmn_lv_balance - ? WHERE llvetype_slno = ? AND em_no = ?`,
+                    [
+                        e.count,
+                        e.type,
+                        e.em_no
+                    ],
+                    (error, results, feilds) => {
+                        return error;
+                    }
+                )
+            })
+        } catch (error) {
+            return callBack(error);
+        }
+
+    },
+    updateCasualLeave: (data, callBack) => {
+        try {
+            data?.map((e) => {
+                pool.query(
+                    `UPDATE hrm_leave_cl SET hl_lv_tkn_status = 1 WHERE hrm_cl_slno = ?`,
+                    [
+                        e.caulmnth,
+                    ],
+                    (error, results, feilds) => {
+                        return error;
+                    }
+                )
+            })
+        } catch (error) {
+            return callBack(error);
+        }
+    },
+    updateNationalHoliday: (data, callBack) => {
+        try {
+            data?.map((e) => {
+                pool.query(
+                    `UPDATE hrm_leave_holiday SET hl_lv_tkn_status = 1 WHERE hrm_hl_slno = ?`,
+                    [
+                        e.caulmnth,
+                    ],
+                    (error, results, feilds) => {
+                        return error;
+                    }
+                )
+            })
+        } catch (error) {
+            return callBack(error);
+        }
+    },
+    updateEarnLeave: (data, callBack) => {
+        try {
+            data?.map((e) => {
+                pool.query(
+                    `UPDATE hrm_leave_earnlv SET hl_lv_tkn_status = 1 WHERE hrm_ernlv_slno = ?`,
+                    [
+                        e.caulmnth,
+                    ],
+                    (error, results, feilds) => {
+                        return error;
+                    }
+                )
+            })
+        } catch (error) {
+            return callBack(error);
+        }
+    },
+    updateCompansatoryOff: (data, callBack) => {
+        try {
+            data?.map((e) => {
+                pool.query(
+                    `UPDATE hrm_leave_calculated SET hl_lv_tkn_status = 1 WHERE hrm_cakc_holiday = ?`,
+                    [
+                        e.caulmnth,
+                    ],
+                    (error, results, feilds) => {
+                        return error;
+                    }
+                )
+            })
+        } catch (error) {
+            return callBack(error);
+        }
+    },
+    halfDayRequestCheck: (data, callBack) => {
+        pool.query(
+            `SELECT half_slno FROM hrm_halfdayrequest WHERE leavedate = ? AND em_no = ? `,
+            [
+                moment(data.leavedate).format('YYYY-MM-DD'),
+                data.em_no
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    updateHaldayValueInTable: (data, callBack) => {
+        pool.query(
+            `UPDATE hrm_leave_cl 
+                SET cl_lv_taken = CASE 
+                        WHEN (cl_lv_taken = 0.5 AND hl_lv_tkn_status = 0) THEN 1 
+                        WHEN (cl_lv_taken = 0 AND hl_lv_tkn_status = 0)THEN 0.5 ELSE cl_lv_taken END,
+                    cl_bal_leave = CASE 
+                        WHEN (cl_bal_leave = 0.5 AND hl_lv_tkn_status = 0) THEN 1 
+                        WHEN (cl_bal_leave = 0 AND hl_lv_tkn_status = 0)THEN 0.5 ELSE cl_lv_taken END,
+                    hl_lv_tkn_status = CASE 
+                        WHEN (cl_bal_leave = 1 AND cl_lv_taken = 1 AND hl_lv_tkn_status = 0) THEN 1 ELSE 0 END
+            WHERE hrm_cl_slno = ? `,
+            [
+                data.planslno,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
             }
         )
     },

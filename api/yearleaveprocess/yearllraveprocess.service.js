@@ -438,7 +438,8 @@ module.exports = {
                 em_no,
                 em_id,
                 MONTHNAME(cl_lv_mnth)cl_lv_mnth,
-                cl_bal_leave
+                cl_bal_leave,
+                hl_lv_tkn_status
             From hrm_leave_cl
             where cl_lv_credit=1 and em_id=? and cl_lv_taken < 1
             and year(cl_lv_year) = year(curdate())`,
@@ -462,7 +463,8 @@ module.exports = {
                 hd_slno,
                 hld_desc,
                 hl_lv_taken,
-                lvetype_slno
+                lvetype_slno,
+                hl_lv_tkn_status
             FROM hrm_leave_holiday
             left join hrm_yearly_holiday_list on hrm_yearly_holiday_list.hld_slno=hrm_leave_holiday.hd_slno
             where  em_id=? and  hl_lv_active = 0 and hl_lv_taken < 1
@@ -509,7 +511,8 @@ module.exports = {
                 em_id,
                 ernlv_mnth,
                 MONTHNAME(ernlv_mnth)ernlv_mnth,
-                ernlv_taken
+                ernlv_taken,
+                hl_lv_tkn_status
             FROM hrm_leave_earnlv
             WHERE ernlv_credit=1 
             AND em_id=? 

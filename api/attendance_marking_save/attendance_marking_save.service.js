@@ -48,7 +48,6 @@ module.exports = {
             }
         )
     },
-    //checking whether the attendance marking is saved
     checkAttendanceMarking: (data, callBack) => {
         pool.query(
             `SELECT 
@@ -108,6 +107,29 @@ module.exports = {
                     return callBack(error);
                 }
                 return callBack(null, results);
+            }
+        )
+    },
+    //ATTENDANCE MARKING CHECK FOR LEAVE REQUEST 
+    attMarkingExcistFrLveReq: (data, callBack) => {
+        pool.query(
+            `SELECT 
+                month(attendance_marking_month) month,
+                year(attendance_marking_month) year
+            FROM hrm_attendance_marking 
+            WHERE em_no = ?
+            AND month(attendance_marking_month) = month(?)
+            AND year(attendance_marking_month) = year(?)`,
+            [
+                data.empNo,
+                data.fromDate,
+                data.fromDate
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, JSON.stringify(results));
             }
         )
     },
