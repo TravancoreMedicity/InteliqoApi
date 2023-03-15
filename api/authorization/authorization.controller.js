@@ -1,5 +1,5 @@
 const { create, updatecoassign, deleteByID, getData, getHod,
-    getIncharge, createCoAssign, checkInsertVal, checkInsertValauth, getAuthorizationDetls } = require('../authorization/authoroization.service');
+    getIncharge, createCoAssign, checkInsertVal, checkInsertValauth, getAuthorizationDetls, getAuthorizationDeptSect } = require('../authorization/authoroization.service');
 const { validateauthorization, validatecoassign } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -219,6 +219,32 @@ module.exports = {
             return res.status(200).json({
                 success: 1,
                 data: results
+            });
+        });
+    },
+    getAuthorizationDeptSect: (req, res) => {
+        const id = req.params.id;
+        getAuthorizationDeptSect(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results.length === 0) {
+                logger.infoLogger("No Records Found")
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results,
+                message: "Record Deleted Successfully"
             });
         });
     },

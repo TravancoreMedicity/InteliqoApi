@@ -5,7 +5,7 @@ const { empDeptdata, empDeptSecdata, empNameBasedata, getFixedByEmid,
     GetEsiStatus, getESIcalculatingamt,
     createAttendanceManual,
     getPaySlipTableData, getEmpEarningData, getEmpFixedWageData,
-    getEmpDeductionData } = require('../payrollprocess/payrollprocess.service');
+    getEmpDeductionData, getAllEarnData } = require('../payrollprocess/payrollprocess.service');
 const logger = require('../../logger/logger')
 module.exports = {
     empDeptdata: (req, res) => {
@@ -499,6 +499,28 @@ module.exports = {
     getEmpDeductionData: (req, res) => {
         const body = req.body
         getEmpDeductionData(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    getAllEarnData: (req, res) => {
+        const body = req.body
+        getAllEarnData(body, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
                 return res.status(400).json({
