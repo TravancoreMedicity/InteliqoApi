@@ -2,7 +2,8 @@ const router = require("express").Router();
 const { checkToken } = require("../../auth/token_validation");
 const { createearndeduction, updateearndeduction, getEarnDeductByID,
     inactiveEarnDeduct, getEarnDeductBySlno, GetFixedAndEarningWage,
-    getDataByEmpno, createEmpsalRyContractRenew } = require('../employeEarnDeduction/earnDeduction.controller');
+    getDataByEmpno, createEmpsalRyContractRenew, getFixedWage,
+    getEarning, getDeduction, getEmpDataByEmno, getALLData } = require('../employeEarnDeduction/earnDeduction.controller');
 
 router.post("/", checkToken, createearndeduction);
 router.patch("/", checkToken, updateearndeduction);
@@ -12,5 +13,13 @@ router.get("/:id", checkToken, getEarnDeductByID);
 router.post("/getwage", checkToken, GetFixedAndEarningWage);
 router.get("/deductionbyempno/:id", checkToken, getDataByEmpno)
 router.post("/insertSalaryContract", checkToken, createEmpsalRyContractRenew)
+
+
+router.post("/fixed", checkToken, getFixedWage)
+router.post("/earning", checkToken, getEarning)
+router.post("/deduction", checkToken, getDeduction)
+router.get("/getAll/:id", checkToken, getEmpDataByEmno)
+router.post("/all/data", checkToken, getALLData)
+
 
 module.exports = router;

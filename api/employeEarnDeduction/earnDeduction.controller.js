@@ -1,6 +1,7 @@
 const { create, update, checkInsertVal, checkUpdateVal, deleteByID, getDataById,
     getDataBySlno, createWageLog, updateWageLog, GetFixedAndEarningWage,
-    getDataByEmpno, createEmpsalRyContractRenew } = require('../employeEarnDeduction/earnDeduction.service');
+    getDataByEmpno, createEmpsalRyContractRenew, getFixedWage,
+    getEarning, getDeduction, getEmpDataByEmno, getALLData } = require('../employeEarnDeduction/earnDeduction.service');
 const { validateearndeduction } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -264,5 +265,125 @@ module.exports = {
                 message: "Data Created Successfully"
             });
         });
+    },
+    getFixedWage: (req, res) => {
+        const body = req.body;
+        getFixedWage(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    getEarning: (req, res) => {
+        const body = req.body;
+        getEarning(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    getDeduction: (req, res) => {
+        const body = req.body;
+        getDeduction(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+
+    },
+    getEmpDataByEmno: (req, res) => {
+        const id = req.params.id;
+        getEmpDataByEmno(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Results Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    getALLData: (req, res) => {
+        const body = req.body;
+        getALLData(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+
     },
 }

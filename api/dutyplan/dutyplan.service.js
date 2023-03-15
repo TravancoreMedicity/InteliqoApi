@@ -77,10 +77,14 @@ module.exports = {
             hrm_emp_master.em_doj,
             hrm_emp_contract_detl.em_cont_start,
             hrm_emp_master.contract_status,
-            hrm_emp_master.gross_salary
+            hrm_emp_master.gross_salary,
+             dept_name, 
+            sect_name
             FROM hrm_emp_master
             left join hrm_emp_contract_detl on hrm_emp_contract_detl.em_no = hrm_emp_master.em_no and hrm_emp_contract_detl.status = 0
-            where hrm_emp_master.em_department=? 
+             inner join hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
+             inner join hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
+            where hrm_emp_master.em_department=?
                 and hrm_emp_master.em_dept_section=?
                 and hrm_emp_master.em_status=1
                 and hrm_emp_master.em_no not in (1 ,2) `,
