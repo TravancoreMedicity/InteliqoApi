@@ -2,7 +2,8 @@ const pool = require('../../config/database');
 module.exports = {
     getleaverequestdep: (data, callBack) => {
         pool.query(
-            `SELECT leave_slno,
+            `SELECT 
+			leave_slno,
             hrm_leave_request.dept_section,
             lve_uniq_no,
             leave_date,
@@ -16,8 +17,9 @@ module.exports = {
             hr_aprrv_requ,
             hr_apprv_status,
             ceo_req_status,inc_apprv_cmnt,hod_apprv_cmnt,hr_apprv_cmnt,
-            ceo_apprv_status,
-            longleave_spclleave
+            ceo_apprv_status, 
+            longleave_spclleave,
+            case when incapprv_status=0 then 'Approval Pending' when incapprv_status=1 then 'Incharge Approved'   end as 'status'
             FROM medi_hrm.hrm_leave_request 
             left join hrm_emp_master on  hrm_leave_request.em_no =hrm_emp_master.em_no
             left join hrm_department on  hrm_leave_request.dept_id =hrm_department.dept_id
@@ -44,7 +46,8 @@ module.exports = {
             cf_inc_apprv_req,
             cf_incapprv_status,
             cf_hod_apprv_req,
-            cf_hod_apprv_status,cf_hr_apprv_status,cf_hr_aprrv_requ,cf_ceo_req_status,cf_ceo_apprv_status,cf_inc_apprv_cmnt,cf_hod_apprv_cmnt,cf_hr_apprv_cmnt
+            cf_hod_apprv_status,cf_hr_apprv_status,cf_hr_aprrv_requ,cf_ceo_req_status,cf_ceo_apprv_status,cf_inc_apprv_cmnt,cf_hod_apprv_cmnt,cf_hr_apprv_cmnt,
+             case when cf_incapprv_status=0 then 'Approval Pending' when cf_incapprv_status=1 then 'Incharge Approved'   end as 'status'
             FROM medi_hrm.comp_off_request 
             left join hrm_emp_master on  comp_off_request.em_no =hrm_emp_master.em_no
             left join hrm_department on  comp_off_request.em_department =hrm_department.dept_id
@@ -62,17 +65,18 @@ module.exports = {
     halfrequst: (data, callBack) => {
         pool.query(
             `SELECT half_slno,planslno,requestdate,dept_name,hrm_halfdayrequest.em_no,em_name,hf_incapprv_status,hrm_halfdayrequest.dept_section, 
-                        hf_inc_apprv_req,
-                        hf_incapprv_status,
-                        hf_hod_apprv_req,
-                        hf_hod_apprv_status,
-                        hf_hr_aprrv_requ,
-                        hf_hr_apprv_status,
-                        hf_ceo_apprv_status,hf_ceo_req_status
-                        FROM medi_hrm.hrm_halfdayrequest
-                                    left join hrm_emp_master on  hrm_halfdayrequest.em_no =hrm_emp_master.em_no
-                                    left join hrm_department on  hrm_halfdayrequest.dept_id =hrm_department.dept_id
-                                    where hrm_halfdayrequest.dept_section In (?) and lv_cancel_status=0 and hf_hr_apprv_status!=1`,
+            hf_inc_apprv_req,
+            hf_incapprv_status,
+            hf_hod_apprv_req,
+            hf_hod_apprv_status,
+            hf_hr_aprrv_requ,
+            hf_hr_apprv_status,
+            hf_ceo_apprv_status,hf_ceo_req_status,
+             case when hf_incapprv_status=0 then 'Approval Pending' when hf_incapprv_status=1 then 'Incharge Approved'   end as 'status'
+            FROM medi_hrm.hrm_halfdayrequest
+                        left join hrm_emp_master on  hrm_halfdayrequest.em_no =hrm_emp_master.em_no
+                        left join hrm_department on  hrm_halfdayrequest.dept_id =hrm_department.dept_id
+                        where hrm_halfdayrequest.dept_section In (?) and lv_cancel_status=0 and hf_hr_apprv_status!=1`,
             [
                 data
             ],
@@ -87,9 +91,11 @@ module.exports = {
     },
     nopunchreq: (data, callBack) => {
         pool.query(
-            `SELECT nopunch_slno,plan_slno,shift_id,nopunchrequest.em_no,punslno,dept_name,np_incapprv_status, em_name, 
+            `
+            SELECT nopunch_slno,plan_slno,shift_id,nopunchrequest.em_no,punslno,dept_name,np_incapprv_status, em_name, 
             np_inc_apprv_req,np_incapprv_status,np_hod_apprv_req,np_hod_apprv_status,np_hr_aprrv_requ,
-            np_hr_apprv_status,np_ceo_apprv_status,np_ceo_req_status,nopunchrequest.em_dept_section
+            np_hr_apprv_status,np_ceo_apprv_status,np_ceo_req_status,nopunchrequest.em_dept_section,
+             case when np_incapprv_status=0 then 'Approval Pending' when np_incapprv_status=1 then 'Incharge Approved'   end as 'status'
                         FROM medi_hrm.nopunchrequest
                        left join hrm_emp_master on  nopunchrequest.em_no =hrm_emp_master.em_no
                        left join hrm_department on  nopunchrequest.em_department =hrm_department.dept_id
@@ -113,6 +119,7 @@ module.exports = {
             lve_uniq_no,
             leavetodate,
             leave_reason,
+            no_of_leave,
              "Leave Request" reqtype FROM medi_hrm.hrm_leave_request where leave_slno=?`,
             [data],
             (error, results, feilds) => {
@@ -196,7 +203,8 @@ module.exports = {
     },
     inchargeapprv: (data, callBack) => {
         pool.query(
-            `UPDATE hrm_leave_request SET incapprv_status =?,
+            `UPDATE hrm_leave_request 
+            SET incapprv_status =?,
             inc_apprv_cmnt=?,
             inc_apprv_time=? 
             WHERE leave_slno=?`,
@@ -238,7 +246,8 @@ module.exports = {
     },
     inchargeapprvNopunch: (data, callBack) => {
         pool.query(
-            `UPDATE nopunchrequest SET np_incapprv_status =?,
+            `UPDATE nopunchrequest 
+            SET np_incapprv_status =?,
             np_inc_apprv_cmnt=?,
             np_inc_apprv_time=? 
             WHERE nopunch_slno=?`,
@@ -832,26 +841,26 @@ module.exports = {
 
     getCeoPending: (callBack) => {
         pool.query(
-            `SELECT leave_slno,dept_section,
-            lve_uniq_no,
-            leave_date,
-            hrm_leave_request.em_no,
-            dept_name,incapprv_status,
-            em_name ,
-            inc_apprv_req,
-            incapprv_status,
-            hod_apprv_req,
-            hod_apprv_status,
-            hr_aprrv_requ,
-            hr_apprv_status,
-            ceo_req_status,inc_apprv_cmnt,hod_apprv_cmnt,hr_apprv_cmnt,
-            ceo_apprv_status,
-            longleave_spclleave
-            FROM medi_hrm.hrm_leave_request 
-            left join hrm_emp_master on  hrm_leave_request.em_no =hrm_emp_master.em_no
-            left join hrm_department on  hrm_leave_request.dept_id =hrm_department.dept_id
-            where  lv_cancel_status=0 and hr_apprv_status='0' and ((inc_apprv_req=1 AND incapprv_status=1) OR inc_apprv_req=0) AND
-           ((hod_apprv_req=1 AND hod_apprv_status=1 )OR hod_apprv_status=0) and lv_cancel_status_user=0;`,
+            `SELECT leave_slno,
+            dept_section,
+                        lve_uniq_no,
+                        leave_date,
+                        hrm_leave_request.em_no,
+                        dept_name,incapprv_status,
+                        em_name ,
+                        inc_apprv_req,
+                        incapprv_status,
+                        hod_apprv_req,
+                        hod_apprv_status,
+                        hr_aprrv_requ,
+                        hr_apprv_status,
+                        ceo_req_status,inc_apprv_cmnt,hod_apprv_cmnt,hr_apprv_cmnt,
+                        ceo_apprv_status,
+                        longleave_spclleave
+                        FROM medi_hrm.hrm_leave_request 
+                        inner join hrm_emp_master on  hrm_leave_request.em_no =hrm_emp_master.em_no
+                        inner join hrm_department on  hrm_leave_request.dept_id =hrm_department.dept_id
+                        where  lv_cancel_status=0 and hr_apprv_status=0 and ceo_req_status=1;`,
             [],
             (error, results, feilds) => {
                 if (error) {
@@ -881,8 +890,7 @@ module.exports = {
             FROM medi_hrm.hrm_leave_request 
             left join hrm_emp_master on  hrm_leave_request.em_no =hrm_emp_master.em_no
             left join hrm_department on  hrm_leave_request.dept_id =hrm_department.dept_id
-            where  lv_cancel_status=0 and (hr_apprv_status='0'or  hr_apprv_status='1')  and ((inc_apprv_req=1 AND incapprv_status=1) OR inc_apprv_req=0) AND
-           ((hod_apprv_req=1 AND hod_apprv_status=1 )OR hod_apprv_status=0) and lv_cancel_status_user=0;`,
+            where  lv_cancel_status=0 and hr_aprrv_requ=1 and lv_cancel_status_user=0;`,
             [],
             (error, results, feilds) => {
                 if (error) {
@@ -951,8 +959,7 @@ module.exports = {
                         FROM medi_hrm.nopunchrequest
                        left join hrm_emp_master on  nopunchrequest.em_no =hrm_emp_master.em_no
                        left join hrm_department on  nopunchrequest.em_department =hrm_department.dept_id
-                       where lv_cancel_status=0  and np_hr_apprv_status!=1 and ((np_inc_apprv_req=1 AND np_incapprv_status=1) OR np_inc_apprv_req=0) AND
-            ((np_hod_apprv_req=1 AND np_hod_apprv_status=1 )OR np_hod_apprv_req=0);`,
+                       where lv_cancel_status=0  and np_hr_apprv_status!=1 and np_ceo_req_status=1;`,
             [],
             (error, results, feilds) => {
                 if (error) {
@@ -987,7 +994,8 @@ module.exports = {
             leave_date,
             comp_off_request.em_no,
             dept_name,cf_incapprv_status,
-            em_name,em_dept_section,
+            em_name,
+            comp_off_request.em_dept_section,
             cf_inc_apprv_req,
             cf_incapprv_status,
             cf_hod_apprv_req,
@@ -995,8 +1003,7 @@ module.exports = {
             FROM medi_hrm.comp_off_request 
             left join hrm_emp_master on  comp_off_request.em_no =hrm_emp_master.em_no
             left join hrm_department on  comp_off_request.em_department =hrm_department.dept_id
-            where  lv_cancel_status=0 and cf_hr_apprv_status!=1  and ((cf_inc_apprv_req=1 AND cf_incapprv_status=1) OR cf_inc_apprv_req=0) AND
-            ((cf_hod_apprv_req=1 AND cf_hod_apprv_status=1 )OR cf_hod_apprv_req=0);`,
+            where  lv_cancel_status=0 and cf_hr_apprv_status!=1  and cf_ceo_req_status=1;`,
             [],
             (error, results, feilds) => {
                 if (error) {
@@ -1021,8 +1028,7 @@ module.exports = {
             FROM medi_hrm.comp_off_request 
             left join hrm_emp_master on  comp_off_request.em_no =hrm_emp_master.em_no
             left join hrm_department on  comp_off_request.em_department =hrm_department.dept_id
-            where  lv_cancel_status=0 and (cf_hr_apprv_status!=1 or  cf_hr_apprv_status=1 ) and ((cf_inc_apprv_req=1 AND cf_incapprv_status=1) OR cf_inc_apprv_req=0) AND
-            ((cf_hod_apprv_req=1 AND cf_hod_apprv_status=1 )OR cf_hod_apprv_req=0) and ((cf_ceo_req_status=1 AND cf_ceo_apprv_status=1) OR cf_ceo_req_status=0);`,
+            where  lv_cancel_status=0 and cf_hr_aprrv_requ=1 and  cf_hr_apprv_status=0 `,
             [],
             (error, results, feilds) => {
                 if (error) {
@@ -1125,5 +1131,275 @@ module.exports = {
             }
         )
     },
-
+    AllList: (data, callBack) => {
+        pool.query(
+            `
+            SELECT *, ROW_NUMBER() OVER() ROW_NUM
+              FROM (
+                    SELECT 
+                        hrm_leave_request.em_no, 
+                        em_name, 
+                        sect_name ,
+                        "LR"  typename,
+                        1 as reqtype,
+                                    inc_apprv_req as increq,
+                        incapprv_status as incaprv
+                        FROM medi_hrm.hrm_leave_request
+                        inner join hrm_emp_master on hrm_leave_request.em_no=hrm_emp_master.em_no
+                        inner join hrm_dept_section on hrm_leave_request.dept_section=hrm_dept_section.sect_id
+                        where hrm_dept_section.sect_id in (?)  and inc_apprv_req=1
+                        union all
+                       SELECT 
+                        hrm_halfdayrequest.em_no, 
+                        em_name ,
+                        sect_name,
+                        "HR"  typename,
+                        2 as reqtype,
+                        hf_inc_apprv_req as increq,
+            hf_incapprv_status as incaprv
+                        FROM medi_hrm.hrm_halfdayrequest
+                        inner join hrm_emp_master on hrm_halfdayrequest.em_no=hrm_emp_master.em_no
+                        inner join hrm_dept_section on hrm_halfdayrequest.dept_section=hrm_dept_section.sect_id
+                        and hrm_halfdayrequest.dept_section in(1) and hf_inc_apprv_req=1
+                        union all
+                       SELECT 
+            nopunchrequest.em_no,
+            em_name ,
+            sect_name ,
+            "NPR" typename,
+             3 as reqtype,
+             np_inc_apprv_req as increq,
+            np_incapprv_status as incaprv
+            FROM medi_hrm.nopunchrequest
+            inner join hrm_emp_master on nopunchrequest.em_no=hrm_emp_master.em_no
+            inner join hrm_dept_section on nopunchrequest.em_dept_section=hrm_dept_section.sect_id
+            where nopunchrequest.em_dept_section in (?) and np_inc_apprv_req=1
+                        union all
+                        SELECT 
+            comp_off_request.em_no,
+            em_name ,
+            sect_name ,
+            "COFF" typename,
+             4 as reqtype,
+             cf_inc_apprv_req as increq,
+            cf_incapprv_status as incaprv
+            FROM medi_hrm.comp_off_request
+            inner join hrm_emp_master on comp_off_request.em_no=hrm_emp_master.em_no
+            inner join hrm_dept_section on comp_off_request.em_dept_section=hrm_dept_section.sect_id
+            where comp_off_request.em_dept_section in (?) and cf_inc_apprv_req=1
+                   ) a`,
+            [
+                data,
+                data,
+                data,
+                data
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    AllListHOD: (data, callBack) => {
+        pool.query(
+            `SELECT *, ROW_NUMBER() OVER() ROW_NUM
+            FROM (
+                  SELECT 
+                      hrm_leave_request.em_no, 
+                      em_name, 
+                      sect_name ,
+                      "LR"  typename,
+                      1 as reqtype,
+                        hod_apprv_req as hod_req,
+                      hod_apprv_status as hodaprv
+                      FROM medi_hrm.hrm_leave_request
+                      inner join hrm_emp_master on hrm_leave_request.em_no=hrm_emp_master.em_no
+                      inner join hrm_dept_section on hrm_leave_request.dept_section=hrm_dept_section.sect_id
+                      where hrm_dept_section.sect_id in (?)  and hod_apprv_req=1
+                      union all
+                     SELECT 
+                      hrm_halfdayrequest.em_no, 
+                      em_name ,
+                      sect_name,
+                      "HR"  typename,
+                      2 as reqtype,
+          hf_hod_apprv_req as hod_req,
+          hf_hod_apprv_status as hodaprv
+                      FROM medi_hrm.hrm_halfdayrequest
+                      inner join hrm_emp_master on hrm_halfdayrequest.em_no=hrm_emp_master.em_no
+                      inner join hrm_dept_section on hrm_halfdayrequest.dept_section=hrm_dept_section.sect_id
+                      and hrm_halfdayrequest.dept_section in(?) and hf_hod_apprv_req=1
+                      union all
+                     SELECT 
+          nopunchrequest.em_no,
+          em_name ,
+          sect_name ,
+          "NPR" typename,
+           3 as reqtype,
+          np_hod_apprv_req as hod_req,
+          np_hod_apprv_status as hodaprv
+          FROM medi_hrm.nopunchrequest
+          inner join hrm_emp_master on nopunchrequest.em_no=hrm_emp_master.em_no
+          inner join hrm_dept_section on nopunchrequest.em_dept_section=hrm_dept_section.sect_id
+          where nopunchrequest.em_dept_section in (?) and np_hod_apprv_req=1
+                      union all
+                      SELECT 
+          comp_off_request.em_no,
+          em_name ,
+          sect_name ,
+          "COFF" typename,
+           4 as reqtype,
+          cf_hod_apprv_req as hod_req,
+          cf_hod_apprv_status as hodaprv
+          FROM medi_hrm.comp_off_request
+          inner join hrm_emp_master on comp_off_request.em_no=hrm_emp_master.em_no
+          inner join hrm_dept_section on comp_off_request.em_dept_section=hrm_dept_section.sect_id
+          where comp_off_request.em_dept_section in (?) and cf_hod_apprv_req=1
+                 ) a`,
+            [
+                data,
+                data,
+                data,
+                data
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    AllListCeo: (callBack) => {
+        pool.query(
+            `SELECT *, ROW_NUMBER() OVER() ROW_NUM
+            FROM (
+                  SELECT 
+                      hrm_leave_request.em_no, 
+                      em_name, 
+                      sect_name ,
+                      "LR"  typename,
+                      1 as reqtype,
+                        ceo_req_status as ceo_req,
+                      ceo_apprv_status as ceo_apprv
+                      FROM medi_hrm.hrm_leave_request
+                      inner join hrm_emp_master on hrm_leave_request.em_no=hrm_emp_master.em_no
+                      inner join hrm_dept_section on hrm_leave_request.dept_section=hrm_dept_section.sect_id
+                      where  ceo_req_status=1
+                      union all
+                     SELECT 
+                      hrm_halfdayrequest.em_no, 
+                      em_name ,
+                      sect_name,
+                      "HR"  typename,
+                      2 as reqtype,
+           hf_ceo_req_status as ceo_req,
+          hf_ceo_apprv_status as ceo_apprv
+                      FROM medi_hrm.hrm_halfdayrequest
+                      inner join hrm_emp_master on hrm_halfdayrequest.em_no=hrm_emp_master.em_no
+                      inner join hrm_dept_section on hrm_halfdayrequest.dept_section=hrm_dept_section.sect_id
+                      and hf_ceo_req_status=1
+                      union all
+                     SELECT 
+          nopunchrequest.em_no,
+          em_name ,
+          sect_name ,
+          "NPR" typename,
+           3 as reqtype,
+           np_ceo_req_status as ceo_req,
+          np_ceo_apprv_status as ceo_apprv
+          FROM medi_hrm.nopunchrequest
+          inner join hrm_emp_master on nopunchrequest.em_no=hrm_emp_master.em_no
+          inner join hrm_dept_section on nopunchrequest.em_dept_section=hrm_dept_section.sect_id
+          where np_ceo_req_status=1
+                      union all
+                      SELECT 
+          comp_off_request.em_no,
+          em_name ,
+          sect_name ,
+          "COFF" typename,
+           4 as reqtype,
+           cf_ceo_req_status as ceo_req,
+          cf_ceo_apprv_status as ceo_apprv
+          FROM medi_hrm.comp_off_request
+          inner join hrm_emp_master on comp_off_request.em_no=hrm_emp_master.em_no
+          inner join hrm_dept_section on comp_off_request.em_dept_section=hrm_dept_section.sect_id
+          where  cf_ceo_req_status=1
+                 ) a`,
+            [],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    AllListHr: (callBack) => {
+        pool.query(
+            `SELECT *, ROW_NUMBER() OVER() ROW_NUM
+            FROM (
+                  SELECT 
+                      hrm_leave_request.em_no, 
+                      em_name, 
+                      sect_name ,
+                      "LR"  typename,
+                      1 as reqtype,
+                        hr_aprrv_requ as hrreq,
+                      hr_apprv_status as hr_apprv
+                      FROM medi_hrm.hrm_leave_request
+                      inner join hrm_emp_master on hrm_leave_request.em_no=hrm_emp_master.em_no
+                      inner join hrm_dept_section on hrm_leave_request.dept_section=hrm_dept_section.sect_id
+                      where  hr_aprrv_requ=1
+                      union all
+                     SELECT 
+                      hrm_halfdayrequest.em_no, 
+                      em_name ,
+                      sect_name,
+                      "HR"  typename,
+                      2 as reqtype,
+           hf_hr_aprrv_requ as hrreq,
+          hf_hr_aprrv_requ as hr_apprv
+                      FROM medi_hrm.hrm_halfdayrequest
+                      inner join hrm_emp_master on hrm_halfdayrequest.em_no=hrm_emp_master.em_no
+                      inner join hrm_dept_section on hrm_halfdayrequest.dept_section=hrm_dept_section.sect_id
+                      and hf_hr_aprrv_requ=1
+                      union all
+                     SELECT 
+          nopunchrequest.em_no,
+          em_name ,
+          sect_name ,
+          "NPR" typename,
+           3 as reqtype,
+           np_hr_aprrv_requ as hrreq,
+          np_hr_apprv_status as hr_apprv
+          FROM medi_hrm.nopunchrequest
+          inner join hrm_emp_master on nopunchrequest.em_no=hrm_emp_master.em_no
+          inner join hrm_dept_section on nopunchrequest.em_dept_section=hrm_dept_section.sect_id
+          where np_hr_aprrv_requ=1
+                      union all
+                      SELECT 
+          comp_off_request.em_no,
+          em_name ,
+          sect_name ,
+          "COFF" typename,
+           4 as reqtype,
+           cf_hr_aprrv_requ as hrreq,
+          cf_hr_apprv_status as hr_apprv
+          FROM medi_hrm.comp_off_request
+          inner join hrm_emp_master on comp_off_request.em_no=hrm_emp_master.em_no
+          inner join hrm_dept_section on comp_off_request.em_dept_section=hrm_dept_section.sect_id
+          where  cf_hr_aprrv_requ=1
+                 ) a`,
+            [],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }

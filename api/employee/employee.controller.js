@@ -165,7 +165,8 @@ module.exports = {
                     token: jsontoken,
                     user: results.emp_username,
                     emp_no: results.emp_no,
-                    emp_id: results.emp_id
+                    emp_id: results.emp_id,
+
                 });
             } else {
                 return res.json({
