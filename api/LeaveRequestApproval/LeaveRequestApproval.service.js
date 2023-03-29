@@ -18,8 +18,7 @@ module.exports = {
             hr_apprv_status,
             ceo_req_status,inc_apprv_cmnt,hod_apprv_cmnt,hr_apprv_cmnt,
             ceo_apprv_status, 
-            longleave_spclleave,
-            case when incapprv_status=0 then 'Approval Pending' when incapprv_status=1 then 'Incharge Approved'   end as 'status'
+            longleave_spclleave
             FROM medi_hrm.hrm_leave_request 
             left join hrm_emp_master on  hrm_leave_request.em_no =hrm_emp_master.em_no
             left join hrm_department on  hrm_leave_request.dept_id =hrm_department.dept_id
@@ -71,8 +70,7 @@ module.exports = {
             hf_hod_apprv_status,
             hf_hr_aprrv_requ,
             hf_hr_apprv_status,
-            hf_ceo_apprv_status,hf_ceo_req_status,
-             case when hf_incapprv_status=0 then 'Approval Pending' when hf_incapprv_status=1 then 'Incharge Approved'   end as 'status'
+            hf_ceo_apprv_status,hf_ceo_req_status
             FROM medi_hrm.hrm_halfdayrequest
                         left join hrm_emp_master on  hrm_halfdayrequest.em_no =hrm_emp_master.em_no
                         left join hrm_department on  hrm_halfdayrequest.dept_id =hrm_department.dept_id
@@ -120,6 +118,15 @@ module.exports = {
             leavetodate,
             leave_reason,
             no_of_leave,
+            hod_apprv_req,
+            hod_apprv_status,
+            hod_apprv_cmnt,
+            hod_apprv_time,
+            inc_apprv_req,
+            incapprv_status,
+            inc_apprv_cmnt,
+            ceo_req_status,
+            ceo_apprv_status,
              "Leave Request" reqtype FROM medi_hrm.hrm_leave_request where leave_slno=?`,
             [data],
             (error, results, feilds) => {
@@ -156,6 +163,12 @@ module.exports = {
             half_slno,
             leavedate,
             month,
+            hf_inc_apprv_req,
+            hf_incapprv_status,
+            hf_hod_apprv_req,
+            hf_hod_apprv_status,
+            hf_ceo_req_status,
+            hf_ceo_apprv_status,
             hf_reason FROM medi_hrm.hrm_halfdayrequest where half_slno=?`,
             [data],
             (error, results, feilds) => {
@@ -169,10 +182,17 @@ module.exports = {
     },
     getnopunchreq: (data, callBack) => {
         pool.query(
-            `SELECT nopunch_slno,checkintime,
-            checkouttime,nopunchdate,
-            creteddate,checkinflag,
-            checkoutflag,np_reason
+            `SELECT 
+            nopunch_slno,
+            checkintime,
+            checkouttime,
+            nopunchdate,
+            creteddate,
+            checkinflag,
+            checkoutflag,
+            np_reason,
+            np_inc_apprv_req,
+            np_incapprv_status
              FROM medi_hrm.nopunchrequest 
              where nopunch_slno=?`,
             [data],
@@ -187,8 +207,14 @@ module.exports = {
     },
     compensatoryoffdata: (data, callBack) => {
         pool.query(
-            `SELECT leave_date,cmp_off_reqid,
-            durationpunch,reqtype_name,cf_reason
+            `SELECT 
+            leave_date,
+            cmp_off_reqid,
+            durationpunch,
+            reqtype_name,
+            cf_reason,
+            cf_inc_apprv_req,
+            cf_incapprv_status
              FROM medi_hrm.comp_off_request 
              where cmp_off_reqid=?`,
             [data],
@@ -860,7 +886,7 @@ module.exports = {
                         FROM medi_hrm.hrm_leave_request 
                         inner join hrm_emp_master on  hrm_leave_request.em_no =hrm_emp_master.em_no
                         inner join hrm_department on  hrm_leave_request.dept_id =hrm_department.dept_id
-                        where  lv_cancel_status=0 and ceo_apprv_status=0 and ceo_req_status=1;`,
+                        where  lv_cancel_status=0 and ceo_req_status=1;`,
             [],
             (error, results, feilds) => {
                 if (error) {
@@ -915,7 +941,7 @@ module.exports = {
             FROM medi_hrm.hrm_halfdayrequest
                         inner join hrm_emp_master on  hrm_halfdayrequest.em_no =hrm_emp_master.em_no
                         inner join hrm_department on  hrm_halfdayrequest.dept_id =hrm_department.dept_id
-                        where  lv_cancel_status=0 and hf_ceo_req_status=1  and hf_ceo_apprv_status=0;`,
+                        where  lv_cancel_status=0 and hf_ceo_req_status=1;`,
             [],
             (error, results, feilds) => {
                 if (error) {
@@ -939,8 +965,7 @@ module.exports = {
             FROM medi_hrm.hrm_halfdayrequest
                         left join hrm_emp_master on  hrm_halfdayrequest.em_no =hrm_emp_master.em_no
                         left join hrm_department on  hrm_halfdayrequest.dept_id =hrm_department.dept_id
-                        where  lv_cancel_status=0 and (hf_hr_apprv_status!=1 OR hf_hr_apprv_status=1)  and ((hf_inc_apprv_req=1 AND hf_incapprv_status=1) OR hf_inc_apprv_req=0) AND
-            ((hf_hod_apprv_req=1 AND hf_hod_apprv_status=1 )OR hf_hod_apprv_req=0) AND ((hf_ceo_req_status=1 AND hf_ceo_apprv_status=1 )OR hf_ceo_req_status=0);`,
+                        where  lv_cancel_status=0 and hf_hr_aprrv_requ=1 AND hf_hr_apprv_status=0;`,
             [],
             (error, results, feilds) => {
                 if (error) {
@@ -958,7 +983,7 @@ module.exports = {
                         FROM medi_hrm.nopunchrequest
                        left join hrm_emp_master on  nopunchrequest.em_no =hrm_emp_master.em_no
                        left join hrm_department on  nopunchrequest.em_department =hrm_department.dept_id
-                       where lv_cancel_status=0  and np_hr_apprv_status=0 and np_ceo_req_status=1;`,
+                       where lv_cancel_status=0 and np_ceo_req_status=1;`,
             [],
             (error, results, feilds) => {
                 if (error) {
@@ -1002,7 +1027,7 @@ module.exports = {
             FROM medi_hrm.comp_off_request 
             left join hrm_emp_master on  comp_off_request.em_no =hrm_emp_master.em_no
             left join hrm_department on  comp_off_request.em_department =hrm_department.dept_id
-            where  lv_cancel_status=0 and cf_hr_apprv_status!=1  and cf_ceo_req_status=1;`,
+            where  lv_cancel_status=0 and cf_ceo_req_status=1;`,
             [],
             (error, results, feilds) => {
                 if (error) {

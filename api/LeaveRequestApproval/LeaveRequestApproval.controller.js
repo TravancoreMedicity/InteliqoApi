@@ -270,7 +270,8 @@ module.exports = {
             else {
                 return res.status(200).json({
                     success: 1,
-                    message: "Data Updated Successfully"
+                    message: "Data Updated Successfully",
+                    data: results
                 });
             }
         });
@@ -1020,7 +1021,12 @@ module.exports = {
                     message: err
                 });
             }
-
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
             return res.status(200).json({
                 success: 1,
                 data: results
@@ -1036,7 +1042,12 @@ module.exports = {
                     message: err
                 });
             }
-
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
             return res.status(200).json({
                 success: 1,
                 data: results
@@ -1052,7 +1063,12 @@ module.exports = {
                     message: err
                 });
             }
-
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
             return res.status(200).json({
                 success: 1,
                 data: results
@@ -1068,7 +1084,12 @@ module.exports = {
                     message: err
                 });
             }
-
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
             return res.status(200).json({
                 success: 1,
                 data: results
@@ -1084,7 +1105,12 @@ module.exports = {
                     message: err
                 });
             }
-
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
             return res.status(200).json({
                 success: 1,
                 data: results
@@ -1100,7 +1126,12 @@ module.exports = {
                     message: err
                 });
             }
-
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
             return res.status(200).json({
                 success: 1,
                 data: results
@@ -1116,7 +1147,12 @@ module.exports = {
                     message: err
                 });
             }
-
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
             return res.status(200).json({
                 success: 1,
                 data: results
@@ -1132,7 +1168,12 @@ module.exports = {
                     message: err
                 });
             }
-
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
             return res.status(200).json({
                 success: 1,
                 data: results
