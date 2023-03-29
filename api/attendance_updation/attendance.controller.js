@@ -8,8 +8,9 @@ const { getEmployeeDetl, getEmployeeShiftDetl, getDepartmentShiftMast,
     getpunchmastdataupload, updatePunchDetails, updatePunchdata,
     getattandancecaldata, latecomingupdate, GetEmployeeShiftDetails,
     getPunchDetailsEmp, updatePunchInandPunchOut, updatePunchState,
-    getCommonSettings, updateholidaycredit, updateholidaytaken }
-    = require("../attendance_updation/attendance.service")
+    getCommonSettings, updateholidaycredit, updateholidaytaken,
+    getPunchDataEmCodeWise, getPunchMasterData, getShiftfromPunchMaster,
+    updatePunchMasterData } = require("../attendance_updation/attendance.service")
 //SHIFT DETAILS
 //get the shift details 
 const shiftMasterDetl = (section, cb) => {
@@ -900,5 +901,96 @@ module.exports = {
                 });
             })
     },
+    getPunchDataEmCodeWise: (req, res) => {
+        const body = req.body;
+        getPunchDataEmCodeWise(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
 
+            if (!results) {
+                logger.infoLogger("No Records Found")
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+
+        });
+    },
+    getPunchMasterData: (req, res) => {
+        const body = req.body;
+        getPunchMasterData(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                logger.infoLogger("No Records Found")
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                planData: results
+            });
+
+        });
+    },
+    getShiftfromPunchMaster: (req, res) => {
+        const body = req.body;
+        getShiftfromPunchMaster(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                logger.infoLogger("No Records Found")
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                shiftData: results
+            });
+
+        });
+    },
+    updatePunchMasterData: async (req, res) => {
+        const body = req.body;
+        updatePunchMasterData(body).then(results => {
+            return res.status(200).json({
+                success: 1,
+                message: 'Update Successfully'
+            });
+        }).catch(err => {
+            return res.status(200).json({
+                success: 0,
+                message: "Error Occured , Please Contact HRD / IT"
+            });
+        })
+    },
 }
