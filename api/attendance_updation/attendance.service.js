@@ -30,12 +30,14 @@ module.exports = {
         const { start, end } = empDetl;
         pool.query(
             `SELECT 
-            punch_slno,duty_day,shift_id,emp_id,punch_master.em_no,punch_in,punch_out,duty_status,lvreq_type,leave_type,
-            shift_in,shift_out,hrs_worked,over_time,late_in,early_out,ot_request_flag,ot_request_flag,mis_punch_flag,
-            holiday_flag,gross_salary,duty_worked,offday_falg
+                punch_slno,duty_day,shift_id,emp_id,punch_master.em_no,
+                punch_in,punch_out,duty_status,lvreq_type,leave_type,
+                shift_in,shift_out,hrs_worked,over_time,late_in,
+                early_out,ot_request_flag,ot_request_flag,mis_punch_flag,
+                holiday_flag,gross_salary,duty_worked,offday_falg
             FROM punch_master 
-            left join hrm_emp_master on hrm_emp_master.em_id=punch_master.emp_id
-             WHERE emp_id IN (?) AND  date(duty_day) BETWEEN ? AND ? AND hrm_emp_master.em_no NOT IN (1,2) `,
+            LEFT JOIN hrm_emp_master on hrm_emp_master.em_id=punch_master.emp_id
+            WHERE emp_id IN (?) AND  date(duty_day) BETWEEN ? AND ? AND hrm_emp_master.em_no NOT IN (1,2) `,
             [
                 data,
                 start,
@@ -336,14 +338,19 @@ module.exports = {
     updatePunchInandPunchOut: (data, callBack) => {
         pool.query(
             `update punch_master
-             set punch_in=?,
-            punch_out=?
-            where duty_day=? and em_no=?`,
+                set punch_in=?,
+                    punch_out=?,
+                    hrs_worked = ?,
+                    late_in=?,
+                    early_out =?
+            where punch_slno = ?`,
             [
-                data.punchIn,
-                data.punchOut,
-                data.dutyday,
-                data.empno
+                data.in,
+                data.out,
+                data.hrsInMinuts,
+                data.lateIn,
+                data.earlyOut,
+                data.slno,
             ],
             (error, result, feild) => {
                 if (error) {
@@ -406,10 +413,11 @@ module.exports = {
         return new Promise((resolve, reject) => {
             data.map((val) => {
                 pool.query(
-                    `update hrm_leave_holiday
+                    `update 
+                        hrm_leave_holiday
                     set hl_lv_taken=1
-                    where hl_date=?
-                    and em_no=?`,
+                        where hl_date=?
+                        and em_no=?`,
                     [
                         val.duty_day,
                         val.em_no
@@ -424,5 +432,117 @@ module.exports = {
             })
 
         })
+    },
+    getPunchDataEmCodeWise: (data, callBack) => {
+        pool.query(
+            `SELECT 
+                emp_code,
+                punch_time,
+                punch_state
+            FROM punch_data
+            WHERE punch_time 
+            BETWEEN ? AND ? AND emp_code = ?`,
+            [
+                data.preFromDate,
+                data.preToDate,
+                data.empId.em_no
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getPunchMasterData: (data, callBack) => {
+        pool.query(
+            `SELECT 
+                punch_slno,
+                duty_day,
+                shift_id,
+                emp_id,
+                em_no,
+                punch_in,
+                punch_out,
+                shift_in,
+                shift_out,
+                hrs_worked,
+                late_in,
+                early_out
+            FROM punch_master 
+            WHERE duty_day 
+            BETWEEN ? AND ? 
+            AND em_no = ?`,
+            [
+                data.fromDate,
+                data.toDate,
+                data.empId.em_no
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getShiftfromPunchMaster: (data, callBack) => {
+        pool.query(
+            `SELECT 
+                shft_slno,
+                shft_desc,
+                shft_chkin_time,
+                shft_chkout_time,
+                shft_cross_day,
+                shft_chkin_start,
+                shft_chkin_end,
+                shft_chkout_start,
+                shft_chkout_end,
+                shft_duty_day,
+                night_off_flag
+            FROM hrm_shift_mast 
+            WHERE shft_slno in (?)
+            AND shft_status = 1`,
+            [data],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    updatePunchMasterData: (body) => {
+        return Promise.all(body.map((data) => {
+            return new Promise((resolve, reject) => {
+                pool.query(
+                    `UPDATE punch_master
+                                SET punch_in = ?,
+                                    punch_out = ?,
+                                    hrs_worked =?,
+                                    late_in = ?,
+                                    early_out = ?
+                                WHERE punch_slno = ?`,
+                    [
+                        data.punch_in,
+                        data.punch_out,
+                        data.hrsWrkdInMints,
+                        data.lateIn,
+                        data.earlyOut,
+                        data.punch_slno,
+                    ],
+                    (error, results, fields) => {
+                        if (error) {
+                            return reject(error)
+                        }
+                        return resolve(results)
+                    }
+                )
+
+
+            })
+        })
+        )
     },
 }

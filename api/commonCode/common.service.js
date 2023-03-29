@@ -3,8 +3,7 @@ const pool = require('../../config/database');
 module.exports = {
     getDepartmentName: (callBack) => {
         pool.query(
-            `
-            SELECT 
+            `SELECT 
                 dept_id, dept_name
             FROM
                 hrm_department

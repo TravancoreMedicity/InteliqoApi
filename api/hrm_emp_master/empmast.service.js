@@ -654,12 +654,15 @@ module.exports = {
     },
     getDepartmentSectEmployye: (data, callBack) => {
         pool.query(
-            `select em_id,em_name
+            `select 
+                em_id,
+                em_no,
+                em_name
             from hrm_emp_master
-            where em_dept_section=?
-            and em_department=?
-            and em_branch=1
-            and em_status=1 and em_id!=1 and em_no!=2;`,
+                where em_dept_section=?
+                and em_department=?
+                and em_branch=1
+                and em_status=1 and em_id!=1 and em_no!=2;`,
             [
                 data.em_dept_section,
                 data.em_department
