@@ -8,7 +8,8 @@ const { getleaverequestdep, nopunchreq, halfrequst, getcompenoff,
     updateNoPunchPunchMast, getCofflevdetl, InsertCoffLeaveCalculated, updateNoPunchOUTPunchMast,
     leaveReqCancel, HalfdayCancel, NopunchCancel, CoffCancel, getCeoPending, getHRpending,
     CeoHalfdayPending, HRHalfdayPending, CeoNopunchReq, HrNopunchReq, CeoCoffReq, HrCoffReq,
-    CoffCancelUser, NopunchCancelUser, HalfdayCancelUser, leaveReqCancelUser } = require('../LeaveRequestApproval/LeaveRequestApproval.service');
+    CoffCancelUser, NopunchCancelUser, HalfdayCancelUser, leaveReqCancelUser,
+    AllList, AllListHOD, AllListCeo, AllListHr } = require('../LeaveRequestApproval/LeaveRequestApproval.service');
 const { validationinchageapprv } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -269,7 +270,8 @@ module.exports = {
             else {
                 return res.status(200).json({
                     success: 1,
-                    message: "Data Updated Successfully"
+                    message: "Data Updated Successfully",
+                    data: results
                 });
             }
         });
@@ -1019,7 +1021,12 @@ module.exports = {
                     message: err
                 });
             }
-
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
             return res.status(200).json({
                 success: 1,
                 data: results
@@ -1035,7 +1042,12 @@ module.exports = {
                     message: err
                 });
             }
-
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
             return res.status(200).json({
                 success: 1,
                 data: results
@@ -1051,7 +1063,12 @@ module.exports = {
                     message: err
                 });
             }
-
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
             return res.status(200).json({
                 success: 1,
                 data: results
@@ -1067,7 +1084,12 @@ module.exports = {
                     message: err
                 });
             }
-
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
             return res.status(200).json({
                 success: 1,
                 data: results
@@ -1083,7 +1105,12 @@ module.exports = {
                     message: err
                 });
             }
-
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
             return res.status(200).json({
                 success: 1,
                 data: results
@@ -1099,7 +1126,12 @@ module.exports = {
                     message: err
                 });
             }
-
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
             return res.status(200).json({
                 success: 1,
                 data: results
@@ -1115,7 +1147,12 @@ module.exports = {
                     message: err
                 });
             }
-
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
             return res.status(200).json({
                 success: 1,
                 data: results
@@ -1131,7 +1168,12 @@ module.exports = {
                     message: err
                 });
             }
-
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
             return res.status(200).json({
                 success: 1,
                 data: results
@@ -1260,6 +1302,85 @@ module.exports = {
                     message: "Data Updated Successfully"
                 });
             }
+        });
+    },
+    AllList: (req, res) => {
+        const body = req.body
+        AllList(body, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    AllListHOD: (req, res) => {
+        const body = req.body
+        AllListHOD(body, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    AllListCeo: (req, res) => {
+        AllListCeo((err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+
+    AllListHr: (req, res) => {
+        AllListHr((err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
         });
     },
 }

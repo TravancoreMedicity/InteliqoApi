@@ -202,6 +202,25 @@ module.exports = {
             }
         )
     },
+    getAuthorizationDeptSect: (id, callBack) => {
+        pool.query(
+            `select 
+            dept_section, 
+            sect_name 
+        from hrm_authorization_assign
+            left join hrm_dept_section on hrm_dept_section.sect_id = hrm_authorization_assign.dept_section
+        where emp_id =?`,
+            [
+                id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 
 
 

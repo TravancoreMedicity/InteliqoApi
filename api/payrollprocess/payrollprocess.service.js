@@ -443,4 +443,35 @@ module.exports = {
             }
         )
     },
+    getAllEarnData: (data, callBack) => {
+        pool.query(
+            `select 
+            hrm_emp_earn_deduction.em_no,
+            hrm_emp_earn_deduction.em_id,
+           earning_type_name,
+           em_earning_type,
+           earnded_name,
+           em_salary_desc,
+           em_amount,
+           include_esi,
+           include_lwf,
+           include_pf,
+           include_protax
+             from hrm_emp_earn_deduction
+             inner join hrm_earning_deduction on hrm_emp_earn_deduction.em_salary_desc=hrm_earning_deduction.earnded_id
+             inner join hrm_earning_type on hrm_earning_deduction.erning_type_id=hrm_earning_type.erning_type_id
+             inner join hrm_emp_master on hrm_emp_earn_deduction.em_no=hrm_emp_master.em_no
+             where hrm_emp_master.em_department=? and hrm_emp_master.em_dept_section=?;`,
+            [
+                data.em_department,
+                data.em_dept_section
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }

@@ -1014,6 +1014,7 @@ module.exports = {
             dept_name,
             desg_name,
 			ecat_name, 
+            sect_name,
             case when employee_status is null then 'Employee Approval' when incharge_status is null then 'Incharge Approval' when hod_status is null then "Hod Approval" when ceo_status is null then 'Ceo Approval' end as 'status'
             FROM medi_hrm.hrm_performance_apprsl
             LEFT JOIN hrm_emp_master on hrm_performance_apprsl.em_id=hrm_emp_master.em_id
