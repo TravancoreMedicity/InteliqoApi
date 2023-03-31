@@ -75,6 +75,7 @@ router.patch("/lveReqCancelUser", checkToken, leaveReqCancelUser)
 router.patch("/halfdaycancelReqUser", checkToken, HalfdayCancelUser)
 router.patch("/nopunchCanceluser", checkToken, NopunchCancelUser)
 router.patch("/coffCanceluser", checkToken, CoffCancelUser)
+
 router.post("/Allreq/list", checkToken, AllList)
 router.post("/allHod/list", checkToken, AllListHOD)
 router.post("/allceo/list", checkToken, AllListCeo)

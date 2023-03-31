@@ -158,7 +158,8 @@ module.exports = {
     },
     gethalfdaydetl: (data, callBack) => {
         pool.query(
-            `SELECT em_no,
+            `hrm_halfdayrequest.em_no,
+            em_name,
             requestdate,
             half_slno,
             leavedate,
@@ -169,7 +170,12 @@ module.exports = {
             hf_hod_apprv_status,
             hf_ceo_req_status,
             hf_ceo_apprv_status,
-            hf_reason FROM medi_hrm.hrm_halfdayrequest where half_slno=?`,
+            checkIn,
+            checkOut,
+            hf_reason FROM medi_hrm.hrm_halfdayrequest 
+            inner join hrm_emp_master on  hrm_halfdayrequest.em_no =hrm_emp_master.em_no
+			inner join hrm_department on  hrm_halfdayrequest.dept_id =hrm_department.dept_id
+            where half_slno=?`,
             [data],
             (error, results, feilds) => {
                 if (error) {
@@ -208,14 +214,18 @@ module.exports = {
     compensatoryoffdata: (data, callBack) => {
         pool.query(
             `SELECT 
+			comp_off_request.em_no,
+            em_name,
             leave_date,
             cmp_off_reqid,
             durationpunch,
             reqtype_name,
             cf_reason,
             cf_inc_apprv_req,
-            cf_incapprv_status
+            cf_incapprv_status,
+            reqestdate
              FROM medi_hrm.comp_off_request 
+             inner join hrm_emp_master on comp_off_request.em_id=hrm_emp_master.em_id 
              where cmp_off_reqid=?`,
             [data],
             (error, results, feilds) => {
@@ -886,7 +896,7 @@ module.exports = {
                         FROM medi_hrm.hrm_leave_request 
                         inner join hrm_emp_master on  hrm_leave_request.em_no =hrm_emp_master.em_no
                         inner join hrm_department on  hrm_leave_request.dept_id =hrm_department.dept_id
-                        where  lv_cancel_status=0 and ceo_req_status=1;`,
+                        where  lv_cancel_status=0  and lv_cancel_status_user=0`,
             [],
             (error, results, feilds) => {
                 if (error) {
@@ -941,7 +951,7 @@ module.exports = {
             FROM medi_hrm.hrm_halfdayrequest
                         inner join hrm_emp_master on  hrm_halfdayrequest.em_no =hrm_emp_master.em_no
                         inner join hrm_department on  hrm_halfdayrequest.dept_id =hrm_department.dept_id
-                        where  lv_cancel_status=0 and hf_ceo_req_status=1;`,
+                        where  lv_cancel_status=0 and lv_cancel_status_user=0`,
             [],
             (error, results, feilds) => {
                 if (error) {
@@ -1027,7 +1037,7 @@ module.exports = {
             FROM medi_hrm.comp_off_request 
             left join hrm_emp_master on  comp_off_request.em_no =hrm_emp_master.em_no
             left join hrm_department on  comp_off_request.em_department =hrm_department.dept_id
-            where  lv_cancel_status=0 and cf_ceo_req_status=1;`,
+            where  lv_cancel_status=0 and lv_cancel_status_user=0;`,
             [],
             (error, results, feilds) => {
                 if (error) {
