@@ -156,9 +156,9 @@ module.exports = {
         )
 
     },
-    gethalfdaydetl: (data, callBack) => {
+    gethalfdaydetl: (id, callBack) => {
         pool.query(
-            `hrm_halfdayrequest.em_no,
+            `select hrm_halfdayrequest.em_no,
             em_name,
             requestdate,
             half_slno,
@@ -176,7 +176,7 @@ module.exports = {
             inner join hrm_emp_master on  hrm_halfdayrequest.em_no =hrm_emp_master.em_no
 			inner join hrm_department on  hrm_halfdayrequest.dept_id =hrm_department.dept_id
             where half_slno=?`,
-            [data],
+            [id],
             (error, results, feilds) => {
                 if (error) {
                     return callBack(error);
@@ -242,12 +242,14 @@ module.exports = {
             `UPDATE hrm_leave_request 
             SET incapprv_status =?,
             inc_apprv_cmnt=?,
-            inc_apprv_time=? 
+            inc_apprv_time=? ,
+            inc_us_code=?
             WHERE leave_slno=?`,
             [
                 data.status,
                 data.comment,
                 data.apprvdate,
+                data.us_code,
                 data.slno,
             ],
             (error, results, feilds) => {
@@ -264,12 +266,14 @@ module.exports = {
             `UPDATE hrm_halfdayrequest 
             SET hf_incapprv_status =?,
             hf_inc_apprv_cmnt=?,
-            hf_inc_apprv_time=? 
+            hf_inc_apprv_time=? ,
+            hf_inc_us_code=?
             WHERE half_slno=?`,
             [
                 data.status,
                 data.comment,
                 data.apprvdate,
+                data.us_code,
                 data.slno,
             ],
             (error, results, feilds) => {
@@ -285,12 +289,14 @@ module.exports = {
             `UPDATE nopunchrequest 
             SET np_incapprv_status =?,
             np_inc_apprv_cmnt=?,
-            np_inc_apprv_time=? 
+            np_inc_apprv_time=?, 
+            np_inc_us_code=?
             WHERE nopunch_slno=?`,
             [
                 data.status,
                 data.comment,
                 data.apprvdate,
+                data.us_code,
                 data.slno,
             ],
             (error, results, feilds) => {
@@ -306,12 +312,14 @@ module.exports = {
             `UPDATE comp_off_request SET 
             cf_incapprv_status =?,
             cf_inc_apprv_cmnt=?,
-            cf_inc_apprv_time=? 
+            cf_inc_apprv_time=? ,
+            cf_inc_us_code=?
             WHERE cmp_off_reqid=?`,
             [
                 data.status,
                 data.comment,
                 data.apprvdate,
+                data.us_code,
                 data.slno,
             ],
             (error, results, feilds) => {
@@ -326,12 +334,14 @@ module.exports = {
         pool.query(
             `UPDATE hrm_leave_request SET hod_apprv_status =?,
             hod_apprv_cmnt=?,
-            hod_apprv_time=? 
+            hod_apprv_time=? ,
+            hod_us_code=?
             WHERE leave_slno=?`,
             [
                 data.status,
                 data.comment,
                 data.apprvdate,
+                data.us_code,
                 data.slno,
             ],
             (error, results, feilds) => {
@@ -347,12 +357,14 @@ module.exports = {
             `UPDATE hrm_halfdayrequest
              SET hf_hod_apprv_status =?,
             hf_hod_apprv_cmnt=?,
-            hf_hod_apprv_time=? 
+            hf_hod_apprv_time=? ,
+            hf_hod_us_code=?
             WHERE half_slno=?`,
             [
                 data.status,
                 data.comment,
                 data.apprvdate,
+                data.us_code,
                 data.slno,
             ],
             (error, results, feilds) => {
@@ -368,12 +380,14 @@ module.exports = {
             `UPDATE nopunchrequest
              SET np_hod_apprv_status =?,
              np_hod_apprv_cmnt=?,
-             np_hod_apprv_time=? 
+             np_hod_apprv_time=? ,
+             np_hod_us_code=?
             WHERE nopunch_slno=?`,
             [
                 data.status,
                 data.comment,
                 data.apprvdate,
+                data.us_code,
                 data.slno,
             ],
             (error, results, feilds) => {
@@ -389,12 +403,14 @@ module.exports = {
             `UPDATE comp_off_request
              SET cf_hod_apprv_status =?,
              cf_hod_apprv_cmnt=?,
-             cf_hod_apprv_time=? 
+             cf_hod_apprv_time=? ,
+             cf_hod_us_code=?
             WHERE cmp_off_reqid=?`,
             [
                 data.status,
                 data.comment,
                 data.apprvdate,
+                data.us_code,
                 data.slno,
             ],
             (error, results, feilds) => {
@@ -410,12 +426,14 @@ module.exports = {
             `UPDATE hrm_leave_request
              SET ceo_apprv_status =?,
              ceo_apprv_cmnt=?,
-             ceo_apprv_date=? 
+             ceo_apprv_date=? ,
+             ceo_us_code=?
             WHERE leave_slno=?`,
             [
                 data.status,
                 data.comment,
                 data.apprvdate,
+                data.us_code,
                 data.slno
             ],
             (error, results, feilds) => {
@@ -431,12 +449,14 @@ module.exports = {
             `UPDATE hrm_halfdayrequest
              SET hf_ceo_apprv_status =?,
              hf_ceo_apprv_cmnt=?,
-             hf_ceo_apprv_date=? 
+             hf_ceo_apprv_date=? ,
+             hf_ceo_us_code=?
             WHERE half_slno=?`,
             [
                 data.status,
                 data.comment,
                 data.apprvdate,
+                data.us_code,
                 data.slno
             ],
             (error, results, feilds) => {
@@ -452,12 +472,14 @@ module.exports = {
             `UPDATE nopunchrequest
              SET np_ceo_apprv_status =?,
              np_ceo_apprv_cmnt=?,
-             np_ceo_apprv_date=? 
+             np_ceo_apprv_date=? ,
+             np_ceo_us_code=?
             WHERE nopunch_slno=?`,
             [
                 data.status,
                 data.comment,
                 data.apprvdate,
+                data.us_code,
                 data.slno
             ],
             (error, results, feilds) => {
@@ -473,12 +495,14 @@ module.exports = {
             `UPDATE comp_off_request
              SET cf_ceo_apprv_status =?,
              cf_ceo_apprv_cmnt=?,
-             cf_ceo_apprv_date=? 
+             cf_ceo_apprv_date=? ,
+             cf_ceo_us_code=?
             WHERE cmp_off_reqid=?`,
             [
                 data.status,
                 data.comment,
                 data.apprvdate,
+                data.us_code,
                 data.slno,
             ],
             (error, results, feilds) => {
@@ -877,26 +901,36 @@ module.exports = {
 
     getCeoPending: (callBack) => {
         pool.query(
-            `SELECT leave_slno,
+            `SELECT 
+            ROW_NUMBER() OVER () as rslno,
+            leave_slno,
             dept_section,
-                        lve_uniq_no,
-                        leave_date,
-                        hrm_leave_request.em_no,
-                        dept_name,incapprv_status,
-                        em_name ,
-                        inc_apprv_req,
-                        incapprv_status,
-                        hod_apprv_req,
-                        hod_apprv_status,
-                        hr_aprrv_requ,
-                        hr_apprv_status,
-                        ceo_req_status,inc_apprv_cmnt,hod_apprv_cmnt,hr_apprv_cmnt,
-                        ceo_apprv_status,
-                        longleave_spclleave
-                        FROM medi_hrm.hrm_leave_request 
-                        inner join hrm_emp_master on  hrm_leave_request.em_no =hrm_emp_master.em_no
-                        inner join hrm_department on  hrm_leave_request.dept_id =hrm_department.dept_id
-                        where  lv_cancel_status=0  and lv_cancel_status_user=0`,
+                lve_uniq_no,
+                leave_date,
+                hrm_leave_request.em_no,
+                dept_name,
+                em_name ,
+                inc_apprv_req,
+                incapprv_status,
+                hod_apprv_req,
+                hr_aprrv_requ,
+                hr_apprv_status,
+                hr_apprv_cmnt,
+                longleave_spclleave,
+                leavetodate,
+                leave_reason,
+                no_of_leave,
+                hod_apprv_status,
+                hod_apprv_cmnt,
+                hod_apprv_time,
+                inc_apprv_cmnt,
+                ceo_req_status,
+                ceo_apprv_status,
+                request_date
+                FROM medi_hrm.hrm_leave_request 
+                inner join hrm_emp_master on  hrm_leave_request.em_no =hrm_emp_master.em_no
+                inner join hrm_department on  hrm_leave_request.dept_id =hrm_department.dept_id
+                where  lv_cancel_status=0  and lv_cancel_status_user=0`,
             [],
             (error, results, feilds) => {
                 if (error) {
@@ -939,19 +973,33 @@ module.exports = {
 
     CeoHalfdayPending: (callBack) => {
         pool.query(
-            `SELECT half_slno,planslno,requestdate,dept_name,
-            hrm_halfdayrequest.em_no,em_name,hf_incapprv_status,dept_section, 
-            hf_inc_apprv_req,
-            hf_incapprv_status,
-            hf_hod_apprv_req,
-            hf_hod_apprv_status,
-            hf_hr_aprrv_requ,
-            hf_hr_apprv_status,
-            hf_ceo_apprv_status,hf_ceo_req_status
-            FROM medi_hrm.hrm_halfdayrequest
-                        inner join hrm_emp_master on  hrm_halfdayrequest.em_no =hrm_emp_master.em_no
-                        inner join hrm_department on  hrm_halfdayrequest.dept_id =hrm_department.dept_id
-                        where  lv_cancel_status=0 and lv_cancel_status_user=0`,
+            `SELECT 
+            ROW_NUMBER() OVER () as rslno,
+half_slno,
+planslno,
+dept_name,
+hrm_halfdayrequest.em_no,
+em_name,
+hf_incapprv_status,
+dept_section, 
+hf_inc_apprv_req,
+hf_incapprv_status,
+hf_hod_apprv_req,
+hf_hod_apprv_status,
+hf_hr_aprrv_requ,
+hf_hr_apprv_status,
+hf_ceo_apprv_status,
+hf_ceo_req_status,
+requestdate,
+leavedate,
+month,		
+checkIn,
+checkOut,
+hf_reason
+FROM medi_hrm.hrm_halfdayrequest
+inner join hrm_emp_master on  hrm_halfdayrequest.em_no =hrm_emp_master.em_no
+inner join hrm_department on  hrm_halfdayrequest.dept_id =hrm_department.dept_id
+where  lv_cancel_status=0 and lv_cancel_status_user=0`,
             [],
             (error, results, feilds) => {
                 if (error) {
@@ -987,13 +1035,35 @@ module.exports = {
     },
     CeoNopunchReq: (callBack) => {
         pool.query(
-            `SELECT nopunch_slno,plan_slno,shift_id,nopunchrequest.em_no,punslno,dept_name,np_incapprv_status, em_name,nopunchrequest.em_dept_section, 
-            np_inc_apprv_req,np_incapprv_status,np_hod_apprv_req,np_hod_apprv_status,np_hr_aprrv_requ,np_hr_apprv_status,
-            np_ceo_apprv_status,np_ceo_req_status
-                        FROM medi_hrm.nopunchrequest
-                       left join hrm_emp_master on  nopunchrequest.em_no =hrm_emp_master.em_no
-                       left join hrm_department on  nopunchrequest.em_department =hrm_department.dept_id
-                       where lv_cancel_status=0 and np_ceo_req_status=1;`,
+            `SELECT 
+            ROW_NUMBER() OVER () as rslno,
+            nopunch_slno,
+            plan_slno,
+            shift_id,
+            nopunchrequest.em_no,
+            punslno,dept_name,
+            np_incapprv_status, 
+            em_name,
+            nopunchrequest.em_dept_section, 
+            np_inc_apprv_req,
+            np_incapprv_status,
+            np_hod_apprv_req,
+            np_hod_apprv_status,
+            np_hr_aprrv_requ,
+            np_hr_apprv_status,
+            np_ceo_apprv_status,
+            np_ceo_req_status,
+            np_reason,
+            nopunchdate,
+            checkintime,
+            checkouttime,
+            checkinflag,
+            checkoutflag,
+            creteddate
+            FROM medi_hrm.nopunchrequest
+            left join hrm_emp_master on  nopunchrequest.em_no =hrm_emp_master.em_no
+            left join hrm_department on  nopunchrequest.em_department =hrm_department.dept_id
+            where lv_cancel_status=0 and lv_cancel_status_user=0;`,
             [],
             (error, results, feilds) => {
                 if (error) {
@@ -1023,17 +1093,30 @@ module.exports = {
     },
     CeoCoffReq: (callBack) => {
         pool.query(
-            `SELECT cmp_off_reqid,
-            shift_id,em_name,
-            leave_date,
-            comp_off_request.em_no,
-            dept_name,cf_incapprv_status,
+            `SELECT 
+            ROW_NUMBER() OVER () as rslno,
+            cmp_off_reqid,
+            shift_id,
+			comp_off_request.em_no,
             em_name,
-            comp_off_request.em_dept_section,
+			comp_off_request.em_dept_section,
+			dept_name,
+            leave_date,
+             durationpunch,
+            reqtype_name,
+            cf_reason,
+            reqestdate,
             cf_inc_apprv_req,
             cf_incapprv_status,
             cf_hod_apprv_req,
-            cf_hod_apprv_status,cf_hr_apprv_status,cf_hr_aprrv_requ,cf_ceo_req_status,cf_ceo_apprv_status,cf_inc_apprv_cmnt,cf_hod_apprv_cmnt,cf_hr_apprv_cmnt
+            cf_hod_apprv_status,
+            cf_hr_apprv_status,
+            cf_hr_aprrv_requ,
+            cf_ceo_req_status,
+            cf_ceo_apprv_status,
+            cf_inc_apprv_cmnt,
+            cf_hod_apprv_cmnt,
+            cf_hr_apprv_cmnt
             FROM medi_hrm.comp_off_request 
             left join hrm_emp_master on  comp_off_request.em_no =hrm_emp_master.em_no
             left join hrm_department on  comp_off_request.em_department =hrm_department.dept_id
