@@ -429,8 +429,12 @@ module.exports = {
         try {
             data?.map((e) => {
                 pool.query(
-                    `UPDATE hrm_leave_common SET cmn_lv_balance = cmn_lv_balance - ? WHERE llvetype_slno = ? AND em_no = ?`,
+                    `UPDATE hrm_leave_common 
+                        SET cmn_lv_balance = cmn_lv_balance - ?,
+                        cmn_lv_taken = cmn_lv_taken + ?
+                    WHERE llvetype_slno = ? AND em_no = ?`,
                     [
+                        e.count,
                         e.count,
                         e.type,
                         e.em_no

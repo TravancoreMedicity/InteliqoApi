@@ -9,7 +9,8 @@ const { getleaverequestdep, nopunchreq, halfrequst, getcompenoff,
     leaveReqCancel, HalfdayCancel, NopunchCancel, CoffCancel, getCeoPending, getHRpending,
     CeoHalfdayPending, HRHalfdayPending, CeoNopunchReq, HrNopunchReq, CeoCoffReq, HrCoffReq,
     CoffCancelUser, NopunchCancelUser, HalfdayCancelUser, leaveReqCancelUser,
-    AllList, AllListHOD, AllListCeo, AllListHr } = require('../LeaveRequestApproval/LeaveRequestApproval.service');
+    AllList, AllListHOD, AllListCeo, AllListHr,
+    updateCasualLeaveDetlTable, updateNationalHolidayDetlTable, updateEarnLeaveDetlTable, updateCoffDetlTable } = require('../LeaveRequestApproval/LeaveRequestApproval.service');
 const { validationinchageapprv } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -620,13 +621,6 @@ module.exports = {
     },
     HRLeaveApprv: (req, res) => {
         const body = req.body;
-        const body_result = validationinchageapprv.validate(body);
-        if (body_result.error) {
-            return res.status(200).json({
-                success: 2,
-                message: body_result.error.details[0].message
-            });
-        }
         HRLeaveApprv(body, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
@@ -635,35 +629,14 @@ module.exports = {
                     message: err
                 });
             }
-            else if (!results) {
+
+            if (results) {
                 return res.status(200).json({
-                    success: 2,
-                    message: "Record Not Found"
+                    success: 1,
+                    message: "Lve Master table Updated"
                 });
             }
-            else {
-                getlevdetl(body, (err, results) => {
-                    if (err) {
-                        logger.errorLogger(err)
-                        return res.status(200).json({
-                            success: 0,
-                            message: err
-                        });
-                    }
-                    else if (results.length == 0) {
-                        return res.status(200).json({
-                            success: 2,
-                            message: "No Record Found"
-                        });
-                    }
-                    else {
-                        return res.status(200).json({
-                            success: 1,
-                            data: results
-                        });
-                    }
-                })
-            }
+
         });
     },
     HRhalfDay: (req, res) => {
@@ -1382,5 +1355,64 @@ module.exports = {
                 data: results
             });
         });
+    },
+    updateCasualLeaveDetlTable: async (req, res) => {
+        const body = req.body;
+
+        updateCasualLeaveDetlTable(body).then(results => {
+            return res.status(200).json({
+                success: 1,
+                message: 'Update Successfully'
+            });
+        }).catch(err => {
+            return res.status(200).json({
+                success: 0,
+                message: "Error Occured , Please Contact HRD / IT"
+            });
+        })
+    },
+    updateNationalHolidayDetlTable: async (req, res) => {
+        const body = req.body;
+        updateNationalHolidayDetlTable(body).then(results => {
+            return res.status(200).json({
+                success: 1,
+                message: 'Update Successfully'
+            });
+        }).catch(err => {
+            return res.status(200).json({
+                success: 0,
+                message: "Error Occured , Please Contact HRD / IT"
+            });
+        })
+    },
+    updateEarnLeaveDetlTable: async (req, res) => {
+        const body = req.body;
+        updateEarnLeaveDetlTable(body).then(results => {
+            return res.status(200).json({
+                success: 1,
+                message: 'Update Successfully'
+            });
+        }).catch(err => {
+            return res.status(200).json({
+                success: 0,
+                message: "Error Occured , Please Contact HRD / IT"
+            });
+        })
+    },
+    updateCoffDetlTable: async (req, res) => {
+        const body = req.body;
+        updateCoffDetlTable(body).then(results => {
+            console.log(results)
+            return res.status(200).json({
+                success: 1,
+                message: 'Update Successfully'
+            });
+        }).catch(err => {
+            console.log(err)
+            return res.status(200).json({
+                success: 0,
+                message: "Error Occured , Please Contact HRD / IT"
+            });
+        })
     },
 }

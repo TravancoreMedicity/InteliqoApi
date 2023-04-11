@@ -1,4 +1,5 @@
 const pool = require('../../config/database');
+const moment = require('moment');
 module.exports = {
     getleaverequestdep: (data, callBack) => {
         pool.query(
@@ -140,12 +141,7 @@ module.exports = {
     },
     getlevereqdetl: (data, callBack) => {
         pool.query(
-            `SELECT leave_dates,
-             leavetype_name,
-             leave_name 
-             FROM hrm_leave_request_detl,
-             hrm_leave_request 
-             where hrm_leave_request_detl.lve_uniq_no=hrm_leave_request.lve_uniq_no AND leave_slno=?`,
+            `SELECT * FROM hrm_leave_request_detl WHERE lve_uniq_no = ?`,
             [data],
             (error, results, feilds) => {
                 if (error) {
@@ -516,12 +512,14 @@ module.exports = {
     //HR APPROVAL LEAVE request
     HRLeaveApprv: (data, callBack) => {
         pool.query(
-            `UPDATE hrm_leave_request
-             SET hr_apprv_status =?,
-             hr_apprv_cmnt=?,
-             hr_apprv_date=?,
-             hr_uscode=?  
-            WHERE leave_slno=?`,
+            `UPDATE 
+                hrm_leave_request
+             SET 
+                hr_apprv_status =?,
+                hr_apprv_cmnt =?,
+                hr_apprv_date =?,
+                hr_uscode =?  
+            WHERE lve_uniq_no = ?`,
             [
                 data.status,
                 data.comment,
@@ -646,7 +644,7 @@ module.exports = {
                         if (error) {
                             return reject(error);
                         }
-                        return resolve(null, results);
+                        return resolve(results);
                     }
                 )
             })
@@ -1517,6 +1515,128 @@ where  lv_cancel_status=0 and lv_cancel_status_user=0`,
                 }
                 return callBack(null, results);
             }
+        )
+    },
+    updateCasualLeaveDetlTable: (body) => {
+        return Promise.all(body.map((data) => {
+            return new Promise((resolve, reject) => {
+                pool.query(
+                    `UPDATE 
+                        hrm_leave_cl
+                    SET cl_lv_taken = 1,
+                        cl_bal_leave = 0,
+                        hl_lv_tkn_status = 0
+                    WHERE hrm_cl_slno = ?`,
+                    [
+                        data.leave_processid
+                    ],
+                    (error, results, fields) => {
+                        if (error) {
+                            return reject(error)
+                        }
+                        return resolve(results)
+                    }
+                )
+            })
+        })
+        )
+    },
+    updateNationalHolidayDetlTable: (body) => {
+        return Promise.all(body.map((data) => {
+            return new Promise((resolve, reject) => {
+                pool.query(
+                    `UPDATE 
+                        hrm_leave_holiday
+                    SET hl_lv_taken = 1,
+                        hl_lv_tkn_status = 0
+                    WHERE hrm_hl_slno = ?`,
+                    [
+                        data.leave_processid
+                    ],
+                    (error, results, fields) => {
+                        if (error) {
+                            return reject(error)
+                        }
+                        return resolve(results)
+                    }
+                )
+            })
+        })
+        )
+    },
+    updateEarnLeaveDetlTable: (body) => {
+        return Promise.all(body.map((data) => {
+            return new Promise((resolve, reject) => {
+                pool.query(
+                    `UPDATE 
+                        hrm_leave_earnlv
+                    SET ernlv_taken = 1,
+                        hl_lv_tkn_status = 0
+                    WHERE hrm_ernlv_slno = ?`,
+                    [
+                        data.leave_processid
+                    ],
+                    (error, results, fields) => {
+                        if (error) {
+                            return reject(error)
+                        }
+                        return resolve(results)
+                    }
+                )
+            })
+        })
+        )
+    },
+    updateCoffDetlTable: (body) => {
+        return Promise.all(body.map((data) => {
+            return new Promise((resolve, reject) => {
+                pool.query(
+                    `UPDATE 
+                        hrm_leave_calculated
+                    SET
+                        taken = 1,
+                        hl_lv_tkn_status = 0
+                    WHERE hrm_calc_holiday = ?`,
+                    [
+                        data.leave_processid
+                    ],
+                    (error, results, fields) => {
+                        if (error) {
+                            return reject(error)
+                        }
+                        return resolve(results)
+                    }
+                )
+            })
+        })
+        )
+    },
+    updatePunchMasterCL: (body) => {
+        //FOR CASUAL LEAVE 
+        return Promise.all(body.map((data) => {
+            return new Promise((resolve, reject) => {
+                pool.query(
+                    `UPDATE 
+                            punch_master
+                        SET leave_status = 1,
+                            lvereq_desc = 'LV',
+                            duty_desc = 'LV',
+                            lve_tble_updation_flag = 1
+                        WHERE em_no = ? 
+                        AND duty_day = ?`,
+                    [
+                        data.emno,
+                        moment(data.leave_dates).format('YYYY-MM-DD')
+                    ],
+                    (error, results, fields) => {
+                        if (error) {
+                            return reject(error)
+                        }
+                        return resolve(results)
+                    }
+                )
+            })
+        })
         )
     },
 }

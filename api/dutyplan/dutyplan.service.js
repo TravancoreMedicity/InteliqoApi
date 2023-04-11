@@ -263,4 +263,25 @@ module.exports = {
             })
         })
     },
+    checkDutyPlanExcist: (data, callBack) => {
+        pool.query(
+            `SELECT
+                count(punch_slno) plan
+            FROM punch_master
+            WHERE duty_day BETWEEN ? AND ?
+            AND emp_id = ?`,
+            [
+                data.fromDate,
+                data.toDate,
+                data.empId
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                console.log(results)
+                return callBack(null, results[0]);
+            }
+        )
+    }
 }

@@ -1,5 +1,6 @@
 const { getData, getEmpdetl, insertDutyplan, updateDutyPlan,
-    CheckInsertVal, updateDefaultShift, updateWoffShift, updateholiday, getPlanDetl, updateMultiShift } = require('../dutyplan/dutyplan.service');
+    CheckInsertVal, updateDefaultShift, updateWoffShift, updateholiday, getPlanDetl, updateMultiShift,
+    checkDutyPlanExcist } = require('../dutyplan/dutyplan.service');
 const logger = require('../../logger/logger')
 module.exports = {
     getDutyPlan: (req, res) => {
@@ -198,5 +199,30 @@ module.exports = {
                     message: e.sqlMessage
                 });
             })
+    },
+    checkDutyPlanExcist: (req, res) => {
+        const body = req.body;
+        console.log(body)
+        checkDutyPlanExcist(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (results.length === 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
     },
 }
