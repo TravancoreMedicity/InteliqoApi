@@ -991,7 +991,7 @@ module.exports = {
         pool.query(
             `SELECT punch_time FROM medi_hrm.punch_data WHERE emp_code = ? AND punch_time BETWEEN ? AND ?`,
             [
-                id.em_no, id.date2, id.date1
+                id.em_no, id.date2, id.date1,
             ],
             (error, results, feilds) => {
                 if (error) {
