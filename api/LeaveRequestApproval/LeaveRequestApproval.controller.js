@@ -10,7 +10,8 @@ const { getleaverequestdep, nopunchreq, halfrequst, getcompenoff,
     CeoHalfdayPending, HRHalfdayPending, CeoNopunchReq, HrNopunchReq, CeoCoffReq, HrCoffReq,
     CoffCancelUser, NopunchCancelUser, HalfdayCancelUser, leaveReqCancelUser,
     AllList, AllListHOD, AllListCeo, AllListHr,
-    updateCasualLeaveDetlTable, updateNationalHolidayDetlTable, updateEarnLeaveDetlTable, updateCoffDetlTable } = require('../LeaveRequestApproval/LeaveRequestApproval.service');
+    updateCasualLeaveDetlTable, updateNationalHolidayDetlTable, updateEarnLeaveDetlTable, updateCoffDetlTable,
+    updatePunchMasterEsi, updatePunchMasterlwf, updatePunchMasterLeave } = require('../LeaveRequestApproval/LeaveRequestApproval.service');
 const { validationinchageapprv } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -1402,13 +1403,54 @@ module.exports = {
     updateCoffDetlTable: async (req, res) => {
         const body = req.body;
         updateCoffDetlTable(body).then(results => {
-            console.log(results)
             return res.status(200).json({
                 success: 1,
                 message: 'Update Successfully'
             });
         }).catch(err => {
-            console.log(err)
+            return res.status(200).json({
+                success: 0,
+                message: "Error Occured , Please Contact HRD / IT"
+            });
+        })
+    },
+    //UPDATE PUNCH MASTER AFTER
+    updatePunchMasterEsi: async (req, res) => {
+        const body = req.body;
+        updatePunchMasterEsi(body).then(results => {
+            return res.status(200).json({
+                success: 1,
+                message: 'Update Successfully'
+            });
+        }).catch(err => {
+            return res.status(200).json({
+                success: 0,
+                message: "Error Occured , Please Contact HRD / IT"
+            });
+        })
+    },
+    updatePunchMasterlwf: async (req, res) => {
+        const body = req.body;
+        updatePunchMasterlwf(body).then(results => {
+            return res.status(200).json({
+                success: 1,
+                message: 'Update Successfully'
+            });
+        }).catch(err => {
+            return res.status(200).json({
+                success: 0,
+                message: "Error Occured , Please Contact HRD / IT"
+            });
+        })
+    },
+    updatePunchMasterLeave: async (req, res) => {
+        const body = req.body;
+        updatePunchMasterLeave(body).then(results => {
+            return res.status(200).json({
+                success: 1,
+                message: 'Update Successfully'
+            });
+        }).catch(err => {
             return res.status(200).json({
                 success: 0,
                 message: "Error Occured , Please Contact HRD / IT"

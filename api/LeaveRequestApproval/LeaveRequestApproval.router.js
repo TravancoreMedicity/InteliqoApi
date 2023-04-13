@@ -12,7 +12,8 @@ const { getleaverequestdep, nopunchreq, halfrequst, getcompenoff,
     CeoCoffReq, HrCoffReq,
     CoffCancelUser, NopunchCancelUser, HalfdayCancelUser, leaveReqCancelUser,
     AllList, AllListHOD, AllListCeo, AllListHr,
-    updateCasualLeaveDetlTable, updateNationalHolidayDetlTable, updateEarnLeaveDetlTable, updateCoffDetlTable } = require('../LeaveRequestApproval/LeaveRequestApproval.controller');
+    updateCasualLeaveDetlTable, updateNationalHolidayDetlTable, updateEarnLeaveDetlTable, updateCoffDetlTable,
+    updatePunchMasterEsi, updatePunchMasterlwf, updatePunchMasterLeave } = require('../LeaveRequestApproval/LeaveRequestApproval.controller');
 
 router.post("/getleaverequestdep", checkToken, getleaverequestdep)
 router.post("/nopunchreq", checkToken, nopunchreq)
@@ -86,5 +87,9 @@ router.post("/updateCasualLeaveTable", checkToken, updateCasualLeaveDetlTable)
 router.post("/updateHolidayLeaveTable", checkToken, updateNationalHolidayDetlTable)
 router.post("/updateEarnLeaveTable", checkToken, updateEarnLeaveDetlTable)
 router.post("/updatecOffTable", checkToken, updateCoffDetlTable)
+
+router.post("/punchMasterUpdateEsiLeave", checkToken, updatePunchMasterEsi)
+router.post("/punchMasterUpdateLwfLeave", checkToken, updatePunchMasterlwf)
+router.post("/punchMasterUpdateLeave", checkToken, updatePunchMasterLeave)
 
 module.exports = router;

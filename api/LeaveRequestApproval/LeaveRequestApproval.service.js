@@ -1611,8 +1611,67 @@ where  lv_cancel_status=0 and lv_cancel_status_user=0`,
         })
         )
     },
-    updatePunchMasterCL: (body) => {
-        //FOR CASUAL LEAVE 
+    updatePunchMasterEsi: (body) => {
+        console.log(body)
+        //FOR ESI LEAVE
+        return Promise.all(body.map((data) => {
+            return new Promise((resolve, reject) => {
+                pool.query(
+                    `UPDATE 
+                            punch_master
+                        SET leave_status = 1,
+                            lvereq_desc = 'ESI',
+                            duty_desc = 'ESI',
+                            lve_tble_updation_flag = 1
+                        WHERE em_no = ? 
+                        AND duty_day = ?`,
+                    [
+                        data.emno,
+                        moment(data.leave_dates).format('YYYY-MM-DD')
+                    ],
+                    (error, results, fields) => {
+                        if (error) {
+                            return reject(error)
+                        }
+                        return resolve(results)
+                    }
+                )
+            })
+        })
+        )
+    },
+    updatePunchMasterlwf: (body) => {
+        console.log(body)
+        //FOR LWF
+        return Promise.all(body.map((data) => {
+            return new Promise((resolve, reject) => {
+                pool.query(
+                    `UPDATE 
+                            punch_master
+                        SET leave_status = 1,
+                            lvereq_desc = 'LWP',
+                            duty_desc = 'LWP',
+                            lve_tble_updation_flag = 1
+                        WHERE em_no = ? 
+                        AND duty_day = ?`,
+                    [
+                        data.emno,
+                        moment(data.leave_dates).format('YYYY-MM-DD')
+                    ],
+                    (error, results, fields) => {
+                        if (error) {
+                            return reject(error)
+                        }
+                        return resolve(results)
+                    }
+                )
+            })
+        })
+        )
+    },
+    updatePunchMasterLeave: (body) => {
+        console.log(body)
+        //FOR LEAVE
         return Promise.all(body.map((data) => {
             return new Promise((resolve, reject) => {
                 pool.query(

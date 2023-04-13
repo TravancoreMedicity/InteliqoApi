@@ -1502,5 +1502,29 @@ module.exports = {
             }
         )
     },
+    insertErrorLog: (data, callBack) => {
+        pool.query(
+            `INSERT INTO error_log 
+            (
+                error_log_table,
+                error_log,
+                em_no,
+                formName
+            ) 
+            VALUES (?,?,?,?)`,
+            [
+                data.error_log_table,
+                data.error_log,
+                data.em_no,
+                data.formName,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }
 
