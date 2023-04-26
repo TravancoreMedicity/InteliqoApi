@@ -2194,6 +2194,35 @@ module.exports = {
         )
     },
     CancelpunchMastLeave: (body) => {
+
+        //FOR LEAVE
+        return Promise.all(body.map((data) => {
+            return new Promise((resolve, reject) => {
+                pool.query(
+                    `UPDATE 
+                            punch_master
+                        SET leave_status = 0,
+                            lvereq_desc = null,
+                            duty_desc = null,
+                            lve_tble_updation_flag = 0
+                        WHERE em_no = ? 
+                        AND duty_day = ?`,
+                    [
+                        data.emno,
+                        moment(data.leave_dates).format('YYYY-MM-DD')
+                    ],
+                    (error, results, fields) => {
+                        if (error) {
+                            return reject(error)
+                        }
+                        return resolve(results)
+                    }
+                )
+            })
+        })
+        )
+    },
+    CancelCommonLeave: (body) => {
         return Promise.all(body.map((data) => {
             return new Promise((resolve, reject) => {
                 pool.query(
