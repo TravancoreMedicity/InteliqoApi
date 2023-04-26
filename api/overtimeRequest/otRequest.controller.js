@@ -3,8 +3,9 @@ const { validateotrequest, validateotrequestupdate, validateotincharge, validate
 const { checkInsertVal, create, getOtByID, getOtBySlno, update, getIncharge, getinchargeBySlno,
     inchargeApprove, getHod, gethodBySlno, hodApprove, getHr, hrApprove, gethrBySlno, getceo,
     ceoApprove, getceoBySlno, inactiveOTRequest, getcoff, insertcoff, updatecoff, getOTforCalculation,
-    insertLeaveCalculated, updatecoffslno, updateOTslno, inchargecancel, updatepunchmaster } = require('../overtimeRequest/otRequest.service')
-
+    insertLeaveCalculated, updatecoffslno, updateOTslno, inchargecancel, updatepunchmaster,
+    getPunchByDate, getOTDetails, getAllHr, getAllceo, getEmpShiftDetails, updatePunchtaken, resetPunchTaken } = require('../overtimeRequest/otRequest.service')
+const logger = require('../../logger/logger')
 module.exports = {
     createotRequest: (req, res) => {
         const body = req.body;
@@ -86,7 +87,7 @@ module.exports = {
         getOtByID(id, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
-                return res.status(400).json({
+                return res.status(200).json({
                     success: 0,
                     message: err
                 });
@@ -591,5 +592,150 @@ module.exports = {
                 message: "Over Time Request Cancel Succesfully"
             });
         });
+    },
+    getPunchByDate: (req, res) => {
+        const body = req.body
+        getPunchByDate(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    getOTDetails: (req, res) => {
+        const id = req.params.id;
+        getOTDetails(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "no Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    //Shift details for OT
+    getEmpShiftDetails: (req, res) => {
+        const body = req.body
+        getEmpShiftDetails(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: res.err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+
+            });
+        })
+    },
+    getAllHr: (req, res) => {
+        getAllHr((err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    getAllceo: (req, res) => {
+        getAllceo((err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    updatePunchtaken: (req, res) => {
+        const body = req.body;
+        const result = updatePunchtaken(body)
+            .then((r) => {
+                return res.status(200).json({
+                    success: 1,
+                    message: r
+                });
+            }).catch((e) => {
+                return res.status(200).json({
+                    success: 0,
+                    message: e.sqlMessage
+                });
+            })
+    },
+    resetPunchTaken: (req, res) => {
+        const body = req.body;
+
+        const result = resetPunchTaken(body)
+            .then((r) => {
+                return res.status(200).json({
+                    success: 1,
+                    message: r
+                });
+            }).catch((e) => {
+                return res.status(200).json({
+                    success: 0,
+                    message: e.sqlMessage
+                });
+            })
     },
 }
