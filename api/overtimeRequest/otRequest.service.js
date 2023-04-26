@@ -19,9 +19,11 @@ module.exports = {
                 ot_hod_require,
                 ot_hr_require,
                 ot_ceo_require  ,
-                ot_deptsec_id            
+                ot_deptsec_id ,
+                ot_inch_status,  
+                ot_hod_status         
                 )
-                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
 
                 data.emp_id,
@@ -40,7 +42,9 @@ module.exports = {
                 data.ot_hod_require,
                 data.ot_hr_require,
                 data.ot_ceo_require,
-                data.ot_deptsec_id
+                data.ot_deptsec_id,
+                data.ot_inch_status,
+                data.ot_hod_status
 
             ],
             (error, results, feilds) => {
@@ -183,7 +187,7 @@ module.exports = {
          inner join hrm_emp_master ON hrm_emp_master.em_id=hrm_ot_master.emp_id
          inner join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
          inner join hrm_shift_mast ON hrm_shift_mast.shft_slno=hrm_ot_master.ot_shift_id
-         WHERE ot_inch_require = 1 AND ot_hr_status=0 AND  ot_status=0 AND ot_deptsec_id IN (1,14) `,
+         WHERE ot_inch_require = 1 AND ot_inch_status=0 AND  ot_status=0 AND ot_deptsec_id IN (?) `,
             [
                 data
 
@@ -265,7 +269,7 @@ module.exports = {
             ot_days,
             ot_date,
             ot_reson,
-            if( ot_new_time is null ,  over_time ,  ot_new_time ) over_time,
+            over_time,
             ot_reson,
             ot_hod_status,
             (case when ot_hod_status='1' then "Approved" when ot_hod_status='2' then "Rejected" else "Pending" end ) as hod_status,           
@@ -280,7 +284,7 @@ module.exports = {
            inner join hrm_emp_master ON hrm_emp_master.em_id=hrm_ot_master.emp_id
            inner join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
            inner join hrm_shift_mast ON hrm_shift_mast.shft_slno=hrm_ot_master.ot_shift_id
-           WHERE ot_hod_require = 1 AND ot_inch_status=1 AND ot_added=0 AND ot_status=0 AND ot_hr_status=0 AND ot_deptsec_id IN (?)`,
+           WHERE ot_hod_require = 1 AND  ot_status=0 AND ot_hod_status=0 AND ot_deptsec_id IN (?) `,
             [
                 data,
 
@@ -882,7 +886,7 @@ module.exports = {
             ot_hod_remark,
             ot_ceo_status,
             ot_ceo_remark,
-            if( ot_new_time is null ,  over_time ,  ot_new_time ) over_time,
+             over_time,
             (case when ot_hr_status='1' then "Approved" when ot_hr_status='2' then "Rejected" else "Pending" end ) as shr_status,
             ot_deptsec_id,
             (case when ot_inch_require=1 and ot_inch_status=0 then "Incharge Pending"  when ot_hod_require=1 and ot_hod_status=0 then "HOD Pending"
@@ -896,7 +900,7 @@ module.exports = {
             inner join hrm_emp_master ON hrm_emp_master.em_id=hrm_ot_master.emp_id
             inner join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
             inner join hrm_shift_mast ON hrm_shift_mast.shft_slno=hrm_ot_master.ot_shift_id
-            WHERE ot_hr_require = 1 AND ot_status=0 AND ot_added=0`,
+            WHERE ot_hr_require = 1 AND ot_status=0 AND ot_added=0 and ot_inch_status=1 and ot_hod_status=1 or ot_ceo_status=1`,
             [],
             (error, results, fields) => {
                 if (error) {
@@ -919,7 +923,7 @@ module.exports = {
             ot_days,
             ot_date,
             ot_reson,
-            if( ot_new_time is null ,  over_time ,  ot_new_time ) over_time,
+            over_time,
             ot_reson,
             ot_ceo_status,
             (case when ot_ceo_status='1' then "Approved" when ot_ceo_status='2' then "Rejected" else "Pending" end ) as ceo_status,
@@ -966,7 +970,6 @@ module.exports = {
         })
     },
     resetPunchTaken: (data, callBack) => {
-        console.log(data);
         return new Promise((resolve, reject) => {
             data.map((val) => {
                 pool.query(
@@ -985,5 +988,57 @@ module.exports = {
 
         })
     },
+    OtupdationList: (callBack) => {
+        pool.query(
+            `SELECT 
+            ROW_NUMBER() OVER () as slno,
+            ot_slno,
+            hrm_ot_master.em_no,
+            hrm_ot_master.emp_id,
+            hrm_emp_master.em_name,
+            ot_days,
+            ot_date,
+            over_time,
+            ot_reson,
+            ot_inch_status,           
+            ot_deptsec_id, 
+            sect_name,
+            check_in,
+            check_out,
+            ot_updation_status,
+            ot_updation_date,
+            format( hrm_ot_master.ot_amount,2) as ot_amount
+         FROM medi_hrm.hrm_ot_master
+         inner join hrm_emp_master ON hrm_emp_master.em_id=hrm_ot_master.emp_id
+         inner join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
+         WHERE  ot_hr_status=1 AND  ot_status=0 ;`,
+            [],
+            (error, results, fields) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results)
+            }
+        )
+    },
+    updateOt: (data, callBack) => {
+        return new Promise((resolve, reject) => {
+            data.map((val) => {
+                pool.query(
+                    ` update hrm_ot_master
+                    set ot_updation_status=1,
+                    ot_updation_date=?
+                    where emp_id=? and ot_days=?`,
+                    [val.ot_updation_date, val.emp_id, val.ot_days],
+                    (error, results, feilds) => {
+                        if (error) {
+                            return reject(error)
+                        }
+                        return resolve(results)
+                    }
+                )
+            })
 
+        })
+    },
 }

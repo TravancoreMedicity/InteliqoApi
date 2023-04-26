@@ -4,7 +4,8 @@ const { checkInsertVal, create, getOtByID, getOtBySlno, update, getIncharge, get
     inchargeApprove, getHod, gethodBySlno, hodApprove, getHr, hrApprove, gethrBySlno, getceo,
     ceoApprove, getceoBySlno, inactiveOTRequest, getcoff, insertcoff, updatecoff, getOTforCalculation,
     insertLeaveCalculated, updatecoffslno, updateOTslno, inchargecancel, updatepunchmaster,
-    getPunchByDate, getOTDetails, getAllHr, getAllceo, getEmpShiftDetails, updatePunchtaken, resetPunchTaken } = require('../overtimeRequest/otRequest.service')
+    getPunchByDate, getOTDetails, getAllHr, getAllceo, getEmpShiftDetails, updatePunchtaken, resetPunchTaken,
+    OtupdationList, updateOt } = require('../overtimeRequest/otRequest.service')
 const logger = require('../../logger/logger')
 module.exports = {
     createotRequest: (req, res) => {
@@ -726,6 +727,42 @@ module.exports = {
         const body = req.body;
 
         const result = resetPunchTaken(body)
+            .then((r) => {
+                return res.status(200).json({
+                    success: 1,
+                    message: r
+                });
+            }).catch((e) => {
+                return res.status(200).json({
+                    success: 0,
+                    message: e.sqlMessage
+                });
+            })
+    },
+    OtupdationList: (req, res) => {
+        OtupdationList((err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    updateOt: (req, res) => {
+        const body = req.body;
+        const result = updateOt(body)
             .then((r) => {
                 return res.status(200).json({
                     success: 1,
