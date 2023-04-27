@@ -885,6 +885,8 @@ const validateotrequest = Joi.object({
         ot_ceo_require: Joi.number().required(),
         ot_deptsec_id: Joi.number().required(),
         duty_day: Joi.optional(),
+        ot_inch_status: Joi.number().required(),
+        ot_hod_status: Joi.number().required()
 
 })
 //Validation for OT update

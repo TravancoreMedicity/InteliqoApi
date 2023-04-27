@@ -4,7 +4,8 @@ const { createotRequest, getOtByID, getOtBySlno, updateotRequest, getIncharge, g
     inchargeApprove, getHod, gethodBySlno, hodApprove, getHr, hrApprove, gethrBySlno, getceo,
     ceoApprove, getceoBySlno, inactiveOTRequest, getOTforCalculation, insertLeaveCalculated,
     updateCoffTable, updatecoffslno, inchargecancel, getPunchByDate, getOTDetails,
-    getEmpShiftDetails, getAllHr, getAllceo, updatePunchtaken, resetPunchTaken } = require('../overtimeRequest/otRequest.controller')
+    getEmpShiftDetails, getAllHr, getAllceo, updatePunchtaken, resetPunchTaken,
+    OtupdationList, updateOt } = require('../overtimeRequest/otRequest.controller')
 
 router.post("/", checkToken, createotRequest);
 router.patch("/", checkToken, updateotRequest);
@@ -42,5 +43,8 @@ router.get("/allceo/list", checkToken, getAllceo)
 router.patch("/update/punch", checkToken, updatePunchtaken)
 router.patch("/inactive/punch", checkToken, resetPunchTaken)
 
+//ot updation
+router.get("/otupdation/list", checkToken, OtupdationList)
+router.patch("/otupdation/status", checkToken, updateOt)
 
 module.exports = router;
