@@ -159,11 +159,11 @@ module.exports = {
             requestdate,
             half_slno,
             leavedate,
-            month,
+            month,planslno,
             hf_inc_apprv_req,
             hf_incapprv_status,
             hf_hod_apprv_req,
-            hf_hod_apprv_status,
+            hf_hod_apprv_status,hf_hr_apprv_status,
             hf_ceo_req_status,
             hf_ceo_apprv_status,
             checkIn,
@@ -191,11 +191,13 @@ module.exports = {
             nopunchdate,
             creteddate,
             checkinflag,
-            checkoutflag,
-            np_reason,
+            checkoutflag,np_hr_apprv_status,
+            np_reason,punslno,
             np_inc_apprv_req,
-            np_incapprv_status
+            np_incapprv_status,
+            hrm_shift_mast.shft_desc
              FROM medi_hrm.nopunchrequest 
+             LEFT JOIN hrm_shift_mast ON hrm_shift_mast.shft_slno=nopunchrequest.shift_id
              where nopunch_slno=?`,
             [data],
             (error, results, feilds) => {
@@ -211,11 +213,11 @@ module.exports = {
         pool.query(
             `SELECT 
 			comp_off_request.em_no,
-            em_name,
+            em_name,comp_off_request.em_id,
             leave_date,
             cmp_off_reqid,
             durationpunch,
-            reqtype_name,
+            reqtype_name,cf_hr_apprv_status,
             cf_reason,
             cf_inc_apprv_req,
             cf_incapprv_status,
@@ -544,11 +546,31 @@ module.exports = {
              hf_hr_uscode=?  
             WHERE half_slno=?`,
             [
-                data.status,
-                data.comment,
-                data.apprvdate,
-                data.us_code,
-                data.slno,
+                data.hf_hr_apprv_status,
+                data.hf_hr_apprv_cmnt,
+                data.hf_hr_apprv_date,
+                data.hf_hr_uscode,
+                data.half_slno
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    HRhalfDayPuchMast: (data, callBack) => {
+        pool.query(
+            `UPDATE punch_master
+             SET 
+             leave_status=1,
+             lvereq_desc='HDL',
+             lve_tble_updation_flag=1
+            WHERE duty_day=? and em_no=?`,
+            [
+                data.duty_day,
+                data.em_no
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -571,7 +593,7 @@ module.exports = {
                 data.comment,
                 data.apprvdate,
                 data.us_code,
-                data.slno,
+                data.slno
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -590,11 +612,11 @@ module.exports = {
              cf_hr_uscode=?  
             WHERE cmp_off_reqid=?`,
             [
-                data.status,
-                data.comment,
-                data.apprvdate,
-                data.us_code,
-                data.slno,
+                data.cf_hr_apprv_status,
+                data.cf_hr_apprv_cmnt,
+                data.cf_hr_apprv_time,
+                data.cf_hr_uscode,
+                data.cmp_off_reqid,
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -973,31 +995,31 @@ module.exports = {
         pool.query(
             `SELECT 
             ROW_NUMBER() OVER () as rslno,
-half_slno,
-planslno,
-dept_name,
-hrm_halfdayrequest.em_no,
-em_name,
-hf_incapprv_status,
-dept_section, 
-hf_inc_apprv_req,
-hf_incapprv_status,
-hf_hod_apprv_req,
-hf_hod_apprv_status,
-hf_hr_aprrv_requ,
-hf_hr_apprv_status,
-hf_ceo_apprv_status,
-hf_ceo_req_status,
-requestdate,
-leavedate,
-month,		
-checkIn,
-checkOut,
-hf_reason
-FROM medi_hrm.hrm_halfdayrequest
-inner join hrm_emp_master on  hrm_halfdayrequest.em_no =hrm_emp_master.em_no
-inner join hrm_department on  hrm_halfdayrequest.dept_id =hrm_department.dept_id
-where  lv_cancel_status=0 and lv_cancel_status_user=0`,
+            half_slno,
+            planslno,
+            dept_name,
+            hrm_halfdayrequest.em_no,
+            em_name,
+            hf_incapprv_status,
+            dept_section, 
+            hf_inc_apprv_req,
+            hf_incapprv_status,
+            hf_hod_apprv_req,
+            hf_hod_apprv_status,
+            hf_hr_aprrv_requ,
+            hf_hr_apprv_status,
+            hf_ceo_apprv_status,
+            hf_ceo_req_status,
+            requestdate,
+            leavedate,
+            month,		
+            checkIn,
+            checkOut,
+            hf_reason
+            FROM medi_hrm.hrm_halfdayrequest
+            inner join hrm_emp_master on  hrm_halfdayrequest.em_no =hrm_emp_master.em_no
+            inner join hrm_department on  hrm_halfdayrequest.dept_id =hrm_department.dept_id
+            where  lv_cancel_status=0 and lv_cancel_status_user=0`,
             [],
             (error, results, feilds) => {
                 if (error) {
@@ -1612,7 +1634,7 @@ where  lv_cancel_status=0 and lv_cancel_status_user=0`,
         )
     },
     updatePunchMasterEsi: (body) => {
-        console.log(body)
+
         //FOR ESI LEAVE
         return Promise.all(body.map((data) => {
             return new Promise((resolve, reject) => {
@@ -1641,7 +1663,6 @@ where  lv_cancel_status=0 and lv_cancel_status_user=0`,
         )
     },
     updatePunchMasterlwf: (body) => {
-        console.log(body)
         //FOR LWF
         return Promise.all(body.map((data) => {
             return new Promise((resolve, reject) => {
@@ -1670,7 +1691,7 @@ where  lv_cancel_status=0 and lv_cancel_status_user=0`,
         )
     },
     updatePunchMasterLeave: (body) => {
-        console.log(body)
+
         //FOR LEAVE
         return Promise.all(body.map((data) => {
             return new Promise((resolve, reject) => {
@@ -1698,4 +1719,554 @@ where  lv_cancel_status=0 and lv_cancel_status_user=0`,
         })
         )
     },
+
+    leaveReqRejectHr: (data, callBack) => {
+        pool.query(
+            `UPDATE hrm_leave_request
+            SET hr_apprv_status =?,
+            hr_apprv_cmnt=?,
+            hr_apprv_date=?,
+            hr_uscode=?,
+            request_status=0 
+        WHERE lve_uniq_no=?`,
+            [
+                data.hr_apprv_status,
+                data.hr_apprv_cmnt,
+                data.hr_apprv_date,
+                data.hr_uscode,
+                data.lve_uniq_no,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    leaveReqRejectHrDetl: (data, callBack) => {
+        pool.query(
+            `UPDATE medi_hrm.hrm_leave_request_detl
+            SET leave_status = 0
+        WHERE lve_uniq_no=?`,
+            [
+                data.lve_uniq_no
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    HalfDayReqRejectHr: (data, callBack) => {
+        pool.query(
+            `UPDATE hrm_halfdayrequest
+            SET hf_hr_apprv_status =?,
+            hf_hr_apprv_cmnt=?,
+            hf_hr_apprv_date=?,
+            hf_hr_uscode=?,
+            approve=0 
+        WHERE half_slno=?`,
+            [
+                data.hf_hr_apprv_status,
+                data.hf_hr_apprv_cmnt,
+                data.hf_hr_apprv_date,
+                data.hf_hr_uscode,
+                data.half_slno
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+
+    HalfDayHrRejectCl: (data, callBack) => {
+        pool.query(
+            `UPDATE medi_hrm.hrm_leave_cl
+            SET cl_lv_taken = cl_lv_taken-0.5,
+            cl_bal_leave=cl_bal_leave-0.5,
+            hl_lv_tkn_status=0
+        WHERE hrm_cl_slno=?`,
+            [
+                data.hrm_cl_slno
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    HRNopunchMasterIn: (data, callBack) => {
+        pool.query(
+            `UPDATE medi_hrm.punch_master
+            SET punch_in =?,
+            lve_tble_updation_flag=1
+        WHERE punch_slno=?`,
+            [
+                data.checkintime,
+                data.punch_slno
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    HRNopunchMasterOut: (data, callBack) => {
+        pool.query(
+            `UPDATE medi_hrm.punch_master
+            SET punch_out =?,
+            lve_tble_updation_flag=1
+        WHERE punch_slno=?`,
+            [
+                data.checkouttime,
+                data.punch_slno
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    NoPunchReqRejectHr: (data, callBack) => {
+        pool.query(
+            `UPDATE nopunchrequest
+            SET np_hr_apprv_status =?,
+            np_hr_apprv_cmnt=?,
+            np_hr_apprv_time=?,
+            np_hr_uscode=?,
+            apprv_status=0 
+        WHERE nopunch_slno=?`,
+            [
+                data.np_hr_apprv_status,
+                data.np_hr_apprv_cmnt,
+                data.np_hr_apprv_time,
+                data.np_hr_uscode,
+                data.nopunch_slno
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    CoffReqRejectHr: (data, callBack) => {
+        pool.query(
+            `UPDATE comp_off_request
+            SET cf_hr_apprv_status =?,
+            cf_hr_apprv_cmnt=?,
+            cf_hr_apprv_time=?,
+            cf_hr_uscode=?
+              WHERE cmp_off_reqid=?`,
+            [
+                data.cf_hr_apprv_status,
+                data.cf_hr_apprv_cmnt,
+                data.cf_hr_apprv_time,
+                data.cf_hr_uscode,
+                data.cmp_off_reqid
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    CoffReqCancelHr: (data, callBack) => {
+        pool.query(
+            `UPDATE comp_off_request
+            SET  lv_cancel_req_status=1,
+            lv_cancel_status=1,
+            lv_cancel_cmnt =?,
+            lv_cancel_date=?,
+            lv_cancel_us_code=?          
+              WHERE cmp_off_reqid=?`,
+            [
+                data.lv_cancel_cmnt,
+                data.lv_cancel_date,
+                data.lv_cancel_us_code,
+                data.cmp_off_reqid
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    InsertLeaveCalc: (data, callBack) => {
+        pool.query(
+            `INSERT INTO hrm_leave_calculated(
+                emp_id,
+                calculated_date,
+                credited_date,
+                lvetype_slno,
+                credited
+             
+            ) VALUES (?,?,?,?,?)`,
+            [
+                data.emp_id,
+                data.calculated_date,
+                data.credited_date,
+                data.lvetype_slno,
+                1
+
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    CoffCancelHR: (data, callBack) => {
+        pool.query(
+            `UPDATE hrm_leave_calculated
+            SET credited=0
+            WHERE date(calculated_date)=? and emp_id=?`,
+            [
+                data.calculated_date,
+                data.emp_id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    NoPunchReqCancelHr: (data, callBack) => {
+        pool.query(
+            `UPDATE nopunchrequest
+            SET  lv_cancel_req_status=1,
+            req_status=1,
+            lv_cancel_status=1,
+            lv_cancel_cmnt =?,
+            lv_cancel_date=?,
+            lv_cancel_us_code=?          
+              WHERE nopunch_slno=?`,
+            [
+                data.lv_cancel_cmnt,
+                data.lv_cancel_date,
+                data.lv_cancel_us_code,
+                data.nopunch_slno
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    NoPunchMasterCancel: (data, callBack) => {
+        pool.query(
+            `UPDATE medi_hrm.punch_master
+            SET punch_out =null,
+            punch_in=null,
+            lve_tble_updation_flag=0
+        WHERE punch_slno=?`,
+            [
+                data.punch_slno
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    HalfDayReqCancelHr: (data, callBack) => {
+        pool.query(
+            `UPDATE hrm_halfdayrequest
+            SET  lv_cancel_req_status=1,
+            lv_cancel_status=1,
+            lv_cancel_cmnt =?,
+            lv_cancel_date=?,
+            lv_cancel_us_code=?          
+              WHERE half_slno=?`,
+            [
+                data.lv_cancel_cmnt,
+                data.lv_cancel_date,
+                data.lv_cancel_us_code,
+                data.half_slno
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    lveReqCanclHr: (data, callBack) => {
+        pool.query(
+            `UPDATE hrm_leave_request
+            SET  
+            lv_cancel_status=1,
+            lv_cancel_cmnt =?,
+            lv_cancel_date=?,
+            lv_cancel_us_code=?          
+              WHERE lve_uniq_no=?`,
+            [
+                data.lv_cancel_cmnt,
+                data.lv_cancel_date,
+                data.lv_cancel_us_code,
+                data.lve_uniq_no
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    CancelHolidayLeave: (body) => {
+        return Promise.all(body.map((data) => {
+            return new Promise((resolve, reject) => {
+                pool.query(
+                    `UPDATE 
+                    hrm_leave_holiday
+                    SET hl_lv_taken = 0,
+                        hl_lv_tkn_status = 0
+                    WHERE hrm_hl_slno = ?`,
+                    [
+                        data.leave_processid
+                    ],
+                    (error, results, fields) => {
+                        if (error) {
+                            return reject(error)
+                        }
+                        return resolve(results)
+                    }
+                )
+            })
+        })
+        )
+    },
+    CancelCasualyLeave: (body) => {
+        return Promise.all(body.map((data) => {
+            return new Promise((resolve, reject) => {
+                pool.query(
+                    `UPDATE 
+                        hrm_leave_cl
+                    SET cl_lv_taken = 0,
+                        cl_bal_leave = 0,
+                        hl_lv_tkn_status = 0
+                    WHERE hrm_cl_slno = ?`,
+                    [
+                        data.leave_processid
+                    ],
+                    (error, results, fields) => {
+                        if (error) {
+                            return reject(error)
+                        }
+                        return resolve(results)
+                    }
+                )
+            })
+        })
+        )
+    },
+
+    CancelEarnLeave: (body) => {
+        return Promise.all(body.map((data) => {
+            return new Promise((resolve, reject) => {
+                pool.query(
+                    `UPDATE 
+                        hrm_leave_earnlv
+                    SET ernlv_taken = 0,
+                    hl_lv_tkn_status = 0
+                    WHERE hrm_ernlv_slno = ?`,
+                    [
+                        data.leave_processid
+                    ],
+                    (error, results, fields) => {
+                        if (error) {
+                            return reject(error)
+                        }
+                        return resolve(results)
+                    }
+                )
+            })
+        })
+        )
+    },
+    CancelCoffLeave: (body) => {
+        return Promise.all(body.map((data) => {
+            return new Promise((resolve, reject) => {
+                pool.query(
+                    `UPDATE 
+                        hrm_leave_calculated
+                    SET
+                        taken =0,
+                        hl_lv_tkn_status = 0
+                    WHERE hrm_calc_holiday = ?`,
+                    [
+                        data.leave_processid
+                    ],
+                    (error, results, fields) => {
+                        if (error) {
+                            return reject(error)
+                        }
+                        return resolve(results)
+                    }
+                )
+            })
+        })
+        )
+    },
+
+    CancelpunchMastEsiLeave: (body) => {
+        //FOR ESI LEAVE
+        return Promise.all(body.map((data) => {
+            return new Promise((resolve, reject) => {
+                pool.query(
+                    `UPDATE 
+                            punch_master
+                        SET leave_status = 0,
+                            lvereq_desc = null,
+                            duty_desc = 0,
+                            lve_tble_updation_flag = 0
+                        WHERE em_no = ? 
+                        AND duty_day = ?`,
+                    [
+                        data.emno,
+                        moment(data.leave_dates).format('YYYY-MM-DD')
+                    ],
+                    (error, results, fields) => {
+                        if (error) {
+                            return reject(error)
+                        }
+                        return resolve(results)
+                    }
+                )
+            })
+        })
+        )
+    },
+
+    CancelpunchMastLwfLeave: (body) => {
+        //FOR LWF
+        return Promise.all(body.map((data) => {
+            return new Promise((resolve, reject) => {
+                pool.query(
+                    `UPDATE 
+                            punch_master
+                        SET leave_status = 1,
+                            lvereq_desc = null,
+                            duty_desc = null,
+                            lve_tble_updation_flag = 1
+                        WHERE em_no = ? 
+                        AND duty_day = ?`,
+                    [
+                        data.emno,
+                        moment(data.leave_dates).format('YYYY-MM-DD')
+                    ],
+                    (error, results, fields) => {
+                        if (error) {
+                            return reject(error)
+                        }
+                        return resolve(results)
+                    }
+                )
+            })
+        })
+        )
+    },
+    CancelpunchMastLeave: (body) => {
+
+        //FOR LEAVE
+        return Promise.all(body.map((data) => {
+            return new Promise((resolve, reject) => {
+                pool.query(
+                    `UPDATE 
+                            punch_master
+                        SET leave_status = 0,
+                            lvereq_desc = null,
+                            duty_desc = null,
+                            lve_tble_updation_flag = 0
+                        WHERE em_no = ? 
+                        AND duty_day = ?`,
+                    [
+                        data.emno,
+                        moment(data.leave_dates).format('YYYY-MM-DD')
+                    ],
+                    (error, results, fields) => {
+                        if (error) {
+                            return reject(error)
+                        }
+                        return resolve(results)
+                    }
+                )
+            })
+        })
+        )
+    },
+    CancelCommonLeave: (body) => {
+        return Promise.all(body.map((data) => {
+            return new Promise((resolve, reject) => {
+                pool.query(
+                    `UPDATE 
+                    hrm_leave_common
+                    SET
+                    cmn_lv_taken =cmn_lv_taken-1,
+                    cmn_lv_balance =cmn_lv_balance+1
+                   
+                    WHERE llvetype_slno = ? and em_no=?`,
+                    [
+                        data.leave_typeid,
+                        data.em_no
+                    ],
+                    (error, results, fields) => {
+                        if (error) {
+                            return reject(error)
+                        }
+                        return resolve(results)
+                    }
+                )
+            })
+        })
+        )
+    },
+    HalfDayHrCancelPunchMast: (data, callBack) => {
+        pool.query(
+            `UPDATE punch_master
+            SET 
+            leave_status=0,
+            lvereq_desc=null,
+            lve_tble_updation_flag=0
+           WHERE duty_day=? and em_no=?`,
+            [
+                data.duty_day,
+                data.em_no
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+
 }

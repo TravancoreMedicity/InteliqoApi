@@ -3,7 +3,7 @@ const { getleaverequestdep, nopunchreq, halfrequst, getcompenoff,
     compensatoryoffdata, inchargeapprv, inchargeapprvhalfday, inchargeapprvNopunch, inchargeapprvCoff,
     HodApprvlLeave, HodApprvlHalfday, HodApprvlNopunch, HodApprvlCoff,
     CEOApprvLeave, CEOHalfDay, CEONopunch, CEOCoff,
-    HRLeaveApprv, HRhalfDay, HRNopunch, HRCoff, getlevdetl, updateLeavePunchMast,
+    HRLeaveApprv, HRhalfDay, HRhalfDayPuchMast, HRNopunch, HRCoff, getlevdetl, updateLeavePunchMast,
     getHalfdaylevdetl, updateHalfdayPunchMast, getNopunchlevdetl,
     updateNoPunchPunchMast, getCofflevdetl, InsertCoffLeaveCalculated, updateNoPunchOUTPunchMast,
     leaveReqCancel, HalfdayCancel, NopunchCancel, CoffCancel, getCeoPending, getHRpending,
@@ -11,7 +11,15 @@ const { getleaverequestdep, nopunchreq, halfrequst, getcompenoff,
     CoffCancelUser, NopunchCancelUser, HalfdayCancelUser, leaveReqCancelUser,
     AllList, AllListHOD, AllListCeo, AllListHr,
     updateCasualLeaveDetlTable, updateNationalHolidayDetlTable, updateEarnLeaveDetlTable, updateCoffDetlTable,
-    updatePunchMasterEsi, updatePunchMasterlwf, updatePunchMasterLeave } = require('../LeaveRequestApproval/LeaveRequestApproval.service');
+    updatePunchMasterEsi, updatePunchMasterlwf, updatePunchMasterLeave, leaveReqRejectHr,
+    leaveReqRejectHrDetl, HalfDayReqRejectHr, HalfDayHrRejectCl, HRNopunchMasterIn, HRNopunchMasterOut,
+    NoPunchReqRejectHr, CoffReqRejectHr, InsertLeaveCalc, NoPunchReqCancelHr, NoPunchMasterCancel,
+    HalfDayReqCancelHr, lveReqCanclHr, HalfDayHrCancelPunchMast,
+    CoffReqCancelHr, CoffCancelHR,
+    CancelHolidayLeave, CancelCasualyLeave, CancelEarnLeave, CancelCoffLeave, CancelCommonLeave,
+    CancelpunchMastEsiLeave,
+    CancelpunchMastLwfLeave, CancelpunchMastLeave
+} = require('../LeaveRequestApproval/LeaveRequestApproval.service');
 const { validationinchageapprv } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -642,13 +650,6 @@ module.exports = {
     },
     HRhalfDay: (req, res) => {
         const body = req.body;
-        const body_result = validationinchageapprv.validate(body);
-        if (body_result.error) {
-            return res.status(200).json({
-                success: 2,
-                message: body_result.error.details[0].message
-            });
-        }
         HRhalfDay(body, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
@@ -664,7 +665,7 @@ module.exports = {
                 });
             }
             else {
-                getHalfdaylevdetl(body, (err, results) => {
+                HRhalfDayPuchMast(body, (err, results) => {
                     if (err) {
                         logger.errorLogger(err)
                         return res.status(200).json({
@@ -672,31 +673,27 @@ module.exports = {
                             message: err
                         });
                     }
-                    else if (results.length == 0) {
+                    else if (!results) {
                         return res.status(200).json({
                             success: 2,
-                            message: "No Record Found"
+                            message: "Record Not Found"
                         });
                     }
                     else {
                         return res.status(200).json({
                             success: 1,
-                            data: results
+                            message: "Lve Master table Updated"
                         });
+
+
                     }
-                })
+                });
+
             }
         });
     },
     HRNopunch: (req, res) => {
         const body = req.body;
-        const body_result = validationinchageapprv.validate(body);
-        if (body_result.error) {
-            return res.status(200).json({
-                success: 2,
-                message: body_result.error.details[0].message
-            });
-        }
         HRNopunch(body, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
@@ -712,39 +709,62 @@ module.exports = {
                 });
             }
             else {
-                getNopunchlevdetl(body, (err, results) => {
-                    if (err) {
-                        logger.errorLogger(err)
-                        return res.status(200).json({
-                            success: 0,
-                            message: err
-                        });
-                    }
-                    else if (results.length == 0) {
-                        return res.status(200).json({
-                            success: 2,
-                            message: "No Record Found"
-                        });
-                    }
-                    else {
-                        return res.status(200).json({
-                            success: 1,
-                            data: results
-                        });
-                    }
-                })
+
+                if (body.checkinflag === 1) {
+                    HRNopunchMasterIn(body, (err, results) => {
+                        if (err) {
+                            logger.errorLogger(err)
+                            return res.status(200).json({
+                                success: 0,
+                                message: err
+                            });
+                        }
+                        else if (!results) {
+                            return res.status(200).json({
+                                success: 2,
+                                message: "Record Not Found"
+                            });
+                        }
+                        else {
+                            return res.status(200).json({
+                                success: 1,
+                                message: "Lve Master table Updated"
+                            });
+                        }
+                    });
+
+                }
+                else if (body.checkoutflag === 1) {
+
+                    HRNopunchMasterOut(body, (err, results) => {
+                        if (err) {
+                            logger.errorLogger(err)
+                            return res.status(200).json({
+                                success: 0,
+                                message: err
+                            });
+                        }
+                        else if (!results) {
+                            return res.status(200).json({
+                                success: 2,
+                                message: "Record Not Found"
+                            });
+                        }
+                        else {
+                            return res.status(200).json({
+                                success: 1,
+                                message: "Lve Master table Updated"
+                            });
+                        }
+                    });
+                }
+
             }
         });
     },
     HRCoff: (req, res) => {
         const body = req.body;
-        const body_result = validationinchageapprv.validate(body);
-        if (body_result.error) {
-            return res.status(200).json({
-                success: 2,
-                message: body_result.error.details[0].message
-            });
-        }
+
         HRCoff(body, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
@@ -760,7 +780,8 @@ module.exports = {
                 });
             }
             else {
-                getCofflevdetl(body, (err, results) => {
+
+                InsertLeaveCalc(body, (err, results) => {
                     if (err) {
                         logger.errorLogger(err)
                         return res.status(200).json({
@@ -768,19 +789,28 @@ module.exports = {
                             message: err
                         });
                     }
-                    else if (results.length == 0) {
+                    else if (!results) {
                         return res.status(200).json({
                             success: 2,
-                            message: "No Record Found"
+                            message: "Record Not Found"
                         });
                     }
                     else {
+
+
                         return res.status(200).json({
                             success: 1,
-                            data: results
+                            message: "Lve Master table Updated"
                         });
+
+
+
                     }
-                })
+                });
+
+
+
+
             }
         });
     },
@@ -1446,6 +1476,448 @@ module.exports = {
     updatePunchMasterLeave: async (req, res) => {
         const body = req.body;
         updatePunchMasterLeave(body).then(results => {
+            return res.status(200).json({
+                success: 1,
+                message: 'Update Successfully'
+            });
+        }).catch(err => {
+            return res.status(200).json({
+                success: 0,
+                message: "Error Occured , Please Contact HRD / IT"
+            });
+        })
+    },
+
+    leaveReqRejectHr: (req, res) => {
+        const body = req.body;
+        leaveReqRejectHr(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+            else {
+                leaveReqRejectHrDetl(body, (err, results) => {
+                    if (err) {
+                        logger.errorLogger(err)
+                        return res.status(200).json({
+                            success: 0,
+                            message: err
+                        });
+                    }
+                    else if (!results) {
+                        return res.status(200).json({
+                            success: 2,
+                            message: "Record Not Found"
+                        });
+                    }
+                    else {
+                        return res.status(200).json({
+                            success: 1,
+                            message: "Leave Request Rejected Successfully"
+                        });
+                    }
+                });
+            }
+        });
+    },
+    HalfDayReqRejectHr: (req, res) => {
+        const body = req.body;
+        HalfDayReqRejectHr(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+            else {
+
+                HalfDayHrRejectCl(body, (err, results) => {
+                    if (err) {
+                        logger.errorLogger(err)
+                        return res.status(200).json({
+                            success: 0,
+                            message: err
+                        });
+                    }
+                    else if (!results) {
+                        return res.status(200).json({
+                            success: 2,
+                            message: "Record Not Found"
+                        });
+                    }
+                    else {
+                        return res.status(200).json({
+                            success: 1,
+                            message: "Leave Request Rejected Successfully"
+                        });
+                    }
+                });
+            }
+        });
+    },
+    NoPunchReqRejectHr: (req, res) => {
+        const body = req.body;
+        NoPunchReqRejectHr(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+            else {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Leave Request Rejected Successfully"
+                });
+
+            }
+        });
+    },
+    CoffReqRejectHr: (req, res) => {
+        const body = req.body;
+        CoffReqRejectHr(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+            else {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Leave Request Rejected Successfully"
+                });
+
+            }
+        });
+    },
+    CoffReqCancelHr:
+        (req, res) => {
+            const body = req.body;
+            CoffReqCancelHr(body, (err, results) => {
+                if (err) {
+                    logger.errorLogger(err)
+                    return res.status(200).json({
+                        success: 0,
+                        message: err
+                    });
+                }
+                else if (!results) {
+                    return res.status(200).json({
+                        success: 2,
+                        message: "Record Not Found"
+                    });
+                }
+                else if (body.hrstatus === 1) {
+                    CoffCancelHR(body, (err, results) => {
+                        if (err) {
+                            logger.errorLogger(err)
+                            return res.status(200).json({
+                                success: 0,
+                                message: err
+                            });
+                        }
+                        else if (!results) {
+                            return res.status(200).json({
+                                success: 2,
+                                message: "Record Not Found"
+                            });
+                        }
+                        else {
+                            return res.status(200).json({
+                                success: 1,
+                                message: "Leave Request Rejected Successfully"
+                            });
+
+                        }
+                    });
+
+                }
+                else {
+                    return res.status(200).json({
+                        success: 1,
+                        message: "Leave Request Rejected Successfully"
+                    });
+
+                }
+
+            });
+        },
+    NoPunchReqCancelHr: (req, res) => {
+        const body = req.body;
+        NoPunchReqCancelHr(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+            else if (body.hrstatus === 1) {
+                NoPunchMasterCancel(body, (err, results) => {
+                    if (err) {
+                        logger.errorLogger(err)
+                        return res.status(200).json({
+                            success: 0,
+                            message: err
+                        });
+                    }
+                    else if (!results) {
+                        return res.status(200).json({
+                            success: 2,
+                            message: "Record Not Found"
+                        });
+                    }
+                    else {
+                        return res.status(200).json({
+                            success: 1,
+                            message: "Leave Request Rejected Successfully"
+                        });
+
+                    }
+                });
+
+            }
+            else {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Leave Request Rejected Successfully"
+                });
+
+            }
+
+        });
+    },
+    HalfDayReqCancelHr: (req, res) => {
+        const body = req.body;
+        HalfDayReqCancelHr(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+            else if (body.hrstatus === 2) {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Leave Request Rejected Successfully"
+                });
+            } else {
+
+                HalfDayHrRejectCl(body, (err, results) => {
+                    if (err) {
+                        logger.errorLogger(err)
+                        return res.status(200).json({
+                            success: 0,
+                            message: err
+                        });
+                    }
+                    else if (!results) {
+                        return res.status(200).json({
+                            success: 2,
+                            message: "Record Not Found"
+                        });
+                    }
+                    else {
+                        HalfDayHrCancelPunchMast(body, (err, results) => {
+                            if (err) {
+                                logger.errorLogger(err)
+                                return res.status(200).json({
+                                    success: 0,
+                                    message: err
+                                });
+                            }
+                            else if (!results) {
+                                return res.status(200).json({
+                                    success: 2,
+                                    message: "Record Not Found"
+                                });
+                            }
+                            else {
+                                return res.status(200).json({
+                                    success: 1,
+                                    message: "Leave Request Rejected Successfully"
+                                });
+
+                            }
+                        });
+
+                    }
+                });
+            }
+
+        });
+    },
+    lveReqCanclHr: (req, res) => {
+        const body = req.body;
+        lveReqCanclHr(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+            else {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Leave Request Rejected Successfully"
+                });
+            }
+        });
+    },
+
+    CancelHolidayLeave: async (req, res) => {
+        const body = req.body;
+        CancelHolidayLeave(body).then(results => {
+            return res.status(200).json({
+                success: 1,
+                message: 'Update Successfully'
+            });
+        }).catch(err => {
+            return res.status(200).json({
+                success: 0,
+                message: "Error Occured , Please Contact HRD / IT"
+            });
+        })
+    },
+    CancelCasualyLeave: async (req, res) => {
+        const body = req.body;
+        CancelCasualyLeave(body).then(results => {
+            return res.status(200).json({
+                success: 1,
+                message: 'Update Successfully'
+            });
+        }).catch(err => {
+            return res.status(200).json({
+                success: 0,
+                message: "Error Occured , Please Contact HRD / IT"
+            });
+        })
+    },
+    CancelEarnLeave: async (req, res) => {
+        const body = req.body;
+        CancelEarnLeave(body).then(results => {
+            return res.status(200).json({
+                success: 1,
+                message: 'Update Successfully'
+            });
+        }).catch(err => {
+            return res.status(200).json({
+                success: 0,
+                message: "Error Occured , Please Contact HRD / IT"
+            });
+        })
+    },
+    CancelCoffLeave: async (req, res) => {
+        const body = req.body;
+        CancelCoffLeave(body).then(results => {
+            return res.status(200).json({
+                success: 1,
+                message: 'Update Successfully'
+            });
+        }).catch(err => {
+            return res.status(200).json({
+                success: 0,
+                message: "Error Occured , Please Contact HRD / IT"
+            });
+        })
+    },
+    CancelpunchMastEsiLeave: async (req, res) => {
+        const body = req.body;
+        CancelpunchMastEsiLeave(body).then(results => {
+            return res.status(200).json({
+                success: 1,
+                message: 'Update Successfully'
+            });
+        }).catch(err => {
+            return res.status(200).json({
+                success: 0,
+                message: "Error Occured , Please Contact HRD / IT"
+            });
+        })
+    },
+    CancelpunchMastLwfLeave: async (req, res) => {
+        const body = req.body;
+        CancelpunchMastLwfLeave(body).then(results => {
+            return res.status(200).json({
+                success: 1,
+                message: 'Update Successfully'
+            });
+        }).catch(err => {
+            return res.status(200).json({
+                success: 0,
+                message: "Error Occured , Please Contact HRD / IT"
+            });
+        })
+    },
+    CancelpunchMastLeave: async (req, res) => {
+        const body = req.body;
+        CancelpunchMastLeave(body).then(results => {
+            return res.status(200).json({
+                success: 1,
+                message: 'Update Successfully'
+            });
+        }).catch(err => {
+            return res.status(200).json({
+                success: 0,
+                message: "Error Occured , Please Contact HRD / IT"
+            });
+        })
+    },
+
+    CancelCommonLeave: async (req, res) => {
+        const body = req.body;
+        CancelCommonLeave(body).then(results => {
             return res.status(200).json({
                 success: 1,
                 message: 'Update Successfully'

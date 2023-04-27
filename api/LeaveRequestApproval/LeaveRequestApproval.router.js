@@ -13,7 +13,13 @@ const { getleaverequestdep, nopunchreq, halfrequst, getcompenoff,
     CoffCancelUser, NopunchCancelUser, HalfdayCancelUser, leaveReqCancelUser,
     AllList, AllListHOD, AllListCeo, AllListHr,
     updateCasualLeaveDetlTable, updateNationalHolidayDetlTable, updateEarnLeaveDetlTable, updateCoffDetlTable,
-    updatePunchMasterEsi, updatePunchMasterlwf, updatePunchMasterLeave } = require('../LeaveRequestApproval/LeaveRequestApproval.controller');
+    updatePunchMasterEsi, updatePunchMasterlwf, updatePunchMasterLeave, leaveReqRejectHr, HalfDayReqRejectHr,
+    NoPunchReqRejectHr, CoffReqRejectHr, CoffReqCancelHr, NoPunchReqCancelHr, HalfDayReqCancelHr,
+    lveReqCanclHr,
+    CancelHolidayLeave, CancelCasualyLeave, CancelEarnLeave, CancelCoffLeave, CancelCommonLeave,
+    CancelpunchMastEsiLeave,
+    CancelpunchMastLwfLeave, CancelpunchMastLeave
+} = require('../LeaveRequestApproval/LeaveRequestApproval.controller');
 
 router.post("/getleaverequestdep", checkToken, getleaverequestdep)
 router.post("/nopunchreq", checkToken, nopunchreq)
@@ -92,4 +98,27 @@ router.post("/punchMasterUpdateEsiLeave", checkToken, updatePunchMasterEsi)
 router.post("/punchMasterUpdateLwfLeave", checkToken, updatePunchMasterlwf)
 router.post("/punchMasterUpdateLeave", checkToken, updatePunchMasterLeave)
 
+//hr Leave Request Reject
+
+router.patch("/lveReqRejectHr", checkToken, leaveReqRejectHr)
+router.patch("/HalfDayReqRejectHr", checkToken, HalfDayReqRejectHr)
+router.patch("/NoPunchReqRejectHr", checkToken, NoPunchReqRejectHr)
+router.patch("/CoffReqRejectHr", checkToken, CoffReqRejectHr)
+
+
+//Leave Request Cancel
+router.patch("/lveReqCanclHr", checkToken, lveReqCanclHr)
+router.patch("/HalfDayReqCancelHr", checkToken, HalfDayReqCancelHr)
+router.patch("/NoPunchReqCancelHr", checkToken, NoPunchReqCancelHr)
+router.patch("/CoffReqCancelHr", checkToken, CoffReqCancelHr)
+
+//Leave Cancel Leave Wise
+router.post("/CancelHolidayLeave", checkToken, CancelHolidayLeave)
+router.post("/CancelCasualyLeave", checkToken, CancelCasualyLeave)
+router.post("/CancelEarnLeave", checkToken, CancelEarnLeave)
+router.post("/CancelCoffLeave", checkToken, CancelCoffLeave)
+router.post("/CancelCommonLeave", checkToken, CancelCommonLeave)
+router.post("/CancelpunchMastEsiLeave", checkToken, CancelpunchMastEsiLeave)
+router.post("/CancelpunchMastLwfLeave", checkToken, CancelpunchMastLwfLeave)
+router.post("/CancelpunchMastLeave", checkToken, CancelpunchMastLeave)
 module.exports = router;
