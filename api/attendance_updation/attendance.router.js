@@ -3,7 +3,8 @@ const { checkToken } = require("../../auth/token_validation");
 const { validateAttendance, processAttendData, getpunchmastcalcu,
     getdataupdatecal, GetEmployeeShiftDetails, getPunchDetailsEmp,
     updatePunchInandPunchOut, updatePunchState, updateholidaycredit,
-    updateholidaytaken, getPunchDataEmCodeWise, getPunchMasterData, getShiftfromPunchMaster, updatePunchMasterData
+    updateholidaytaken, getPunchDataEmCodeWise, getPunchMasterData, getShiftfromPunchMaster,
+    updatePunchMasterData, updatePunchMastDuty, getHolidayDate, getDutyPlan
 } = require("../attendance_updation/attendance.controller")
 
 router.post("/", checkToken, validateAttendance);
@@ -20,5 +21,9 @@ router.post("/inOutUpdate", checkToken, updatePunchInandPunchOut)
 router.patch("/updateState", checkToken, updatePunchState)
 router.patch("/holidaycredit", checkToken, updateholidaycredit)
 router.patch("/holidaytaken", checkToken, updateholidaytaken)
+
+router.post("/updatePunchMastDuty", checkToken, updatePunchMastDuty);
+router.post("/getHolidayDate", checkToken, getHolidayDate);
+router.post("/getDutyPlan", checkToken, getDutyPlan);
 
 module.exports = router;

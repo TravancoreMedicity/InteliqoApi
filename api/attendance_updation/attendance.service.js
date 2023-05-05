@@ -1,3 +1,4 @@
+const { log } = require('winston');
 const pool = require('../../config/database');
 module.exports = {
     //CHECK THE PUNCHMASTER UPDATED OR NOT IF YES
@@ -522,7 +523,11 @@ module.exports = {
                                     punch_out = ?,
                                     hrs_worked =?,
                                     late_in = ?,
-                                    early_out = ?
+                                    early_out = ?,
+                                    duty_status=?,
+                                    duty_desc=?,
+                                    holiday_slno=?,
+                                    holiday_status=?
                                 WHERE punch_slno = ?`,
                     [
                         data.punch_in,
@@ -530,6 +535,41 @@ module.exports = {
                         data.hrsWrkdInMints,
                         data.lateIn,
                         data.earlyOut,
+                        data.duty_status,
+                        data.duty_desc,
+                        data.holiday_slno,
+                        data.holiday_status,
+                        data.punch_slno,
+
+                    ],
+                    (error, results, fields) => {
+                        if (error) {
+                            return reject(error)
+                        }
+                        return resolve(results)
+                    }
+                )
+
+
+            })
+        })
+        )
+    },
+    updatePunchMastDuty: (body) => {
+        return Promise.all(body.map((data) => {
+            return new Promise((resolve, reject) => {
+                pool.query(
+                    `UPDATE punch_master
+                                SET duty_status = ?,
+                                duty_desc = ?    ,
+                                holiday_slno=?,
+                                holiday_status=?                              
+                                WHERE punch_slno = ?`,
+                    [
+                        data.duty_status,
+                        data.duty_desc,
+                        data.holiday_slno,
+                        data.holiday_status,
                         data.punch_slno,
                     ],
                     (error, results, fields) => {
@@ -543,6 +583,47 @@ module.exports = {
 
             })
         })
+        )
+    },
+    getHolidayDate: (data, callBack) => {
+        pool.query(
+            `select hld_slno,hld_desc,hld_date from hrm_yearly_holiday_list
+            where month(hld_date)=? and year(hld_date)=?`,
+            [
+                data.month,
+                data.year
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+
+    getDutyPlan: (data, callBack) => {
+        pool.query(
+            `SELECT 
+            date(duty_day)  as duty_day,
+            shift_id,hrm_shift_mast.shft_desc
+            FROM hrm_duty_plan 
+            left join hrm_shift_mast on hrm_shift_mast.shft_slno=hrm_duty_plan.shift_id
+            WHERE 
+           date(duty_day)           
+            BETWEEN ? AND ?
+            AND em_no = ?`,
+            [
+                data.fromDate,
+                data.toDate,
+                data.empId.em_no
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
         )
     },
 }
