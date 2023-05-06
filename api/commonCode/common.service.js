@@ -1526,5 +1526,21 @@ module.exports = {
             }
         )
     },
+
+    getgrossSalary: (id, callBack) => {
+        pool.query(
+            `SELECT
+            gross_salary
+            FROM hrm_emp_master
+            WHERE em_id=?`,
+            [id],
+            (error, results, fields) => {
+                if (error) {
+                    callBack(error)
+                }
+                return callBack(null, results)
+            }
+        );
+    },
 }
 

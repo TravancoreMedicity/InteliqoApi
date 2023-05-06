@@ -10,7 +10,8 @@ const { getEmployeeDetl, getEmployeeShiftDetl, getDepartmentShiftMast,
     getPunchDetailsEmp, updatePunchInandPunchOut, updatePunchState,
     getCommonSettings, updateholidaycredit, updateholidaytaken,
     getPunchDataEmCodeWise, getPunchMasterData, getShiftfromPunchMaster,
-    updatePunchMasterData } = require("../attendance_updation/attendance.service")
+    updatePunchMasterData, updatePunchMastDuty, getHolidayDate, getDutyPlan
+} = require("../attendance_updation/attendance.service")
 //SHIFT DETAILS
 //get the shift details 
 const shiftMasterDetl = (section, cb) => {
@@ -992,5 +993,72 @@ module.exports = {
                 message: "Error Occured , Please Contact HRD / IT"
             });
         })
+    },
+    updatePunchMastDuty: async (req, res) => {
+        const body = req.body;
+        updatePunchMastDuty(body).then(results => {
+            return res.status(200).json({
+                succes: 1,
+                messagee: 'Update Successfully'
+            });
+        }).catch(err => {
+            return res.status(200).json({
+                succes: 0,
+                messagee: "Error Occured , Please Contact HRD / IT"
+            });
+        })
+    },
+    getHolidayDate: (req, res) => {
+        const body = req.body;
+        getHolidayDate(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                logger.infoLogger("No Records Found")
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                holidaydata: results
+            });
+
+        });
+    },
+
+    getDutyPlan: (req, res) => {
+        const body = req.body;
+        getDutyPlan(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                logger.infoLogger("No Records Found")
+                return res.status(200).json({
+                    succes: 2,
+                    messagee: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                succes: 1,
+                shiftdetail: results
+            });
+
+        });
     },
 }
