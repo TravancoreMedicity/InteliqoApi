@@ -1,11 +1,14 @@
 
 const router = require("express").Router();
 const { checkToken } = require("../../auth/token_validation");
+const { removeListener } = require("../../config/database");
 const { empDeptdata, empDeptSecdata, empNameBasedata, getFixedByEmid, getEarningByEmid,
     getTotalFineByEmid, getTotalFixedByEmid, getTotalEarningsByEmid, getTotalDeductionByEmid,
     getDeductionByEmid, getLopByEmid, getTotalGrosssalaryById, GetPfStatus, getPFcalcalculatingamt,
     GetEsiStatus, getESIcalculatingamt, createAttendanceManual, getPaySlipTableData,
-    getEmpEarningData, getEmpFixedWageData, getEmpDeductionData, getAllEarnData
+    getEmpEarningData, getEmpFixedWageData, getEmpDeductionData, getAllEarnData,
+    createPayrollpayslip, createPayrollpayslipDetl, checkAttendanceProcess, getPunchdata,
+    getattendancemark
 } = require('../payrollprocess/payrollprocess.controller');
 
 router.post("/EmpDelDept", checkToken, empDeptdata)
@@ -27,13 +30,22 @@ router.get("/EsicalAmt/:id", checkToken, getESIcalculatingamt)
 
 //attendance 
 router.post("/create/manual", checkToken, createAttendanceManual)
+
+
 router.post("/getPayslip/data", checkToken, getPaySlipTableData)
 router.get("/empFixedDetl/:id", checkToken, getEmpEarningData)
-
 
 router.post("/empEarning", checkToken, getEmpEarningData)
 router.post("/empFixedDetl", checkToken, getEmpFixedWageData)
 router.post("/empDeduction", checkToken, getEmpDeductionData)
 router.post("/allData", checkToken, getAllEarnData)
 
-module.exports = router;
+router.post("/create/payslip", checkToken, createPayrollpayslip)
+router.post("/create/detail", checkToken, createPayrollpayslipDetl)
+router.post("/check/dateexist", checkToken, checkAttendanceProcess)
+
+router.post("/duty/data", checkToken, getPunchdata)
+router.post("/data/all", checkToken, getattendancemark);
+
+
+module.exports = router; 

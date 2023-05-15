@@ -399,4 +399,21 @@ module.exports = {
             }
         )
     },
+    updateEmpGrossSalary: (data, callBack) => {
+        pool.query(
+            `UPDATE medi_hrm.hrm_emp_master
+            SET gross_salary =?                                  
+            WHERE em_id = ?;`,
+            [
+                data.gross_salary,
+                data.em_id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }
