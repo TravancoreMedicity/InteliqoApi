@@ -10,7 +10,8 @@ const { getEmployeeDetl, getEmployeeShiftDetl, getDepartmentShiftMast,
     getPunchDetailsEmp, updatePunchInandPunchOut, updatePunchState,
     getCommonSettings, updateholidaycredit, updateholidaytaken,
     getPunchDataEmCodeWise, getPunchMasterData, getShiftfromPunchMaster,
-    updatePunchMasterData, updatePunchMastDuty, getHolidayDate, getDutyPlan
+    updatePunchMasterData, updatePunchMastDuty, getHolidayDate, getDutyPlan,
+    getPunchMastDataCheckWoff, updatePunchMasWoff
 } = require("../attendance_updation/attendance.service")
 //SHIFT DETAILS
 //get the shift details 
@@ -1057,6 +1058,60 @@ module.exports = {
             return res.status(200).json({
                 succes: 1,
                 shiftdetail: results
+            });
+
+        });
+    },
+
+    getPunchMastDataCheckWoff: (req, res) => {
+        const body = req.body;
+        getPunchMastDataCheckWoff(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                logger.infoLogger("No Records Found")
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                punchCheckdata: results
+            });
+
+        });
+    },
+
+    updatePunchMasWoff: async (req, res) => {
+        const body = req.body;
+        updatePunchMasWoff(body, (err, results) => {
+
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 2,
+                message: "Department Updated Successfully"
             });
 
         });

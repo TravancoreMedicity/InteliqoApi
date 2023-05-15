@@ -108,9 +108,9 @@ const JobSummaryRouter = require("./api/JobSummary/JobSummary.router")
 const KRARouter = require("./api/KRA/KRA.router")
 const PerformanceAppraisalRouter = require("./api/PerformanceAppraisal/PerformanceAppraisal.router")
 const ActiveEmpReportRouter = require("./api/ActiveEmpReport/ActiveEmpReport.router")
+const punchTrasfer = require("./api/PunchTransfer/punchtransfer.router")
 
-
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
 app.use((req, res, next) => {
     //     res.header("Access-Control-Allow-Origin", "http://192.168.10.170:8080
     res.header("Access-Control-Allow-Origin", "*");
@@ -254,6 +254,7 @@ app.use("/api/jobsummary", JobSummaryRouter)//job summary
 app.use("/api/KraMast", KRARouter)//KRA
 app.use("/api/Performance", PerformanceAppraisalRouter)
 app.use("/api/ActiveEmpReport", ActiveEmpReportRouter)
+app.use("/api/punchTrasfer", punchTrasfer)
 
 
 
