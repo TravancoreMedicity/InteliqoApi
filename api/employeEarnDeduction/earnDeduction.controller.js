@@ -1,7 +1,7 @@
 const { create, update, checkInsertVal, checkUpdateVal, deleteByID, getDataById,
     getDataBySlno, createWageLog, updateWageLog, GetFixedAndEarningWage,
     getDataByEmpno, createEmpsalRyContractRenew, getFixedWage,
-    getEarning, getDeduction, getEmpDataByEmno, getALLData } = require('../employeEarnDeduction/earnDeduction.service');
+    getEarning, getDeduction, getEmpDataByEmno, getALLData, updateEmpGrossSalary } = require('../employeEarnDeduction/earnDeduction.service');
 const { validateearndeduction } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -385,5 +385,27 @@ module.exports = {
             });
         });
 
+    },
+    updateEmpGrossSalary: (req, res) => {
+        const body = req.body;
+        updateEmpGrossSalary(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (!results) {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Record Not Found"
+                });
+            }
+            return res.status(200).json({
+                success: 2,
+                message: "Data Added Successfully"
+            });
+        });
     },
 }

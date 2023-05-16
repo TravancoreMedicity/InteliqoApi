@@ -295,6 +295,7 @@ module.exports = {
                 em_id,
                 dept_id,
                 sect_id,
+                attendance_marking_month,
                 attnd_mark_startdate,
                 attnd_mark_enddate,
                 total_working_days,
@@ -307,7 +308,8 @@ module.exports = {
                 calculated_lop,
                 total_days,
                 total_holidays,
-                holiday_worked
+                holiday_worked,
+                process_status
                 )
             VALUES ?;`,
             [
@@ -327,15 +329,16 @@ module.exports = {
             em_name,
             total_working_days,
             calculated_worked,
-         hrm_emp_master.em_no
+            total_days,
+            hrm_emp_master.em_no,
+            hrm_emp_master.em_id
             FROM medi_hrm.hrm_attendance_marking
             inner join hrm_emp_master on hrm_attendance_marking.em_no=hrm_emp_master.em_no
-            where dept_id=? and sect_id=? and attnd_mark_startdate=? and attnd_mark_enddate=?; `,
+            where dept_id=? and sect_id=? and attendance_marking_month=?`,
             [
                 data.dept_id,
                 data.sect_id,
-                data.attnd_mark_startdate,
-                data.attnd_mark_enddate
+                data.attendance_marking_month
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -345,29 +348,7 @@ module.exports = {
             }
         )
     },
-    // getEmpEarningData: (data, callBack) => {
-    //     pool.query(
-    //         `select 
-    //         hrm_emp_earn_deduction.em_no,
-    //         earning_type_name,
-    //         earnded_name,
-    //         em_salary_desc,
-    //         em_amount
-    //          from hrm_emp_earn_deduction
-    //          inner join hrm_earning_deduction on hrm_emp_earn_deduction.em_salary_desc=hrm_earning_deduction.earnded_id
-    //          inner join hrm_earning_type on hrm_earning_deduction.erning_type_id=hrm_earning_type.erning_type_id
-    //          where hrm_emp_earn_deduction.em_no=? and hrm_earning_deduction.erning_type_id=2; `,
-    //         [
-    //             data.em_no
-    //         ],
-    //         (error, results, feilds) => {
-    //             if (error) {
-    //                 return callBack(error);
-    //             }
-    //             return callBack(null, results);
-    //         }
-    //     )
-    // },
+
     getEmpEarningData: (data, callBack) => {
         pool.query(
             `select 
@@ -456,15 +437,24 @@ module.exports = {
            include_esi,
            include_lwf,
            include_pf,
-           include_protax
+           include_protax,
+           em_name,
+           total_working_days,
+           calculated_worked,
+            total_days,
+            em_pf_status,
+            em_esi_status
              from hrm_emp_earn_deduction
              inner join hrm_earning_deduction on hrm_emp_earn_deduction.em_salary_desc=hrm_earning_deduction.earnded_id
              inner join hrm_earning_type on hrm_earning_deduction.erning_type_id=hrm_earning_type.erning_type_id
              inner join hrm_emp_master on hrm_emp_earn_deduction.em_no=hrm_emp_master.em_no
-             where hrm_emp_master.em_department=? and hrm_emp_master.em_dept_section=?;`,
+            inner join hrm_attendance_marking on hrm_emp_earn_deduction.em_no=hrm_attendance_marking.em_no
+            left join hrm_emp_pfesi on hrm_emp_pfesi.em_no=hrm_emp_earn_deduction.em_no
+             where hrm_emp_master.em_department=? and hrm_emp_master.em_dept_section=? and attendance_marking_month=? `,
             [
                 data.em_department,
-                data.em_dept_section
+                data.em_dept_section,
+                data.attendance_marking_month
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -473,5 +463,159 @@ module.exports = {
                 return callBack(null, results);
             }
         )
+    },
+    createPayrollpayslip: (data, callBack) => {
+        pool.query(
+            `INSERT INTO hrm_payroll_payslip (
+                em_no,
+                em_id,
+                dept_id,
+                sect_id,
+                total_working_days,
+                total_days,
+                fixed_wages,
+                earning_wages,
+                deduct_wages,
+                gross_amount,
+                net_amount,
+                attendance_marking_month,
+                esi_employee,
+                esi_employer,
+                pf_employee,
+                pf_employer
+                )
+            VALUES ?;`,
+            [
+                data
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    createPayrollpayslipDetl: (data, callBack) => {
+        pool.query(
+            `INSERT INTO hrm_payroll_payslip_detl (
+                em_no,
+                em_id,
+                em_earning_type,
+                earning_type_name,
+                em_amount,
+                em_salary_desc,
+                total_working_days,
+                total_days,
+                worked_amount,
+                attendance_marking_month
+                )
+            VALUES ?;`,
+            [
+                data
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    checkAttendanceProcess: (data, callBack) => {
+        pool.query(
+            `
+            SELECT * FROM medi_hrm.hrm_attendance_marking where attendance_marking_month=?;
+            `,
+            [
+                data.attendance_marking_month
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getPunchdata: (data, callBack) => {
+        pool.query(
+            `SELECT 
+            duty_day,
+            shift_id,
+            emp_id,
+            em_no,
+            punch_in,
+            punch_out,
+            shift_in,
+            shift_out,
+            hrs_worked,
+            over_time,
+            late_in,
+            early_out,
+            duty_status,
+            holiday_status,
+            leave_status,
+            lvereq_desc,
+            duty_desc
+            FROM
+                punch_master
+            WHERE
+            DATE(duty_day) BETWEEN ? AND ? 
+            AND emp_id IN (?)
+                ORDER BY DATE(duty_day) ASC
+            `,
+            [
+                data.start_date,
+                data.end_date,
+                data.empData
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getattendancemark: (data, callBack) => {
+        pool.query(
+            `SELECT 
+            duty_day,
+            shift_id,
+            emp_id,
+            em_no,
+            punch_in,
+            punch_out,
+            shift_in,
+            shift_out,
+            hrs_worked,
+            over_time,
+            late_in,
+            early_out,
+            duty_status,
+            holiday_status,
+            leave_status,
+            lvereq_desc,
+            duty_desc
+            FROM
+                punch_master
+            WHERE  emp_id =? and
+            DATE(duty_day) BETWEEN ? AND ? 
+            
+                ORDER BY DATE(duty_day) ASC;`,
+            [
+                data.emp_id,
+                data.start,
+                data.end
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+
     },
 }

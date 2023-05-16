@@ -5,7 +5,9 @@ const { empDeptdata, empDeptSecdata, empNameBasedata, getFixedByEmid,
     GetEsiStatus, getESIcalculatingamt,
     createAttendanceManual,
     getPaySlipTableData, getEmpEarningData, getEmpFixedWageData,
-    getEmpDeductionData, getAllEarnData } = require('../payrollprocess/payrollprocess.service');
+    getEmpDeductionData, getAllEarnData, createPayrollpayslip,
+    createPayrollpayslipDetl, checkAttendanceProcess, getPunchdata,
+    getattendancemark } = require('../payrollprocess/payrollprocess.service');
 const logger = require('../../logger/logger')
 module.exports = {
     empDeptdata: (req, res) => {
@@ -372,6 +374,7 @@ module.exports = {
             value.em_id,
             value.dept_id,
             value.sect_id,
+            value.attendance_marking_month,
             value.attnd_mark_startdate,
             value.attnd_mark_enddate,
             value.total_working_days,
@@ -384,7 +387,8 @@ module.exports = {
             value.calculated_lop,
             value.total_days,
             value.total_holidays,
-            value.holiday_worked
+            value.holiday_worked,
+            value.process_status
             ]
         })
         createAttendanceManual(values, (err, results) => {
@@ -451,29 +455,6 @@ module.exports = {
             });
         });
     },
-    // getEmpEarningData: (req, res) => {
-    //     const id = req.params.id;
-    //     getEmpEarningData(id, (err, results) => {
-    //         if (err) {
-    //             logger.errorLogger(err)
-    //             return res.status(400).json({
-    //                 success: 0,
-    //                 message: err
-    //             });
-    //         }
-    //         if (results.length == 0) {
-    //             return res.status(200).json({
-    //                 success: 0,
-    //                 message: "No Record Found"
-    //             });
-    //         }
-    //         return res.status(200).json({
-    //             success: 1,
-    //             data: results
-    //         });
-    //     });
-    // },
-
     getEmpFixedWageData: (req, res) => {
         const body = req.body
         getEmpFixedWageData(body, (err, results) => {
@@ -529,6 +510,150 @@ module.exports = {
                 });
             }
             if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    createPayrollpayslip: (req, res) => {
+        var values = req.body.map((value, index) => {
+            return [
+                value.em_no,
+                value.em_id,
+                value.dept_id,
+                value.sect_id,
+                value.total_working_days,
+                value.total_days,
+                value.fixed_wages,
+                value.earning_wages,
+                value.deduct_wages,
+                value.gross_amount,
+                value.net_amount,
+                value.attendance_marking_month,
+                value.esi_employee,
+                value.esi_employer,
+                value.pf_employee,
+                value.pf_employer,
+            ]
+        })
+        createPayrollpayslip(values, (err, results) => {
+            if (err) {
+                //logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (!results) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Results Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                message: "Data Submitted Successfully"
+            });
+        });
+    },
+    createPayrollpayslipDetl: (req, res) => {
+        var values = req.body.map((value, index) => {
+            return [
+                value.em_no,
+                value.em_id,
+                value.em_earning_type,
+                value.earning_type_name,
+                value.em_amount,
+                value.em_salary_desc,
+                value.total_working_days,
+                value.total_days,
+                value.worked_amount,
+                value.attendance_marking_month
+            ]
+        })
+        createPayrollpayslipDetl(values, (err, results) => {
+            if (err) {
+                //logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (!results) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Results Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                message: "Data Submitted Successfully"
+            });
+        });
+    },
+    checkAttendanceProcess: (req, res) => {
+        const body = req.body
+        checkAttendanceProcess(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length === 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    getPunchdata: (req, res) => {
+        const body = req.body
+        getPunchdata(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length === 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found",
+                    data: []
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    getattendancemark: (req, res) => {
+        const id = req.body;
+        getattendancemark(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                logger.infoLogger("No Records Found")
                 return res.status(200).json({
                     success: 0,
                     message: "No Record Found"

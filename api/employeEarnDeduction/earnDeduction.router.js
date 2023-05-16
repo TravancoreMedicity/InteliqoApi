@@ -3,7 +3,8 @@ const { checkToken } = require("../../auth/token_validation");
 const { createearndeduction, updateearndeduction, getEarnDeductByID,
     inactiveEarnDeduct, getEarnDeductBySlno, GetFixedAndEarningWage,
     getDataByEmpno, createEmpsalRyContractRenew, getFixedWage,
-    getEarning, getDeduction, getEmpDataByEmno, getALLData } = require('../employeEarnDeduction/earnDeduction.controller');
+    getEarning, getDeduction, getEmpDataByEmno, getALLData,
+    updateEmpGrossSalary } = require('../employeEarnDeduction/earnDeduction.controller');
 
 router.post("/", checkToken, createearndeduction);
 router.patch("/", checkToken, updateearndeduction);
@@ -20,6 +21,8 @@ router.post("/earning", checkToken, getEarning)
 router.post("/deduction", checkToken, getDeduction)
 router.get("/getAll/:id", checkToken, getEmpDataByEmno)
 router.post("/all/data", checkToken, getALLData)
+
+router.patch("/update/empmaster", checkToken, updateEmpGrossSalary)
 
 
 module.exports = router;
