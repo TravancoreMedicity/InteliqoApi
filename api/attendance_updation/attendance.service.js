@@ -470,7 +470,9 @@ module.exports = {
                 shift_out,
                 hrs_worked,
                 late_in,
-                early_out
+                early_out,
+                duty_desc,
+                duty_status
             FROM punch_master 
             WHERE duty_day 
             BETWEEN ? AND ? 
@@ -528,13 +530,13 @@ module.exports = {
                                     duty_desc=?,
                                     holiday_slno=?,
                                     holiday_status=?
-                                WHERE punch_slno = ?`,
+                                WHERE punch_slno = ? and lve_tble_updation_flag !=1 `,
                     [
                         data.punch_in,
                         data.punch_out,
-                        data.hrsWrkdInMints,
-                        data.lateIn,
-                        data.earlyOut,
+                        data.hrs_worked,
+                        data.late_in,
+                        data.early_out,
                         data.duty_status,
                         data.duty_desc,
                         data.holiday_slno,
@@ -560,12 +562,23 @@ module.exports = {
             return new Promise((resolve, reject) => {
                 pool.query(
                     `UPDATE punch_master
-                                SET duty_status = ?,
-                                duty_desc = ?    ,
+                                SET 
+                                punch_in = ?,
+                                punch_out = ?,
+                                hrs_worked=?,
+                                late_in=?,
+                                early_out=?,
+                                duty_status = ?,
+                                duty_desc = ?,
                                 holiday_slno=?,
                                 holiday_status=?                              
-                                WHERE punch_slno = ?`,
+                                WHERE punch_slno = ? and lve_tble_updation_flag!=1`,
                     [
+                        data.punch_in,
+                        data.punch_out,
+                        data.hrs_worked,
+                        data.lateIn,
+                        data.earlyOut,
                         data.duty_status,
                         data.duty_desc,
                         data.holiday_slno,
@@ -625,5 +638,60 @@ module.exports = {
                 return callBack(null, results);
             }
         )
+    },
+    getPunchMastDataCheckWoff: (data, callBack) => {
+        pool.query(
+            `SELECT 
+                punch_slno,
+                duty_day,
+                shift_id,
+                emp_id,
+                em_no,
+                punch_in,
+                punch_out,
+                shift_in,
+                shift_out,
+                hrs_worked,
+                late_in,
+                early_out,
+                duty_desc,
+                duty_status
+            FROM punch_master 
+            WHERE duty_day 
+            BETWEEN ? AND ? 
+            AND em_no = ?`,
+            [
+                data.fromDate,
+                data.toDate,
+                data.em_no
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+
+    updatePunchMasWoff: (data, callBack) => {
+        pool.query(
+            `UPDATE punch_master
+            SET
+                duty_status=?,
+                duty_desc=?                                  
+            WHERE punch_slno = ? and lve_tble_updation_flag !=1 `,
+            [
+                data.duty_status,
+                data.duty_desc,
+                data.punch_slno
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        );
     },
 }

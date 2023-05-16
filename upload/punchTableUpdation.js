@@ -1,3 +1,4 @@
+const { addDays, format } = require('date-fns');
 const pool = require('../config/database');
 const moment = require('moment');
 
@@ -95,7 +96,9 @@ const updatePunchInDetails = async (data) => {
 
 //calculater shift in and out 
 const calculateShift = async (shiftDetl, punchTime, slno) => {
-    console.log(slno)
+
+    console.log(punchTime);
+    // console.log(slno)
     const {
         shft_chkin_start,
         shft_chkin_end,
@@ -120,6 +123,7 @@ const calculateShift = async (shiftDetl, punchTime, slno) => {
 
     const puTime = moment(punch, 'HH:mm');
 
+
     if (puTime.isBetween(Sin, Sout)) {
         checkInUpdation(slno, punchTime, (err, result) => {
             if (err) {
@@ -127,11 +131,24 @@ const calculateShift = async (shiftDetl, punchTime, slno) => {
             }
         })
     } else if (puTime.isBetween(Ein, EOut)) {
-        checkOutUpdation(slno, punchTime, (err, result) => {
-            if (err) {
-                console.log(err)
+        if (shft_cross_day !== 0) {
+
+            const crosOut = `${format(addDays(new Date(punchTime), 1), 'yyyy-MM-dd')} ${format(new Date(punchTime), 'HH:mm')}`
+            if (puTime.isBetween(Ein, EOut)) {
+                checkOutUpdation(slno, crosOut, (err, result) => {
+                    if (err) {
+                        console.log(err)
+                    }
+                })
             }
-        })
+
+        } else {
+            checkOutUpdation(slno, punchTime, (err, result) => {
+                if (err) {
+                    console.log(err)
+                }
+            })
+        }
     }
 }
 // INSERT INTO CHECK IN TIME 
