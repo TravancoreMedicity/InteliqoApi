@@ -202,7 +202,6 @@ module.exports = {
     },
     checkDutyPlanExcist: (req, res) => {
         const body = req.body;
-        console.log(body)
         checkDutyPlanExcist(body, (err, results) => {
             if (err) {
                 logger.errorLogger(err)

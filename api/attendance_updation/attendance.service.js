@@ -694,4 +694,22 @@ module.exports = {
             }
         );
     },
+    checkAttendanceProcess: (data, callBack) => {
+        pool.query(
+            `
+            SELECT * FROM medi_hrm.hrm_attendance_marking where attendance_marking_month=?
+            and em_no=?;
+            `,
+            [
+                data.attendance_marking_month,
+                data.em_no
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }

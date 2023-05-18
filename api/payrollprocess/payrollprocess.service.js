@@ -323,6 +323,31 @@ module.exports = {
             }
         )
     },
+    DutyPlanLock: (data) => {
+        return new Promise((resolve, reject) => {
+            data.map((val) => {
+                pool.query(
+                    `update hrm_duty_plan
+                    set attendance_update_flag=1
+                    where em_no=? and 
+                     date(duty_day) between ? and ?`,
+                    [
+                        val.em_no,
+                        val.from,
+                        val.to
+                    ],
+                    (error, results, fields) => {
+
+
+                        if (error) {
+                            return reject(error)
+                        }
+                        return resolve(results)
+                    }
+                )
+            })
+        })
+    },
     getPaySlipTableData: (data, callBack) => {
         pool.query(
             `SELECT 
@@ -617,5 +642,48 @@ module.exports = {
             }
         )
 
+    },
+    getEmpNoDeptWise: (data, callBack) => {
+        pool.query(
+            `select hrm_emp_master.em_no,em_name,gross_salary,em_id          
+                FROM hrm_emp_master          
+                where hrm_emp_master.em_department=?
+                 and hrm_emp_master.em_dept_section=?
+                `,
+            [
+                data.em_department,
+                data.em_dept_section
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getPunchmastData: (data, callBack) => {
+        pool.query(
+            `select punch_slno, duty_day,shift_id,punch_master.emp_id,punch_master.em_no,
+            hrm_emp_master.em_name,punch_in,
+            punch_out,shift_in,shift_out,hrs_worked,over_time,late_in,
+            early_out,duty_status,holiday_status,leave_status,holiday_slno,
+            lvereq_desc,duty_desc,lve_tble_updation_flag,hrm_emp_master.em_name
+            from  medi_hrm.punch_master
+            left join hrm_emp_master on hrm_emp_master.em_no=punch_master.em_no
+            where punch_master.em_no IN (?)
+                 and date(duty_day) between ? and ?`,
+            [
+                data.em_no,
+                data.from,
+                data.to
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
     },
 }
