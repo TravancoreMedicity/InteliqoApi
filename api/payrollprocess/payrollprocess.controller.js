@@ -3,11 +3,11 @@ const { empDeptdata, empDeptSecdata, empNameBasedata, getFixedByEmid,
     getTotalDeductionByEmid, getDeductionByEmid, getEarningByEmid,
     getLopByEmid, getTotalGrosssalaryById, GetPfStatus, getPFcalcalculatingamt,
     GetEsiStatus, getESIcalculatingamt,
-    createAttendanceManual,
+    createAttendanceManual, DutyPlanLock,
     getPaySlipTableData, getEmpEarningData, getEmpFixedWageData,
     getEmpDeductionData, getAllEarnData, createPayrollpayslip,
-    createPayrollpayslipDetl, checkAttendanceProcess, getPunchdata,
-    getattendancemark } = require('../payrollprocess/payrollprocess.service');
+    createPayrollpayslipDetl, checkAttendanceProcess, getPunchdata, getPunchmastData,
+    getattendancemark, getEmpNoDeptWise } = require('../payrollprocess/payrollprocess.service');
 const logger = require('../../logger/logger')
 module.exports = {
     empDeptdata: (req, res) => {
@@ -411,6 +411,23 @@ module.exports = {
             });
         });
     },
+
+    DutyPlanLock: (req, res) => {
+        const body = req.body;
+        const result = DutyPlanLock(body)
+            .then((r) => {
+                return res.status(200).json({
+                    success: 1,
+                    message: r
+                });
+            }).catch((e) => {
+                return res.status(200).json({
+                    success: 0,
+                    message: e.sqlMessage
+                });
+            })
+    },
+
     getPaySlipTableData: (req, res) => {
         const body = req.body
         getPaySlipTableData(body, (err, results) => {
@@ -654,6 +671,50 @@ module.exports = {
             }
             if (results.length == 0) {
                 logger.infoLogger("No Records Found")
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    getEmpNoDeptWise: (req, res) => {
+        const body = req.body
+        getEmpNoDeptWise(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    succes: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    succes: 0,
+                    message: "No Record Found"
+                });
+            }
+            return res.status(200).json({
+                succes: 1,
+                dataa: results
+            });
+        });
+    },
+    getPunchmastData: (req, res) => {
+        const body = req.body
+        getPunchmastData(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
                 return res.status(200).json({
                     success: 0,
                     message: "No Record Found"
