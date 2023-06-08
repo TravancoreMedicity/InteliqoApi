@@ -3,7 +3,7 @@ const { empDeptdata, empDeptSecdata, empNameBasedata, getFixedByEmid,
     getTotalDeductionByEmid, getDeductionByEmid, getEarningByEmid,
     getLopByEmid, getTotalGrosssalaryById, GetPfStatus, getPFcalcalculatingamt,
     GetEsiStatus, getESIcalculatingamt,
-    createAttendanceManual, DutyPlanLock,
+    createAttendanceManual, DutyPlanLock, punchMastLock,
     getPaySlipTableData, getEmpEarningData, getEmpFixedWageData,
     getEmpDeductionData, getAllEarnData, createPayrollpayslip,
     createPayrollpayslipDetl, checkAttendanceProcess, getPunchdata, getPunchmastData,
@@ -427,6 +427,22 @@ module.exports = {
                 });
             })
     },
+    punchMastLock: (req, res) => {
+        const body = req.body;
+        const result = punchMastLock(body)
+            .then((r) => {
+                return res.status(200).json({
+                    success: 1,
+                    message: r
+                });
+            }).catch((e) => {
+                return res.status(200).json({
+                    success: 0,
+                    message: e.sqlMessage
+                });
+            })
+    },
+
 
     getPaySlipTableData: (req, res) => {
         const body = req.body

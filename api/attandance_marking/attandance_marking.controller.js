@@ -1,4 +1,5 @@
-const { getattendancemark, getattendancetotal, getnightoffdata, updatenightoff, getattendancetotalEmployee } = require('../attandance_marking/attandance_marking.service');
+const { getattendancemark, getattendancetotal, getnightoffdata, updatenightoff, getattendancetotalEmployee,
+    updatePuchMastNoff } = require('../attandance_marking/attandance_marking.service');
 const { validateauthorization, validatecoassign } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -88,9 +89,25 @@ module.exports = {
                     message: "No Record Found"
                 });
             }
-            return res.status(200).json({
-                success: 1,
-                message: results
+            updatePuchMastNoff(id, (err, results) => {
+                if (err) {
+                    logger.errorLogger(err)
+                    return res.status(400).json({
+                        success: 0,
+                        message: err
+                    });
+                }
+                if (results.length == 0) {
+                    logger.infoLogger("No Records Found")
+                    return res.status(200).json({
+                        success: 0,
+                        message: "No Record Found"
+                    });
+                }
+                return res.status(200).json({
+                    success: 1,
+                    message: results
+                });
             });
         });
     },
