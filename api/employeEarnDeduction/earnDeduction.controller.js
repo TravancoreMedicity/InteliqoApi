@@ -1,7 +1,8 @@
 const { create, update, checkInsertVal, checkUpdateVal, deleteByID, getDataById,
     getDataBySlno, createWageLog, updateWageLog, GetFixedAndEarningWage,
     getDataByEmpno, createEmpsalRyContractRenew, getFixedWage,
-    getEarning, getDeduction, getEmpDataByEmno, getALLData, updateEmpGrossSalary } = require('../employeEarnDeduction/earnDeduction.service');
+    getEarning, getDeduction, getEmpDataByEmno, getALLData, updateEmpGrossSalary,
+    newRecommended } = require('../employeEarnDeduction/earnDeduction.service');
 const { validateearndeduction } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -407,5 +408,33 @@ module.exports = {
                 message: "Data Added Successfully"
             });
         });
+    },
+
+    newRecommended: (req, res) => {
+        console.log("sedfyguhj");
+        newRecommended((err, results) => {
+            console.log(results);
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+
+
     },
 }

@@ -356,7 +356,7 @@ module.exports = {
             em_no, 
             em_name,
             dept_name, 
-            sect_name
+            sect_name,recomend_salary
              FROM medi_hrm.hrm_emp_master 
              inner join hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
              inner join hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
@@ -381,7 +381,7 @@ module.exports = {
             em_no, 
             em_name,
             dept_name, 
-            sect_name
+            sect_name,recomend_salary
              FROM medi_hrm.hrm_emp_master 
              inner join hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
              inner join hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
@@ -402,12 +402,36 @@ module.exports = {
     updateEmpGrossSalary: (data, callBack) => {
         pool.query(
             `UPDATE medi_hrm.hrm_emp_master
-            SET gross_salary =?                                  
+            SET gross_salary =? ,
+            salary_split_flag=?                                 
             WHERE em_id = ?;`,
             [
                 data.gross_salary,
+                data.salary_split_flag,
                 data.em_id
             ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+
+    newRecommended: (callBack) => {
+        pool.query(
+            `SELECT 
+            em_id,
+            em_no, 
+            em_name,
+            dept_name, 
+            sect_name,recomend_salary
+             FROM medi_hrm.hrm_emp_master 
+             inner join hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
+             inner join hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
+             where salary_split_flag=0`,
+            [],
             (error, results, feilds) => {
                 if (error) {
                     return callBack(error);

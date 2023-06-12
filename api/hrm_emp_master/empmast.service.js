@@ -40,9 +40,10 @@ module.exports = {
                 blood_slno,
                 hrm_religion,
                 contract_status,
-                probation_status
+                probation_status,
+                recomend_salary
             )
-            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
                 data.em_no,
                 data.em_salutation,
@@ -80,7 +81,8 @@ module.exports = {
                 data.blood_slno,
                 data.hrm_religion,
                 data.contractflag,
-                data.probation_status
+                data.probation_status,
+                data.recomend_salary
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -129,7 +131,8 @@ module.exports = {
                 blood_slno=?,
                 hrm_religion=?,
                 contract_status=?,
-                probation_status=?
+                probation_status=?,
+                recomend_salary=?
                 WHERE em_no = ?`,
             [
                 data.em_salutation,
@@ -168,6 +171,7 @@ module.exports = {
                 data.hrm_religion,
                 data.contractflag,
                 data.probation_status,
+                data.recomend_salary,
                 data.em_no
             ],
             (error, results, feilds) => {
@@ -179,6 +183,7 @@ module.exports = {
         )
     },
     update: (data, callBack) => {
+        console.log(data);
         pool.query(
             `UPDATE hrm_emp_master
                 SET           
@@ -196,7 +201,8 @@ module.exports = {
                     hrm_region2=?,
                     hrm_pin2=?, 
                     blood_slno=?,
-                    hrm_religion=?
+                    hrm_religion=?,
+                    recomend_salary=?
                 WHERE em_no = ?`,
             [
                 data.emp_dob,
@@ -214,6 +220,7 @@ module.exports = {
                 data.em_per_pincode,
                 data.em_bloodgroup,
                 data.em_religion,
+                data.recomend_salary,
                 data.em_no
             ],
             (error, results, feilds) => {
@@ -320,7 +327,8 @@ module.exports = {
                     em_doc_type,
                     em_category,
                     contract_status,
-                    probation_status
+                    probation_status,
+                    recomend_salary
                 FROM hrm_emp_master
                 WHERE em_no = ?
                 AND em_status=1 `,

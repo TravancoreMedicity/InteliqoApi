@@ -348,6 +348,31 @@ module.exports = {
             })
         })
     },
+    punchMastLock: (data) => {
+        return new Promise((resolve, reject) => {
+            data.map((val) => {
+                pool.query(
+                    `update punch_master
+                    set punch_mark_flg=1
+                    where em_no=? and 
+                     date(duty_day) between ? and ?`,
+                    [
+                        val.em_no,
+                        val.from,
+                        val.to
+                    ],
+                    (error, results, fields) => {
+
+
+                        if (error) {
+                            return reject(error)
+                        }
+                        return resolve(results)
+                    }
+                )
+            })
+        })
+    },
     getPaySlipTableData: (data, callBack) => {
         pool.query(
             `SELECT 
