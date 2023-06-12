@@ -8,9 +8,11 @@ const { empDeptdata, empDeptSecdata, empNameBasedata, getFixedByEmid, getEarning
     GetEsiStatus, getESIcalculatingamt, createAttendanceManual, getPaySlipTableData,
     getEmpEarningData, getEmpFixedWageData, getEmpDeductionData, getAllEarnData,
     createPayrollpayslip, createPayrollpayslipDetl, checkAttendanceProcess, getPunchdata,
+
     getattendancemark, getEmpNoDeptWise, getPunchmastData, DutyPlanLock, getPaySlipData,
     getIndvidualPayslipDetl, checkPayslipDataExist, deptWisePaySlipData,
-    empWisePaySlipDetl
+    empWisePaySlipDetl, punchMastLock
+
 } = require('../payrollprocess/payrollprocess.controller');
 
 router.post("/EmpDelDept", checkToken, empDeptdata)
@@ -33,6 +35,7 @@ router.get("/EsicalAmt/:id", checkToken, getESIcalculatingamt)
 //attendance 
 router.post("/create/manual", checkToken, createAttendanceManual)
 router.patch("/dutyPlanLock", checkToken, DutyPlanLock);
+router.patch("/punchMastLock", checkToken, punchMastLock);
 
 router.post("/getPayslip/data", checkToken, getPaySlipTableData)
 router.get("/empFixedDetl/:id", checkToken, getEmpEarningData)

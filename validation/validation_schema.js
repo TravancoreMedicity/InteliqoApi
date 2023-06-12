@@ -522,6 +522,7 @@ const validateempmaster = Joi.object({
         perPincode: Joi.number().max(999999).required(),
         blood_slno: Joi.number().min(1).required(),
         probation_status: Joi.number().required(),
+        recomend_salary: Joi.number().optional(),
 })
 
 // VALIDATE EMPLOYEE MASTER EDIT
@@ -565,6 +566,7 @@ const validateempmasterEdit = Joi.object({
         perPincode: Joi.number().max(999999).required(),
         blood_slno: Joi.number().min(1).required(),
         probation_status: Joi.number().required(),
+        recomend_salary: Joi.number().optional(),
 })
 // VALIDATE EMPLOYEupdate
 const validateempmasterupdate = Joi.object({
@@ -596,6 +598,7 @@ const validateempmasterupdate = Joi.object({
         em_account_no: Joi.number().optional(),
         em_ifsc: Joi.optional(),
         em_maritalstatus: Joi.number().min(1).required(),
+        recomend_salary: Joi.number().optional(),
 
 })
 
@@ -1178,6 +1181,8 @@ const validatecommonsettings = Joi.object({
         leavetype_multiple: Joi.optional(),
         pf_employee_amount: Joi.number().optional(),
         pf_employer_amount: Joi.number().optional(),
+        noff_count: Joi.number().optional(),
+
 })
 //validate carryforward
 const validatecarryforward = Joi.object({

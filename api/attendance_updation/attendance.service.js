@@ -535,8 +535,8 @@ module.exports = {
                         data.punch_in,
                         data.punch_out,
                         data.hrs_worked,
-                        data.late_in,
-                        data.early_out,
+                        data.lateIn,
+                        data.earlyOut,
                         data.duty_status,
                         data.duty_desc,
                         data.holiday_slno,
@@ -577,8 +577,8 @@ module.exports = {
                         data.punch_in,
                         data.punch_out,
                         data.hrs_worked,
-                        data.lateIn,
-                        data.earlyOut,
+                        data.late_in,
+                        data.early_out,
                         data.duty_status,
                         data.duty_desc,
                         data.holiday_slno,
@@ -702,6 +702,27 @@ module.exports = {
             `,
             [
                 data.attendance_marking_month,
+                data.em_no
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+
+    checkInOutMarked: (data, callBack) => {
+        pool.query(
+            `
+            SELECT attendance_update_flag FROM medi_hrm.hrm_duty_plan
+             where duty_day between ? and ?
+            and em_no=? and attendance_update_flag=0;
+            `,
+            [
+                data.fromDate,
+                data.toDate,
                 data.em_no
             ],
             (error, results, feilds) => {

@@ -72,12 +72,18 @@ module.exports = {
     },
     getnightoffdata: (data, callBack) => {
         pool.query(
-            `SELECT night_off_flag,shift_id,duty_status FROM medi_hrm.punch_master 
+            `select hrm_shift_mast.night_off_flag,shift_id,duty_status,duty_desc from  medi_hrm.punch_master 
             left join hrm_shift_mast on punch_master.shift_id=hrm_shift_mast.shft_slno
-            where emp_id=? and date(duty_day)between ? and ? and night_off_flag=1;`,
-            [data.em_id,
-            data.fromDate,
-            data.todate
+            where  em_no=? and date(punch_master.duty_day) between ? and ?
+             and hrm_shift_mast.night_off_flag=1 and duty_status>=1 and punch_master.noff_flag!=1`,
+
+            // `SELECT night_off_flag, shift_id, duty_status FROM medi_hrm.punch_master
+            // left join hrm_shift_mast on punch_master.shift_id=hrm_shift_mast.shft_slno
+            // where emp_id=? and date(duty_day)between ? and ? and night_off_flag=1;`,
+            [
+                data.em_no,
+                data.fromDate,
+                data.todate
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -91,19 +97,38 @@ module.exports = {
     updatenightoff: (data, callBack) => {
         pool.query(
             `update punch_master 
-            set lvreq_type=?,
-             leave_type=?,
-             duty_status=?,
-             duty_worked=?
+            set duty_desc=?,
+            duty_status=?,
+            lve_tble_updation_flag=?
               where duty_day=? 
-              and emp_id=?`,
+              and em_no=?`,
             [
-                data.lvreq_type,
-                data.leave_type,
-                1,
-                1,
-                data.fordate,
-                data.emp_id
+                data.duty_desc,
+                data.duty_status,
+                data.lve_tble_updation_flag,
+                data.duty_day,
+                data.em_no
+            ],
+            (error, results, feilds) => {
+
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+
+    },
+    updatePuchMastNoff: (data, callBack) => {
+        pool.query(
+            `update punch_master 
+            set noff_flag=1           
+              where duty_day between ? and ?
+              and em_no=?`,
+            [
+                data.frmdate,
+                data.todate,
+                data.em_no
             ],
             (error, results, feilds) => {
 
