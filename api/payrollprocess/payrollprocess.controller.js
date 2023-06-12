@@ -7,7 +7,8 @@ const { empDeptdata, empDeptSecdata, empNameBasedata, getFixedByEmid,
     getPaySlipTableData, getEmpEarningData, getEmpFixedWageData,
     getEmpDeductionData, getAllEarnData, createPayrollpayslip,
     createPayrollpayslipDetl, checkAttendanceProcess, getPunchdata, getPunchmastData,
-    getattendancemark, getEmpNoDeptWise } = require('../payrollprocess/payrollprocess.service');
+    getattendancemark, getEmpNoDeptWise, getPaySlipData, getIndvidualPayslipDetl,
+    checkPayslipDataExist, deptWisePaySlipData, empWisePaySlipDetl } = require('../payrollprocess/payrollprocess.service');
 const logger = require('../../logger/logger')
 module.exports = {
     empDeptdata: (req, res) => {
@@ -557,6 +558,8 @@ module.exports = {
                 value.esi_employer,
                 value.pf_employee,
                 value.pf_employer,
+                value.total_lop,
+                value.calculated_lop
             ]
         })
         createPayrollpayslip(values, (err, results) => {
@@ -723,6 +726,116 @@ module.exports = {
             return res.status(200).json({
                 success: 1,
                 data: results
+            });
+        });
+    },
+    getPaySlipData: (req, res) => {
+        const body = req.body
+        getPaySlipData(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    getIndvidualPayslipDetl: (req, res) => {
+        const body = req.body
+        getIndvidualPayslipDetl(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    checkPayslipDataExist: (req, res) => {
+        const body = req.body
+        checkPayslipDataExist(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length === 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    deptWisePaySlipData: (req, res) => {
+        const body = req.body
+        deptWisePaySlipData(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length === 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    empWisePaySlipDetl: (req, res) => {
+        const body = req.body
+        empWisePaySlipDetl(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length === 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+            return res.status(200).json({
+                succes: 1,
+                datas: results
             });
         });
     },

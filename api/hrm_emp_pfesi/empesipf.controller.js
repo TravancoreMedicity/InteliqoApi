@@ -1,4 +1,4 @@
-const { create, update, getDataById, getDataBySlno, getEsiallow } = require('../hrm_emp_pfesi/empesipf.service');
+const { create, update, getDataById, getDataBySlno, getEsiallow, createNpsdata } = require('../hrm_emp_pfesi/empesipf.service');
 const { validateempesipf } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -142,5 +142,23 @@ module.exports = {
             });
         });
 
+    },
+    createnps: (req, res) => {
+        const body = req.body;
+        createNpsdata(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                message: "Data Created Successfully"
+            });
+
+        });
     },
 }

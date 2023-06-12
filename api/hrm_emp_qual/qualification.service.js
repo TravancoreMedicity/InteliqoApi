@@ -113,7 +113,9 @@ module.exports = {
     },
     getDataById: (id, callBack) => {
         pool.query(
-            `SELECT emqual_slno,
+            `SELECT 
+            ROW_NUMBER() OVER (ORDER BY emqual_slno) as slno,
+            emqual_slno,
             em_no,
             edu_desc, 
             em_course,

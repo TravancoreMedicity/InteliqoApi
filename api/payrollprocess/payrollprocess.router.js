@@ -8,7 +8,9 @@ const { empDeptdata, empDeptSecdata, empNameBasedata, getFixedByEmid, getEarning
     GetEsiStatus, getESIcalculatingamt, createAttendanceManual, getPaySlipTableData,
     getEmpEarningData, getEmpFixedWageData, getEmpDeductionData, getAllEarnData,
     createPayrollpayslip, createPayrollpayslipDetl, checkAttendanceProcess, getPunchdata,
-    getattendancemark, getEmpNoDeptWise, getPunchmastData, DutyPlanLock
+    getattendancemark, getEmpNoDeptWise, getPunchmastData, DutyPlanLock, getPaySlipData,
+    getIndvidualPayslipDetl, checkPayslipDataExist, deptWisePaySlipData,
+    empWisePaySlipDetl
 } = require('../payrollprocess/payrollprocess.controller');
 
 router.post("/EmpDelDept", checkToken, empDeptdata)
@@ -40,13 +42,31 @@ router.post("/empFixedDetl", checkToken, getEmpFixedWageData)
 router.post("/empDeduction", checkToken, getEmpDeductionData)
 router.post("/allData", checkToken, getAllEarnData)
 
+//payslip calculation
 router.post("/create/payslip", checkToken, createPayrollpayslip)
 router.post("/create/detail", checkToken, createPayrollpayslipDetl)
+router.post("/check/payslip", checkToken, checkPayslipDataExist)
+
+
 router.post("/check/dateexist", checkToken, checkAttendanceProcess)
+
 
 router.post("/duty/data", checkToken, getPunchdata)
 router.post("/data/all", checkToken, getattendancemark);
 
+//attendance updation automatic
 router.post("/getEmpNoDeptWise", checkToken, getEmpNoDeptWise)
 router.post("/getPunchmastData", checkToken, getPunchmastData)
+
+
+//payslip pdf
+router.post("/getPaySlipData", checkToken, getPaySlipData)
+router.post("/getIndvidualPayslipDetl", checkToken, getIndvidualPayslipDetl)
+
+//payslip table views
+router.post("/all", checkToken, deptWisePaySlipData)
+router.post("/all/detail", checkToken, empWisePaySlipDetl)
+
+
+
 module.exports = router; 

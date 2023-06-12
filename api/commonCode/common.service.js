@@ -337,8 +337,9 @@ module.exports = {
     getWageDescription: (callBack) => {
         pool.query(
             `SELECT earnded_id,
-            earnded_name 
-            FROM hrm_earning_deduction`,
+            CONCAT(UCASE(LEFT(earnded_name,1)),LCASE(SUBSTRING(earnded_name,2))) as 'earnded_name', 
+                erning_type_id
+                FROM hrm_earning_deduction order by erning_type_id`,
             [],
             (error, results, feilds) => {
                 if (error) {
