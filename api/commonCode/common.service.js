@@ -717,7 +717,8 @@ module.exports = {
             em_designation,
             em_doj,
             em_contract_end_date,
-            em_conf_end_date
+            em_conf_end_date,
+            contract_status
             FROM hrm_emp_master 
             WHERE em_no=?`,
             [
