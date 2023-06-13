@@ -12,9 +12,13 @@ module.exports = {
                 em_esi_status,
                 em_esi_no,
                 em_grade,
-                create_user
+                create_user,
+                edit_user,
+                nps,
+            npsfixedamount,
+                npsamount
             )
-            VALUES (?,?,?,?,?,?,?,?,?)`,
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
                 data.em_no,
                 data.em_id,
@@ -24,7 +28,11 @@ module.exports = {
                 data.em_esi_status,
                 data.em_esi_no,
                 data.em_grade,
-                data.create_user
+                data.create_user,
+                data.edit_user,
+                data.nps,
+                data.npsfixedamount,
+                data.npsamount
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -76,7 +84,10 @@ module.exports = {
                 em_uan_no,
                 em_esi_status,
                 em_esi_no,
-                em_grade
+                em_grade,
+                nps, 
+                npsfixedamount, 
+                npsamount 
             FROM hrm_emp_pfesi
             WHERE em_no = ?`,
             [
@@ -122,6 +133,35 @@ module.exports = {
             where em_id=?`,
             [
                 id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    createNpsdata: (data, callBack) => {
+        pool.query(
+            `INSERT INTO hrm_emp_pfesi (
+                em_no,
+                em_id,
+                create_user,
+                edit_user,
+                nps,
+                npsfixedamount,
+                npsamount
+            )
+            VALUES (?,?,?,?,?,?,?)`,
+            [
+                data.em_no,
+                data.em_id,
+                data.create_user,
+                data.edit_user,
+                data.nps,
+                data.npsfixedamount,
+                data.npsamount
             ],
             (error, results, feilds) => {
                 if (error) {

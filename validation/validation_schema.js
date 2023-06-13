@@ -727,6 +727,9 @@ const validateempesipf = Joi.object({
         em_grade: Joi.number().optional(),
         create_user: Joi.number().optional(),
         edit_user: Joi.number().optional(),
+        nps: Joi.number().required().max(1),
+        npsfixedamount: Joi.number().optional(),
+        npsamount: Joi.number().optional(),
 })
 
 // VALIDATE EMPOYEE QUALIFICATION
@@ -1176,7 +1179,10 @@ const validatecommonsettings = Joi.object({
         week_off_day: Joi.number().optional(),
         salary_above: Joi.number().optional(),
         leavetype_multiple: Joi.optional(),
+        pf_employee_amount: Joi.number().optional(),
+        pf_employer_amount: Joi.number().optional(),
         noff_count: Joi.number().optional(),
+
 })
 //validate carryforward
 const validatecarryforward = Joi.object({

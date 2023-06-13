@@ -959,6 +959,7 @@ module.exports = {
             hrm_emp_master.em_no,
             hrm_emp_master.em_name,
             dept_name,
+            sect_name,
             desg_name,
             ecat_name
             FROM medi_hrm.hrm_performance_apprsl
@@ -1079,6 +1080,7 @@ module.exports = {
     trainingPending: (callBack) => {
         pool.query(
             `SELECT 
+            ROW_NUMBER() OVER () as slno,
             hrm_emp_master.em_id,hrm_emp_master.em_no,em_name,dept_name,
             sect_name,desg_name,em_doj,ecat_name,em_prob_end_date as training_end,
             incharge,hod,hrm_department.dept_id as dept_id,hrm_dept_section.sect_id as sect_id,
@@ -1103,6 +1105,7 @@ module.exports = {
     probationPending: (callBack) => {
         pool.query(
             `SELECT 
+            ROW_NUMBER() OVER () as slno,
             hrm_emp_master.em_id,hrm_emp_master.em_no,em_name,dept_name,
             sect_name,desg_name,em_doj,ecat_name,em_prob_end_date as training_end,
             incharge,hod,hrm_department.dept_id as dept_id,hrm_dept_section.sect_id as sect_id,
@@ -1127,6 +1130,7 @@ module.exports = {
     permanentPending: (callBack) => {
         pool.query(
             `SELECT 
+            ROW_NUMBER() OVER () as slno,
             hrm_emp_master.em_id, hrm_emp_master.em_no,em_name,
             dept_name, sect_name, desg_name, em_doj,
             ecat_name,hod,hrm_department.dept_id as dept_id,
@@ -1152,6 +1156,7 @@ module.exports = {
     contractPending: (callBack) => {
         pool.query(
             `SELECT 
+            ROW_NUMBER() OVER () as slno,
             hrm_emp_master.em_id,hrm_emp_master.em_no,em_name,dept_name,
             sect_name,desg_name,em_doj,ecat_name,em_prob_end_date as training_end,
             incharge,hod,hrm_department.dept_id as dept_id,hrm_dept_section.sect_id as sect_id,

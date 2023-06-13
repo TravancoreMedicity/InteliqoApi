@@ -29,9 +29,14 @@ module.exports = {
                 salary_above,
                 noff_count,
                 leavetype_multiple,
-                creat_user
+                creat_user,
+                pf_employee_amount,
+                pf_employer_amount
                 )
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+
+
             [
                 data.cmmn_grace_period,
                 data.cmmn_late_in,
@@ -59,6 +64,8 @@ module.exports = {
                 data.salary_above,
                 data.noff_count,
                 JSON.stringify(data.leavetype_multiple),
+                data.pf_employee_amount,
+                data.pf_employer_amount,
                 data.creat_user
             ],
             (error, results, feilds) => {
@@ -108,8 +115,14 @@ module.exports = {
                 notapplicable_shift=?,
                 week_off_day=?,
                 salary_above=?,
+<<<<<<< HEAD
+                leavetype_multiple=?,
+                pf_employee_amount=?,
+                pf_employer_amount=?
+=======
                 noff_count=?,
                 leavetype_multiple=?
+>>>>>>> 9daf2d0de892ba4fd9ca1df335b379dd32e485cf
                 WHERE setting_slno =?`,
             [
                 data.cmmn_grace_period,
@@ -138,6 +151,8 @@ module.exports = {
                 data.salary_above,
                 data.noff_count,
                 JSON.stringify(data.leavetype_multiple),
+                data.pf_employee_amount,
+                data.pf_employer_amount,
                 data.setting_slno
             ],
             (error, results, feilds) => {

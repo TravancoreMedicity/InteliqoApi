@@ -380,6 +380,8 @@ module.exports = {
             total_working_days,
             calculated_worked,
             total_days,
+            total_lop,
+            calculated_lop,
             hrm_emp_master.em_no,
             hrm_emp_master.em_id
             FROM medi_hrm.hrm_attendance_marking
@@ -532,7 +534,9 @@ module.exports = {
                 esi_employee,
                 esi_employer,
                 pf_employee,
-                pf_employer
+                pf_employer,
+                total_lop,
+                calculated_lop
                 )
             VALUES ?;`,
             [
@@ -673,7 +677,7 @@ module.exports = {
             `select hrm_emp_master.em_no,em_name,gross_salary,em_id          
                 FROM hrm_emp_master          
                 where hrm_emp_master.em_department=?
-                 and hrm_emp_master.em_dept_section=?
+                 and hrm_emp_master.em_dept_section=?  and em_status=1  and em_no!=1
                 `,
             [
                 data.em_department,
@@ -702,6 +706,130 @@ module.exports = {
                 data.em_no,
                 data.from,
                 data.to
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getPaySlipData: (data, callBack) => {
+        pool.query(
+            `SELECT 
+            hrm_emp_master.em_name,
+            desg_name,
+            em_doj,
+            attendance_marking_month,
+            em_uan_no,
+            em_esi_no,
+            hrm_payroll_payslip.em_no,
+            hrm_payroll_payslip.em_id,
+            total_working_days,
+            total_days,
+            fixed_wages,
+            earning_wages,
+            deduct_wages,
+            gross_amount,
+            net_amount,
+            dept_id,
+            sect_id,
+            esi_employee,
+            esi_employer,
+            pf_employee,
+            pf_employer 
+            FROM medi_hrm.hrm_payroll_payslip 
+            inner join hrm_emp_master on hrm_payroll_payslip.em_no=hrm_emp_master.em_no
+            inner join designation on hrm_emp_master.em_designation=designation.desg_slno
+            left join hrm_emp_pfesi on hrm_emp_master.em_id=hrm_emp_pfesi.em_id
+            where dept_id=? and sect_id=? and attendance_marking_month=?;`,
+            [
+                data.dept_id,
+                data.sect_id,
+                data.attendance_marking_month
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getIndvidualPayslipDetl: (data, callBack) => {
+        pool.query(
+            `SELECT 
+            em_no,
+            em_id,
+            em_earning_type,
+            earning_type_name,
+            em_salary_desc,
+            earnded_name,
+            total_working_days,
+            total_days,
+            worked_amount
+             FROM medi_hrm.hrm_payroll_payslip_detl 
+             inner join hrm_earning_deduction on hrm_payroll_payslip_detl.em_salary_desc=hrm_earning_deduction.earnded_id
+             where em_no=?;`,
+            [
+                data.em_no
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    checkPayslipDataExist: (data, callBack) => {
+        pool.query(
+            `SELECT * FROM medi_hrm.hrm_payroll_payslip where attendance_marking_month=?`,
+            [
+                data.attendance_marking_month
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    deptWisePaySlipData: (data, callBack) => {
+        pool.query(
+            `SELECT em_name,hrm_payroll_payslip.em_no,hrm_payroll_payslip.em_id,dept_name,
+            desg_name,em_account_no, total_working_days,total_days,calculated_lop,total_lop,
+            fixed_wages,earning_wages,deduct_wages,gross_amount,attendance_marking_month,
+            esi_employee,esi_employer,pf_employee,pf_employer , em_uan_no,em_esi_no,net_amount
+            FROM medi_hrm.hrm_payroll_payslip 
+            inner join hrm_emp_master on hrm_payroll_payslip.em_id=hrm_emp_master.em_id
+            right join hrm_emp_pfesi on hrm_emp_master.em_id=hrm_emp_pfesi.em_id
+            inner join hrm_department on hrm_payroll_payslip.dept_id=hrm_department.dept_id
+            inner join designation on hrm_emp_master.em_designation=designation.desg_slno
+            inner join hrm_emp_personal on hrm_emp_master.em_id=hrm_emp_personal.em_id
+            where   hrm_payroll_payslip.dept_id=? and hrm_payroll_payslip.dept_id=? and attendance_marking_month=?`,
+            [
+                data.dept_id,
+                data.sect_id,
+                data.attendance_marking_month
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    empWisePaySlipDetl: (data, callBack) => {
+        pool.query(
+            `
+            SELECT * FROM medi_hrm.hrm_payroll_payslip_detl where em_no IN (?) and attendance_marking_month=?  order by em_salary_desc ASC`,
+            [
+                data.em_no,
+                data.attendance_marking_month
             ],
             (error, results, feilds) => {
                 if (error) {

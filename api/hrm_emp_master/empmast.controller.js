@@ -78,9 +78,7 @@ module.exports = {
     updateempmast: (req, res) => {
 
         const body = req.body;
-        console.log(body);
         const body_result = validateempmasterupdate.validate(body);
-        console.log(body_result);
         if (body_result.error) {
             return res.status(200).json({
                 success: 2,
@@ -89,7 +87,6 @@ module.exports = {
         }
 
         body.em_name = body_result.value.em_name;
-        console.log(body);
         update(body, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
