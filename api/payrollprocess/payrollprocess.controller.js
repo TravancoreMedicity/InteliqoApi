@@ -3,12 +3,14 @@ const { empDeptdata, empDeptSecdata, empNameBasedata, getFixedByEmid,
     getTotalDeductionByEmid, getDeductionByEmid, getEarningByEmid,
     getLopByEmid, getTotalGrosssalaryById, GetPfStatus, getPFcalcalculatingamt,
     GetEsiStatus, getESIcalculatingamt,
-    createAttendanceManual, DutyPlanLock, punchMastLock,
+    createAttendanceManual, DutyPlanLock, dutyPlanUnLock, punchMastLock,
     getPaySlipTableData, getEmpEarningData, getEmpFixedWageData,
     getEmpDeductionData, getAllEarnData, createPayrollpayslip,
     createPayrollpayslipDetl, checkAttendanceProcess, getPunchdata, getPunchmastData,
     getattendancemark, getEmpNoDeptWise, getPaySlipData, getIndvidualPayslipDetl,
-    checkPayslipDataExist, deptWisePaySlipData, empWisePaySlipDetl } = require('../payrollprocess/payrollprocess.service');
+    checkPayslipDataExist, deptWisePaySlipData, empWisePaySlipDetl, checkInsertVal,
+    InsertPunchInOutHr, updatePunchInOutHr, getPunchInOutHr, CancelPunchInOutHr
+} = require('../payrollprocess/payrollprocess.service');
 const logger = require('../../logger/logger')
 module.exports = {
     empDeptdata: (req, res) => {
@@ -428,6 +430,23 @@ module.exports = {
                 });
             })
     },
+
+    dutyPlanUnLock: (req, res) => {
+        const body = req.body;
+        const result = dutyPlanUnLock(body)
+            .then((r) => {
+                return res.status(200).json({
+                    success: 1,
+                    message: r
+                });
+            }).catch((e) => {
+                return res.status(200).json({
+                    success: 0,
+                    message: e.sqlMessage
+                });
+            })
+    },
+
     punchMastLock: (req, res) => {
         const body = req.body;
         const result = punchMastLock(body)
@@ -855,4 +874,104 @@ module.exports = {
             });
         });
     },
+
+    InsertPunchInOutHr: (req, res) => {
+        const body = req.body;
+
+        checkInsertVal(body, (err, results) => {
+            const value = JSON.parse(JSON.stringify(results))
+            if (Object.keys(value).length === 0) {
+
+                InsertPunchInOutHr(body, (err, results) => {
+                    if (err) {
+                        logger.errorLogger(err)
+                        return res.status(200).json({
+                            success: 0,
+                            message: err
+                        });
+                    }
+
+                    return res.status(200).json({
+                        success: 1,
+                        message: "Data Created Successfully"
+                    });
+
+                });
+            } else {
+                updatePunchInOutHr(body, (err, results) => {
+
+                    if (err) {
+                        logger.errorLogger(err)
+                        return res.status(200).json({
+                            success: 0,
+                            message: err
+                        });
+                    }
+
+                    if (!results) {
+                        return res.status(200).json({
+                            success: 2,
+                            message: "Record Not Found"
+                        });
+                    }
+
+                    return res.status(200).json({
+                        success: 1,
+                        message: "Data Updated Successfully"
+                    });
+
+                });
+
+            }
+        })
+    },
+    getPunchInOutHr: (req, res) => {
+        const body = req.body
+        getPunchInOutHr(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    succes: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    succes: 0,
+                    message: "No Record Found"
+                });
+            }
+            return res.status(200).json({
+                succes: 1,
+                dataa: results
+            });
+        });
+    },
+    CancelPunchInOutHr: (req, res) => {
+        const body = req.body
+        CancelPunchInOutHr(body, (err, results) => {
+
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                message: "Data Updated Successfully"
+            });
+
+        });
+    },
+
 }

@@ -9,9 +9,10 @@ const { empDeptdata, empDeptSecdata, empNameBasedata, getFixedByEmid, getEarning
     getEmpEarningData, getEmpFixedWageData, getEmpDeductionData, getAllEarnData,
     createPayrollpayslip, createPayrollpayslipDetl, checkAttendanceProcess, getPunchdata,
 
-    getattendancemark, getEmpNoDeptWise, getPunchmastData, DutyPlanLock, getPaySlipData,
+    getattendancemark, getEmpNoDeptWise, getPunchmastData, DutyPlanLock, dutyPlanUnLock, getPaySlipData,
     getIndvidualPayslipDetl, checkPayslipDataExist, deptWisePaySlipData,
-    empWisePaySlipDetl, punchMastLock
+    empWisePaySlipDetl, punchMastLock, InsertPunchInOutHr, getPunchInOutHr,
+    CancelPunchInOutHr
 
 } = require('../payrollprocess/payrollprocess.controller');
 
@@ -44,16 +45,13 @@ router.post("/empEarning", checkToken, getEmpEarningData)
 router.post("/empFixedDetl", checkToken, getEmpFixedWageData)
 router.post("/empDeduction", checkToken, getEmpDeductionData)
 router.post("/allData", checkToken, getAllEarnData)
+router.patch("/dutyPlanUnLock", checkToken, dutyPlanUnLock);//Hr Punch In/Out cancel
 
 //payslip calculation
 router.post("/create/payslip", checkToken, createPayrollpayslip)
 router.post("/create/detail", checkToken, createPayrollpayslipDetl)
 router.post("/check/payslip", checkToken, checkPayslipDataExist)
-
-
 router.post("/check/dateexist", checkToken, checkAttendanceProcess)
-
-
 router.post("/duty/data", checkToken, getPunchdata)
 router.post("/data/all", checkToken, getattendancemark);
 
@@ -70,6 +68,8 @@ router.post("/getIndvidualPayslipDetl", checkToken, getIndvidualPayslipDetl)
 router.post("/all", checkToken, deptWisePaySlipData)
 router.post("/all/detail", checkToken, empWisePaySlipDetl)
 
-
-
+//Insert Punch In/Out marking Hr to table
+router.post("/Insert/PunchInOutHr", checkToken, InsertPunchInOutHr);
+router.post("/getPunchInOutHr", checkToken, getPunchInOutHr)
+router.post("/CancelPunchInOutHr", checkToken, CancelPunchInOutHr)
 module.exports = router; 

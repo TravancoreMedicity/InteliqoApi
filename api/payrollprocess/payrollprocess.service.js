@@ -348,6 +348,31 @@ module.exports = {
             })
         })
     },
+    dutyPlanUnLock: (data) => {
+        return new Promise((resolve, reject) => {
+            data.map((val) => {
+                pool.query(
+                    `update hrm_duty_plan
+                    set attendance_update_flag=0
+                    where em_no=? and 
+                     date(duty_day) between ? and ?`,
+                    [
+                        val.em_no,
+                        val.from,
+                        val.to
+                    ],
+                    (error, results, fields) => {
+
+
+                        if (error) {
+                            return reject(error)
+                        }
+                        return resolve(results)
+                    }
+                )
+            })
+        })
+    },
     punchMastLock: (data) => {
         return new Promise((resolve, reject) => {
             data.map((val) => {
@@ -830,6 +855,103 @@ module.exports = {
             [
                 data.em_no,
                 data.attendance_marking_month
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    checkInsertVal: (data, callBack) => {
+        pool.query(
+            `SELECT marking_month             
+                FROM punchmarking_hr
+                WHERE marking_month = ? and deptsec_slno=?`,
+            [
+                data.marking_month,
+                data.deptsec_slno
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error)
+                }
+                return callBack(null, results)
+            }
+        )
+    },
+    InsertPunchInOutHr: (data, callBack) => {
+        pool.query(
+            `INSERT INTO punchmarking_hr (marking_month,dept_slno,deptsec_slno,status,create_user)
+                VALUES (?,?,?,?,?)`,
+            [
+                data.marking_month,
+                data.dept_slno,
+                data.deptsec_slno,
+                data.status,
+                data.create_user
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    updatePunchInOutHr: (data, callBack) => {
+        pool.query(
+            `UPDATE punchmarking_hr 
+                SET status = ?,
+                edit_user = ?                   
+                WHERE marking_month = ? and deptsec_slno=?`,
+            [
+                data.status,
+                data.edit_user,
+                data.marking_month,
+                data.deptsec_slno
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getPunchInOutHr: (data, callBack) => {
+        pool.query(
+            `select  ROW_NUMBER() OVER() as slno,dept_slno,marking_month,deptsec_slno,
+            dept_name,
+            sect_name
+            from punchmarking_hr
+            left join hrm_department on hrm_department.dept_id=punchmarking_hr.dept_slno
+            left join hrm_dept_section on hrm_dept_section.sect_id=punchmarking_hr.deptsec_slno
+            where marking_month=? and status=1 ;
+                `,
+            [
+                data.marking_month
+
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    CancelPunchInOutHr: (data, callBack) => {
+        pool.query(
+            `UPDATE punchmarking_hr 
+                SET status = 0,
+                edit_user = ?                   
+                WHERE marking_month = ? and deptsec_slno=?`,
+            [
+                data.edit_user,
+                data.marking_month,
+                data.deptsec_slno
             ],
             (error, results, feilds) => {
                 if (error) {
