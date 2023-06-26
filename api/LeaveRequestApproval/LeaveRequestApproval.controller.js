@@ -20,7 +20,7 @@ const { getleaverequestdep, nopunchreq, halfrequst, getcompenoff,
     CancelpunchMastEsiLeave,
     CancelpunchMastLwfLeave, CancelpunchMastLeave
 } = require('../LeaveRequestApproval/LeaveRequestApproval.service');
-const { validationinchageapprv } = require('../../validation/validation_schema');
+const { validationinchageapprv, validateotcancel } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
 module.exports = {
     getleaverequestdep: (req, res) => {
@@ -894,13 +894,6 @@ module.exports = {
     },
     leaveReqCancel: (req, res) => {
         const body = req.body;
-        const body_result = validationinchageapprv.validate(body);
-        if (body_result.error) {
-            return res.status(200).json({
-                success: 2,
-                message: body_result.error.details[0].message
-            });
-        }
         leaveReqCancel(body, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
@@ -1217,13 +1210,6 @@ module.exports = {
     },
     HalfdayCancelUser: (req, res) => {
         const body = req.body;
-        const body_result = validationinchageapprv.validate(body);
-        if (body_result.error) {
-            return res.status(200).json({
-                success: 2,
-                message: body_result.error.details[0].message
-            });
-        }
         HalfdayCancelUser(body, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
@@ -1248,13 +1234,6 @@ module.exports = {
     },
     NopunchCancelUser: (req, res) => {
         const body = req.body;
-        const body_result = validationinchageapprv.validate(body);
-        if (body_result.error) {
-            return res.status(200).json({
-                success: 2,
-                message: body_result.error.details[0].message
-            });
-        }
         NopunchCancelUser(body, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
@@ -1279,13 +1258,6 @@ module.exports = {
     },
     CoffCancelUser: (req, res) => {
         const body = req.body;
-        const body_result = validationinchageapprv.validate(body);
-        if (body_result.error) {
-            return res.status(200).json({
-                success: 2,
-                message: body_result.error.details[0].message
-            });
-        }
         CoffCancelUser(body, (err, results) => {
             if (err) {
                 logger.errorLogger(err)

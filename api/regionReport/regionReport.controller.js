@@ -5,6 +5,7 @@ const {
     getRegionById,
     getDistRegion,
     getDistRegionById,
+    getRegionBypin
 } = require('../regionReport/regionReport.service')
 
 module.exports = {
@@ -121,5 +122,30 @@ module.exports = {
                 data: results
             });
         })
+    },
+    getRegionBypin: (req, res) => {
+        const id = req.params.id;
+        getRegionBypin(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+
     },
 }

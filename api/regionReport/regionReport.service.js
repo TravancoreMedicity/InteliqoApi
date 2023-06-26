@@ -155,4 +155,18 @@ module.exports = {
             }
         )
     },
+    getRegionBypin: (id, callBack) => {
+        pool.query(
+            `SELECT reg_slno,reg_name,reg_pincode,reg_dist_slno FROM medi_hrm.hrm_region where reg_pincode=? `,
+            [
+                id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }

@@ -6,6 +6,7 @@ const {
     getRegionById,
     getDistRegion,
     getDistRegionById,
+    getRegionBypin
 } = require('../regionReport/regionReport.controller')
 
 //region wise report
@@ -16,5 +17,7 @@ router.post('/district/byid', checkToken, getDistrictById);
 //to get district wise region
 router.post('/distregion', checkToken, getDistRegion)
 router.post('/distreg/byregion', checkToken, getDistRegionById);
+
+router.get('/region/bypin/:id', checkToken, getRegionBypin)
 
 module.exports = router;

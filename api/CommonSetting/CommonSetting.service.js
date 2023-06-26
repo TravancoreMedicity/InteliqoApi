@@ -23,18 +23,18 @@ module.exports = {
                 esi_employer,
                 noofadvanceinyear,
                 verification_level,
+                creat_user,
                 default_shift,
                 notapplicable_shift,
                 week_off_day,
                 salary_above,
                 noff_count,
                 leavetype_multiple,
-                creat_user,
                 pf_employee_amount,
                 pf_employer_amount
                 )
 
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
 
 
             [
@@ -65,8 +65,7 @@ module.exports = {
                 data.noff_count,
                 JSON.stringify(data.leavetype_multiple),
                 data.pf_employee_amount,
-                data.pf_employer_amount,
-                data.creat_user
+                data.pf_employer_amount
             ],
             (error, results, feilds) => {
                 if (error) {

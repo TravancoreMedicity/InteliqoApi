@@ -21,9 +21,11 @@ module.exports = {
                 ot_ceo_require  ,
                 ot_deptsec_id ,
                 ot_inch_status,  
-                ot_hod_status         
+                ot_hod_status,
+                ot_inch_remark,
+                ot_hod_remark          
                 )
-                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
 
                 data.emp_id,
@@ -44,7 +46,9 @@ module.exports = {
                 data.ot_ceo_require,
                 data.ot_deptsec_id,
                 data.ot_inch_status,
-                data.ot_hod_status
+                data.ot_hod_status,
+                data.ot_inch_remark,
+                data.ot_hod_remark
 
             ],
             (error, results, feilds) => {
@@ -807,6 +811,8 @@ module.exports = {
         pool.query(
             `SELECT 
             ROW_NUMBER() OVER () as slno,
+            em_no,
+            emp_id,
             ot_slno,
             ot_date,
             ot_days,
@@ -973,9 +979,9 @@ module.exports = {
         return new Promise((resolve, reject) => {
             data.map((val) => {
                 pool.query(
-                    ` update punch_data
-                    set punch_taken=0
-                    where emp_code=? and punch_time=?`,
+                    ` UPDATE punch_data 
+                    SET punch_taken=0
+                    WHERE emp_code = ? and punch_time=?`,
                     [val.emp_code, val.punch_time],
                     (error, results, feilds) => {
                         if (error) {
@@ -1040,5 +1046,118 @@ module.exports = {
             })
 
         })
+    },
+    getEmpbyNo: (id, callBack) => {
+        pool.query(
+            `SELECT
+            em_id, 
+            em_no,
+            em_name,
+            em_branch,
+            em_department,
+            dept_name,
+            em_dept_section,
+            sect_name,
+            em_category,
+            em_prob_end_date,
+            em_designation,
+            desg_name,
+            em_doj,
+            em_contract_end_date,
+            em_conf_end_date,
+            contract_status,
+            ot_amount
+            FROM hrm_emp_master 
+            inner join hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
+            inner join hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
+            inner join designation on hrm_emp_master.em_designation=designation.desg_slno
+            WHERE em_no=?`,
+            [
+                id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    createDirectReq: (data, callBack) => {
+        pool.query(
+            `INSERT INTO hrm_ot_master (
+                emp_id,
+                em_no,
+                ot_date,
+                ot_days,
+                ot_shift_id,
+                check_in,
+                check_out,
+                over_time,
+                ot_reson,
+                ot_remarks,
+                ot_convert ,
+                ot_amount,
+                ot_inch_require,
+                ot_hod_require,
+                ot_hr_require,
+                ot_ceo_require  ,
+                ot_deptsec_id ,
+                ot_inch_status,  
+                ot_hod_status,
+                ot_inch_remark,
+                ot_hod_remark         
+                )
+                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            [
+
+                data.emp_id,
+                data.em_no,
+                data.ot_date,
+                data.ot_days,
+                data.ot_shift_id,
+                data.check_in,
+                data.check_out,
+                data.over_time,
+                data.ot_reson,
+                data.ot_remarks,
+                data.ot_convert,
+                data.ot_amount,
+                data.ot_inch_require,
+                data.ot_hod_require,
+                data.ot_hr_require,
+                data.ot_ceo_require,
+                data.ot_deptsec_id,
+                data.ot_inch_status,
+                data.ot_hod_status,
+                data.ot_inch_remark,
+                data.ot_hod_remark
+
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    deleteOtUpdate: (data, callBack) => {
+        pool.query(
+            `update hrm_ot_master
+            set ot_updation_status=0,
+            ot_updation_date=null
+            where emp_id=? and ot_slno=?`,
+            [
+                data.emp_id,
+                data.ot_slno
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
     },
 }

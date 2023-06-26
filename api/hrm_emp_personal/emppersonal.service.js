@@ -30,9 +30,10 @@ module.exports = {
                 emp_email,
                 em_region,
                 hrm_region2,
-                emp_yeargae
+                emp_yeargae,
+                salarytype
             )
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
                 data.em_id,
                 data.em_no,
@@ -60,7 +61,8 @@ module.exports = {
                 data.emp_email,
                 data.em_region,
                 data.hrm_region2,
-                data.emp_yeargae
+                data.emp_yeargae,
+                data.salarytype
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -233,6 +235,57 @@ module.exports = {
                 return callBack(null, results);
             }
         )
-    }
-
+    },
+    createFamilyDetails: (data, callBack) => {
+        pool.query(
+            `
+            INSERT INTO 
+            hrm_emp_family_details(
+                employee_id,
+                employee_no,
+                relation_number,
+                mrd_number,
+                patient_name,
+                patient_sex,
+                patient_age,
+                patient_mob,
+                patient_address1,
+                patient_address2
+                )
+            VALUES(?,?,?,?,?,?,?,?,?,?)`,
+            [
+                data.employee_id,
+                data.employee_no,
+                data.relation_number,
+                data.mrd_number,
+                data.patient_name,
+                data.patient_sex,
+                data.patient_age,
+                data.patient_mob,
+                data.patient_address1,
+                data.patient_address2
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getDetailsbyId: (id, callBack) => {
+        pool.query(
+            `SELECT relation_number,patient_name,mrd_number 
+            FROM medi_hrm.hrm_emp_family_details where employee_id=? `,
+            [
+                id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }

@@ -411,9 +411,7 @@ module.exports = {
     },
 
     newRecommended: (req, res) => {
-        console.log("sedfyguhj");
         newRecommended((err, results) => {
-            console.log(results);
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
