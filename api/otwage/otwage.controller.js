@@ -1,6 +1,6 @@
 const { validateotwage, validateotwageone } = require('../../validation/validation_schema');
 const { empmasterOtWage, empmasterOtWageone, empmasterOtWageedit, getOtWage,
-    getdeptsecauthri, getOtWageByID } = require('../otwage/otwage.service')
+    getdeptsecauthri, getOtWageByID, getOtWageByNo } = require('../otwage/otwage.service')
 const logger = require('../../logger/logger')
 module.exports = {
     empmasterOtWage: (req, res) => {
@@ -171,6 +171,32 @@ module.exports = {
             return res.status(200).json({
                 succes: 1,
                 dataa: results
+            });
+        });
+
+    },
+    getOtWageByNo: (req, res) => {
+
+        const id = req.params.id;
+        getOtWageByNo(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
             });
         });
 

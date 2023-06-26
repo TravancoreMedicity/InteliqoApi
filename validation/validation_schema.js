@@ -711,7 +711,8 @@ const validateeemployeepersonal = Joi.object({
         em_email: Joi.string().email().required(),
         emp_yeargae: Joi.number().optional(),
         em_region: Joi.number().min(1).required(),
-        hrm_region2: Joi.number().min(1).required()
+        hrm_region2: Joi.number().min(1).required(),
+        salarytype: Joi.number().min(1).required()
 })
 
 // VALIDATE EMPLOYEE ESI AND PF
@@ -728,8 +729,11 @@ const validateempesipf = Joi.object({
         create_user: Joi.number().optional(),
         edit_user: Joi.number().optional(),
         nps: Joi.number().required().max(1),
-        npsfixedamount: Joi.number().optional(),
+        npsnumber: Joi.number().optional(),
         npsamount: Joi.number().optional(),
+        lwf_status: Joi.number().required().max(1),
+        lwfnumber: Joi.number().optional(),
+        lwfamount: Joi.number().optional(),
 })
 
 // VALIDATE EMPOYEE QUALIFICATION
@@ -892,7 +896,9 @@ const validateotrequest = Joi.object({
         ot_deptsec_id: Joi.number().required(),
         duty_day: Joi.optional(),
         ot_inch_status: Joi.number().required(),
-        ot_hod_status: Joi.number().required()
+        ot_hod_status: Joi.number().required(),
+        ot_inch_remark: Joi.string().required(),
+        ot_hod_remark: Joi.string().required()
 
 })
 //Validation for OT update
@@ -1099,7 +1105,8 @@ const validateDueClearence = Joi.object({
 const validateotwageone = Joi.object({
         emp__ot: Joi.number().required(),
         ot_amount: Joi.number().required(),
-        em_id: Joi.number().required(),
+        //em_id: Joi.number().required(),
+        em_no: Joi.number().required(),
 })
 //validate due clearence Master
 const validatedueClearenceMaster = Joi.object({

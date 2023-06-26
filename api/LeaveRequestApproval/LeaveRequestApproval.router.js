@@ -63,6 +63,8 @@ router.patch("/updatehrPuchhalfday", checkToken, updateHalfdayPunchMast)
 router.patch("/updatehrPuchnopunch", checkToken, updateNoPunchPunchMast)
 router.post("/insertcoffleaveCalc", checkToken, InsertCoffLeaveCalculated)
 router.patch("/updatehrPuchnopunchOUt", checkToken, updateNoPunchOUTPunchMast)
+
+//employee cancel
 router.patch("/lveReqCancel", checkToken, leaveReqCancel)
 router.patch("/halfdaycancelReq", checkToken, HalfdayCancel)
 router.patch("/nopunchCancel", checkToken, NopunchCancel)

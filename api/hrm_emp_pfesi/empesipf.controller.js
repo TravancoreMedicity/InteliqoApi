@@ -1,4 +1,5 @@
-const { create, update, getDataById, getDataBySlno, getEsiallow, createNpsdata } = require('../hrm_emp_pfesi/empesipf.service');
+const { create, update, getDataById, getDataBySlno, getEsiallow, createNpsdata,
+    esinotallowedUpdate } = require('../hrm_emp_pfesi/empesipf.service');
 const { validateempesipf } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -157,6 +158,30 @@ module.exports = {
             return res.status(200).json({
                 success: 1,
                 message: "Data Created Successfully"
+            });
+
+        });
+    },
+    esinotallowedUpdate: (req, res) => {
+
+        const body = req.body;
+        esinotallowedUpdate(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (!results) {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Record Not Found"
+                });
+            }
+            return res.status(200).json({
+                success: 2,
+                message: "Data Updated Successfully"
             });
 
         });

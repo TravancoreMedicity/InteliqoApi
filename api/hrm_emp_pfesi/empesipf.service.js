@@ -15,10 +15,13 @@ module.exports = {
                 create_user,
                 edit_user,
                 nps,
-            npsfixedamount,
-                npsamount
+                npsnumber,
+                npsamount,
+                lwf_status,
+                lwfnumber,
+                lwfamount
             )
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
                 data.em_no,
                 data.em_id,
@@ -31,8 +34,11 @@ module.exports = {
                 data.create_user,
                 data.edit_user,
                 data.nps,
-                data.npsfixedamount,
-                data.npsamount
+                data.npsnumber,
+                data.npsamount,
+                data.lwf_status,
+                data.lwfnumber,
+                data.lwfamount
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -52,7 +58,13 @@ module.exports = {
                     em_esi_status =?,
                     em_esi_no =?,
                     em_grade =?,
-                    edit_user =?
+                    edit_user =?,
+                    nps=?,
+                    npsnumber=?,
+                    npsamount=?,
+                    lwf_status=?,
+                    lwfnumber=?,
+                    lwfamount=?
                 WHERE esi_slno = ?`,
             [
                 data.em_id,
@@ -63,6 +75,12 @@ module.exports = {
                 data.em_esi_no,
                 data.em_grade,
                 data.edit_user,
+                data.nps,
+                data.npsnumber,
+                data.npsamount,
+                data.lwf_status,
+                data.lwfnumber,
+                data.lwfamount,
                 data.esi_slno,
             ],
             (error, results, feilds) => {
@@ -86,8 +104,11 @@ module.exports = {
                 em_esi_no,
                 em_grade,
                 nps, 
-                npsfixedamount, 
-                npsamount 
+                npsnumber, 
+                npsamount ,
+                lwf_status,
+                lwfnumber,
+                lwfamount
             FROM hrm_emp_pfesi
             WHERE em_no = ?`,
             [
@@ -150,18 +171,55 @@ module.exports = {
                 create_user,
                 edit_user,
                 nps,
-                npsfixedamount,
-                npsamount
+                npsnumber,
+                npsamount,
+                lwf_status,
+                lwfnumber,
+                lwfamount
             )
-            VALUES (?,?,?,?,?,?,?)`,
+            VALUES (?,?,?,?,?,?,?,?,?,?)`,
             [
                 data.em_no,
                 data.em_id,
                 data.create_user,
                 data.edit_user,
                 data.nps,
-                data.npsfixedamount,
-                data.npsamount
+                data.npsnumber,
+                data.npsamount,
+                data.lwf_status,
+                data.lwfnumber,
+                data.lwfamount
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    esinotallowedUpdate: (data, callBack) => {
+        pool.query(
+            `UPDATE hrm_emp_pfesi
+                SET em_id =?,
+                edit_user =?,
+                nps=?,
+                npsnumber=?,
+                npsamount=?,
+                lwf_status=?,
+                lwfnumber=?,
+                lwfamount=?
+                WHERE esi_slno = ?`,
+            [
+                data.em_id,
+                data.edit_user,
+                data.nps,
+                data.npsnumber,
+                data.npsamount,
+                data.lwf_status,
+                data.lwfnumber,
+                data.lwfamount,
+                data.esi_slno,
             ],
             (error, results, feilds) => {
                 if (error) {

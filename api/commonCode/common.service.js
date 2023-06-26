@@ -408,7 +408,8 @@ module.exports = {
 			ifnull(em_license_no,'')em_license_no,
 			ifnull(em_adhar_no,'')em_adhar_no,
 			ifnull(em_pan_no,'')em_pan_no,
-			ifnull(em_passport_no,'')em_passport_no
+			ifnull(em_passport_no,'')em_passport_no,
+            ifnull(salarytype,'')salarytype
                 FROM hrm_emp_master
                 left join  hrm_emp_personal on  hrm_emp_master.em_no= hrm_emp_personal.em_no
                 WHERE hrm_emp_master.em_no = ?` ,
@@ -707,6 +708,7 @@ module.exports = {
     getCompanyById: (id, callBack) => {
         pool.query(
             `SELECT 
+            em_no,
             em_name,
             em_branch,
             em_department,

@@ -1019,7 +1019,7 @@ module.exports = {
             FROM medi_hrm.hrm_halfdayrequest
             inner join hrm_emp_master on  hrm_halfdayrequest.em_no =hrm_emp_master.em_no
             inner join hrm_department on  hrm_halfdayrequest.dept_id =hrm_department.dept_id
-            where  lv_cancel_status=0 and lv_cancel_status_user=0`,
+            where  lv_cancel_req_status_user=0 and lv_cancel_status_user=0`,
             [],
             (error, results, feilds) => {
                 if (error) {
@@ -1083,7 +1083,7 @@ module.exports = {
             FROM medi_hrm.nopunchrequest
             left join hrm_emp_master on  nopunchrequest.em_no =hrm_emp_master.em_no
             left join hrm_department on  nopunchrequest.em_department =hrm_department.dept_id
-            where lv_cancel_status=0 and lv_cancel_status_user=0;`,
+            where lv_cancel_req_status_user=0 and lv_cancel_status_user=0;`,
             [],
             (error, results, feilds) => {
                 if (error) {
@@ -1225,7 +1225,7 @@ module.exports = {
     NopunchCancelUser: (data, callBack) => {
         pool.query(
             `UPDATE nopunchrequest
-            SET lv_cancel_status_user=?,
+            SET lv_cancel_req_status_user=?,
             lv_cancel_cmnt_user=?,
             lv_cancel_date_user=?,
             lv_cancel_us_code_user=?  
