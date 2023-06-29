@@ -486,5 +486,31 @@ module.exports = {
             }
         )
     },
+    esiNotAddedList: (callBack) => {
+        pool.query(
+            `SELECT 
+            hrm_emp_master.em_id,
+            hrm_emp_master.em_no,
+            hrm_emp_master.em_name,
+            hrm_emp_master.em_mobile,
+            hrm_emp_master.em_doj,
+            dept_name,
+            sect_name
+             FROM medi_hrm.hrm_emp_master
+            inner join hrm_emp_category on hrm_emp_master.em_category=hrm_emp_category.category_slno
+            inner join hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
+            inner join hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
+             WHERE NOT EXISTS (SELECT * FROM hrm_emp_pfesi
+                      WHERE hrm_emp_pfesi.em_id=hrm_emp_master.em_id) 
+            and em_status=1 and em_no!=1 and ecat_esi_allow=1`,
+            [],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 
 }
