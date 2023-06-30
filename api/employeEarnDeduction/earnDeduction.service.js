@@ -93,7 +93,9 @@ module.exports = {
     },
     getDataById: (id, callBack) => {
         pool.query(
-            `SELECT ernded_slno,
+            `SELECT 
+            ROW_NUMBER() OVER () as slno,
+            ernded_slno,
             hrm_earning_deduction.earnded_name,
             hrm_earning_type.earning_type_name,
             em_salary_desc,
@@ -430,7 +432,7 @@ module.exports = {
              FROM medi_hrm.hrm_emp_master 
              inner join hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
              inner join hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
-             where salary_split_flag=0`,
+             where salary_split_flag=0 and em_status=1  and em_no!=1`,
             [],
             (error, results, feilds) => {
                 if (error) {
