@@ -1189,6 +1189,7 @@ const validatecommonsettings = Joi.object({
         pf_employee_amount: Joi.number().optional(),
         pf_employer_amount: Joi.number().optional(),
         noff_count: Joi.number().optional(),
+        onehour_rqst_count: Joi.number().optional()
 
 })
 //validate carryforward
@@ -1283,6 +1284,42 @@ const validateKRA = Joi.object({
         kra_slno: Joi.number().required(),
 });
 
+const validateOneHourReqst = Joi.object({
+        em_id: Joi.number().required(),
+        em_no: Joi.number().required(),
+        dept_id: Joi.number().required(),
+        dept_sect_id: Joi.number().required(),
+        request_date: Joi.date().required(),
+        one_hour_duty_day: Joi.date().required(),
+        checkin_flag: Joi.number().min(0).max(1),
+        check_in: Joi.date().required(),
+        checkout_flag: Joi.number().min(0).max(1),
+        check_out: Joi.date().required(),
+        reason: Joi.string().required(),
+        incharge_req_status: Joi.number().min(0).max(1),
+        incharge_approval_status: Joi.number().min(0).max(1),
+        incharge_approval_comment: Joi.string().required(),
+        incharge_approval_date: Joi.date().required(),
+        hod_req_status: Joi.number().min(0).max(1),
+        hod_approval_status: Joi.number().min(0).max(1),
+        hod_approval_comment: Joi.string().required(),
+        hod_approval_date: Joi.date().required(),
+        ceo_req_status: Joi.number().min(0).max(1),
+        hr_req_status: Joi.number().min(0).max(1)
+})
+
+const validateCommonreqstMast = Joi.object({
+        request_name: Joi.string().trim().uppercase().min(3).max(60).required()
+                .messages({
+                        'string.empty': 'Request Name is Required',
+                        // 'string.max': 'Name length must be less than or equal to 45 characters long',
+                        'string.min': 'Name length must be at least 3 characters long',
+                }),
+        request_status: Joi.number().min(0).max(1).required(),
+        create_user: Joi.number().optional(),
+        update_user: Joi.number().optional(),
+        slno: Joi.number().optional(),
+});
 
 module.exports = {
         authSchema,  //authSchema:authSchema
@@ -1371,5 +1408,7 @@ module.exports = {
         validateempmasterEdit,
         validationPerformanceGrade,
         validatePerformanceAppraisalRights,
-        validateKRA
+        validateKRA,
+        validateOneHourReqst,
+        validateCommonreqstMast
 }
