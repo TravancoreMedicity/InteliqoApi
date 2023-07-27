@@ -354,7 +354,8 @@ module.exports = {
              request_date,
              general_request_type,
              request_name,
-             hr_status
+             hr_status,
+             request_comments
             FROM medi_hrm.general_request
              inner join hrm_emp_master on general_request.em_id=hrm_emp_master.em_id
              inner join hrm_department on general_request.dept_id=hrm_department.dept_id
