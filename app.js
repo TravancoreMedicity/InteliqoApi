@@ -109,6 +109,8 @@ const KRARouter = require("./api/KRA/KRA.router")
 const PerformanceAppraisalRouter = require("./api/PerformanceAppraisal/PerformanceAppraisal.router")
 const ActiveEmpReportRouter = require("./api/ActiveEmpReport/ActiveEmpReport.router")
 const punchTrasfer = require("./api/PunchTransfer/punchtransfer.router")
+const CommonReqst = require("./api/CommonRequest/CommonReqst.router")
+const CommonRequestMast = require("./api/CommonRequestMaster/master.router")
 
 app.use(express.json({ limit: '50mb' }));
 app.use((req, res, next) => {
@@ -255,7 +257,8 @@ app.use("/api/KraMast", KRARouter)//KRA
 app.use("/api/Performance", PerformanceAppraisalRouter)
 app.use("/api/ActiveEmpReport", ActiveEmpReportRouter)
 app.use("/api/punchTrasfer", punchTrasfer)
-
+app.use("/api/CommonReqst", CommonReqst)
+app.use("/api/CommonRequestMast", CommonRequestMast)
 
 
 // ------ Database Connection --------

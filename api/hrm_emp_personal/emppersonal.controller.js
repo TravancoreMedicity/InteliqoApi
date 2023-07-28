@@ -1,5 +1,7 @@
 const { create, update, getDataById, getDataBySlno, checkpersonaldata,
-    createFamilyDetails, getDetailsbyId } = require('../hrm_emp_personal/emppersonal.service');
+    createFamilyDetails, getDetailsbyId, deleteRow, checkLangabyEmp,
+    updateLanguage, createLanguagesKnown, getLangaugesByEmpno
+} = require('../hrm_emp_personal/emppersonal.service');
 const { validateeemployeepersonal } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -178,6 +180,106 @@ module.exports = {
     getDetailsbyId: (req, res) => {
         const id = req.params.id;
         getDetailsbyId(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    deleteRow: (req, res) => {
+        const id = req.params.id;
+        deleteRow(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: res.err
+                });
+            }
+
+            if (!results) {
+                return res.status(400).json({
+                    success: 1,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 2,
+                message: "Record Deleted Successfully"
+            });
+        });
+    },
+    createLanguageKnwon: (req, res) => {
+        const body = req.body;
+        checkLangabyEmp(body, (err, results) => {
+            const value = JSON.parse(JSON.stringify(results))
+            if (Object.keys(value).length === 0) {
+                createLanguagesKnown(body, (err, results) => {
+                    if (err) {
+                        //logger.errorLogger(err)
+                        return res.status(200).json({
+                            success: 0,
+                            message: err
+                        });
+                    }
+                    if (!results) {
+                        return res.status(200).json({
+                            success: 0,
+                            message: "No Results Found"
+                        });
+                    }
+                    return res.status(200).json({
+                        success: 1,
+                        message: "Data Created Successfully"
+                    });
+
+                });
+            } else {
+                updateLanguage(body, (err, results) => {
+
+                    if (err) {
+                        logger.errorLogger(err)
+                        return res.status(200).json({
+                            success: 0,
+                            message: err
+                        });
+                    }
+
+                    if (!results) {
+                        return res.status(200).json({
+                            success: 0,
+                            message: "Record Not Found"
+                        });
+                    }
+
+                    return res.status(200).json({
+                        success: 1,
+                        message: "Data Updated Successfully"
+                    });
+
+                });
+            }
+        })
+    },
+    getLangaugesByEmpno: (req, res) => {
+        const id = req.params.id;
+        getLangaugesByEmpno(id, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({

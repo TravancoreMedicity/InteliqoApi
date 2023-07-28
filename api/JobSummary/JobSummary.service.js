@@ -855,4 +855,91 @@ CONCAT(UCASE(LEFT(designation.desg_name,1)),LCASE(SUBSTRING(designation.desg_nam
             }
         )
     },
+    createSkills: (data, callBack) => {
+        pool.query(
+            `INSERT INTO job_skills (
+                job_id,
+                dept_id,
+                designation,
+                skill_desc,
+                sect_id
+                )
+            VALUES (?,?,?,?,?)`,
+            [
+                data.job_id,
+                data.dept_id,
+                data.designation,
+                data.skill_desc,
+                data.sect_id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getSkills: (data, callBack) => {
+        pool.query(
+            `SELECT 
+            ROW_NUMBER() OVER () as slno,
+            skills_slno,
+            job_id,
+            skill_desc,
+            dept_name,
+            sect_name,
+            desg_name
+            FROM medi_hrm.job_skills
+            inner join hrm_department on job_skills.dept_id=hrm_department.dept_id
+            inner join hrm_dept_section on job_skills.sect_id=hrm_dept_section.sect_id
+            inner join designation on job_skills.designation=designation.desg_slno
+            where job_skills.dept_id=? and job_skills.sect_id=? and job_skills.designation=?`,
+            [
+                data.dept_id,
+                data.sect_id,
+                data.designation
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    deleteskills: (id, callBack) => {
+        pool.query(
+            `delete from job_skills where skills_slno =?`,
+            [
+                id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    updateSkills: (data, callBack) => {
+        pool.query(
+            `UPDATE 
+            medi_hrm.job_skills 
+            set skill_desc=?
+            where  skills_slno=?;`,
+            [
+                data.skill_desc,
+                data.skills_slno
+            ],
+
+            (error, results, feilds) => {
+                if (error) {
+
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }
