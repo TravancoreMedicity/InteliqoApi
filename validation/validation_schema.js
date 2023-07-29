@@ -721,7 +721,7 @@ const validateempesipf = Joi.object({
         em_no: Joi.number().optional(),
         em_id: Joi.number().optional(),
         em_pf_status: Joi.number().required().max(1),
-        em_pf_no: Joi.number().optional(),
+        em_pf_no: Joi.string().optional(),
         em_uan_no: Joi.string().optional(),
         em_esi_status: Joi.number().required().max(1),
         em_esi_no: Joi.number().optional(),
