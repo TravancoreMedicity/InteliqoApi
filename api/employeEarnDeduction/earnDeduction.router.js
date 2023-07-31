@@ -4,7 +4,7 @@ const { createearndeduction, updateearndeduction, getEarnDeductByID,
     inactiveEarnDeduct, getEarnDeductBySlno, GetFixedAndEarningWage,
     getDataByEmpno, createEmpsalRyContractRenew, getFixedWage,
     getEarning, getDeduction, getEmpDataByEmno, getALLData, newRecommended,
-    updateEmpGrossSalary } = require('../employeEarnDeduction/earnDeduction.controller');
+    updateEmpGrossSalary, getTotalGrosssalaryById } = require('../employeEarnDeduction/earnDeduction.controller');
 
 router.post("/", checkToken, createearndeduction);
 router.patch("/", checkToken, updateearndeduction);
@@ -26,5 +26,6 @@ router.patch("/update/empmaster", checkToken, updateEmpGrossSalary)
 
 //New emp Recommended salary splitness
 router.get("/newRecommended/allEmp", checkToken, newRecommended);
+router.get("/grosssalarybyid/:id", checkToken, getTotalGrosssalaryById)
 
 module.exports = router;
