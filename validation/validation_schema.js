@@ -69,6 +69,7 @@ const validateDepartment = Joi.object({
         dept_id: Joi.optional(),
         create_user: Joi.number().optional(),
         edit_user: Joi.number().optional(),
+        dept_type: Joi.number().optional()
 });
 
 const validateSection = Joi.object({
@@ -724,15 +725,15 @@ const validateempesipf = Joi.object({
         em_pf_no: Joi.string().optional(),
         em_uan_no: Joi.string().optional(),
         em_esi_status: Joi.number().required().max(1),
-        em_esi_no: Joi.number().optional(),
+        em_esi_no: Joi.string().optional(),
         em_grade: Joi.number().optional(),
         create_user: Joi.number().optional(),
         edit_user: Joi.number().optional(),
         nps: Joi.number().required().max(1),
-        npsnumber: Joi.number().optional(),
+        npsnumber: Joi.string().optional(),
         npsamount: Joi.number().optional(),
         lwf_status: Joi.number().required().max(1),
-        lwfnumber: Joi.number().optional(),
+        lwfnumber: Joi.string().optional(),
         lwfamount: Joi.number().optional(),
 })
 

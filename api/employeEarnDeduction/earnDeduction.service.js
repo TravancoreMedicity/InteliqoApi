@@ -78,7 +78,7 @@ module.exports = {
             `SELECT  em_salary_desc,               
                      ernded_slno
                 FROM hrm_emp_earn_deduction 
-                WHERE  em_salary_desc!= ?  AND ernded_slno =?`,
+                WHERE  em_salary_desc= ?  AND ernded_slno =?`,
             [
                 data.em_salary_desc,
                 data.ernded_slno
@@ -434,6 +434,24 @@ module.exports = {
              inner join hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
              where salary_split_flag=0 and em_status=1  and em_no!=1`,
             [],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getTotalGrosssalaryById: (id, callBack) => {
+        pool.query(
+            ` SELECT 
+            ernded_slno,em_id,
+            ifnull(sum(em_amount),0)gross_salary
+             FROM medi_hrm.hrm_emp_earn_deduction
+			WHERE em_no =?  and em_earning_type IN(1,2)`,
+            [
+                id
+            ],
             (error, results, feilds) => {
                 if (error) {
                     return callBack(error);
