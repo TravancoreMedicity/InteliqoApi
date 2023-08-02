@@ -78,7 +78,7 @@ module.exports = {
             `SELECT  em_salary_desc,               
                      ernded_slno
                 FROM hrm_emp_earn_deduction 
-                WHERE  em_salary_desc= ?  AND ernded_slno =?`,
+                WHERE  em_salary_desc!= ?  AND ernded_slno =?`,
             [
                 data.em_salary_desc,
                 data.ernded_slno
@@ -101,6 +101,7 @@ module.exports = {
             em_salary_desc,
             em_status,
             em_id,
+            em_no,
             em_earning_type,
             em_salary_desc,
             hrm_earning_deduction.include_esi,
@@ -459,5 +460,42 @@ module.exports = {
                 return callBack(null, results);
             }
         )
+    },
+    createNewWageLog: (data, callBack) => {
+        pool.query(
+            `INSERT INTO hrm_emp_wage_log(
+                    emp_id,
+                    em_no,
+                    em_salary_desc,
+                    earning_type,
+                    last_wage,
+                    new_wage,
+                    entry_desc                      
+            )
+            VALUES ?`,
+            [
+                data
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    deleteEarntype: (id, callBack) => {
+        pool.query(
+            `DELETE FROM hrm_emp_earn_deduction WHERE ernded_slno = ?`,
+            [
+                id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        );
     },
 }
