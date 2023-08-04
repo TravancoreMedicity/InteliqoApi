@@ -39,23 +39,16 @@ module.exports = {
             `SELECT 
             emp_id,
             punch_master.em_no,
-            punch_in,
-            punch_out, 
-           ifnull( sum(duty_worked),0) duty_worked,
-            sum(hrs_worked)hrs_worked, 
+            sum(hrs_worked)hrs_worked,
             sum(over_time)over_time,
-            count(if(ifnull(duty_status,0)=0,duty_status,null))duty_statuslop,
-            count(if(leave_type!=0,leave_type,null))leave_type,
-            sum(late_in)late_in, 
-            sum(early_out)early_out, 
-           ifnull( sum(duty_status),0)duty_status,
-           ifnull(gross_salary,0)gross_salary,
-           sum(offday_falg)offday
-            FROM medi_hrm.punch_master 
-            left join hrm_emp_master on hrm_emp_master.em_id=punch_master.emp_id
-            where emp_id=?
-            and duty_day between ? and ?
-             group by emp_id,punch_master.em_no`,
+            ifnull( sum(duty_status),0)duty_status,
+            gross_salary,
+            sum(if(duty_desc='A' and leave_status=0,1,0)) as duty_statuslop,
+            sum(if(duty_desc='A' and leave_status=1,1,0)) as noofleaves
+            FROM medi_hrm.punch_master
+             left join hrm_emp_master on hrm_emp_master.em_id=punch_master.emp_id
+            where emp_id=? and duty_day between ? and ?
+              group by emp_id,punch_master.em_no;`,
             [
                 data.emp_id,
                 data.start,

@@ -739,5 +739,84 @@ module.exports = {
             }
         )
     },
+    getEsiPfDetails: (data, callBack) => {
+        pool.query(
+            `SELECT * FROM medi_hrm.hrm_emp_pfesi where em_no=?;`,
+            [
+                data
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+
+    },
+    getleaveProcessData: (data, callBack) => {
+        pool.query(
+            `SELECT * FROM medi_hrm.hrm_leave_common where em_no=?`,
+            [
+                data
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+
+    },
+    inactiveSickLeave: (data, callBack) => {
+        pool.query(
+            `UPDATE hrm_leave_common SET cmn_status = 1 WHERE hrm_lv_cmn=?`,
+            [
+                data.hrm_lv_cmn
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    insertStatutoryCommonleave: (data, callBack) => {
+        pool.query(
+            `insert  into hrm_leave_common(
+                em_no, 
+                llvetype_slno,
+                cmn_lv_allowedflag,
+                cmn_lv_allowed, 
+                cmn_lv_taken, 
+                cmn_lv_balance, 
+                Iv_process_slno,
+                update_user,
+                em_id,
+                cmn_lv_year
+                ) 
+                values (?,?,?,?,?,?,?,?,?,?)`,
+            [
+                data.em_no,
+                data.llvetype_slno,
+                data.cmn_lv_allowedflag,
+                data.cmn_lv_allowed,
+                data.cmn_lv_taken,
+                data.cmn_lv_balance,
+                data.Iv_process_slno,
+                data.update_user,
+                data.em_id,
+                data.cmn_lv_year
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 
 }

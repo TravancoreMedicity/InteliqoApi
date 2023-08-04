@@ -7,7 +7,8 @@ const {
     allowableholiday, allowablefesitval, allowableearnleave, allowableconleave,
     dataannualcalculation, holidaylistyear, insertyearly, select_yearlyprocess,
     dataannualcalculationEmployee, creditPrivilegeLeave, getLeaveProccedData, inactiveLastYearProcessData,
-    inactiveCasualLeave, inactiveEarnLeave, inactiveHoliday, inactiveCommonLeave
+    inactiveCasualLeave, inactiveEarnLeave, inactiveHoliday, inactiveCommonLeave,
+    getEsiPfDetails, getleaveProcessData, inactiveSickLeave, insertStatutoryCommonleave
 } = require('../yearleaveprocess/yearllraveprocess.service');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -957,7 +958,108 @@ module.exports = {
                 message: "Inactive Successfully"
             });
         })
-    }
+    },
+    getEsiPfDetails: (req, res) => {
+        const id = req.params.id;
+        getEsiPfDetails(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 1,
+                    message: err
+                });
+            }
+
+            else if (results.length === 0) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Record Founds"
+                });
+            }
+            else {
+                return res.status(200).json({
+                    success: 0,
+                    data: results
+                });
+            }
+
+        });
+    },
+    getleaveProcessData: (req, res) => {
+        const id = req.params.id;
+        getleaveProcessData(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 1,
+                    message: err
+                });
+            }
+
+            else if (results.length === 0) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Record Founds"
+                });
+            }
+            else {
+                return res.status(200).json({
+                    success: 0,
+                    data: results
+                });
+            }
+
+        });
+
+    },
+    inactiveSickLeave: (req, res) => {
+        const { hrm_lv_cmn, em_no,
+            cmn_lv_allowedflag,
+            Iv_process_slno,
+            update_user,
+            em_id,
+            cmn_lv_year } = req.body
+
+        const updatedata = {
+            hrm_lv_cmn: hrm_lv_cmn
+        }
+        const postdata = {
+            em_no: em_no,
+            llvetype_slno: 6,
+            cmn_lv_allowedflag,
+            cmn_lv_allowed: 1,
+            cmn_lv_taken: 0,
+            cmn_lv_balance: 1,
+            Iv_process_slno: Iv_process_slno,
+            update_user: update_user,
+            em_id: em_id,
+            cmn_lv_year: cmn_lv_year
+        }
+        inactiveSickLeave(updatedata, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else {
+                insertStatutoryCommonleave(postdata, (err, results) => {
+                    if (err) {
+                        logger.errorLogger(err)
+                        return res.status(200).json({
+                            success: 0,
+                            message: err
+                        });
+                    }
+                    return res.status(200).json({
+                        success: 1,
+                        message: "Data Created Successfully"
+                    });
+                });
+            }
+        })
+    },
 }
 
 
