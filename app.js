@@ -110,6 +110,21 @@ const PerformanceAppraisalRouter = require("./api/PerformanceAppraisal/Performan
 const ActiveEmpReportRouter = require("./api/ActiveEmpReport/ActiveEmpReport.router")
 const punchTrasfer = require("./api/PunchTransfer/punchtransfer.router")
 
+
+//Training
+const TrainingType = require("./api/TrainingType/TrainingType.router")
+const TrainingCategory = require("./api/TrainingCategory/TrainingCategory.router")
+const TrainingName = require("./api/TrainingName/TrainingName.router")
+const TrainerName = require("./api/TrainerName/TrainerName.router")
+const TrainingTopic = require("./api/TrainingTopic/TrainingTopic.route")
+const TriningQuestions = require("./api/TrainingQuestions/TrainingQuestions.router")
+const SchedulingTime = require("./api/SchedulingTime/SchedulingTime.router")
+const TrainingSchedule = require("./api/TrainingSchedule/TrainingSchedule.router")
+const DepartmentalTrainingSchedule = require("./api/Departmental_Training_Schedule/DepartmentalTrainingSchedule.router")
+const TrainingUpdate = require("./api/TrainingUpdate/TrainingUpdate.router")
+const TrainingEmployeeSchedule = require("./api/TrainingEmployeeSchedule/TrainingEmployeeSchedule.router")
+
+
 app.use(express.json({ limit: '50mb' }));
 app.use((req, res, next) => {
     //     res.header("Access-Control-Allow-Origin", "http://192.168.10.170:8080
@@ -255,6 +270,24 @@ app.use("/api/KraMast", KRARouter)//KRA
 app.use("/api/Performance", PerformanceAppraisalRouter)
 app.use("/api/ActiveEmpReport", ActiveEmpReportRouter)
 app.use("/api/punchTrasfer", punchTrasfer)
+
+
+
+//Traing
+app.use("/api/TrainingType", TrainingType)
+app.use("/api/TrainingCategory", TrainingCategory)
+app.use("/api/TrainingName", TrainingName)
+app.use("/api/TrainerName", TrainerName)
+app.use("/api/TrainingTopic", TrainingTopic)
+app.use("/api/TriningQuestions", TriningQuestions)
+app.use("/api/SchedulingTime", SchedulingTime)
+app.use("/api/TrainingSchedule", TrainingSchedule)
+app.use("/api/DepartmentalTrainingSchedule", DepartmentalTrainingSchedule)
+app.use("/api/TrainingUpdate", TrainingUpdate)
+app.use("/api/TrainingEmployeeSchedule", TrainingEmployeeSchedule)
+
+
+
 
 
 

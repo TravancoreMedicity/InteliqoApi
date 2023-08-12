@@ -1283,6 +1283,116 @@ const validateKRA = Joi.object({
         kra_slno: Joi.number().required(),
 });
 
+//Training 
+const ValidateTrainingType = Joi.object({
+        type_name: Joi.string().trim().uppercase().min(3).max(45).required()
+                .messages({
+                        'string.empty': 'Training Type Name is Required',
+                        'string.min': 'Training Type length must be at least 3 characters long',
+                        'string.max': 'Training Type length must be less than or equal to 45 characters long'
+                }),
+        type_status: Joi.number().min(0).max(1),
+        create_user: Joi.number().optional(),
+        edit_user: Joi.number().optional(),
+        trainingtype_slno: Joi.optional()
+})
+
+const validateTraningCategory = Joi.object({
+        cat_slno: Joi.optional(),
+        trning_typeslno: Joi.number().required(),
+        trin_cat_name: Joi.string().trim().uppercase().min(3).max(45).required()
+                .messages({
+                        'string.empty': 'Traning Category is required',
+                        'string.min': "Traning Category length must be at least 3 characters lonng",
+                        'string.max': 'Training Category length must be less than or equal to 45 characters long'
+                }),
+        cat_status: Joi.number().min(0).max(1).required(),
+        create_user: Joi.number().optional(),
+        edit_user: Joi.number().optional()
+})
+const validateTrainingName = Joi.object({
+        name_slno: Joi.number().optional(),
+        training_name: Joi.string().trim().uppercase().min(3).max(45).required()
+                .messages({
+                        'string.empty': 'Traning Name is required',
+                        'string.min': "Traning Name length must be at least 3 characters lonng",
+                        'string.max': 'Training Name length must be less than or equal to 45 characters long'
+                }),
+        type_slno: Joi.number().required().min(1)
+                .message({
+                        'number.min': 'Traning Type is required'
+                }),
+        cate_slno: Joi.number().required().min(1)
+                .message({
+                        'number.min': 'Traning Category is required'
+                }),
+        name_status: Joi.number().min(0).max(1).required(),
+        create_user: Joi.number().optional(),
+        edit_user: Joi.number().optional()
+})
+
+const validateTrainerName = Joi.object({
+        trainer_slno: Joi.number().optional(),
+        trainer_name: Joi.number().required(),
+        trainer_dept: Joi.number().required(),
+        trainer_desig: Joi.number().required(),
+        trainer_status: Joi.number().min(0).max(1).required(),
+        create_user: Joi.number().optional(),
+        edit_user: Joi.number().optional()
+})
+
+const validationTrainingTopic = Joi.object({
+        topic_slno: Joi.number().optional(),
+        training_topic_name: Joi.string().trim().uppercase().min(3).max(45).required()
+                .messages({
+                        'string.empty': 'Traning Topic is required',
+                        'string.min': "Traning Topic length must be at least 3 characters lonng",
+                        'string.max': 'Training Topic length must be less than or equal to 45 characters long'
+                }),
+        training_name: Joi.number().min(1).required(),
+
+        training_status: Joi.number().min(0).max(1).required(),
+        tutorial_status: Joi.number().min(0).max(1).required(),
+        medical_status: Joi.number().min(0).max(1).required(),
+        non_medical_status: Joi.number().min(0).max(1).required(),
+        pretest_status: Joi.number().min(0).max(1).required(),
+        post_test_status: Joi.number().min(0).max(1).required(),
+        create_user: Joi.number().optional(),
+        edit_user: Joi.number().optional()
+})
+
+const validateTrainingQuestions = Joi.object({
+        q_slno: Joi.number().optional(),
+        questions: Joi.string().trim().uppercase().min(3).max(45).required()
+                .messages({
+                        'string.empty': 'Traning Question field is required',
+                        'string.min': "Traning Question length must be at least 3 characters lonng",
+                        'string.max': 'Training Question length must be less than or equal to 45 characters long'
+                }),
+        answers: Joi.string().trim().uppercase().min(3).max(45).required()
+                .messages({
+                        'string.empty': 'Traning Answer field is required',
+                        'string.min': "Traning Answer length must be at least 3 characters lonng",
+                        'string.max': 'Training Answer length must be less than or equal to 45 characters long'
+                }),
+        training_topics: Joi.number().required().min(1),
+        marks: Joi.number().min(1).required(),
+        create_user: Joi.number().optional(),
+        edit_user: Joi.number().optional()
+})
+
+const validateSchedulingTime = Joi.object({
+        slno: Joi.number().optional(),
+        schedule_name: Joi.string().trim().uppercase().min(3).max(45).required()
+                .messages({
+                        'string.empty': ' Scheduling Time field is required',
+                        'string.min': "Scheduling Time length must be at least 3 characters lonng",
+                        'string.max': 'SchedulingT ime length must be less than or equal to 45 characters long'
+                }),
+        schedule_status: Joi.number().min(0).max(1).required(),
+        create_user: Joi.number().optional(),
+        edit_user: Joi.number().optional()
+})
 
 module.exports = {
         authSchema,  //authSchema:authSchema
@@ -1371,5 +1481,14 @@ module.exports = {
         validateempmasterEdit,
         validationPerformanceGrade,
         validatePerformanceAppraisalRights,
-        validateKRA
+        validateKRA,
+
+        //Training
+        ValidateTrainingType,
+        validateTraningCategory,
+        validateTrainingName,
+        validateTrainerName,
+        validationTrainingTopic,
+        validateTrainingQuestions,
+        validateSchedulingTime,
 }
