@@ -1284,8 +1284,6 @@ const validateKRA = Joi.object({
         kra_status: Joi.number().min(0).max(1),
         kra_slno: Joi.number().required(),
 });
-
-<<<<<<< HEAD
 //Training 
 const ValidateTrainingType = Joi.object({
         type_name: Joi.string().trim().uppercase().min(3).max(45).required()
