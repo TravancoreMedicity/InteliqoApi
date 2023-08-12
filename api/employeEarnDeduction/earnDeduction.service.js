@@ -101,6 +101,7 @@ module.exports = {
             em_salary_desc,
             em_status,
             em_id,
+            em_no,
             em_earning_type,
             em_salary_desc,
             hrm_earning_deduction.include_esi,
@@ -441,5 +442,60 @@ module.exports = {
                 return callBack(null, results);
             }
         )
+    },
+    getTotalGrosssalaryById: (id, callBack) => {
+        pool.query(
+            ` SELECT 
+            ernded_slno,em_id,
+            ifnull(sum(em_amount),0)gross_salary
+             FROM medi_hrm.hrm_emp_earn_deduction
+			WHERE em_no =?  and em_earning_type IN(1,2)`,
+            [
+                id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    createNewWageLog: (data, callBack) => {
+        pool.query(
+            `INSERT INTO hrm_emp_wage_log(
+                    emp_id,
+                    em_no,
+                    em_salary_desc,
+                    earning_type,
+                    last_wage,
+                    new_wage,
+                    entry_desc                      
+            )
+            VALUES ?`,
+            [
+                data
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    deleteEarntype: (id, callBack) => {
+        pool.query(
+            `DELETE FROM hrm_emp_earn_deduction WHERE ernded_slno = ?`,
+            [
+                id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        );
     },
 }

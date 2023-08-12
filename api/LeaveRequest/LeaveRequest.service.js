@@ -378,7 +378,7 @@ module.exports = {
             `SELECT 
                 nopunch_slno
             FROM nopunchrequest
-            WHERE em_id=? AND month(nopunchdate) = month(?) AND req_status = 0`,
+            WHERE em_id=? AND month(nopunchdate) = month(?) AND req_status = 0 and (np_incapprv_status!=2 and np_hod_apprv_status!=2 and np_hr_apprv_status!=2 and lv_cancel_status!=1 and lv_cancel_status_user!=1)`,
             [
                 data.em_id,
                 data.date
@@ -408,10 +408,10 @@ module.exports = {
     getLeaveCount: (data, callBack) => {
         pool.query(
             `SELECT 
-                COUNT(leave_slno) CNT
-            FROM hrm_leave_request R
-            INNER JOIN hrm_leave_request_detl D ON D.lve_uniq_no = R.lve_uniq_no AND R.em_no = ?
-            WHERE D.leave_dates BETWEEN ? AND ?`,
+            COUNT(leave_slno) CNT
+        FROM hrm_leave_request R
+        INNER JOIN hrm_leave_request_detl D ON D.lve_uniq_no = R.lve_uniq_no AND R.em_no = ?
+        WHERE D.leave_dates BETWEEN ? AND ? and (incapprv_status!=2 and hod_apprv_status!=2 and hr_apprv_status!=2 and lv_cancel_status!=1 and lv_cancel_status_user!=1)`,
             [
                 data.em_no,
                 data.fromDate,
@@ -519,7 +519,8 @@ module.exports = {
     },
     halfDayRequestCheck: (data, callBack) => {
         pool.query(
-            `SELECT half_slno FROM hrm_halfdayrequest WHERE leavedate = ? AND em_no = ? `,
+            `SELECT half_slno FROM hrm_halfdayrequest 
+            WHERE leavedate = ? AND em_no = ? and (hf_incapprv_status!=2 and hf_hod_apprv_status!=2 and hf_hr_apprv_status!=2 and lv_cancel_status!=1 and lv_cancel_status_user!=1)`,
             [
                 moment(data.leavedate).format('YYYY-MM-DD'),
                 data.em_no

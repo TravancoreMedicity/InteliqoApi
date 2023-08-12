@@ -1202,7 +1202,8 @@ module.exports = {
     HalfdayCancelUser: (data, callBack) => {
         pool.query(
             `UPDATE hrm_halfdayrequest
-            SET lv_cancel_req_status_user=?,
+            SET lv_cancel_status_user=1,
+            lv_cancel_req_status_user=?,
             lv_cancel_cmnt_user=?,
             lv_cancel_date_user=?,
             lv_cancel_us_code_user=? 
@@ -1225,7 +1226,8 @@ module.exports = {
     NopunchCancelUser: (data, callBack) => {
         pool.query(
             `UPDATE nopunchrequest
-            SET lv_cancel_req_status_user=?,
+            SET lv_cancel_status_user=1,
+            lv_cancel_req_status_user=?,
             lv_cancel_cmnt_user=?,
             lv_cancel_date_user=?,
             lv_cancel_us_code_user=?  

@@ -707,7 +707,8 @@ module.exports = {
     //get Company Details
     getCompanyById: (id, callBack) => {
         pool.query(
-            `SELECT 
+            `SELECT
+            em_id, 
             em_no,
             em_name,
             em_branch,

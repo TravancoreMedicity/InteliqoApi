@@ -69,6 +69,7 @@ const validateDepartment = Joi.object({
         dept_id: Joi.optional(),
         create_user: Joi.number().optional(),
         edit_user: Joi.number().optional(),
+        dept_type: Joi.number().optional()
 });
 
 const validateSection = Joi.object({
@@ -721,18 +722,18 @@ const validateempesipf = Joi.object({
         em_no: Joi.number().optional(),
         em_id: Joi.number().optional(),
         em_pf_status: Joi.number().required().max(1),
-        em_pf_no: Joi.number().optional(),
+        em_pf_no: Joi.string().optional(),
         em_uan_no: Joi.string().optional(),
         em_esi_status: Joi.number().required().max(1),
-        em_esi_no: Joi.number().optional(),
+        em_esi_no: Joi.string().optional(),
         em_grade: Joi.number().optional(),
         create_user: Joi.number().optional(),
         edit_user: Joi.number().optional(),
         nps: Joi.number().required().max(1),
-        npsnumber: Joi.number().optional(),
+        npsnumber: Joi.string().optional(),
         npsamount: Joi.number().optional(),
         lwf_status: Joi.number().required().max(1),
-        lwfnumber: Joi.number().optional(),
+        lwfnumber: Joi.string().optional(),
         lwfamount: Joi.number().optional(),
 })
 
@@ -1189,6 +1190,7 @@ const validatecommonsettings = Joi.object({
         pf_employee_amount: Joi.number().optional(),
         pf_employer_amount: Joi.number().optional(),
         noff_count: Joi.number().optional(),
+        onehour_rqst_count: Joi.number().optional()
 
 })
 //validate carryforward
@@ -1283,6 +1285,7 @@ const validateKRA = Joi.object({
         kra_slno: Joi.number().required(),
 });
 
+<<<<<<< HEAD
 //Training 
 const ValidateTrainingType = Joi.object({
         type_name: Joi.string().trim().uppercase().min(3).max(45).required()
@@ -1394,6 +1397,43 @@ const validateSchedulingTime = Joi.object({
         edit_user: Joi.number().optional()
 })
 
+const validateOneHourReqst = Joi.object({
+        em_id: Joi.number().required(),
+        em_no: Joi.number().required(),
+        dept_id: Joi.number().required(),
+        dept_sect_id: Joi.number().required(),
+        request_date: Joi.date().required(),
+        one_hour_duty_day: Joi.date().required(),
+        checkin_flag: Joi.number().min(0).max(1),
+        check_in: Joi.date().required(),
+        checkout_flag: Joi.number().min(0).max(1),
+        check_out: Joi.date().required(),
+        reason: Joi.string().required(),
+        incharge_req_status: Joi.number().min(0).max(1),
+        incharge_approval_status: Joi.number().min(0).max(1),
+        incharge_approval_comment: Joi.string().required(),
+        incharge_approval_date: Joi.date().required(),
+        hod_req_status: Joi.number().min(0).max(1),
+        hod_approval_status: Joi.number().min(0).max(1),
+        hod_approval_comment: Joi.string().required(),
+        hod_approval_date: Joi.date().required(),
+        ceo_req_status: Joi.number().min(0).max(1),
+        hr_req_status: Joi.number().min(0).max(1)
+})
+
+const validateCommonreqstMast = Joi.object({
+        request_name: Joi.string().trim().uppercase().min(3).max(60).required()
+                .messages({
+                        'string.empty': 'Request Name is Required',
+                        // 'string.max': 'Name length must be less than or equal to 45 characters long',
+                        'string.min': 'Name length must be at least 3 characters long',
+                }),
+        request_status: Joi.number().min(0).max(1).required(),
+        create_user: Joi.number().optional(),
+        update_user: Joi.number().optional(),
+        slno: Joi.number().optional(),
+});
+
 module.exports = {
         authSchema,  //authSchema:authSchema
         validateEmployee,
@@ -1482,7 +1522,6 @@ module.exports = {
         validationPerformanceGrade,
         validatePerformanceAppraisalRights,
         validateKRA,
-
         //Training
         ValidateTrainingType,
         validateTraningCategory,
@@ -1491,4 +1530,6 @@ module.exports = {
         validationTrainingTopic,
         validateTrainingQuestions,
         validateSchedulingTime,
+        validateOneHourReqst,
+        validateCommonreqstMast
 }

@@ -5,14 +5,14 @@ const logger = require('../../logger/logger')
 module.exports = {
     createpfesi: (req, res) => {
         const body = req.body;
-        const body_result = validateempesipf.validate(body);
+        // const body_result = validateempesipf.validate(body);
 
-        if (body_result.error) {
-            return res.status(200).json({
-                success: 2,
-                message: body_result.error.details[0].message
-            });
-        }
+        // if (body_result.error) {
+        //     return res.status(200).json({
+        //         success: 2,
+        //         message: body_result.error.details[0].message
+        //     });
+        // }
 
         create(body, (err, results) => {
             if (err) {
@@ -20,6 +20,13 @@ module.exports = {
                 return res.status(200).json({
                     success: 0,
                     message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "Record Not Found"
                 });
             }
 
@@ -33,14 +40,14 @@ module.exports = {
     updatepfesi: (req, res) => {
 
         const body = req.body;
-        const body_result = validateempesipf.validate(body);
+        // const body_result = validateempesipf.validate(body);
 
-        if (body_result.error) {
-            return res.status(200).json({
-                success: 3,
-                message: body_result.error.details[0].message
-            });
-        }
+        // if (body_result.error) {
+        //     return res.status(200).json({
+        //         success: 3,
+        //         message: body_result.error.details[0].message
+        //     });
+        // }
 
         update(body, (err, results) => {
 

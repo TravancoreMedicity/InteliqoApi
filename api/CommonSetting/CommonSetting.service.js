@@ -31,10 +31,11 @@ module.exports = {
                 noff_count,
                 leavetype_multiple,
                 pf_employee_amount,
-                pf_employer_amount
+                pf_employer_amount,
+                onehour_rqst_count
                 )
 
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
 
 
             [
@@ -65,7 +66,8 @@ module.exports = {
                 data.noff_count,
                 JSON.stringify(data.leavetype_multiple),
                 data.pf_employee_amount,
-                data.pf_employer_amount
+                data.pf_employer_amount,
+                data.onehour_rqst_count
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -114,14 +116,11 @@ module.exports = {
                 notapplicable_shift=?,
                 week_off_day=?,
                 salary_above=?,
-<<<<<<< HEAD
+                noff_count=?,
                 leavetype_multiple=?,
                 pf_employee_amount=?,
-                pf_employer_amount=?
-=======
-                noff_count=?,
-                leavetype_multiple=?
->>>>>>> 9daf2d0de892ba4fd9ca1df335b379dd32e485cf
+                pf_employer_amount=?,
+                onehour_rqst_count=?
                 WHERE setting_slno =?`,
             [
                 data.cmmn_grace_period,
@@ -152,6 +151,7 @@ module.exports = {
                 JSON.stringify(data.leavetype_multiple),
                 data.pf_employee_amount,
                 data.pf_employer_amount,
+                data.onehour_rqst_count,
                 data.setting_slno
             ],
             (error, results, feilds) => {
