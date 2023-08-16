@@ -358,12 +358,23 @@ module.exports = {
             em_id,
             em_no, 
             em_name,
+            em_name as emp_name,
+             hrm_branch.branch_name,
+             IF(em_gender = 1, 'Male', 'Female') gender,
+             em_age_year,
+              em_doj,
             dept_name, 
-            sect_name,recomend_salary
+            sect_name,
+              em_mobile,
+              designation.desg_name,
+              IF(em_status = 1, 'Yes', 'No') emp_status,
+            recomend_salary
              FROM medi_hrm.hrm_emp_master 
              inner join hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
              inner join hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
-             where em_no=?;`,
+             inner join hrm_branch on hrm_emp_master.em_branch = hrm_branch.branch_slno
+             inner join  designation ON designation.desg_slno = hrm_emp_master.em_designation
+             where em_no=?`,
             [
                 id
             ],

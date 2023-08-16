@@ -8,7 +8,8 @@ const { create, update, getDataById,
     EmpIDExpUpdate,
     UpdateEMpIdEarnDeduction,
     UpdateEMpIdPersonal, getContractByEmno,
-    getContractDetlId, updateEmpmastSatus } = require('../hrm_emp_contract_detl/empcontract.service');
+    getContractDetlId, updateEmpmastSatus, updatePunchmstEmno,
+    getEmployeeByUserName } = require('../hrm_emp_contract_detl/empcontract.service');
 
 const { validateempcontract } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
@@ -475,6 +476,46 @@ module.exports = {
     getContractDetlId: (req, res) => {
         const id = req.params.id;
         getContractDetlId(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+
+    },
+    updatePunchmstEmno: (req, res) => {
+        const body = req.body;
+        const result = updatePunchmstEmno(body)
+            .then((r) => {
+                return res.status(200).json({
+                    success: 1,
+                    message: r
+                });
+            }).catch((e) => {
+                return res.status(200).json({
+                    success: 0,
+                    message: e.sqlMessage
+                });
+            })
+    },
+    getEmployeeByUserName: (req, res) => {
+        const id = req.params.id;
+        getEmployeeByUserName(id, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({

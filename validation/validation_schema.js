@@ -944,8 +944,17 @@ const validateResignationRequest = Joi.object({
         resign_reason: Joi.string().required(),
         notice_period: Joi.number().optional(),
         incharge_required: Joi.number().optional(),
+        inch_app_status: Joi.number().optional(),
+        inch_coment: Joi.string().optional(),
+        inch_app_date: Joi.date().required(),
+        inch_id: Joi.number().optional(),
         hod_required: Joi.number().optional(),
+        hod_app_status: Joi.number().optional(),
+        hod_coment: Joi.string().optional(),
+        hod_app_date: Joi.date().required(),
+        hod_id: Joi.number().optional(),
         ceo_required: Joi.number().optional(),
+        hr_required: Joi.number().optional(),
 })
 const validateResignationRequestApproval = Joi.object({
         em_id: Joi.number().min(1).optional(),

@@ -5,13 +5,6 @@ const {
     getAnnualList,
     getTrainingList,
     getContractEndList,
-    getLevel2Hierarchy,
-    getLevel1Hierarchy,
-    getIdOnly,
-    createAppraisal,
-    getInchargeAppraisalList,
-    getHODAppraisalList,
-    getCEODepartments,
     getContractRenewList,
     createPerformanceAppraisal,
     checkIdExist,
@@ -59,15 +52,6 @@ router.get("/annualdata", checkToken, getAnnualList)
 router.get("/trainingdata", checkToken, getTrainingList)
 router.get("/contractdata", checkToken, getContractEndList)
 router.get("/contractclosed", checkToken, getContractRenewList)
-
-router.get("/level2hier/:id", checkToken, getLevel2Hierarchy)
-router.get("/level1/:id", checkToken, getLevel1Hierarchy)
-router.get("/idonly", checkToken, getIdOnly)
-router.post("/create", checkToken, createAppraisal)
-router.post("/incharge/apprlist", checkToken, getInchargeAppraisalList)
-router.post("/HOD/appraisalList", checkToken, getHODAppraisalList)
-router.get("/CEO/DeptList", checkToken, getCEODepartments)
-
 
 //to submit employees for appraisal process 
 //create appraisal detls to hrm_performance_apprsl
