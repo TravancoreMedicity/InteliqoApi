@@ -604,10 +604,14 @@ module.exports = {
     checkAttendanceProcess: (data, callBack) => {
         pool.query(
             `
-            SELECT * FROM medi_hrm.hrm_attendance_marking where attendance_marking_month=?;
+            SELECT * FROM medi_hrm.hrm_attendance_marking 
+            where attendance_marking_month=?
+            and attendance_status is null and dept_id=? and sect_id=?
             `,
             [
-                data.attendance_marking_month
+                data.attendance_marking_month,
+                data.dept_id,
+                data.sect_id
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -952,6 +956,30 @@ module.exports = {
                 data.edit_user,
                 data.marking_month,
                 data.deptsec_slno
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getPunchByEmid: (data, callBack) => {
+        pool.query(
+            `select punch_slno, duty_day,shift_id,punch_master.emp_id,punch_master.em_no,
+            hrm_emp_master.em_name,punch_in,
+            punch_out,shift_in,shift_out,hrs_worked,over_time,late_in,
+            early_out,duty_status,holiday_status,leave_status,holiday_slno,
+            lvereq_desc,duty_desc,lve_tble_updation_flag,hrm_emp_master.em_name
+            from  medi_hrm.punch_master
+            left join hrm_emp_master on hrm_emp_master.em_no=punch_master.em_no
+            where punch_master.emp_id IN (?)
+                 and date(duty_day) between ? and ?`,
+            [
+                data.emp_id,
+                data.from,
+                data.to
             ],
             (error, results, feilds) => {
                 if (error) {

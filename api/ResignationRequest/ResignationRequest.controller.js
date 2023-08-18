@@ -1,8 +1,9 @@
 const { InsertResignationRequest, getInchargePending, getResignationRequestByID,
     ResignationApprovalIncahrge, getHoDPending, getResignationRequestHOdByID,
     ResignationApprovalHOD, getHRPending, getResignationRequestHRByID,
-    getCEOPending, getCEOPendingById, ResignationApprovalCEO,
-    ResignationApprovalHR, getResignCancel, ResignationCancelHR, InsertResignationRequestContractClose } = require('../ResignationRequest/ResignationRequest.service');
+    getCEOPending, getCEOPendingById, ResignationApprovalCEO, ResignationApprovalHR,
+    getResignCancel, ResignationCancelHR, InsertResignationRequestContractClose,
+    getHRPendingList, getContractClosed } = require('../ResignationRequest/ResignationRequest.service');
 const { validateResignationRequest, validateResignationRequestApprovalHOD, validateResignationRequestApprovalCEO, validateResignationRequestCancel,
     validateResignationRequestApprovalINcharge, validateResignationRequestApprovalHR } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
@@ -27,7 +28,7 @@ module.exports = {
             }
             return res.status(200).json({
                 success: 1,
-                message: "Data Created SuccessFully"
+                message: "Resignation Submitted SuccessFully"
             })
         })
     },
@@ -383,6 +384,50 @@ module.exports = {
                 success: 1,
                 message: "Data Created SuccessFully"
             })
+        })
+    },
+    getHRPendingList: (req, res) => {
+        getHRPendingList((err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    getContractClosed: (req, res) => {
+        getContractClosed((err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
         })
     },
 }

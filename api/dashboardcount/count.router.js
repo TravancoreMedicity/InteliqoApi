@@ -22,7 +22,7 @@ router.get("/LeaveReqHodCount", checkToken, LeaveReqHodCount);
 router.get("/LeaveReqCeoCount", checkToken, LeaveReqCeoCount);
 router.get("/LeaveReqHrCount", checkToken, LeaveReqHrCount);
 router.get("/LeaveReqCount/User/:id", checkToken, LeaveReqCountUser)
-router.get("/ResignReqInchargeCount", checkToken, ResignReqInchargeCount);
+router.get("/ResignReqInchargeCount/count", checkToken, ResignReqInchargeCount);
 router.get("/ResignReqHodCount", checkToken, ResignReqHodCount);
 router.get("/ResignReqCeoCount", checkToken, ResignReqCeoCount);
 router.get("/contractrenewalCount", checkToken, contractrenewalCount);

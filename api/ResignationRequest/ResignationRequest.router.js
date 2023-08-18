@@ -4,7 +4,8 @@ const { InsertResignationRequest, getInchargePending, getResignationRequestByID,
     ResignationApprovalIncahrge, getHoDPending, getResignationRequestHOdByID,
     ResignationApprovalHOD, getHRPending, getResignationRequestHRByID,
     getCEOPending, getCEOPendingById, ResignationApprovalCEO, ResignationApprovalHR,
-    getResignCancel, ResignationCancelHR, InsertResignationRequestContractClose } = require('../ResignationRequest/ResignationRequest.controller');
+    getResignCancel, ResignationCancelHR, InsertResignationRequestContractClose,
+    getHRPendingList, getContractClosed } = require('../ResignationRequest/ResignationRequest.controller');
 
 router.post("/", checkToken, InsertResignationRequest);
 router.post("/resignlist", checkToken, getInchargePending);
@@ -22,4 +23,8 @@ router.patch("/resignhr", checkToken, ResignationApprovalCEO);
 router.patch("/resignapproval", checkToken, ResignationApprovalHR);
 router.patch("/resigncancelhr", checkToken, ResignationCancelHR);
 router.post("/contractcloseHrapprvl", checkToken, InsertResignationRequestContractClose);
+
+router.get("/get/hrlist", checkToken, getHRPendingList)
+router.get("/get/contractClosed", checkToken, getContractClosed)
+
 module.exports = router;
