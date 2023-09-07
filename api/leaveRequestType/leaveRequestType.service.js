@@ -147,7 +147,7 @@ module.exports = {
     },
     emplv_list: (data, callBack) => {
         pool.query(
-            `call medi_hrm.GET_LEAVEDETL(?)`,
+            `call GET_LEAVEDETL(?)`,
             [data],
             (error, results, feilds) => {
                 if (error) {

@@ -13,7 +13,7 @@ module.exports = {
              hrm_emp_category.ecat_name,
             hrm_emp_master.em_doj,
             hrm_emp_contract_detl.em_cont_end
-            FROM medi_hrm.hrm_emp_master
+            FROM hrm_emp_master
             LEFT JOIN hrm_department ON hrm_emp_master.em_department=hrm_department.dept_id
             LEFT JOIN hrm_dept_section ON hrm_emp_master.em_dept_section=hrm_dept_section.sect_id 
             LEFT JOIN hrm_branch ON hrm_emp_master.em_branch = hrm_branch.branch_slno
@@ -43,7 +43,7 @@ module.exports = {
              hrm_emp_category.ecat_name,
             hrm_emp_master.em_doj,
             hrm_emp_contract_detl.em_cont_end
-            FROM medi_hrm.hrm_emp_master
+            FROM hrm_emp_master
             LEFT JOIN hrm_department ON hrm_emp_master.em_department=hrm_department.dept_id
             LEFT JOIN hrm_dept_section ON hrm_emp_master.em_dept_section=hrm_dept_section.sect_id 
             LEFT JOIN hrm_branch ON hrm_emp_master.em_branch = hrm_branch.branch_slno
@@ -74,7 +74,7 @@ module.exports = {
              hrm_emp_category.ecat_name,
             hrm_emp_master.em_doj,
             hrm_emp_contract_detl.em_cont_end
-            FROM medi_hrm.hrm_emp_master
+            FROM hrm_emp_master
             LEFT JOIN hrm_department ON hrm_emp_master.em_department=hrm_department.dept_id
             LEFT JOIN hrm_dept_section ON hrm_emp_master.em_dept_section=hrm_dept_section.sect_id 
             LEFT JOIN hrm_branch ON hrm_emp_master.em_branch = hrm_branch.branch_slno

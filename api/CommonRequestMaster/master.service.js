@@ -46,7 +46,7 @@ module.exports = {
             request_name,
             request_status,
             if(request_status = 1 , 'Yes','No') status
-            FROM medi_hrm.common_request_master`,
+            FROM common_request_master`,
             [],
             (error, results) => {
                 if (error) {

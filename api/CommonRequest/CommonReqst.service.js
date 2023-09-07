@@ -233,7 +233,7 @@ module.exports = {
             incharge_approval_comment,
             hod_approval_comment,
             ceo_approval_comment,
-            one_hour_duty_day FROM medi_hrm.one_hour_request
+            one_hour_duty_day FROM one_hour_request
             inner join hrm_emp_master on one_hour_request.em_id=hrm_emp_master.em_id
             inner join hrm_department on one_hour_request.dept_id=hrm_department.dept_id
             inner join hrm_dept_section on one_hour_request.dept_sect_id=hrm_dept_section.sect_id
@@ -278,7 +278,7 @@ module.exports = {
             ceo_approval_comment,
             in_time,
             out_time
-            FROM medi_hrm.on_duty_request
+            FROM on_duty_request
             inner join hrm_emp_master on on_duty_request.em_id=hrm_emp_master.em_id
             inner join hrm_department on on_duty_request.dept_id=hrm_department.dept_id
             inner join hrm_dept_section on on_duty_request.dept_sect_id=hrm_dept_section.sect_id
@@ -324,7 +324,7 @@ module.exports = {
                hod_approval_comment,
                ceo_approval_comment,
                request_date
-            FROM medi_hrm.enablemisspunchforot
+            FROM enablemisspunchforot
              inner join hrm_emp_master on enablemisspunchforot.em_id=hrm_emp_master.em_id
              inner join hrm_department on enablemisspunchforot.dept_id=hrm_department.dept_id
              inner join hrm_dept_section on enablemisspunchforot.dept_sect_id=hrm_dept_section.sect_id
@@ -356,7 +356,7 @@ module.exports = {
              request_name,
              hr_status,
              request_comments
-            FROM medi_hrm.general_request
+            FROM general_request
              inner join hrm_emp_master on general_request.em_id=hrm_emp_master.em_id
              inner join hrm_department on general_request.dept_id=hrm_department.dept_id
              inner join hrm_dept_section on general_request.dept_sect_id=hrm_dept_section.sect_id
@@ -385,7 +385,7 @@ module.exports = {
             np_inc_apprv_req,
             np_incapprv_status,
             hrm_shift_mast.shft_desc
-             FROM medi_hrm.nopunchrequest 
+             FROM nopunchrequest 
              LEFT JOIN hrm_shift_mast ON hrm_shift_mast.shft_slno=nopunchrequest.shift_id
              where nopunch_slno=?`,
             [data],
@@ -720,7 +720,7 @@ module.exports = {
     },
     HRNopunchMasterIn: (data, callBack) => {
         pool.query(
-            `UPDATE medi_hrm.punch_master
+            `UPDATE punch_master
             SET punch_in =?,
             lve_tble_updation_flag=1
          WHERE em_no=? and duty_day=?`,
@@ -739,7 +739,7 @@ module.exports = {
     },
     HRNopunchMasterOut: (data, callBack) => {
         pool.query(
-            `UPDATE medi_hrm.punch_master
+            `UPDATE punch_master
             SET punch_out =?,
             lve_tble_updation_flag=1
             WHERE em_no=? and duty_day=?`,
@@ -847,7 +847,7 @@ module.exports = {
     },
     checkAttendanceProcess: (data, callBack) => {
         pool.query(
-            `SELECT * FROM medi_hrm.hrm_attendance_marking 
+            `SELECT * FROM hrm_attendance_marking 
             where attendance_marking_month between ? and ?
             and em_no=?
             `,

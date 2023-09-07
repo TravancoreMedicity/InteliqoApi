@@ -20,7 +20,7 @@ module.exports = {
              ot_request_flag, mis_punch_flag,
              ifnull(lvreq_type,0)lvreq_type, leave_type,updation_flag,
              sublvreq_type 
-             FROM medi_hrm.punch_master where emp_id=? and duty_day between ? and ?`,
+             FROM punch_master where emp_id=? and duty_day between ? and ?`,
             [data.emp_id,
             data.start,
             data.end
@@ -45,7 +45,7 @@ module.exports = {
             gross_salary,
             sum(if(duty_desc='A' and leave_status=0,1,0)) as duty_statuslop,
             sum(if(duty_desc='A' and leave_status=1,1,0)) as noofleaves
-            FROM medi_hrm.punch_master
+            FROM punch_master
              left join hrm_emp_master on hrm_emp_master.em_id=punch_master.emp_id
             where emp_id=? and duty_day between ? and ?
               group by emp_id,punch_master.em_no;`,
@@ -65,7 +65,7 @@ module.exports = {
     },
     getnightoffdata: (data, callBack) => {
         pool.query(
-            `select hrm_shift_mast.night_off_flag,shift_id,duty_status,duty_desc from  medi_hrm.punch_master 
+            `select hrm_shift_mast.night_off_flag,shift_id,duty_status,duty_desc from  punch_master 
             left join hrm_shift_mast on punch_master.shift_id=hrm_shift_mast.shft_slno
             where  em_no=? and date(punch_master.duty_day) between ? and ?
              and hrm_shift_mast.night_off_flag=1 and duty_status>=1 and punch_master.noff_flag!=1`,
@@ -149,7 +149,7 @@ module.exports = {
             sum(early_out)early_out, 
            ifnull( sum(duty_status),0)duty_status,
            sum(offday_falg)offday,
-            FROM medi_hrm.punch_master 
+            FROM punch_master 
             where emp_id IN(?) 
             and duty_day between ? and ?
              group by emp_id, em_no`,

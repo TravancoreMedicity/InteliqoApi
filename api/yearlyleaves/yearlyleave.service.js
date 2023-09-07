@@ -226,7 +226,7 @@ module.exports = {
                 lvetype_desc,
                 leave_credit_policy_count 
             FROM 
-                medi_hrm.hrm_leave_type 
+                hrm_leave_type 
             where 
                 common_leave='1'`,
             [
