@@ -20,7 +20,7 @@ module.exports = {
             ceo_req_status,inc_apprv_cmnt,hod_apprv_cmnt,hr_apprv_cmnt,
             ceo_apprv_status, 
             longleave_spclleave
-            FROM medi_hrm.hrm_leave_request 
+            FROM hrm_leave_request 
             left join hrm_emp_master on  hrm_leave_request.em_no =hrm_emp_master.em_no
             left join hrm_department on  hrm_leave_request.dept_id =hrm_department.dept_id
             where hrm_leave_request.dept_section IN (?) and  lv_cancel_status=0 and hr_apprv_status=0 and lv_cancel_status_user=0`,
@@ -48,7 +48,7 @@ module.exports = {
             cf_hod_apprv_req,
             cf_hod_apprv_status,cf_hr_apprv_status,cf_hr_aprrv_requ,cf_ceo_req_status,cf_ceo_apprv_status,cf_inc_apprv_cmnt,cf_hod_apprv_cmnt,cf_hr_apprv_cmnt,
              case when cf_incapprv_status=0 then 'Approval Pending' when cf_incapprv_status=1 then 'Incharge Approved'   end as 'status'
-            FROM medi_hrm.comp_off_request 
+            FROM comp_off_request 
             left join hrm_emp_master on  comp_off_request.em_no =hrm_emp_master.em_no
             left join hrm_department on  comp_off_request.em_department =hrm_department.dept_id
             where comp_off_request.em_dept_section IN (?) and lv_cancel_status=0 and cf_hr_apprv_status!=1`,
@@ -72,7 +72,7 @@ module.exports = {
             hf_hr_aprrv_requ,
             hf_hr_apprv_status,
             hf_ceo_apprv_status,hf_ceo_req_status
-            FROM medi_hrm.hrm_halfdayrequest
+            FROM hrm_halfdayrequest
                         left join hrm_emp_master on  hrm_halfdayrequest.em_no =hrm_emp_master.em_no
                         left join hrm_department on  hrm_halfdayrequest.dept_id =hrm_department.dept_id
                         where hrm_halfdayrequest.dept_section In (?) and lv_cancel_status=0 and hf_hr_apprv_status!=1`,
@@ -95,7 +95,7 @@ module.exports = {
             np_inc_apprv_req,np_incapprv_status,np_hod_apprv_req,np_hod_apprv_status,np_hr_aprrv_requ,
             np_hr_apprv_status,np_ceo_apprv_status,np_ceo_req_status,nopunchrequest.em_dept_section,
              case when np_incapprv_status=0 then 'Approval Pending' when np_incapprv_status=1 then 'Incharge Approved'   end as 'status'
-                        FROM medi_hrm.nopunchrequest
+                        FROM nopunchrequest
                        left join hrm_emp_master on  nopunchrequest.em_no =hrm_emp_master.em_no
                        left join hrm_department on  nopunchrequest.em_department =hrm_department.dept_id
                        where nopunchrequest.em_dept_section IN(?) and lv_cancel_status=0  and np_hr_apprv_status!=1`,
@@ -128,7 +128,7 @@ module.exports = {
             inc_apprv_cmnt,
             ceo_req_status,
             ceo_apprv_status,
-             "Leave Request" reqtype FROM medi_hrm.hrm_leave_request where leave_slno=?`,
+             "Leave Request" reqtype FROM hrm_leave_request where leave_slno=?`,
             [data],
             (error, results, feilds) => {
                 if (error) {
@@ -168,7 +168,7 @@ module.exports = {
             hf_ceo_apprv_status,
             checkIn,
             checkOut,
-            hf_reason FROM medi_hrm.hrm_halfdayrequest 
+            hf_reason FROM hrm_halfdayrequest 
             inner join hrm_emp_master on  hrm_halfdayrequest.em_no =hrm_emp_master.em_no
 			inner join hrm_department on  hrm_halfdayrequest.dept_id =hrm_department.dept_id
             where half_slno=?`,
@@ -196,7 +196,7 @@ module.exports = {
             np_inc_apprv_req,
             np_incapprv_status,
             hrm_shift_mast.shft_desc
-             FROM medi_hrm.nopunchrequest 
+             FROM nopunchrequest 
              LEFT JOIN hrm_shift_mast ON hrm_shift_mast.shft_slno=nopunchrequest.shift_id
              where nopunch_slno=?`,
             [data],
@@ -222,7 +222,7 @@ module.exports = {
             cf_inc_apprv_req,
             cf_incapprv_status,
             reqestdate
-             FROM medi_hrm.comp_off_request 
+             FROM comp_off_request 
              inner join hrm_emp_master on comp_off_request.em_id=hrm_emp_master.em_id 
              where cmp_off_reqid=?`,
             [data],
@@ -629,7 +629,7 @@ module.exports = {
 
     getlevdetl: (data, callback) => {
         pool.query(
-            `SELECT * FROM medi_hrm.hrm_leave_request_detl where lve_uniq_no=?`,
+            `SELECT * FROM hrm_leave_request_detl where lve_uniq_no=?`,
             [
                 data.lve_uniq_no
             ],
@@ -674,7 +674,7 @@ module.exports = {
     },
     getHalfdaylevdetl: (data, callback) => {
         pool.query(
-            `SELECT * FROM medi_hrm.hrm_halfdayrequest where half_slno=?`,
+            `SELECT * FROM hrm_halfdayrequest where half_slno=?`,
             [
                 data.slno
             ],
@@ -719,7 +719,7 @@ module.exports = {
     },
     getNopunchlevdetl: (data, callback) => {
         pool.query(
-            `SELECT * FROM medi_hrm.nopunchrequest where nopunch_slno=?`,
+            `SELECT * FROM nopunchrequest where nopunch_slno=?`,
             [
                 data.slno
             ],
@@ -761,7 +761,7 @@ module.exports = {
     },
     getCofflevdetl: (data, callback) => {
         pool.query(
-            `SELECT * FROM medi_hrm.comp_off_request where cmp_off_reqid=?`,
+            `SELECT * FROM comp_off_request where cmp_off_reqid=?`,
             [
                 data.slno
             ],
@@ -947,7 +947,7 @@ module.exports = {
                 ceo_req_status,
                 ceo_apprv_status,
                 request_date
-                FROM medi_hrm.hrm_leave_request 
+                FROM hrm_leave_request 
                 inner join hrm_emp_master on  hrm_leave_request.em_no =hrm_emp_master.em_no
                 inner join hrm_department on  hrm_leave_request.dept_id =hrm_department.dept_id
                 where  lv_cancel_status=0  and lv_cancel_status_user=0`,
@@ -977,7 +977,7 @@ module.exports = {
             ceo_req_status,inc_apprv_cmnt,hod_apprv_cmnt,hr_apprv_cmnt,
             ceo_apprv_status,
             longleave_spclleave,lv_cancel_status
-            FROM medi_hrm.hrm_leave_request 
+            FROM hrm_leave_request 
             left join hrm_emp_master on  hrm_leave_request.em_no =hrm_emp_master.em_no
             left join hrm_department on  hrm_leave_request.dept_id =hrm_department.dept_id
             where  lv_cancel_status=0 and hr_aprrv_requ=1 and lv_cancel_status_user=0;`,
@@ -1016,7 +1016,7 @@ module.exports = {
             checkIn,
             checkOut,
             hf_reason
-            FROM medi_hrm.hrm_halfdayrequest
+            FROM hrm_halfdayrequest
             inner join hrm_emp_master on  hrm_halfdayrequest.em_no =hrm_emp_master.em_no
             inner join hrm_department on  hrm_halfdayrequest.dept_id =hrm_department.dept_id
             where  lv_cancel_req_status_user=0 and lv_cancel_status_user=0`,
@@ -1040,7 +1040,7 @@ module.exports = {
             hf_hr_aprrv_requ,
             hf_hr_apprv_status,
             hf_ceo_apprv_status,hf_ceo_req_status
-            FROM medi_hrm.hrm_halfdayrequest
+            FROM hrm_halfdayrequest
                         left join hrm_emp_master on  hrm_halfdayrequest.em_no =hrm_emp_master.em_no
                         left join hrm_department on  hrm_halfdayrequest.dept_id =hrm_department.dept_id
                         where  lv_cancel_status=0 and hf_hr_aprrv_requ=1 AND hf_hr_apprv_status=0;`,
@@ -1080,7 +1080,7 @@ module.exports = {
             checkinflag,
             checkoutflag,
             creteddate
-            FROM medi_hrm.nopunchrequest
+            FROM nopunchrequest
             left join hrm_emp_master on  nopunchrequest.em_no =hrm_emp_master.em_no
             left join hrm_department on  nopunchrequest.em_department =hrm_department.dept_id
             where lv_cancel_req_status_user=0 and lv_cancel_status_user=0;`,
@@ -1097,7 +1097,7 @@ module.exports = {
         pool.query(
             `SELECT nopunch_slno,plan_slno,shift_id,nopunchrequest.em_no,punslno,dept_name,np_incapprv_status, em_name,nopunchrequest.em_dept_section, 
             np_inc_apprv_req,np_incapprv_status,np_hod_apprv_req,np_hod_apprv_status,np_hr_aprrv_requ,np_hr_apprv_status,np_ceo_apprv_status,np_ceo_req_status
-                        FROM medi_hrm.nopunchrequest
+                        FROM nopunchrequest
                        left join hrm_emp_master on  nopunchrequest.em_no =hrm_emp_master.em_no
                        left join hrm_department on  nopunchrequest.em_department =hrm_department.dept_id
                        where lv_cancel_status=0  and np_hr_apprv_status!=1 and ((np_inc_apprv_req=1 AND np_incapprv_status=1) OR np_inc_apprv_req=0) AND
@@ -1137,7 +1137,7 @@ module.exports = {
             cf_inc_apprv_cmnt,
             cf_hod_apprv_cmnt,
             cf_hr_apprv_cmnt
-            FROM medi_hrm.comp_off_request 
+            FROM comp_off_request 
             left join hrm_emp_master on  comp_off_request.em_no =hrm_emp_master.em_no
             left join hrm_department on  comp_off_request.em_department =hrm_department.dept_id
             where  lv_cancel_status=0 and lv_cancel_status_user=0;`,
@@ -1162,7 +1162,7 @@ module.exports = {
             cf_incapprv_status,
             cf_hod_apprv_req,
             cf_hod_apprv_status,cf_hr_apprv_status,cf_hr_aprrv_requ,cf_ceo_req_status,cf_ceo_apprv_status,cf_inc_apprv_cmnt,cf_hod_apprv_cmnt,cf_hr_apprv_cmnt
-            FROM medi_hrm.comp_off_request 
+            FROM comp_off_request 
             left join hrm_emp_master on  comp_off_request.em_no =hrm_emp_master.em_no
             left join hrm_department on  comp_off_request.em_department =hrm_department.dept_id
             where  lv_cancel_status=0 and cf_hr_aprrv_requ=1 and  cf_hr_apprv_status=0 `,
@@ -1283,7 +1283,7 @@ module.exports = {
                         1 as reqtype,
                                     inc_apprv_req as increq,
                         incapprv_status as incaprv
-                        FROM medi_hrm.hrm_leave_request
+                        FROM hrm_leave_request
                         inner join hrm_emp_master on hrm_leave_request.em_no=hrm_emp_master.em_no
                         inner join hrm_dept_section on hrm_leave_request.dept_section=hrm_dept_section.sect_id
                         where hrm_dept_section.sect_id in (?)  and inc_apprv_req=1
@@ -1296,7 +1296,7 @@ module.exports = {
                         2 as reqtype,
                         hf_inc_apprv_req as increq,
             hf_incapprv_status as incaprv
-                        FROM medi_hrm.hrm_halfdayrequest
+                        FROM hrm_halfdayrequest
                         inner join hrm_emp_master on hrm_halfdayrequest.em_no=hrm_emp_master.em_no
                         inner join hrm_dept_section on hrm_halfdayrequest.dept_section=hrm_dept_section.sect_id
                         and hrm_halfdayrequest.dept_section in(1) and hf_inc_apprv_req=1
@@ -1309,7 +1309,7 @@ module.exports = {
              3 as reqtype,
              np_inc_apprv_req as increq,
             np_incapprv_status as incaprv
-            FROM medi_hrm.nopunchrequest
+            FROM nopunchrequest
             inner join hrm_emp_master on nopunchrequest.em_no=hrm_emp_master.em_no
             inner join hrm_dept_section on nopunchrequest.em_dept_section=hrm_dept_section.sect_id
             where nopunchrequest.em_dept_section in (?) and np_inc_apprv_req=1
@@ -1322,7 +1322,7 @@ module.exports = {
              4 as reqtype,
              cf_inc_apprv_req as increq,
             cf_incapprv_status as incaprv
-            FROM medi_hrm.comp_off_request
+            FROM comp_off_request
             inner join hrm_emp_master on comp_off_request.em_no=hrm_emp_master.em_no
             inner join hrm_dept_section on comp_off_request.em_dept_section=hrm_dept_section.sect_id
             where comp_off_request.em_dept_section in (?) and cf_inc_apprv_req=1
@@ -1353,7 +1353,7 @@ module.exports = {
                       1 as reqtype,
                         hod_apprv_req as hod_req,
                       hod_apprv_status as hodaprv
-                      FROM medi_hrm.hrm_leave_request
+                      FROM hrm_leave_request
                       inner join hrm_emp_master on hrm_leave_request.em_no=hrm_emp_master.em_no
                       inner join hrm_dept_section on hrm_leave_request.dept_section=hrm_dept_section.sect_id
                       where hrm_dept_section.sect_id in (?)  and hod_apprv_req=1
@@ -1366,7 +1366,7 @@ module.exports = {
                       2 as reqtype,
           hf_hod_apprv_req as hod_req,
           hf_hod_apprv_status as hodaprv
-                      FROM medi_hrm.hrm_halfdayrequest
+                      FROM hrm_halfdayrequest
                       inner join hrm_emp_master on hrm_halfdayrequest.em_no=hrm_emp_master.em_no
                       inner join hrm_dept_section on hrm_halfdayrequest.dept_section=hrm_dept_section.sect_id
                       and hrm_halfdayrequest.dept_section in(?) and hf_hod_apprv_req=1
@@ -1379,7 +1379,7 @@ module.exports = {
            3 as reqtype,
           np_hod_apprv_req as hod_req,
           np_hod_apprv_status as hodaprv
-          FROM medi_hrm.nopunchrequest
+          FROM nopunchrequest
           inner join hrm_emp_master on nopunchrequest.em_no=hrm_emp_master.em_no
           inner join hrm_dept_section on nopunchrequest.em_dept_section=hrm_dept_section.sect_id
           where nopunchrequest.em_dept_section in (?) and np_hod_apprv_req=1
@@ -1392,7 +1392,7 @@ module.exports = {
            4 as reqtype,
           cf_hod_apprv_req as hod_req,
           cf_hod_apprv_status as hodaprv
-          FROM medi_hrm.comp_off_request
+          FROM comp_off_request
           inner join hrm_emp_master on comp_off_request.em_no=hrm_emp_master.em_no
           inner join hrm_dept_section on comp_off_request.em_dept_section=hrm_dept_section.sect_id
           where comp_off_request.em_dept_section in (?) and cf_hod_apprv_req=1
@@ -1423,7 +1423,7 @@ module.exports = {
                       1 as reqtype,
                         ceo_req_status as ceo_req,
                       ceo_apprv_status as ceo_apprv
-                      FROM medi_hrm.hrm_leave_request
+                      FROM hrm_leave_request
                       inner join hrm_emp_master on hrm_leave_request.em_no=hrm_emp_master.em_no
                       inner join hrm_dept_section on hrm_leave_request.dept_section=hrm_dept_section.sect_id
                       where  ceo_req_status=1
@@ -1436,7 +1436,7 @@ module.exports = {
                       2 as reqtype,
            hf_ceo_req_status as ceo_req,
           hf_ceo_apprv_status as ceo_apprv
-                      FROM medi_hrm.hrm_halfdayrequest
+                      FROM hrm_halfdayrequest
                       inner join hrm_emp_master on hrm_halfdayrequest.em_no=hrm_emp_master.em_no
                       inner join hrm_dept_section on hrm_halfdayrequest.dept_section=hrm_dept_section.sect_id
                       and hf_ceo_req_status=1
@@ -1449,7 +1449,7 @@ module.exports = {
            3 as reqtype,
            np_ceo_req_status as ceo_req,
           np_ceo_apprv_status as ceo_apprv
-          FROM medi_hrm.nopunchrequest
+          FROM nopunchrequest
           inner join hrm_emp_master on nopunchrequest.em_no=hrm_emp_master.em_no
           inner join hrm_dept_section on nopunchrequest.em_dept_section=hrm_dept_section.sect_id
           where np_ceo_req_status=1
@@ -1462,7 +1462,7 @@ module.exports = {
            4 as reqtype,
            cf_ceo_req_status as ceo_req,
           cf_ceo_apprv_status as ceo_apprv
-          FROM medi_hrm.comp_off_request
+          FROM comp_off_request
           inner join hrm_emp_master on comp_off_request.em_no=hrm_emp_master.em_no
           inner join hrm_dept_section on comp_off_request.em_dept_section=hrm_dept_section.sect_id
           where  cf_ceo_req_status=1
@@ -1488,7 +1488,7 @@ module.exports = {
                       1 as reqtype,
                         hr_aprrv_requ as hrreq,
                       hr_apprv_status as hr_apprv
-                      FROM medi_hrm.hrm_leave_request
+                      FROM hrm_leave_request
                       inner join hrm_emp_master on hrm_leave_request.em_no=hrm_emp_master.em_no
                       inner join hrm_dept_section on hrm_leave_request.dept_section=hrm_dept_section.sect_id
                       where  hr_aprrv_requ=1
@@ -1501,7 +1501,7 @@ module.exports = {
                       2 as reqtype,
            hf_hr_aprrv_requ as hrreq,
           hf_hr_aprrv_requ as hr_apprv
-                      FROM medi_hrm.hrm_halfdayrequest
+                      FROM hrm_halfdayrequest
                       inner join hrm_emp_master on hrm_halfdayrequest.em_no=hrm_emp_master.em_no
                       inner join hrm_dept_section on hrm_halfdayrequest.dept_section=hrm_dept_section.sect_id
                       and hf_hr_aprrv_requ=1
@@ -1514,7 +1514,7 @@ module.exports = {
            3 as reqtype,
            np_hr_aprrv_requ as hrreq,
           np_hr_apprv_status as hr_apprv
-          FROM medi_hrm.nopunchrequest
+          FROM nopunchrequest
           inner join hrm_emp_master on nopunchrequest.em_no=hrm_emp_master.em_no
           inner join hrm_dept_section on nopunchrequest.em_dept_section=hrm_dept_section.sect_id
           where np_hr_aprrv_requ=1
@@ -1527,7 +1527,7 @@ module.exports = {
            4 as reqtype,
            cf_hr_aprrv_requ as hrreq,
           cf_hr_apprv_status as hr_apprv
-          FROM medi_hrm.comp_off_request
+          FROM comp_off_request
           inner join hrm_emp_master on comp_off_request.em_no=hrm_emp_master.em_no
           inner join hrm_dept_section on comp_off_request.em_dept_section=hrm_dept_section.sect_id
           where  cf_hr_aprrv_requ=1
@@ -1748,7 +1748,7 @@ module.exports = {
     },
     leaveReqRejectHrDetl: (data, callBack) => {
         pool.query(
-            `UPDATE medi_hrm.hrm_leave_request_detl
+            `UPDATE hrm_leave_request_detl
             SET leave_status = 0
         WHERE lve_uniq_no=?`,
             [
@@ -1789,7 +1789,7 @@ module.exports = {
 
     HalfDayHrRejectCl: (data, callBack) => {
         pool.query(
-            `UPDATE medi_hrm.hrm_leave_cl
+            `UPDATE hrm_leave_cl
             SET cl_lv_taken = cl_lv_taken-0.5,
             cl_bal_leave=cl_bal_leave-0.5,
             hl_lv_tkn_status=0
@@ -1807,7 +1807,7 @@ module.exports = {
     },
     HRNopunchMasterIn: (data, callBack) => {
         pool.query(
-            `UPDATE medi_hrm.punch_master
+            `UPDATE punch_master
             SET punch_in =?,
             lve_tble_updation_flag=1
         WHERE punch_slno=?`,
@@ -1825,7 +1825,7 @@ module.exports = {
     },
     HRNopunchMasterOut: (data, callBack) => {
         pool.query(
-            `UPDATE medi_hrm.punch_master
+            `UPDATE punch_master
             SET punch_out =?,
             lve_tble_updation_flag=1
         WHERE punch_slno=?`,
@@ -1980,7 +1980,7 @@ module.exports = {
     },
     NoPunchMasterCancel: (data, callBack) => {
         pool.query(
-            `UPDATE medi_hrm.punch_master
+            `UPDATE punch_master
             SET punch_out =null,
             punch_in=null,
             lve_tble_updation_flag=0

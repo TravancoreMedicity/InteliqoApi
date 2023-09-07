@@ -335,7 +335,9 @@ module.exports = {
                 hr_app_date = ?,
                 hr_app_status =?,
                 hr_coment =?,
-                resign_status =?
+                resign_status =?,
+                replacement_required_hr=?,
+                salaryPenalty=?
                 WHERE resig_slno =?`,
             [
                 data.hr_id,
@@ -343,6 +345,8 @@ module.exports = {
                 data.hr_app_status,
                 data.hr_coment,
                 data.resign_status,
+                data.replacement_required_hr,
+                data.salaryPenalty,
                 data.resig_slno
             ],
             (error, results, feilds) => {
@@ -463,6 +467,7 @@ module.exports = {
             dept_name,
             sect_name,
             em_name,
+            resignation_type,
             hrm_resignation_request.em_id,
             resign_reason,
             hrm_resignation_request.em_no,request_date
@@ -510,6 +515,46 @@ module.exports = {
                     return callBack(error);
                 }
                 return callBack(null, results)
+            }
+        )
+    },
+    getFullSettlementEmp: (callBack) => {
+        pool.query(
+            `SELECT 
+            ROW_NUMBER() OVER () as slno,
+            resig_slno,
+            hrm_resignation_request.dept_id,
+            hrm_resignation_request.sect_id,
+            dept_name,
+            sect_name,
+            em_name,
+            resignation_type,
+            hrm_resignation_request.em_no,
+            hrm_resignation_request.em_id,
+            request_date,
+            hr_app_status,
+            resign_reason,
+            relieving_date,
+             if(resignation_type=1 ,'30 days Resignation','24 hour resignation')Resign,
+               if(hr_app_status is null ,'Incharge Approval Pending','Approved')status,
+             hr_app_date,
+             hr_coment,
+             em_doj,
+             desg_name,
+             gross_salary,
+             hr_id
+            FROM hrm_resignation_request
+            inner join hrm_department on hrm_department.dept_id=hrm_resignation_request.dept_id
+            inner join hrm_dept_section on hrm_dept_section.sect_id=hrm_resignation_request.sect_id
+            inner join hrm_emp_master on hrm_emp_master.em_id=hrm_resignation_request.em_id
+            inner join designation on designation.desg_slno=hrm_emp_master.em_designation
+            WHERE resign_status="A" `,
+            [],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
             }
         )
     },

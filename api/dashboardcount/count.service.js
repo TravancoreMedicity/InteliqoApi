@@ -23,7 +23,7 @@ module.exports = {
             sect_name,
             desg_name,
             em_doj
-             FROM medi_hrm.hrm_emp_master
+             FROM hrm_emp_master
              INNER JOIN hrm_emp_contract_detl on hrm_emp_master.em_id=hrm_emp_contract_detl.em_id
              INNER JOIN hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
              INNER JOIN hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
@@ -363,7 +363,7 @@ module.exports = {
             em_doj,
             sect_name,
              ecat_name
-            FROM medi_hrm.hrm_emp_master
+            FROM hrm_emp_master
             inner join hrm_emp_category on hrm_emp_master.em_category=hrm_emp_category.category_slno
             inner join hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
             inner join designation ON hrm_emp_master.em_designation=designation.desg_slno
@@ -446,7 +446,7 @@ module.exports = {
     },
     getActiveEmpCount: (callBack) => {
         pool.query(
-            `SELECT LPAD(count(*),4,'0') 'ActiveEmpCount'  FROM medi_hrm.hrm_emp_master where em_status = 1;`,
+            `SELECT LPAD(count(*),4,'0') 'ActiveEmpCount'  FROM hrm_emp_master where em_status = 1;`,
             [],
             (error, results, feilds) => {
 
@@ -496,7 +496,7 @@ module.exports = {
             hrm_emp_master.em_doj,
             dept_name,
             sect_name
-             FROM medi_hrm.hrm_emp_master
+             FROM hrm_emp_master
             inner join hrm_emp_category on hrm_emp_master.em_category=hrm_emp_category.category_slno
             inner join hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
             inner join hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.sect_id

@@ -188,7 +188,7 @@ module.exports = {
 
         pool.query(
             `SELECT * FROM 
-            medi_hrm.hrm_authorization_assign 
+            hrm_authorization_assign 
             where dept_section=?;`,
             [
                 data.dept_section

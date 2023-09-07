@@ -215,7 +215,7 @@ module.exports = {
     },
     GetFixedAndEarningWage: (data, callBack) => {
         pool.query(
-            `call medi_hrm.GET_FIXED_EARNING_SLARY(?);`,
+            `call GET_FIXED_EARNING_SLARY(?);`,
             [
                 data.em_no
             ],
@@ -369,7 +369,7 @@ module.exports = {
               designation.desg_name,
               IF(em_status = 1, 'Yes', 'No') emp_status,
             recomend_salary
-             FROM medi_hrm.hrm_emp_master 
+             FROM hrm_emp_master 
              inner join hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
              inner join hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
              inner join hrm_branch on hrm_emp_master.em_branch = hrm_branch.branch_slno
@@ -396,7 +396,7 @@ module.exports = {
             em_name,
             dept_name, 
             sect_name,recomend_salary
-             FROM medi_hrm.hrm_emp_master 
+             FROM hrm_emp_master 
              inner join hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
              inner join hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
              where em_no=? and em_department=? and em_dept_section=?;`,
@@ -415,7 +415,7 @@ module.exports = {
     },
     updateEmpGrossSalary: (data, callBack) => {
         pool.query(
-            `UPDATE medi_hrm.hrm_emp_master
+            `UPDATE hrm_emp_master
             SET gross_salary =? ,
             salary_split_flag=?                                 
             WHERE em_id = ?;`,
@@ -441,7 +441,7 @@ module.exports = {
             em_name,
             dept_name, 
             sect_name,recomend_salary
-             FROM medi_hrm.hrm_emp_master 
+             FROM hrm_emp_master 
              inner join hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
              inner join hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
              where salary_split_flag=0 and em_status=1  and em_no!=1`,
@@ -459,7 +459,7 @@ module.exports = {
             ` SELECT 
             ernded_slno,em_id,
             ifnull(sum(em_amount),0)gross_salary
-             FROM medi_hrm.hrm_emp_earn_deduction
+             FROM hrm_emp_earn_deduction
 			WHERE em_no =?  and em_earning_type IN(1,2)`,
             [
                 id

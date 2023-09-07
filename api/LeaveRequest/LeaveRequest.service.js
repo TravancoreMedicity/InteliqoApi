@@ -110,7 +110,7 @@ module.exports = {
                 first_half_out,
                 second_half_in,
                 second_half_out
-            FROM medi_hrm.hrm_duty_plan
+            FROM hrm_duty_plan
             LEFT JOIN hrm_shift_mast ON hrm_shift_mast.shft_slno = hrm_duty_plan.shift_id 
             WHERE duty_day= ? AND emp_id=?`,
             [data.startDate, data.em_id],
@@ -126,7 +126,7 @@ module.exports = {
 
     getfirsthalf: (callBack) => {
         pool.query(
-            `SELECT first_half_in,first_half_out FROM medi_hrm.hrm_shift_mast where shft_slno=1;`,
+            `SELECT first_half_in,first_half_out FROM hrm_shift_mast where shft_slno=1;`,
             [],
             (error, results, feilds) => {
                 if (error) {
@@ -138,7 +138,7 @@ module.exports = {
     },
     getsecondhalf: (callBack) => {
         pool.query(
-            `SELECT second_half_in,second_half_out FROM medi_hrm.hrm_shift_mast where shft_slno=1;`,
+            `SELECT second_half_in,second_half_out FROM hrm_shift_mast where shft_slno=1;`,
             [],
             (error, results, feilds) => {
                 if (error) {
@@ -343,7 +343,7 @@ module.exports = {
     },
     getLeaveCancelEmpdetl: (id, callBack) => {
         pool.query(
-            `call medi_hrm.LEAVE_CANCEL_EMPDETL(?); `,
+            `call LEAVE_CANCEL_EMPDETL(?); `,
             [
                 id
             ],

@@ -278,7 +278,7 @@ module.exports = {
     getDetailsbyId: (id, callBack) => {
         pool.query(
             `SELECT details_slno,relation_number,patient_name,mrd_number 
-            FROM medi_hrm.hrm_emp_family_details where employee_id=? `,
+            FROM hrm_emp_family_details where employee_id=? `,
             [
                 id
             ],

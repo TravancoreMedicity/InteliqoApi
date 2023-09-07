@@ -60,7 +60,7 @@ module.exports = {
             ernded_slno,
             hrm_earning_deduction.earnded_name,           
              em_amount
-             FROM medi_hrm.hrm_emp_earn_deduction
+             FROM hrm_emp_earn_deduction
               LEFT JOIN  hrm_earning_deduction ON hrm_earning_deduction.earnded_id= hrm_emp_earn_deduction.em_salary_desc
               LEFT JOIN   hrm_earning_type ON  hrm_earning_deduction.erning_type_id= hrm_earning_type.erning_type_id 
               WHERE em_id =?  and em_earning_type=1 `,
@@ -80,7 +80,7 @@ module.exports = {
             `     SELECT 
             ernded_slno,em_id,
            sum(em_amount)total_fixed
-             FROM medi_hrm.hrm_emp_earn_deduction
+             FROM hrm_emp_earn_deduction
 			WHERE em_id =?  and em_earning_type=1`,
             [
                 id
@@ -98,7 +98,7 @@ module.exports = {
             `     SELECT 
             ernded_slno,em_id,
            sum(em_amount)total_fixed
-             FROM medi_hrm.hrm_emp_earn_deduction
+             FROM hrm_emp_earn_deduction
 			WHERE em_id =?  and em_earning_type=2`,
             [
                 id
@@ -117,7 +117,7 @@ module.exports = {
             ernded_slno,
             hrm_earning_deduction.earnded_name,           
              em_amount
-             FROM medi_hrm.hrm_emp_earn_deduction
+             FROM hrm_emp_earn_deduction
               LEFT JOIN  hrm_earning_deduction ON hrm_earning_deduction.earnded_id= hrm_emp_earn_deduction.em_salary_desc
               LEFT JOIN   hrm_earning_type ON  hrm_earning_deduction.erning_type_id= hrm_earning_type.erning_type_id 
               WHERE em_id =?  and em_earning_type=2 `,
@@ -154,7 +154,7 @@ module.exports = {
             `     SELECT 
             ernded_slno,em_id,
            ifnull(sum(em_amount),0)total_deduction
-             FROM medi_hrm.hrm_emp_earn_deduction
+             FROM hrm_emp_earn_deduction
 			WHERE em_id =? and em_earning_type=3`,
             [
                 id
@@ -173,7 +173,7 @@ module.exports = {
             ernded_slno,
             hrm_earning_deduction.earnded_name,           
              ifnull(em_amount,0)em_amount
-             FROM medi_hrm.hrm_emp_earn_deduction
+             FROM hrm_emp_earn_deduction
               LEFT JOIN  hrm_earning_deduction ON hrm_earning_deduction.earnded_id= hrm_emp_earn_deduction.em_salary_desc
               LEFT JOIN   hrm_earning_type ON  hrm_earning_deduction.erning_type_id= hrm_earning_type.erning_type_id 
               WHERE em_id =?  and em_earning_type=3`,
@@ -209,7 +209,7 @@ module.exports = {
             ` SELECT 
             ernded_slno,em_id,
             ifnull(sum(em_amount),0)gross_salary
-             FROM medi_hrm.hrm_emp_earn_deduction
+             FROM hrm_emp_earn_deduction
 			WHERE em_id =?  and em_earning_type IN(1,2)`,
             [
                 id
@@ -240,7 +240,7 @@ module.exports = {
     getPFcalcalculatingamt: (id, callBack) => {
         pool.query(
             `SELECT em_id,sum(em_amount)em_amount
-         FROM medi_hrm.hrm_emp_earn_deduction
+         FROM hrm_emp_earn_deduction
           LEFT JOIN  hrm_earning_deduction ON hrm_earning_deduction.earnded_id= hrm_emp_earn_deduction.em_salary_desc
           LEFT JOIN   hrm_earning_type ON  hrm_earning_deduction.erning_type_id= hrm_earning_type.erning_type_id 
           WHERE em_id =? and em_earning_type IN (1,2) and include_pf=1`,
@@ -273,7 +273,7 @@ module.exports = {
     getESIcalculatingamt: (id, callBack) => {
         pool.query(
             `SELECT em_id,sum(em_amount)em_amount
-         FROM medi_hrm.hrm_emp_earn_deduction
+         FROM hrm_emp_earn_deduction
           LEFT JOIN  hrm_earning_deduction ON hrm_earning_deduction.earnded_id= hrm_emp_earn_deduction.em_salary_desc
           LEFT JOIN   hrm_earning_type ON  hrm_earning_deduction.erning_type_id= hrm_earning_type.erning_type_id 
           WHERE em_id =? and em_earning_type IN (1,2) and include_esi=1`,
@@ -409,7 +409,7 @@ module.exports = {
             calculated_lop,
             hrm_emp_master.em_no,
             hrm_emp_master.em_id
-            FROM medi_hrm.hrm_attendance_marking
+            FROM hrm_attendance_marking
             inner join hrm_emp_master on hrm_attendance_marking.em_no=hrm_emp_master.em_no
             where dept_id=? and sect_id=? and attendance_marking_month=?`,
             [
@@ -604,7 +604,7 @@ module.exports = {
     checkAttendanceProcess: (data, callBack) => {
         pool.query(
             `
-            SELECT * FROM medi_hrm.hrm_attendance_marking 
+            SELECT * FROM hrm_attendance_marking 
             where attendance_marking_month=?
             and attendance_status is null and dept_id=? and sect_id=?
             `,
@@ -727,7 +727,7 @@ module.exports = {
             punch_out,shift_in,shift_out,hrs_worked,over_time,late_in,
             early_out,duty_status,holiday_status,leave_status,holiday_slno,
             lvereq_desc,duty_desc,lve_tble_updation_flag,hrm_emp_master.em_name
-            from  medi_hrm.punch_master
+            from  punch_master
             left join hrm_emp_master on hrm_emp_master.em_no=punch_master.em_no
             where punch_master.em_no IN (?)
                  and date(duty_day) between ? and ?`,
@@ -768,7 +768,7 @@ module.exports = {
             esi_employer,
             pf_employee,
             pf_employer 
-            FROM medi_hrm.hrm_payroll_payslip 
+            FROM hrm_payroll_payslip 
             inner join hrm_emp_master on hrm_payroll_payslip.em_no=hrm_emp_master.em_no
             inner join designation on hrm_emp_master.em_designation=designation.desg_slno
             left join hrm_emp_pfesi on hrm_emp_master.em_id=hrm_emp_pfesi.em_id
@@ -798,7 +798,7 @@ module.exports = {
             total_working_days,
             total_days,
             worked_amount
-             FROM medi_hrm.hrm_payroll_payslip_detl 
+             FROM hrm_payroll_payslip_detl 
              inner join hrm_earning_deduction on hrm_payroll_payslip_detl.em_salary_desc=hrm_earning_deduction.earnded_id
              where em_no=?;`,
             [
@@ -814,7 +814,7 @@ module.exports = {
     },
     checkPayslipDataExist: (data, callBack) => {
         pool.query(
-            `SELECT * FROM medi_hrm.hrm_payroll_payslip where attendance_marking_month=?`,
+            `SELECT * FROM hrm_payroll_payslip where attendance_marking_month=?`,
             [
                 data.attendance_marking_month
             ],
@@ -832,7 +832,7 @@ module.exports = {
             desg_name,em_account_no, total_working_days,total_days,calculated_lop,total_lop,
             fixed_wages,earning_wages,deduct_wages,gross_amount,attendance_marking_month,
             esi_employee,esi_employer,pf_employee,pf_employer , em_uan_no,em_esi_no,net_amount
-            FROM medi_hrm.hrm_payroll_payslip 
+            FROM hrm_payroll_payslip 
             inner join hrm_emp_master on hrm_payroll_payslip.em_id=hrm_emp_master.em_id
             right join hrm_emp_pfesi on hrm_emp_master.em_id=hrm_emp_pfesi.em_id
             inner join hrm_department on hrm_payroll_payslip.dept_id=hrm_department.dept_id
@@ -855,7 +855,7 @@ module.exports = {
     empWisePaySlipDetl: (data, callBack) => {
         pool.query(
             `
-            SELECT * FROM medi_hrm.hrm_payroll_payslip_detl where em_no IN (?) and attendance_marking_month=?  order by em_salary_desc ASC`,
+            SELECT * FROM hrm_payroll_payslip_detl where em_no IN (?) and attendance_marking_month=?  order by em_salary_desc ASC`,
             [
                 data.em_no,
                 data.attendance_marking_month
@@ -972,7 +972,7 @@ module.exports = {
             punch_out,shift_in,shift_out,hrs_worked,over_time,late_in,
             early_out,duty_status,holiday_status,leave_status,holiday_slno,
             lvereq_desc,duty_desc,lve_tble_updation_flag,hrm_emp_master.em_name
-            from  medi_hrm.punch_master
+            from  punch_master
             left join hrm_emp_master on hrm_emp_master.em_no=punch_master.em_no
             where punch_master.emp_id IN (?)
                  and date(duty_day) between ? and ?`,

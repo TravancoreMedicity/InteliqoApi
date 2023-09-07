@@ -112,7 +112,7 @@ module.exports = {
             em_total_year,
             em_salary,
         desg_name
-        FROM medi_hrm.hrm_emp_exp
+        FROM hrm_emp_exp
         left join designation
         on designation.desg_slno=hrm_emp_exp.em_designation
         WHERE em_no  = ?`,

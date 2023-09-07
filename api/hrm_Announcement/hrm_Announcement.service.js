@@ -38,7 +38,7 @@ module.exports = {
     },
     getBirthdayEmployee: (callBack) => {
         pool.query(
-            `SELECT * FROM medi_hrm.hrm_emp_master where DATE_FORMAT(em_dob, '%m-%d') = DATE_FORMAT(CURRENT_DATE() , '%m-%d') and em_status=1; `,
+            `SELECT * FROM hrm_emp_master where DATE_FORMAT(em_dob, '%m-%d') = DATE_FORMAT(CURRENT_DATE() , '%m-%d') and em_status=1; `,
             [],
             (error, results, fields) => {
                 if (error) {

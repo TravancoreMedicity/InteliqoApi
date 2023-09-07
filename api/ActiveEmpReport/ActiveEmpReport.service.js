@@ -5,7 +5,8 @@ module.exports = {
         pool.query(
             `select hrm_emp_master.em_id,hrm_emp_master.em_no,em_name,em_dob,if(em_gender=1,'Male','Female')em_gender,em_doj,em_mobile,em_email,branch_name,dept_name,
             sect_name,inst_emp_type,desg_name,doctype_desc,ecat_name,em_contract_end_date,em_adhar_no,
-            em_retirement_date,addressPresent1,addressPresent2,hrm_pin2,contract_status
+            em_retirement_date,addressPresent1,addressPresent2,hrm_pin2,contract_status,em_account_no,
+            em_passport_no,em_pf_no,em_esi_no
             from hrm_emp_master
             left join hrm_employee on hrm_emp_master.em_id=hrm_employee.emp_id
             left join hrm_emp_personal on hrm_emp_personal.em_id=hrm_emp_master.em_id
@@ -16,6 +17,7 @@ module.exports = {
             left join designation on designation.desg_slno=hrm_emp_master.em_designation
             left join doctor_type on doctor_type.doctype_slno=hrm_emp_master.em_doc_type
             left join hrm_emp_category on hrm_emp_category.category_slno=hrm_emp_master.em_category
+            left join hrm_emp_pfesi on hrm_emp_pfesi.em_id=hrm_emp_master.em_id
             where (hrm_emp_master.em_status=1 and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2) and (hrm_branch.branch_slno IN (?))`,
             [
                 data
@@ -32,7 +34,8 @@ module.exports = {
         pool.query(
             `select hrm_emp_master.em_id,hrm_emp_master.em_no,em_name,em_dob,if(em_gender=1,'Male','Female')em_gender,em_doj,em_mobile,em_email,branch_name,dept_name,
             sect_name,inst_emp_type,desg_name,doctype_desc,ecat_name,em_contract_end_date,em_adhar_no,
-            em_retirement_date,addressPresent1,addressPresent2,hrm_pin2,contract_status
+            em_retirement_date,addressPresent1,addressPresent2,hrm_pin2,contract_status,em_account_no,
+            em_passport_no,em_pf_no,em_esi_no
             from hrm_emp_master
             left join hrm_employee on hrm_emp_master.em_id=hrm_employee.emp_id
             left join hrm_emp_personal on hrm_emp_personal.em_id=hrm_emp_master.em_id
@@ -43,6 +46,7 @@ module.exports = {
             left join designation on designation.desg_slno=hrm_emp_master.em_designation
             left join doctor_type on doctor_type.doctype_slno=hrm_emp_master.em_doc_type
             left join hrm_emp_category on hrm_emp_category.category_slno=hrm_emp_master.em_category
+            left join hrm_emp_pfesi on hrm_emp_pfesi.em_id=hrm_emp_master.em_id
             where (hrm_emp_master.em_status=1 and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2) and (hrm_branch.branch_slno IN (?) and hrm_department.dept_id IN (?))`,
             [
                 data.branch_slno,
@@ -60,7 +64,8 @@ module.exports = {
         pool.query(
             `select hrm_emp_master.em_id,hrm_emp_master.em_no,em_name,em_dob,if(em_gender=1,'Male','Female')em_gender,em_doj,em_mobile,em_email,branch_name,dept_name,
             sect_name,inst_emp_type,desg_name,doctype_desc,ecat_name,em_contract_end_date,em_adhar_no,
-            em_retirement_date,addressPresent1,addressPresent2,hrm_pin2,contract_status
+            em_retirement_date,addressPresent1,addressPresent2,hrm_pin2,contract_status,em_account_no,
+            em_passport_no,em_pf_no,em_esi_no
             from hrm_emp_master
             left join hrm_employee on hrm_emp_master.em_id=hrm_employee.emp_id
             left join hrm_emp_personal on hrm_emp_personal.em_id=hrm_emp_master.em_id
@@ -71,6 +76,7 @@ module.exports = {
             left join designation on designation.desg_slno=hrm_emp_master.em_designation
             left join doctor_type on doctor_type.doctype_slno=hrm_emp_master.em_doc_type
             left join hrm_emp_category on hrm_emp_category.category_slno=hrm_emp_master.em_category
+            left join hrm_emp_pfesi on hrm_emp_pfesi.em_id=hrm_emp_master.em_id
             where (hrm_emp_master.em_status=1 and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2) and (hrm_branch.branch_slno IN (?) AND hrm_department.dept_id IN (?) AND hrm_dept_section.sect_id IN (?))`,
             [
                 data.branch_slno,
@@ -89,7 +95,8 @@ module.exports = {
         pool.query(
             `select hrm_emp_master.em_id,hrm_emp_master.em_no,em_name,em_dob,if(em_gender=1,'Male','Female')em_gender,em_doj,em_mobile,em_email,branch_name,dept_name,
             sect_name,inst_emp_type,desg_name,doctype_desc,ecat_name,em_contract_end_date,em_adhar_no,
-            em_retirement_date,addressPresent1,addressPresent2,hrm_pin2,contract_status
+            em_retirement_date,addressPresent1,addressPresent2,hrm_pin2,contract_status,em_account_no,
+            em_passport_no,em_pf_no,em_esi_no
             from hrm_emp_master
             left join hrm_employee on hrm_emp_master.em_id=hrm_employee.emp_id
             left join hrm_emp_personal on hrm_emp_personal.em_id=hrm_emp_master.em_id
@@ -100,6 +107,7 @@ module.exports = {
             left join designation on designation.desg_slno=hrm_emp_master.em_designation
             left join doctor_type on doctor_type.doctype_slno=hrm_emp_master.em_doc_type
             left join hrm_emp_category on hrm_emp_category.category_slno=hrm_emp_master.em_category
+            left join hrm_emp_pfesi on hrm_emp_pfesi.em_id=hrm_emp_master.em_id
             where (hrm_emp_master.em_status=1 and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2) and (hrm_branch.branch_slno IN (?) and em_doj between ? and ?)`,
             [
                 data.branch_slno,
@@ -118,7 +126,8 @@ module.exports = {
         pool.query(
             `select hrm_emp_master.em_id,hrm_emp_master.em_no,em_name,em_dob,if(em_gender=1,'Male','Female')em_gender,em_doj,em_mobile,em_email,branch_name,dept_name,
             sect_name,inst_emp_type,desg_name,doctype_desc,ecat_name,em_contract_end_date,em_adhar_no,
-            em_retirement_date,addressPresent1,addressPresent2,hrm_pin2,contract_status
+            em_retirement_date,addressPresent1,addressPresent2,hrm_pin2,contract_status,em_account_no,
+            em_passport_no,em_pf_no,em_esi_no
             from hrm_emp_master
             left join hrm_employee on hrm_emp_master.em_id=hrm_employee.emp_id
             left join hrm_emp_personal on hrm_emp_personal.em_id=hrm_emp_master.em_id
@@ -129,6 +138,7 @@ module.exports = {
             left join designation on designation.desg_slno=hrm_emp_master.em_designation
             left join doctor_type on doctor_type.doctype_slno=hrm_emp_master.em_doc_type
             left join hrm_emp_category on hrm_emp_category.category_slno=hrm_emp_master.em_category
+            left join hrm_emp_pfesi on hrm_emp_pfesi.em_id=hrm_emp_master.em_id
             where (hrm_emp_master.em_status=1 and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2) and (hrm_branch.branch_slno IN (?) and hrm_department.dept_id IN (?) and em_doj between ? and ?)`,
             [
                 data.branch_slno,
@@ -148,7 +158,8 @@ module.exports = {
         pool.query(
             `select hrm_emp_master.em_id,hrm_emp_master.em_no,em_name,em_dob,if(em_gender=1,'Male','Female')em_gender,em_doj,em_mobile,em_email,branch_name,dept_name,
             sect_name,inst_emp_type,desg_name,doctype_desc,ecat_name,em_contract_end_date,em_adhar_no,
-            em_retirement_date,addressPresent1,addressPresent2,hrm_pin2,contract_status
+            em_retirement_date,addressPresent1,addressPresent2,hrm_pin2,contract_status,em_account_no,
+            em_passport_no,em_pf_no,em_esi_no
             from hrm_emp_master
             left join hrm_employee on hrm_emp_master.em_id=hrm_employee.emp_id
             left join hrm_emp_personal on hrm_emp_personal.em_id=hrm_emp_master.em_id
@@ -159,6 +170,7 @@ module.exports = {
             left join designation on designation.desg_slno=hrm_emp_master.em_designation
             left join doctor_type on doctor_type.doctype_slno=hrm_emp_master.em_doc_type
             left join hrm_emp_category on hrm_emp_category.category_slno=hrm_emp_master.em_category
+            left join hrm_emp_pfesi on hrm_emp_pfesi.em_id=hrm_emp_master.em_id
             where (hrm_emp_master.em_status=1 and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2) and (hrm_branch.branch_slno IN (?) and hrm_department.dept_id IN (?) and hrm_dept_section.sect_id IN (?)
             and em_doj between ? and ?)`,
             [

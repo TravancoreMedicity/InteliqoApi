@@ -26,7 +26,7 @@ module.exports = {
             hrm_emp_category.ecat_name,
             case when em_gender = 1 then 'male'when  em_gender = 2 then 'female' else 'Not Updated' end as 'Gender',
             case when hrm_emp_personal.em_maritalstatus = 1 then 'married' when  hrm_emp_personal.em_maritalstatus=2 then 'unmarried' else 'not updated' end as 'marital_status'
-            FROM medi_hrm.hrm_emp_master
+            FROM hrm_emp_master
             left join bloodgroup on  hrm_emp_master.blood_slno = bloodgroup.group_slno
             left join hrm_department on hrm_emp_master.em_department = hrm_department.dept_id
             left join hrm_dept_section on hrm_emp_master.em_dept_section = hrm_dept_section.sect_id
@@ -75,7 +75,7 @@ module.exports = {
             hrm_emp_category.ecat_name,
             case when em_gender = 1 then 'male'when  em_gender = 2 then 'female' else 'Not Updated' end as 'Gender',
             case when hrm_emp_personal.em_maritalstatus = 1 then 'married' when  hrm_emp_personal.em_maritalstatus=2 then 'unmarried' else 'not updated' end as 'marital_status'
-            FROM medi_hrm.hrm_emp_master
+            FROM hrm_emp_master
             left join bloodgroup on  hrm_emp_master.blood_slno = bloodgroup.group_slno
             left join hrm_department on hrm_emp_master.em_department = hrm_department.dept_id
             left join hrm_dept_section on hrm_emp_master.em_dept_section = hrm_dept_section.sect_id
@@ -127,7 +127,7 @@ module.exports = {
             hrm_emp_category.ecat_name,
             case when em_gender = 1 then 'male'when  em_gender = 2 then 'female' else 'Not Updated' end as 'Gender',
             case when hrm_emp_personal.em_maritalstatus = 1 then 'married' when  hrm_emp_personal.em_maritalstatus=2 then 'unmarried' else 'not updated' end as 'marital_status'
-            FROM medi_hrm.hrm_emp_master
+            FROM hrm_emp_master
             left join bloodgroup on  hrm_emp_master.blood_slno = bloodgroup.group_slno
             left join hrm_department on hrm_emp_master.em_department = hrm_department.dept_id
             left join hrm_dept_section on hrm_emp_master.em_dept_section = hrm_dept_section.sect_id
@@ -179,7 +179,7 @@ module.exports = {
             hrm_emp_category.ecat_name,
             case when em_gender = 1 then 'male'when  em_gender = 2 then 'female' else 'Not Updated' end as 'Gender',
             case when hrm_emp_personal.em_maritalstatus = 1 then 'married' when  hrm_emp_personal.em_maritalstatus=2 then 'unmarried' else 'not updated' end as 'marital_status'
-            FROM medi_hrm.hrm_emp_master
+            FROM hrm_emp_master
             left join bloodgroup on  hrm_emp_master.blood_slno = bloodgroup.group_slno
             left join hrm_department on hrm_emp_master.em_department = hrm_department.dept_id
             left join hrm_dept_section on hrm_emp_master.em_dept_section = hrm_dept_section.sect_id
@@ -228,7 +228,7 @@ module.exports = {
             hrm_emp_category.ecat_name,
             case when em_gender = 1 then 'male'when  em_gender = 2 then 'female' else 'Not Updated' end as 'Gender',
             case when hrm_emp_personal.em_maritalstatus = 1 then 'married' when  hrm_emp_personal.em_maritalstatus=2 then 'unmarried' else 'not updated' end as 'marital_status'
-            FROM medi_hrm.hrm_emp_master
+            FROM hrm_emp_master
             left join bloodgroup on  hrm_emp_master.blood_slno = bloodgroup.group_slno
             left join hrm_department on hrm_emp_master.em_department = hrm_department.dept_id
             left join hrm_dept_section on hrm_emp_master.em_dept_section = hrm_dept_section.sect_id
@@ -278,7 +278,7 @@ module.exports = {
             hrm_emp_category.ecat_name,
             case when em_gender = 1 then 'male'when  em_gender = 2 then 'female' else 'Not Updated' end as 'Gender',
             case when hrm_emp_personal.em_maritalstatus = 1 then 'married' when  hrm_emp_personal.em_maritalstatus=2 then 'unmarried' else 'not updated' end as 'marital_status'
-            FROM medi_hrm.hrm_emp_master
+            FROM hrm_emp_master
             left join bloodgroup on  hrm_emp_master.blood_slno = bloodgroup.group_slno
             left join hrm_department on hrm_emp_master.em_department = hrm_department.dept_id
             left join hrm_dept_section on hrm_emp_master.em_dept_section = hrm_dept_section.sect_id
@@ -327,7 +327,7 @@ module.exports = {
             hrm_emp_category.ecat_name,
             case when em_gender = 1 then 'male'when  em_gender = 2 then 'female' else 'Not Updated' end as 'Gender',
             case when hrm_emp_personal.em_maritalstatus = 1 then 'married' when  hrm_emp_personal.em_maritalstatus=2 then 'unmarried' else 'not updated' end as 'marital_status'
-            FROM medi_hrm.hrm_emp_master
+            FROM hrm_emp_master
             left join bloodgroup on  hrm_emp_master.blood_slno = bloodgroup.group_slno
             left join hrm_department on hrm_emp_master.em_department = hrm_department.dept_id
             left join hrm_dept_section on hrm_emp_master.em_dept_section = hrm_dept_section.sect_id
@@ -376,7 +376,7 @@ module.exports = {
             hrm_emp_category.ecat_name,
             case when em_gender = 1 then 'male'when  em_gender = 2 then 'female' else 'Not Updated' end as 'Gender',
             case when hrm_emp_personal.em_maritalstatus = 1 then 'married' when  hrm_emp_personal.em_maritalstatus=2 then 'unmarried' else 'not updated' end as 'marital_status'
-            FROM medi_hrm.hrm_emp_master
+            FROM hrm_emp_master
             left join bloodgroup on  hrm_emp_master.blood_slno = bloodgroup.group_slno
             left join hrm_department on hrm_emp_master.em_department = hrm_department.dept_id
             left join hrm_dept_section on hrm_emp_master.em_dept_section = hrm_dept_section.sect_id
@@ -425,7 +425,7 @@ module.exports = {
             hrm_emp_category.ecat_name,
             case when em_gender = 1 then 'male'when  em_gender = 2 then 'female' else 'Not Updated' end as 'Gender',
             case when hrm_emp_personal.em_maritalstatus = 1 then 'married' when  hrm_emp_personal.em_maritalstatus=2 then 'unmarried' else 'not updated' end as 'marital_status'
-            FROM medi_hrm.hrm_emp_master
+            FROM hrm_emp_master
             left join bloodgroup on  hrm_emp_master.blood_slno = bloodgroup.group_slno
             left join hrm_department on hrm_emp_master.em_department = hrm_department.dept_id
             left join hrm_dept_section on hrm_emp_master.em_dept_section = hrm_dept_section.sect_id
@@ -474,7 +474,7 @@ module.exports = {
             hrm_emp_category.ecat_name,
             case when em_gender = 1 then 'male'when  em_gender = 2 then 'female' else 'Not Updated' end as 'Gender',
             case when hrm_emp_personal.em_maritalstatus = 1 then 'married' when  hrm_emp_personal.em_maritalstatus=2 then 'unmarried' else 'not updated' end as 'marital_status'
-            FROM medi_hrm.hrm_emp_master
+            FROM hrm_emp_master
             left join bloodgroup on  hrm_emp_master.blood_slno = bloodgroup.group_slno
             left join hrm_department on hrm_emp_master.em_department = hrm_department.dept_id
             left join hrm_dept_section on hrm_emp_master.em_dept_section = hrm_dept_section.sect_id
@@ -524,7 +524,7 @@ module.exports = {
             hrm_emp_category.ecat_name,
             case when em_gender = 1 then 'male'when  em_gender = 2 then 'female' else 'Not Updated' end as 'Gender',
             case when hrm_emp_personal.em_maritalstatus = 1 then 'married' when  hrm_emp_personal.em_maritalstatus=2 then 'unmarried' else 'not updated' end as 'marital_status'
-            FROM medi_hrm.hrm_emp_master
+            FROM hrm_emp_master
             left join bloodgroup on  hrm_emp_master.blood_slno = bloodgroup.group_slno
             left join hrm_department on hrm_emp_master.em_department = hrm_department.dept_id
             left join hrm_dept_section on hrm_emp_master.em_dept_section = hrm_dept_section.sect_id
@@ -574,7 +574,7 @@ module.exports = {
             hrm_emp_category.ecat_name,
             case when em_gender = 1 then 'male'when  em_gender = 2 then 'female' else 'Not Updated' end as 'Gender',
             case when hrm_emp_personal.em_maritalstatus = 1 then 'married' when  hrm_emp_personal.em_maritalstatus=2 then 'unmarried' else 'not updated' end as 'marital_status'
-            FROM medi_hrm.hrm_emp_master
+            FROM hrm_emp_master
             left join bloodgroup on  hrm_emp_master.blood_slno = bloodgroup.group_slno
             left join hrm_department on hrm_emp_master.em_department = hrm_department.dept_id
             left join hrm_dept_section on hrm_emp_master.em_dept_section = hrm_dept_section.sect_id
@@ -624,7 +624,7 @@ module.exports = {
             hrm_emp_category.ecat_name,
             case when em_gender = 1 then 'male'when  em_gender = 2 then 'female' else 'Not Updated' end as 'Gender',
             case when hrm_emp_personal.em_maritalstatus = 1 then 'married' when  hrm_emp_personal.em_maritalstatus=2 then 'unmarried' else 'not updated' end as 'marital_status'
-            FROM medi_hrm.hrm_emp_master
+            FROM hrm_emp_master
             left join bloodgroup on  hrm_emp_master.blood_slno = bloodgroup.group_slno
             left join hrm_department on hrm_emp_master.em_department = hrm_department.dept_id
             left join hrm_dept_section on hrm_emp_master.em_dept_section = hrm_dept_section.sect_id
@@ -672,7 +672,7 @@ module.exports = {
             hrm_emp_category.ecat_name,
             case when em_gender = 1 then 'male'when  em_gender = 2 then 'female' else 'Not Updated' end as 'Gender',
             case when hrm_emp_personal.em_maritalstatus = 1 then 'married' when  hrm_emp_personal.em_maritalstatus=2 then 'unmarried' else 'not updated' end as 'marital_status'
-            FROM medi_hrm.hrm_emp_master
+            FROM hrm_emp_master
             left join bloodgroup on  hrm_emp_master.blood_slno = bloodgroup.group_slno
             left join hrm_department on hrm_emp_master.em_department = hrm_department.dept_id
             left join hrm_dept_section on hrm_emp_master.em_dept_section = hrm_dept_section.sect_id
@@ -719,7 +719,7 @@ module.exports = {
             hrm_emp_category.ecat_name,
             case when em_gender = 1 then 'male'when  em_gender = 2 then 'female' else 'Not Updated' end as 'Gender',
             case when hrm_emp_personal.em_maritalstatus = 1 then 'married' when  hrm_emp_personal.em_maritalstatus=2 then 'unmarried' else 'not updated' end as 'marital_status'
-            FROM medi_hrm.hrm_emp_master
+            FROM hrm_emp_master
             left join hrm_department on hrm_emp_master.em_department = hrm_department.dept_id
             left join hrm_dept_section on hrm_emp_master.em_dept_section = hrm_dept_section.sect_id
             left join hrm_branch on hrm_emp_master.em_branch = hrm_branch.branch_slno
@@ -765,7 +765,7 @@ module.exports = {
             hrm_emp_category.ecat_name,
             case when em_gender = 1 then 'male'when  em_gender = 2 then 'female' else 'Not Updated' end as 'Gender',
             case when hrm_emp_personal.em_maritalstatus = 1 then 'married' when  hrm_emp_personal.em_maritalstatus=2 then 'unmarried' else 'not updated' end as 'marital_status'
-            FROM medi_hrm.hrm_emp_master
+            FROM hrm_emp_master
             left join hrm_department on hrm_emp_master.em_department = hrm_department.dept_id
             left join hrm_dept_section on hrm_emp_master.em_dept_section = hrm_dept_section.sect_id
             left join hrm_branch on hrm_emp_master.em_branch = hrm_branch.branch_slno
@@ -810,7 +810,7 @@ module.exports = {
             hrm_emp_category.ecat_name,
             case when em_gender = 1 then 'male'when  em_gender = 2 then 'female' else 'Not Updated' end as 'Gender',
             case when hrm_emp_personal.em_maritalstatus = 1 then 'married' when  hrm_emp_personal.em_maritalstatus=2 then 'unmarried' else 'not updated' end as 'marital_status'
-            FROM medi_hrm.hrm_emp_master
+            FROM hrm_emp_master
             left join hrm_department on hrm_emp_master.em_department = hrm_department.dept_id
             left join hrm_dept_section on hrm_emp_master.em_dept_section = hrm_dept_section.sect_id
             left join hrm_branch on hrm_emp_master.em_branch = hrm_branch.branch_slno
@@ -858,7 +858,7 @@ module.exports = {
             hrm_emp_category.ecat_name,
             case when em_gender = 1 then 'male'when  em_gender = 2 then 'female' else 'Not Updated' end as 'Gender',
             case when hrm_emp_personal.em_maritalstatus = 1 then 'married' when  hrm_emp_personal.em_maritalstatus=2 then 'unmarried' else 'not updated' end as 'marital_status'
-            FROM medi_hrm.hrm_emp_master
+            FROM hrm_emp_master
             left join bloodgroup on  hrm_emp_master.blood_slno = bloodgroup.group_slno
             left join hrm_department on hrm_emp_master.em_department = hrm_department.dept_id
             left join hrm_dept_section on hrm_emp_master.em_dept_section = hrm_dept_section.sect_id
@@ -908,7 +908,7 @@ module.exports = {
             hrm_emp_category.ecat_name,
             case when em_gender = 1 then 'male'when  em_gender = 2 then 'female' else 'Not Updated' end as 'Gender',
             case when hrm_emp_personal.em_maritalstatus = 1 then 'married' when  hrm_emp_personal.em_maritalstatus=2 then 'unmarried' else 'not updated' end as 'marital_status'
-            FROM medi_hrm.hrm_emp_master
+            FROM hrm_emp_master
             left join bloodgroup on  hrm_emp_master.blood_slno = bloodgroup.group_slno
             left join hrm_department on hrm_emp_master.em_department = hrm_department.dept_id
             left join hrm_dept_section on hrm_emp_master.em_dept_section = hrm_dept_section.sect_id
@@ -958,7 +958,7 @@ module.exports = {
             hrm_emp_category.ecat_name,
             case when em_gender = 1 then 'male'when  em_gender = 2 then 'female' else 'Not Updated' end as 'Gender',
             case when hrm_emp_personal.em_maritalstatus = 1 then 'married' when  hrm_emp_personal.em_maritalstatus=2 then 'unmarried' else 'not updated' end as 'marital_status'
-            FROM medi_hrm.hrm_emp_master
+            FROM hrm_emp_master
             left join bloodgroup on  hrm_emp_master.blood_slno = bloodgroup.group_slno
             left join hrm_department on hrm_emp_master.em_department = hrm_department.dept_id
             left join hrm_dept_section on hrm_emp_master.em_dept_section = hrm_dept_section.sect_id
@@ -1008,7 +1008,7 @@ module.exports = {
             hrm_emp_category.ecat_name,
             case when em_gender = 1 then 'male'when  em_gender = 2 then 'female' else 'Not Updated' end as 'Gender',
             case when hrm_emp_personal.em_maritalstatus = 1 then 'married' when  hrm_emp_personal.em_maritalstatus=2 then 'unmarried' else 'not updated' end as 'marital_status'
-            FROM medi_hrm.hrm_emp_master
+            FROM hrm_emp_master
             left join bloodgroup on  hrm_emp_master.blood_slno = bloodgroup.group_slno
             left join hrm_department on hrm_emp_master.em_department = hrm_department.dept_id
             left join hrm_dept_section on hrm_emp_master.em_dept_section = hrm_dept_section.sect_id

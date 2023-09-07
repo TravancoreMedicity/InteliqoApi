@@ -30,7 +30,7 @@ module.exports = {
             TIMESTAMPDIFF( YEAR, hrm_emp_exp.em_from, hrm_emp_exp.em_to ) as 'year',
             TIMESTAMPDIFF( MONTH, hrm_emp_exp.em_from, hrm_emp_exp.em_to ) % 12 as 'month',
             FLOOR( TIMESTAMPDIFF( DAY, hrm_emp_exp.em_from, hrm_emp_exp.em_to ) % 30.4375 ) as 'day'
-            FROM medi_hrm.hrm_emp_master
+            FROM hrm_emp_master
 			left join hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
             left join hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
             left join designation on hrm_emp_master.em_designation=designation.desg_slno
@@ -61,7 +61,7 @@ module.exports = {
             TIMESTAMPDIFF( YEAR, hrm_emp_exp.em_from, hrm_emp_exp.em_to ) as 'year',
             TIMESTAMPDIFF( MONTH, hrm_emp_exp.em_from, hrm_emp_exp.em_to ) % 12 as 'month',
             FLOOR( TIMESTAMPDIFF( DAY, hrm_emp_exp.em_from, hrm_emp_exp.em_to ) % 30.4375 ) as 'day'
-            FROM medi_hrm.hrm_emp_master
+            FROM hrm_emp_master
 			left join hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
             left join hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
             left join designation on hrm_emp_master.em_designation=designation.desg_slno
@@ -93,7 +93,7 @@ module.exports = {
             TIMESTAMPDIFF( YEAR, hrm_emp_exp.em_from, hrm_emp_exp.em_to ) as 'year',
             TIMESTAMPDIFF( MONTH, hrm_emp_exp.em_from, hrm_emp_exp.em_to ) % 12 as 'month',
             FLOOR( TIMESTAMPDIFF( DAY, hrm_emp_exp.em_from, hrm_emp_exp.em_to ) % 30.4375 ) as 'day'
-            FROM medi_hrm.hrm_emp_master
+            FROM hrm_emp_master
 			left join hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
             left join hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
             left join designation on hrm_emp_master.em_designation=designation.desg_slno

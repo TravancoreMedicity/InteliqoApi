@@ -115,7 +115,7 @@ module.exports = {
     },
     getjobId: (callBack) => {
         pool.query(
-            `SELECT * FROM medi_hrm.master_serialno where serial_slno=7`,
+            `SELECT * FROM master_serialno where serial_slno=7`,
             [],
             (error, results, feilds) => {
                 if (error) {
@@ -379,7 +379,7 @@ module.exports = {
 
     getJobSummarydetl: (id, callBack) => {
         pool.query(
-            `SELECT * FROM medi_hrm.job_summary
+            `SELECT * FROM job_summary
             where summary_slno=?`,
             [
                 id
@@ -396,7 +396,7 @@ module.exports = {
     },
     updatejobsummarydetl: (data, callBack) => {
         pool.query(
-            `UPDATE medi_hrm.job_summary
+            `UPDATE job_summary
         set 
         objective= ?,
         scope=?,
@@ -485,7 +485,7 @@ module.exports = {
     updateDutiesEach: (data, callBack) => {
         pool.query(
             `UPDATE 
-            medi_hrm.job_duties 
+            job_duties 
             set duties_and_resp=?
             where  duties_slno=?;`,
             [
@@ -519,7 +519,7 @@ module.exports = {
     updateCompeteEach: (data, callBack) => {
         pool.query(
             `UPDATE 
-            medi_hrm.job_competency 
+            job_competency 
             set key_result_area=?,
             competency_desc=?
             where competency_slno=?;`,
@@ -568,7 +568,7 @@ module.exports = {
     },
     updatePerforEach: (data, callBack) => {
         pool.query(
-            `UPDATE medi_hrm.job_specification 
+            `UPDATE job_specification 
             set key_result_area=?,
             kpi=?, 
             kpi_score=? 
@@ -605,7 +605,7 @@ module.exports = {
     },
     updateGeneric: (data, callBack) => {
         pool.query(
-            `UPDATE medi_hrm.job_generic
+            `UPDATE job_generic
             set 
             experience= ?,
             experience_year=?,
@@ -637,7 +637,7 @@ module.exports = {
     },
     updateGeneric: (data, callBack) => {
         pool.query(
-            `UPDATE medi_hrm.job_generic
+            `UPDATE job_generic
             set 
             experience= ?,
             experience_year=?,
@@ -739,7 +739,7 @@ module.exports = {
     },
     getJobPerformanceById: (id, callBack) => {
         pool.query(
-            `SELECT * FROM medi_hrm.job_specification
+            `SELECT * FROM job_specification
             left join hrm_kra on hrm_kra.kra_slno=job_specification.key_result_area
             where job_id=?;`,
             [
@@ -786,7 +786,7 @@ module.exports = {
     },
     getJobGenericById: (id, callBack) => {
         pool.query(
-            `SELECT * FROM medi_hrm.job_generic where job_id=?;`,
+            `SELECT * FROM job_generic where job_id=?;`,
             [
                 id
             ],
@@ -803,7 +803,7 @@ module.exports = {
     getJobQualifiById: (id, callBack) => {
         pool.query(
             `
-            SELECT * FROM medi_hrm.job_qualification
+            SELECT * FROM job_qualification
             left join hrm_mast_course on hrm_mast_course.cour_slno=job_qualification.course
                         left join hrm_mast_specializtion on hrm_mast_specializtion.spec_slno=job_qualification.specialization
              where job_id=?;`,
@@ -837,7 +837,7 @@ CONCAT(UCASE(LEFT(designation.desg_name,1)),LCASE(SUBSTRING(designation.desg_nam
             DATE_FORMAT(job_summary.create_date, '%d-%m-%Y') as 'date',
             DATE_FORMAT(edit_date, '%d-%m-%Y')edit_date,
             LPAD(summary_slno,7,'0') 'Docno' 
-            FROM medi_hrm.job_summary
+            FROM job_summary
             left join hrm_branch on hrm_branch.branch_slno=job_summary.work_place
             left join hrm_department on job_summary.dept_id=hrm_department.dept_id
             left join designation on job_summary.designation=designation.desg_slno
@@ -890,7 +890,7 @@ CONCAT(UCASE(LEFT(designation.desg_name,1)),LCASE(SUBSTRING(designation.desg_nam
             dept_name,
             sect_name,
             desg_name
-            FROM medi_hrm.job_skills
+            FROM job_skills
             inner join hrm_department on job_skills.dept_id=hrm_department.dept_id
             inner join hrm_dept_section on job_skills.sect_id=hrm_dept_section.sect_id
             inner join designation on job_skills.designation=designation.desg_slno
@@ -925,7 +925,7 @@ CONCAT(UCASE(LEFT(designation.desg_name,1)),LCASE(SUBSTRING(designation.desg_nam
     updateSkills: (data, callBack) => {
         pool.query(
             `UPDATE 
-            medi_hrm.job_skills 
+            job_skills 
             set skill_desc=?
             where  skills_slno=?;`,
             [

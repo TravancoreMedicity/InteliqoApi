@@ -125,7 +125,7 @@ module.exports = {
 
     getdataById: (data, callBack) => {
         pool.query(
-            `SELECT * FROM medi_hrm.hrm_leave_process where lv_process_slno=?;`,
+            `SELECT * FROM hrm_leave_process where lv_process_slno=?;`,
             [
                 data
             ],
@@ -189,7 +189,7 @@ module.exports = {
     // get holiday list
     getholidaylist: (callBack) => {
         pool.query(
-            `SELECT * FROM medi_hrm.hrm_yearly_holiday_list  where  year(hld_date) = year(current_date())`,
+            `SELECT * FROM hrm_yearly_holiday_list  where  year(hld_date) = year(current_date())`,
             [],
             (error, results, feilds) => {
                 if (error) {
@@ -538,7 +538,7 @@ module.exports = {
                 cmn_lv_allowed, 
                 cmn_lv_taken, 
                 cmn_lv_balance 
-            FROM medi_hrm.hrm_leave_common 
+            FROM hrm_leave_common 
             WHERE em_id='?'
             AND year(cmn_lv_year) = year(curdate())`,
             [
@@ -558,7 +558,7 @@ module.exports = {
             SUM(duty_status) duty_day,ecat_sl,ecat_nh,
             ecat_fh,ecat_esi_allow,ecat_confere ,em_gender,
             ecat_cont,ecat_doff_allow,ecat_lop,ecat_mate,ecat_woff_allow,em_category
-            FROM medi_hrm.punch_master
+            FROM punch_master
             LEFT JOIN hrm_emp_master ON punch_master.emp_id=hrm_emp_master.em_id 
             LEFT JOIN hrm_emp_category ON hrm_emp_master.em_category=hrm_emp_category.category_slno 
             WHERE DATE(duty_day) between ? AND ? and em_dept_section=? and em_status=1
@@ -579,7 +579,7 @@ module.exports = {
     },
     holidaylistyear: (data, callBack) => {
         pool.query(
-            `SELECT * FROM medi_hrm.hrm_yearly_holiday_list where DATE(hld_date) between ? AND ? `,
+            `SELECT * FROM hrm_yearly_holiday_list where DATE(hld_date) between ? AND ? `,
             [
                 data.startdate,
                 data.endate
@@ -622,7 +622,7 @@ module.exports = {
     },
     select_yearlyprocess: (data, callBack) => {
         pool.query(
-            `SELECT * FROM medi_hrm.yearly_leave_process where year(year_of_process) = ? and em_no= ?`,
+            `SELECT * FROM yearly_leave_process where year(year_of_process) = ? and em_no= ?`,
             [
                 data.em_no,
                 data.currentYear,
@@ -644,7 +644,7 @@ module.exports = {
             SUM(duty_status) duty_day,ecat_sl,ecat_nh,
             ecat_fh,ecat_esi_allow,ecat_confere ,em_gender,
             ecat_cont,ecat_doff_allow,ecat_lop,ecat_mate,ecat_woff_allow,em_category
-            FROM medi_hrm.punch_master
+            FROM punch_master
             LEFT JOIN hrm_emp_master ON punch_master.emp_id=hrm_emp_master.em_id 
             LEFT JOIN hrm_emp_category ON hrm_emp_master.em_category=hrm_emp_category.category_slno 
             WHERE DATE(duty_day) between ? AND ? and emp_id=? and em_status=1
@@ -741,7 +741,7 @@ module.exports = {
     },
     getEsiPfDetails: (data, callBack) => {
         pool.query(
-            `SELECT * FROM medi_hrm.hrm_emp_pfesi where em_no=?;`,
+            `SELECT * FROM hrm_emp_pfesi where em_no=?;`,
             [
                 data
             ],
@@ -756,7 +756,7 @@ module.exports = {
     },
     getleaveProcessData: (data, callBack) => {
         pool.query(
-            `SELECT * FROM medi_hrm.hrm_leave_common where em_no=?`,
+            `SELECT * FROM hrm_leave_common where em_no=?`,
             [
                 data
             ],

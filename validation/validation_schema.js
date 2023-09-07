@@ -1004,18 +1004,10 @@ const validateResignationRequestApprovalHR = Joi.object({
         hr_app_status: Joi.number().required(),
         hr_coment: Joi.string().required(),
         resign_status: Joi.string().required(),
-        em_id: Joi.number().min(1).optional(),
+        replacement_required_hr: Joi.number().required(),
+        salaryPenalty: Joi.number().required(),
         resig_slno: Joi.number().optional(),
-        dept_id: Joi.number().optional(),
-        sect_id: Joi.number().optional(),
-        em_id: Joi.number().optional(),
-        em_no: Joi.number().optional(),
-        designation: Joi.number().optional(),
-        resignation_type: Joi.number().optional(),
-        request_date: Joi.date().optional(),
-        relieving_date: Joi.date().optional(),
-        resign_reason: Joi.string().optional(),
-        contract_close_resign: Joi.string().optional(),
+
 })
 const validateResignationRequestCancel = Joi.object({
         resign_cancel: Joi.string().required(),

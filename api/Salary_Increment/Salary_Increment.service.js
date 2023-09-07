@@ -109,7 +109,7 @@ module.exports = {
             incre_process_user,
             incre_last_changed_date,
             create_user
-            FROM medi_hrm.hrm_salary_increment
+            FROM hrm_salary_increment
               WHERE em_no  = ?`,
             [
                 id
@@ -159,7 +159,7 @@ module.exports = {
             incre_process_user,
             incre_last_changed_date,
             hrm_salary_increment.create_user
-            FROM medi_hrm.hrm_salary_increment
+            FROM hrm_salary_increment
             LEFT JOIN  hrm_earning_deduction ON hrm_earning_deduction.earnded_id= hrm_salary_increment.em_salary_desc
               WHERE em_no =? AND em_salary_desc=?`,
             [

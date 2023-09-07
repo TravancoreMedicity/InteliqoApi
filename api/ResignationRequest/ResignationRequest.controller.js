@@ -3,7 +3,7 @@ const { InsertResignationRequest, getInchargePending, getResignationRequestByID,
     ResignationApprovalHOD, getHRPending, getResignationRequestHRByID,
     getCEOPending, getCEOPendingById, ResignationApprovalCEO, ResignationApprovalHR,
     getResignCancel, ResignationCancelHR, InsertResignationRequestContractClose,
-    getHRPendingList, getContractClosed } = require('../ResignationRequest/ResignationRequest.service');
+    getHRPendingList, getContractClosed, getFullSettlementEmp } = require('../ResignationRequest/ResignationRequest.service');
 const { validateResignationRequest, validateResignationRequestApprovalHOD, validateResignationRequestApprovalCEO, validateResignationRequestCancel,
     validateResignationRequestApprovalINcharge, validateResignationRequestApprovalHR } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
@@ -413,6 +413,28 @@ module.exports = {
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    getFullSettlementEmp: (req, res) => {
+        getFullSettlementEmp((err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
                     success: 0,
                     message: err
                 });

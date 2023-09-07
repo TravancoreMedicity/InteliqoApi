@@ -13,7 +13,7 @@ module.exports = {
             institution_type.inst_emp_type,
             designation.desg_name,
             hrm_emp_master.em_doj
-            FROM medi_hrm.institution_type
+            FROM institution_type
             left join hrm_emp_master on hrm_emp_master.em_institution_type = institution_type.inst_slno
             left join hrm_department on hrm_department.dept_id = hrm_emp_master.em_department
             left join hrm_dept_section on hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
