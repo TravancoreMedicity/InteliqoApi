@@ -206,11 +206,11 @@ module.exports = {
     },
     getTotalGrosssalaryById: (id, callBack) => {
         pool.query(
-            ` SELECT 
+            `SELECT 
             ernded_slno,em_id,
-            ifnull(sum(em_amount),0)gross_salary
+            em_amount
              FROM hrm_emp_earn_deduction
-			WHERE em_id =?  and em_earning_type IN(1,2)`,
+			WHERE em_id =2350  and em_earning_type IN(1,2)`,
             [
                 id
             ],
