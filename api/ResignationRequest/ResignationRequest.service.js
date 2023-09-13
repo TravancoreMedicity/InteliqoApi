@@ -536,25 +536,59 @@ module.exports = {
             resign_reason,
             relieving_date,
              if(resignation_type=1 ,'30 days Resignation','24 hour resignation')Resign,
-               if(hr_app_status is null ,'Incharge Approval Pending','Approved')status,
+               if(hr_app_status is null ,'Incharge Approval Pending','Approved')appstatus,
              hr_app_date,
              hr_coment,
              em_doj,
              desg_name,
              gross_salary,
-             hr_id
+             hr_id,
+             status 
             FROM hrm_resignation_request
             inner join hrm_department on hrm_department.dept_id=hrm_resignation_request.dept_id
             inner join hrm_dept_section on hrm_dept_section.sect_id=hrm_resignation_request.sect_id
             inner join hrm_emp_master on hrm_emp_master.em_id=hrm_resignation_request.em_id
             inner join designation on designation.desg_slno=hrm_emp_master.em_designation
-            WHERE resign_status="A" `,
+          left join hrm_resignation_salary_details on hrm_resignation_salary_details.em_id=hrm_resignation_request.em_id
+            WHERE resign_status="A" and resign_cancel is null  `,
             [],
             (error, results, feilds) => {
                 if (error) {
                     return callBack(error);
                 }
                 return callBack(null, results);
+            }
+        )
+    },
+    insertResigSalaryDetails: (data, callBack) => {
+        pool.query(
+            `INSERT INTO hrm_resignation_salary_details(
+                em_id,
+                em_no,
+				payable_amount,
+				recievable,
+                status,
+                balance_status,
+                balance_amount,
+                create_user
+                )
+                VALUES(?,?,?,?,?,?,?,?)`,
+            [
+                data.em_id,
+                data.em_no,
+                data.payable_amount,
+                data.recievable,
+                1,
+                data.balance_status,
+                data.balance_amount,
+                data.create_user
+
+            ],
+            (error, results, fields) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results)
             }
         )
     },

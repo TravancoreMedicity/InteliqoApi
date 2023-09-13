@@ -3,7 +3,7 @@ const { InsertResignationRequest, getInchargePending, getResignationRequestByID,
     ResignationApprovalHOD, getHRPending, getResignationRequestHRByID,
     getCEOPending, getCEOPendingById, ResignationApprovalCEO, ResignationApprovalHR,
     getResignCancel, ResignationCancelHR, InsertResignationRequestContractClose,
-    getHRPendingList, getContractClosed, getFullSettlementEmp } = require('../ResignationRequest/ResignationRequest.service');
+    getHRPendingList, getContractClosed, getFullSettlementEmp, insertResigSalaryDetails } = require('../ResignationRequest/ResignationRequest.service');
 const { validateResignationRequest, validateResignationRequestApprovalHOD, validateResignationRequestApprovalCEO, validateResignationRequestCancel,
     validateResignationRequestApprovalINcharge, validateResignationRequestApprovalHR } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
@@ -450,6 +450,22 @@ module.exports = {
                 success: 1,
                 data: results
             });
+        })
+    },
+    insertResigSalaryDetails: (req, res) => {
+        const body = req.body;
+        insertResigSalaryDetails(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                message: "Details Submitted SuccessFully"
+            })
         })
     },
 }
