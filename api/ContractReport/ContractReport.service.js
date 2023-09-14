@@ -5,7 +5,7 @@ module.exports = {
     /** Contract names */
     getContractList: (callBack) => {
         pool.query(
-            `SELECT category_slno,ecat_name FROM medi_hrm.hrm_emp_category WHERE ecat_name LIKE 'contract%'`,
+            `SELECT category_slno,ecat_name FROM hrm_emp_category WHERE ecat_name LIKE 'contract%'`,
             [],
             (error, results, feilds) => {
                 if (error) {
@@ -29,7 +29,7 @@ module.exports = {
             hrm_emp_contract_detl.em_cont_start,
             hrm_emp_contract_detl.em_cont_end,
             if(DATEDIFF( em_cont_end,CURRENT_DATE())<0,"expired",DATEDIFF( em_cont_end,CURRENT_DATE())) as 'Remaining_days'
-             FROM medi_hrm.hrm_emp_master
+             FROM hrm_emp_master
             LEFT JOIN hrm_department ON hrm_emp_master.em_department=hrm_department.dept_id
             LEFT JOIN hrm_dept_section ON hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
             LEFT JOIN designation ON hrm_emp_master.em_designation=designation.desg_slno
@@ -61,7 +61,7 @@ module.exports = {
             hrm_emp_contract_detl.em_cont_start,
             hrm_emp_contract_detl.em_cont_end,
             if(DATEDIFF( em_cont_end,CURRENT_DATE())<0,"expired",DATEDIFF( em_cont_end,CURRENT_DATE())) as 'Remaining_days'
-             FROM medi_hrm.hrm_emp_master
+             FROM hrm_emp_master
             LEFT JOIN hrm_department ON hrm_emp_master.em_department=hrm_department.dept_id
             LEFT JOIN hrm_dept_section ON hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
             LEFT JOIN designation ON hrm_emp_master.em_designation=designation.desg_slno
@@ -244,7 +244,7 @@ module.exports = {
             em_cont_compl_status,
             em_cont_renew,
             em_cont_close
-            FROM medi_hrm.hrm_emp_master
+            FROM hrm_emp_master
             left join hrm_branch on hrm_branch.branch_slno=hrm_emp_master.em_branch
             left join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
             left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
@@ -288,7 +288,7 @@ module.exports = {
             em_cont_compl_status,
             em_cont_renew,
             em_cont_close
-            FROM medi_hrm.hrm_emp_master
+            FROM hrm_emp_master
             left join hrm_branch on hrm_branch.branch_slno=hrm_emp_master.em_branch
             left join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
             left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
@@ -333,7 +333,7 @@ module.exports = {
             em_cont_compl_status,
             em_cont_renew,
             em_cont_close
-            FROM medi_hrm.hrm_emp_master
+            FROM hrm_emp_master
             left join hrm_branch on hrm_branch.branch_slno=hrm_emp_master.em_branch
             left join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
             left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
@@ -379,7 +379,7 @@ module.exports = {
             em_cont_compl_status,
             em_cont_renew,
             em_cont_close
-            from medi_hrm.hrm_emp_contract_detl
+            from hrm_emp_contract_detl
             left join hrm_emp_master on hrm_emp_contract_detl.em_id=hrm_emp_master.em_id
             left join hrm_branch on hrm_branch.branch_slno=hrm_emp_master.em_branch
             left join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
@@ -422,7 +422,7 @@ module.exports = {
             em_cont_compl_status,
             em_cont_renew,
             em_cont_close
-            from medi_hrm.hrm_emp_contract_detl
+            from hrm_emp_contract_detl
             left join hrm_emp_master on hrm_emp_contract_detl.em_id=hrm_emp_master.em_id
             left join hrm_branch on hrm_branch.branch_slno=hrm_emp_master.em_branch
             left join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
@@ -466,7 +466,7 @@ module.exports = {
             em_cont_compl_status,
             em_cont_renew,
             em_cont_close
-            from medi_hrm.hrm_emp_contract_detl
+            from hrm_emp_contract_detl
             left join hrm_emp_master on hrm_emp_contract_detl.em_id=hrm_emp_master.em_id
             left join hrm_branch on hrm_branch.branch_slno=hrm_emp_master.em_branch
             left join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
@@ -510,7 +510,7 @@ module.exports = {
             em_cont_compl_status,
             em_cont_renew,
             em_cont_close
-            from medi_hrm.hrm_emp_contract_detl
+            from hrm_emp_contract_detl
             left join hrm_emp_master on hrm_emp_contract_detl.em_id=hrm_emp_master.em_id
             left join hrm_branch on hrm_branch.branch_slno=hrm_emp_master.em_branch
             left join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
@@ -556,7 +556,7 @@ module.exports = {
             em_cont_compl_status,
             em_cont_renew,
             em_cont_close
-            from medi_hrm.hrm_emp_contract_detl
+            from hrm_emp_contract_detl
             left join hrm_emp_master on hrm_emp_contract_detl.em_id=hrm_emp_master.em_id
             left join hrm_branch on hrm_branch.branch_slno=hrm_emp_master.em_branch
             left join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
@@ -603,7 +603,7 @@ module.exports = {
             em_cont_compl_status,
             em_cont_renew,
             em_cont_close
-            from medi_hrm.hrm_emp_contract_detl
+            from hrm_emp_contract_detl
             left join hrm_emp_master on hrm_emp_contract_detl.em_id=hrm_emp_master.em_id
             left join hrm_branch on hrm_branch.branch_slno=hrm_emp_master.em_branch
             left join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department

@@ -91,7 +91,7 @@ module.exports = {
     },
     getpunchdata: (data, callBack) => {
         pool.query(
-            `SELECT slno,emp_code,punch_time FROM medi_hrm.punch_data where date (punch_time) between ? and ? and emp_code in (?) and punch_taken =0 ;`,
+            `SELECT slno,emp_code,punch_time FROM punch_data where date (punch_time) between ? and ? and emp_code in (?) and punch_taken =0 ;`,
             [
                 data.startDate, data.endDate, data.empiddetl
             ],
@@ -167,7 +167,7 @@ module.exports = {
             leave_type, 
             gross_salary,
             sublvreq_type
-            FROM medi_hrm.punch_master 
+            FROM punch_master 
            left join hrm_shift_mast on hrm_shift_mast.shft_slno =punch_master.shift_id
             left join hrm_emp_master on hrm_emp_master.em_id=punch_master.emp_id
             where duty_day between ? and ? and punch_master.em_no in(?);`,
@@ -266,7 +266,7 @@ module.exports = {
              ifnull(lvreq_type,0)lvreq_type, leave_type,updation_flag,
              sublvreq_type,
              gross_salary
-             FROM medi_hrm.punch_master
+             FROM punch_master
              left join hrm_emp_master on hrm_emp_master.em_id=punch_master.emp_id
              where punch_master.em_no IN (?) and duty_day between ? and ?`,
             [data.emdno, data.startDate, data.endDate
@@ -697,7 +697,7 @@ module.exports = {
     checkAttendanceProcess: (data, callBack) => {
         pool.query(
             `
-            SELECT * FROM medi_hrm.hrm_attendance_marking where attendance_marking_month=?
+            SELECT * FROM hrm_attendance_marking where attendance_marking_month=?
             and em_no=?;
             `,
             [
@@ -716,7 +716,7 @@ module.exports = {
     checkInOutMarked: (data, callBack) => {
         pool.query(
             `
-            SELECT attendance_update_flag FROM medi_hrm.hrm_duty_plan
+            SELECT attendance_update_flag FROM hrm_duty_plan
              where duty_day between ? and ?
             and em_no=? and attendance_update_flag=0;
             `,

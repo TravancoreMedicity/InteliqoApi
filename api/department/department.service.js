@@ -72,7 +72,7 @@ module.exports = {
                 dept_alias,
                 dept_status,
                 dept_type,
-                case when dept_type = 1 then 'Clinical' when  dept_type = 2 then 'Non Clinical' when  dept_type = 3 then 'Accademicl' else 'Not Updated' end as 'descrp',
+                case when dept_type = 1 then 'Clinical' when  dept_type = 2 then 'Non Clinical' when  dept_type = 3 then 'Accademic' else 'Not Updated' end as 'descrp',
                 if(dept_status = 1 ,'Yes','No') status
             FROM hrm_department`,
             [],

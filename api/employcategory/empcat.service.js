@@ -264,7 +264,7 @@ module.exports = {
 
     getSelectContract: (callBack) => {
         pool.query(
-            `SELECT category_slno,ecat_name FROM medi_hrm.hrm_emp_category where emp_type='2'`,
+            `SELECT category_slno,ecat_name FROM hrm_emp_category where emp_type='2'`,
             [],
             (error, results, feilds) => {
                 if (error) {
@@ -277,7 +277,7 @@ module.exports = {
 
     checkemptpe: (data, callBack) => {
         pool.query(
-            `SELECT category_slno FROM medi_hrm.hrm_emp_category where emp_type=? and  des_type=?`,
+            `SELECT category_slno FROM hrm_emp_category where emp_type=? and  des_type=?`,
             [data.emp_type,
             data.des_type],
             (error, results, feilds) => {
@@ -395,7 +395,7 @@ module.exports = {
     },
     permanentCate: (callBack) => {
         pool.query(
-            `SELECT * FROM medi_hrm.hrm_emp_category where ecat_cont=0;`,
+            `SELECT * FROM hrm_emp_category where ecat_cont=0;`,
             [],
             (error, results, feilds) => {
                 if (error) {
@@ -407,7 +407,7 @@ module.exports = {
     },
     renewCategory: (callBack) => {
         pool.query(
-            `SELECT * FROM medi_hrm.hrm_emp_category where ecat_cl!=0 && ecat_cont=1 &&ecat_sl=1;`,
+            `SELECT * FROM hrm_emp_category where ecat_cl!=0 && ecat_cont=1 &&ecat_sl=1;`,
             [],
             (error, results, feilds) => {
                 if (error) {

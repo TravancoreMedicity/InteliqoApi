@@ -187,7 +187,7 @@ module.exports = {
             sect_name,
             check_in,
             check_out
-         FROM medi_hrm.hrm_ot_master
+         FROM hrm_ot_master
          inner join hrm_emp_master ON hrm_emp_master.em_id=hrm_ot_master.emp_id
          inner join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
          inner join hrm_shift_mast ON hrm_shift_mast.shft_slno=hrm_ot_master.ot_shift_id
@@ -284,7 +284,7 @@ module.exports = {
             ot_inch_remark,
             check_in,
             check_out
-           FROM medi_hrm.hrm_ot_master
+           FROM hrm_ot_master
            inner join hrm_emp_master ON hrm_emp_master.em_id=hrm_ot_master.emp_id
            inner join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
            inner join hrm_shift_mast ON hrm_shift_mast.shft_slno=hrm_ot_master.ot_shift_id
@@ -372,7 +372,7 @@ module.exports = {
             ot_deptsec_id,
             (case when ot_inch_require=1 and ot_inch_status=0 then "Incharge Pending"  when ot_hod_require=1 and ot_hod_status=0 then "HOD Pending"
             when ot_ceo_require=1 and ot_ceo_status=0 then "CEO Pending" when ot_hr_status=1 then "Approved" else  "HR Pending" end ) as who
-         FROM medi_hrm.hrm_ot_master
+         FROM hrm_ot_master
          LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=hrm_ot_master.emp_id
          WHERE ot_hr_require = 1 AND ot_status=0 AND ot_added=0 AND ot_deptsec_id IN (?) `,
             [
@@ -461,7 +461,7 @@ module.exports = {
             (case when ot_ceo_status='1' then "Approved" when ot_ceo_status='2' then "Rejected" else "Pending" end ) as ot_ceo_status,
             ot_deptsec_id,
               sect_name
-         FROM medi_hrm.hrm_ot_master
+         FROM hrm_ot_master
         inner join hrm_emp_master ON hrm_emp_master.em_id=hrm_ot_master.emp_id
            inner join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
            inner join hrm_shift_mast ON hrm_shift_mast.shft_slno=hrm_ot_master.ot_shift_id
@@ -795,7 +795,7 @@ module.exports = {
     },
     getPunchByDate: (id, callBack) => {
         pool.query(
-            `SELECT punch_time,slno,punch_taken FROM medi_hrm.punch_data WHERE emp_code = ? AND punch_time BETWEEN ? AND ?`,
+            `SELECT punch_time,slno,punch_taken FROM punch_data WHERE emp_code = ? AND punch_time BETWEEN ? AND ?`,
             [
                 id.em_no, id.date2, id.date1
             ],
@@ -831,7 +831,7 @@ module.exports = {
             check_out,
             (case when ot_inch_require=1 and ot_inch_status=0 then "Incharge Pending"  when ot_hod_require=1 and ot_hod_status=0 then "HOD Pending"
             when ot_ceo_require=1 and ot_ceo_status=0 then "CEO Pending" else  "HR Pending" end ) as who
-            FROM medi_hrm.hrm_ot_master 
+            FROM hrm_ot_master 
             inner join hrm_shift_mast ON hrm_shift_mast.shft_slno=hrm_ot_master.ot_shift_id
             where emp_id=?;`,
             [
@@ -902,7 +902,7 @@ module.exports = {
             ot_coff_type,
             check_in,
             check_out
-            FROM medi_hrm.hrm_ot_master
+            FROM hrm_ot_master
             inner join hrm_emp_master ON hrm_emp_master.em_id=hrm_ot_master.emp_id
             inner join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
             inner join hrm_shift_mast ON hrm_shift_mast.shft_slno=hrm_ot_master.ot_shift_id
@@ -942,7 +942,7 @@ module.exports = {
             ot_hod_remark,
             check_in,
             check_out
-         FROM medi_hrm.hrm_ot_master
+         FROM hrm_ot_master
         inner join hrm_emp_master ON hrm_emp_master.em_id=hrm_ot_master.emp_id
            inner join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
            inner join hrm_shift_mast ON hrm_shift_mast.shft_slno=hrm_ot_master.ot_shift_id
@@ -1014,7 +1014,7 @@ module.exports = {
             ot_updation_status,
             ot_updation_date,
             format( hrm_ot_master.ot_amount,2) as ot_amount
-         FROM medi_hrm.hrm_ot_master
+         FROM hrm_ot_master
          inner join hrm_emp_master ON hrm_emp_master.em_id=hrm_ot_master.emp_id
          inner join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
          WHERE  ot_hr_status=1 AND  ot_status=0 ;`,

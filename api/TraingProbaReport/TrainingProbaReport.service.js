@@ -4,7 +4,7 @@ const pool = require('../../config/database');
 module.exports = {
     getTrainingprob: (callBack) => {
         pool.query(
-            `SELECT emstats_slno,empstat_name FROM medi_hrm.employee_status where not empstat_name='CONFORMATION'`,
+            `SELECT emstats_slno,empstat_name FROM employee_status where not empstat_name='CONFORMATION'`,
             [],
             (error, results, feilds) => {
                 if (error) {
@@ -31,7 +31,7 @@ module.exports = {
             hrm_emp_master.em_email,
             hrm_emp_master.em_doj,
             hrm_emp_category.ecat_name
-            FROM medi_hrm.hrm_emp_master
+            FROM hrm_emp_master
             left join hrm_emp_category on hrm_emp_master.em_category = hrm_emp_category.category_slno
             left join employee_status on hrm_emp_category.des_type = employee_status.emstats_slno
             left join designation on hrm_emp_master.em_designation = designation.desg_slno

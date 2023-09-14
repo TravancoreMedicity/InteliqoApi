@@ -175,7 +175,7 @@ module.exports = {
         pool.query(
             `SELECT hld_desc,DATE_FORMAT(hld_date,'%d %M')hld_year
             FROM hrm_yearly_holiday_list
-            WHERE hld_year = 2022 and hld_status=1 order by hld_date asc;`,
+            WHERE hld_year = YEAR(CURDATE()) and hld_status=1 order by hld_date asc`,
             [
                 data.hld_year
             ],

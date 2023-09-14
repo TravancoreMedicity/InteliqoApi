@@ -12,7 +12,7 @@ const { empDeptdata, empDeptSecdata, empNameBasedata, getFixedByEmid, getEarning
     getattendancemark, getEmpNoDeptWise, getPunchmastData, DutyPlanLock, dutyPlanUnLock, getPaySlipData,
     getIndvidualPayslipDetl, checkPayslipDataExist, deptWisePaySlipData,
     empWisePaySlipDetl, punchMastLock, InsertPunchInOutHr, getPunchInOutHr,
-    CancelPunchInOutHr
+    CancelPunchInOutHr, getPunchByEmid
 
 } = require('../payrollprocess/payrollprocess.controller');
 
@@ -72,4 +72,6 @@ router.post("/all/detail", checkToken, empWisePaySlipDetl)
 router.post("/Insert/PunchInOutHr", checkToken, InsertPunchInOutHr);
 router.post("/getPunchInOutHr", checkToken, getPunchInOutHr)
 router.post("/CancelPunchInOutHr", checkToken, CancelPunchInOutHr)
+
+router.post("/punchbiId", checkToken, getPunchByEmid)
 module.exports = router; 
