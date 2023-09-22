@@ -124,7 +124,11 @@ module.exports = {
              remark,
              remarksecond,
              remarkthird,
-             remarkbooster
+             remarkbooster,
+              hic_frst_dose_status,
+             hic_second_dose_status,
+             hic_third_dose_status,
+             hic_booster_dose_status
              FROM medi_hrm.vaccination_master
              INNER JOIN hrm_emp_master ON vaccination_master.em_id = hrm_emp_master.em_id
              INNER JOIN hrm_department ON hrm_emp_master.em_department = hrm_department.dept_id
@@ -578,6 +582,176 @@ module.exports = {
                     return callBack(error);
                 }
                 return callBack(null, results);
+            }
+        )
+    },
+    // hic vaccination list
+     getEmpdetl: (data, callBack) => {
+        pool.query(
+            `select a.em_no,
+            CONCAT(UPPER(SUBSTRING(a.em_name,1,1)),LOWER(SUBSTRING(a.em_name,2)))  as 'em_name',
+            a.em_id,
+            a.em_doj,
+            hrm_emp_contract_detl.em_cont_start,
+            a.contract_status,
+            a.gross_salary,
+            hrm_department.dept_id,
+            hrm_dept_section.sect_id,
+            CONCAT(UPPER(SUBSTRING(dept_name,1,1)),LOWER(SUBSTRING(dept_name,2)))  as 'dept_name',
+            CONCAT(UPPER(SUBSTRING(b.desg_name,1,1)),LOWER(SUBSTRING(b.desg_name,2)))  as 'desg_name',
+            sect_name,
+              DATE_FORMAT(hic_first_dose_date, '%d/%m/%Y') AS 'hic_first_dose_date',
+              DATE_FORMAT(hic_second_dose_date, '%d/%m/%Y') AS 'hic_second_dose_date',
+              DATE_FORMAT(hic_thirdt_dose_date, '%d/%m/%Y') AS 'hic_thirdt_dose_date',
+              DATE_FORMAT(hic_boostert_dose_date, '%d/%m/%Y') AS 'hic_boostert_dose_date',
+              hic_frst_dose_status,
+            hic_second_dose_status,
+            hic_third_dose_status,
+            hic_booster_dose_status,
+              a.em_age_year,
+              a.em_dob,
+              group_name,
+              a.em_gender,
+              hic_emid_first_verified,
+                   hic_emid_second_verified,
+                   hic_emid_third_verified,
+                   hic_emid_booster_verified,
+                   first_vacc_emid,
+                   second_vacc_emid,
+                   third_vacc_emid,
+                   booster_vacc_emid,
+                    DATE_FORMAT(firstdose_date, '%d/%m/%Y') AS 'firstdose_date',
+                   DATE_FORMAT(second_dose_given_date, '%d/%m/%Y') AS 'second_dose_given_date',
+                   DATE_FORMAT(third_dose_given_date, '%d/%m/%Y') AS 'third_dose_given_date',
+                   DATE_FORMAT(booster_dose_given_date, '%d/%m/%Y') AS 'booster_dose_given_date',
+                    CONCAT(UPPER(SUBSTRING(a1.em_name,1,1)),LOWER(SUBSTRING(a1.em_name,2)))  as 'em_name_first_verified',
+                    CONCAT(UPPER(SUBSTRING(a2.em_name,1,1)),LOWER(SUBSTRING(a2.em_name,2)))  as 'em_name_second_verified',
+                    CONCAT(UPPER(SUBSTRING(a3.em_name,1,1)),LOWER(SUBSTRING(a3.em_name,2)))  as 'em_name_third_verified',
+                    CONCAT(UPPER(SUBSTRING(a4.em_name,1,1)),LOWER(SUBSTRING(a4.em_name,2)))  as 'em_name_booster_verified',
+                    CONCAT(UPPER(SUBSTRING(a5.em_name,1,1)),LOWER(SUBSTRING(a5.em_name,2)))  as 'first_verified',
+                    CONCAT(UPPER(SUBSTRING(a6.em_name,1,1)),LOWER(SUBSTRING(a6.em_name,2)))  as 'second_verified',
+                    CONCAT(UPPER(SUBSTRING(a7.em_name,1,1)),LOWER(SUBSTRING(a7.em_name,2)))  as 'third_verified',
+                    CONCAT(UPPER(SUBSTRING(a8.em_name,1,1)),LOWER(SUBSTRING(a8.em_name,2)))  as 'booster_verified',
+                    CONCAT(UPPER(SUBSTRING(b1.desg_name,1,1)),LOWER(SUBSTRING(b1.desg_name,2)))  as 'firstdesg',
+                    CONCAT(UPPER(SUBSTRING(b2.desg_name,1,1)),LOWER(SUBSTRING(b2.desg_name,2)))  as 'secdesg',
+                    CONCAT(UPPER(SUBSTRING(b3.desg_name,1,1)),LOWER(SUBSTRING(b3.desg_name,2)))  as 'thirddesg',
+                    CONCAT(UPPER(SUBSTRING(b4.desg_name,1,1)),LOWER(SUBSTRING(b4.desg_name,2)))  as 'boosterdesg'
+                   FROM vaccination_master
+                    
+                   INNER JOIN hrm_emp_master a ON vaccination_master.em_id =a.em_id
+                   LEFT JOIN hrm_emp_master a1 ON a1.em_id = vaccination_master.hic_emid_first_verified AND vaccination_master.hic_emid_first_verified <> 0
+                   LEFT JOIN hrm_emp_master a2 ON a2.em_id = vaccination_master.hic_emid_second_verified AND vaccination_master.hic_emid_second_verified <> 0
+                   LEFT JOIN hrm_emp_master a3 ON a3.em_id = vaccination_master.hic_emid_third_verified AND vaccination_master.hic_emid_third_verified <> 0
+                   LEFT JOIN hrm_emp_master a4 ON a4.em_id = vaccination_master.hic_emid_booster_verified AND vaccination_master.hic_emid_booster_verified <> 0
+                    LEFT JOIN hrm_emp_master a5 ON a5.em_id = vaccination_master.first_vacc_emid AND vaccination_master.first_vacc_emid <> 0
+                    LEFT JOIN hrm_emp_master a6 ON a6.em_id = vaccination_master.second_vacc_emid AND vaccination_master.second_vacc_emid <> 0
+                    LEFT JOIN hrm_emp_master a7 ON a7.em_id = vaccination_master.third_vacc_emid AND vaccination_master.third_vacc_emid <> 0
+                    LEFT JOIN hrm_emp_master a8 ON a8.em_id = vaccination_master.booster_vacc_emid AND vaccination_master.booster_vacc_emid <> 0
+                   left join hrm_emp_contract_detl on hrm_emp_contract_detl.em_no = a.em_no and hrm_emp_contract_detl.status = 0
+                      LEFT JOIN designation b1 ON a1.em_designation = b1.desg_slno
+                    LEFT JOIN designation b2 ON a2.em_designation = b2.desg_slno
+                    LEFT JOIN designation b3 ON a3.em_designation = b3.desg_slno
+                    LEFT JOIN designation b4 ON a4.em_designation = b4.desg_slno
+                   inner join hrm_department on a.em_department=hrm_department.dept_id
+                   inner join hrm_dept_section on a.em_dept_section=hrm_dept_section.sect_id
+                   inner join designation b on a.em_designation=b.desg_slno
+                   INNER JOIN bloodgroup ON a.blood_slno = bloodgroup.group_slno
+                   where a.em_department=?
+                   and a.em_dept_section=?
+                   and a.em_status=1
+                   and a.em_no not in (1 ,2) `,
+            [
+                data.em_department,
+                data.em_dept_section,
+                // data.em_branch
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+     getEmpDataByEmno: (id, callBack) => {
+        pool.query(
+            `  SELECT 
+                   vaccination_master.em_id,
+                   vaccination_master.em_no,
+                   CONCAT(UPPER(SUBSTRING(a.em_name,1,1)),LOWER(SUBSTRING(a.em_name,2)))  as 'em_name',
+                   sect_name,
+                   a.em_status,
+                   group_name,
+                   a.em_mobile,                
+                   DATE_FORMAT(hic_first_dose_date, '%d/%m/%Y') AS 'hic_first_dose_date',
+                   DATE_FORMAT(hic_second_dose_date, '%d/%m/%Y') AS 'hic_second_dose_date',
+                   DATE_FORMAT(hic_thirdt_dose_date, '%d/%m/%Y') AS 'hic_thirdt_dose_date',
+                   DATE_FORMAT(hic_boostert_dose_date, '%d/%m/%Y') AS 'hic_boostert_dose_date',
+                   hic_frst_dose_status,
+                   hic_second_dose_status,
+                   hic_third_dose_status,
+                   hic_booster_dose_status,
+                   a.em_dob,
+                   a.em_doj,
+                   a.em_age_year,
+                   a.em_designation,
+                   a.em_gender,
+                   CONCAT(UPPER(SUBSTRING(dept_name,1,1)),LOWER(SUBSTRING(dept_name,2)))  as 'dept_name',
+                   CONCAT(UPPER(SUBSTRING(b.desg_name,1,1)),LOWER(SUBSTRING(b.desg_name,2)))  as 'desg_name',
+                    hic_emid_first_verified,
+                    hic_emid_second_verified,
+                    hic_emid_third_verified,
+                    hic_emid_booster_verified,
+                    first_vacc_emid,
+                    second_vacc_emid,
+                    third_vacc_emid,
+                    booster_vacc_emid,
+                   DATE_FORMAT(firstdose_date, '%d/%m/%Y') AS 'firstdose_date',
+                   DATE_FORMAT(second_dose_given_date, '%d/%m/%Y') AS 'second_dose_given_date',
+                   DATE_FORMAT(third_dose_given_date, '%d/%m/%Y') AS 'third_dose_given_date',
+                   DATE_FORMAT(booster_dose_given_date, '%d/%m/%Y') AS 'booster_dose_given_date',
+                    CONCAT(UPPER(SUBSTRING(a1.em_name,1,1)),LOWER(SUBSTRING(a1.em_name,2)))  as 'em_name_first_verified',
+                    CONCAT(UPPER(SUBSTRING(a2.em_name,1,1)),LOWER(SUBSTRING(a2.em_name,2)))  as 'em_name_second_verified',
+                    CONCAT(UPPER(SUBSTRING(a3.em_name,1,1)),LOWER(SUBSTRING(a3.em_name,2)))  as 'em_name_third_verified',
+                    CONCAT(UPPER(SUBSTRING(a4.em_name,1,1)),LOWER(SUBSTRING(a4.em_name,2)))  as 'em_name_booster_verified',
+                    CONCAT(UPPER(SUBSTRING(a5.em_name,1,1)),LOWER(SUBSTRING(a5.em_name,2)))  as 'first_verified',
+                    CONCAT(UPPER(SUBSTRING(a6.em_name,1,1)),LOWER(SUBSTRING(a6.em_name,2)))  as 'second_verified',
+                    CONCAT(UPPER(SUBSTRING(a7.em_name,1,1)),LOWER(SUBSTRING(a7.em_name,2)))  as 'third_verified',
+                    CONCAT(UPPER(SUBSTRING(a8.em_name,1,1)),LOWER(SUBSTRING(a8.em_name,2)))  as 'booster_verified',
+                    CONCAT(UPPER(SUBSTRING(b1.desg_name,1,1)),LOWER(SUBSTRING(b1.desg_name,2)))  as 'firstdesg',
+                    CONCAT(UPPER(SUBSTRING(b2.desg_name,1,1)),LOWER(SUBSTRING(b2.desg_name,2)))  as 'secdesg',
+                    CONCAT(UPPER(SUBSTRING(b3.desg_name,1,1)),LOWER(SUBSTRING(b3.desg_name,2)))  as 'thirddesg',
+                    CONCAT(UPPER(SUBSTRING(b4.desg_name,1,1)),LOWER(SUBSTRING(b4.desg_name,2)))  as 'boosterdesg'
+
+                    FROM medi_hrm.vaccination_master
+                    INNER JOIN hrm_emp_master a ON vaccination_master.em_id =a.em_id
+                    LEFT JOIN hrm_emp_master a1 ON a1.em_id = vaccination_master.hic_emid_first_verified AND vaccination_master.hic_emid_first_verified <> 0
+                    LEFT JOIN hrm_emp_master a2 ON a2.em_id = vaccination_master.hic_emid_second_verified AND vaccination_master.hic_emid_second_verified <> 0
+                    LEFT JOIN hrm_emp_master a3 ON a3.em_id = vaccination_master.hic_emid_third_verified AND vaccination_master.hic_emid_third_verified <> 0
+                    LEFT JOIN hrm_emp_master a4 ON a4.em_id = vaccination_master.hic_emid_booster_verified AND vaccination_master.hic_emid_booster_verified <> 0
+                    LEFT JOIN hrm_emp_master a5 ON a5.em_id = vaccination_master.first_vacc_emid AND vaccination_master.first_vacc_emid <> 0
+                    LEFT JOIN hrm_emp_master a6 ON a6.em_id = vaccination_master.second_vacc_emid AND vaccination_master.second_vacc_emid <> 0
+                    LEFT JOIN hrm_emp_master a7 ON a7.em_id = vaccination_master.third_vacc_emid AND vaccination_master.third_vacc_emid <> 0
+                    LEFT JOIN hrm_emp_master a8 ON a8.em_id = vaccination_master.booster_vacc_emid AND vaccination_master.booster_vacc_emid <> 0
+                    LEFT JOIN designation b1 ON a1.em_designation = b1.desg_slno
+                    LEFT JOIN designation b2 ON a2.em_designation = b2.desg_slno
+                    LEFT JOIN designation b3 ON a3.em_designation = b3.desg_slno
+                    LEFT JOIN designation b4 ON a4.em_designation = b4.desg_slno
+                    INNER JOIN hrm_department ON a.em_department = hrm_department.dept_id
+                    INNER JOIN hrm_dept_section ON a.em_dept_section = hrm_dept_section.sect_id
+                    INNER JOIN bloodgroup ON a.blood_slno = bloodgroup.group_slno
+                    INNER JOIN designation b ON a.em_designation=b.desg_slno
+                    WHERE vaccination_master.em_no   = ?`,
+            [
+                id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+
+                return callBack(null, results);
+
             }
         )
     },

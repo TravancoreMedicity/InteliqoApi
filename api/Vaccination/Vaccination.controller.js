@@ -1,4 +1,4 @@
-const { getData, vaccinationInsert,vaccinationentry,annualvaccinationbooster,getannualvac, vaccinationBoosterInsert,annualvaccinationInsert, getVaccination,updateannualinsert, SeconddoseInsert, ThirddoseInsert,hicinsertseconddose,hicinsertboosterdose,hicinsertthirddose, getDataVaccination, hicinsertfirstdose,vaccinationInsertEntry, vaccinationInsertBooster } = require('../Vaccination/Vaccination.service');
+const { getData,getEmpdetl,getEmpDataByEmno, vaccinationInsert,vaccinationentry,annualvaccinationbooster,getannualvac, vaccinationBoosterInsert,annualvaccinationInsert, getVaccination,updateannualinsert, SeconddoseInsert, ThirddoseInsert,hicinsertseconddose,hicinsertboosterdose,hicinsertthirddose, getDataVaccination, hicinsertfirstdose,vaccinationInsertEntry, vaccinationInsertBooster } = require('../Vaccination/Vaccination.service');
 
 module.exports = {
     getData: (req, res) => {
@@ -361,5 +361,51 @@ hicinsertthirddose: (req, res) => {
             })
         })
     },
+// hic vaccination list
+ getEmpdetl: (req, res) => {
+        const body = req.body;
+        getEmpdetl(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
 
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+      getEmpDataByEmno: (req, res) => {
+        const id = req.params.id;
+        getEmpDataByEmno(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Results Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
 }

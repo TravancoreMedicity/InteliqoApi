@@ -1,5 +1,7 @@
 const router = require('express').Router();
-const { getData, vaccinationInsert,vaccinationentry,getannualvac,annualvaccinationbooster, vaccinationBoosterInsert,annualvaccinationInsert, getVaccination, SeconddoseInsert,hicinsertboosterdose, ThirddoseInsert,hicinsertseconddose,hicinsertthirddose, getDataVaccination, vaccinationInsertEntry, vaccinationInsertBooster,hicinsertfirstdose } = require('../Vaccination/Vaccination.controller');
+const { checkToken } = require('../../auth/token_validation');
+
+const { getData,getEmpdetl,getEmpDataByEmno, vaccinationInsert,vaccinationentry,getannualvac,annualvaccinationbooster, vaccinationBoosterInsert,annualvaccinationInsert, getVaccination, SeconddoseInsert,hicinsertboosterdose, ThirddoseInsert,hicinsertseconddose,hicinsertthirddose, getDataVaccination, vaccinationInsertEntry, vaccinationInsertBooster,hicinsertfirstdose } = require('../Vaccination/Vaccination.controller');
 
 
 router.get('/get/all', getData);
@@ -26,5 +28,10 @@ router.post("/annualFirstdose", annualvaccinationInsert);
 router.post("/annualbooster", annualvaccinationbooster);
 // for emid
 router.post("/vaccinentry", vaccinationentry);
+
+// hic vaccinated list
+router.post("/create", checkToken, getEmpdetl)
+router.get("/getAll/:id", checkToken, getEmpDataByEmno)
+
 
 module.exports = router;
