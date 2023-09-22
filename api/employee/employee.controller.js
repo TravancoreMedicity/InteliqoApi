@@ -1,6 +1,7 @@
 const { genSaltSync, hashSync, compareSync } = require("bcrypt");
 const { sign } = require("jsonwebtoken");
-const { employeeinsert, employeeupdate, getemplpyee, employeeGetById, employeedelete, getEmployeeByUserName, getEmployeeID } = require('../employee/employee.service');
+const { employeeinsert, employeeupdate, getemplpyee, employeeGetById, employeedelete,
+    getEmployeeByUserName, getEmployeeID, changePassword } = require('../employee/employee.service');
 const { validateEmployee } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
 
@@ -176,6 +177,38 @@ module.exports = {
             }
         });
     },
+    changePassword: (req, res) => {
+        const body = req.body;
+        //Validate requested body data
+        // const body_data = validateEmployee.validate(body);
+        // if (body_data.error) {
+        //     res.status(400).send(body_data.error.details[0].message);
+        //     return;
+        // }
+        const salt = genSaltSync(10);
+        let new_password = body.emp_password;
+        body.emp_password = hashSync(new_password, salt);
 
+        changePassword(body, (err, results) => {
+
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(500).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (!results) {
+                return res.json({
+                    success: 0,
+                    message: "Failed to Update"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                message: "Data Updated Successfully"
+            });
+        });
+    },
 
 }

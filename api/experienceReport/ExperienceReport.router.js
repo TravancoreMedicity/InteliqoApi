@@ -7,7 +7,10 @@ const {
     EmpNameReport,
     getDeptSectByID,
     noExperienceReport,
-    noExpDeptSectReport
+    noExpDeptSectReport,
+    experienceSummaryReport,
+    expSummaryDeptSectReport,
+    expSummaryEmpnameReport
 } = require('../experienceReport/ExperienceReport.controller')
 
 //expeience report
@@ -18,6 +21,10 @@ router.post('/sectempname', checkToken, EmpNameReport);
 router.post('/deptsectById', checkToken, getDeptSectByID);
 router.post('/noexp', checkToken, noExperienceReport)
 router.post('/noExp/deptsect', checkToken, noExpDeptSectReport)
+
+router.post('/exp/summary', checkToken, experienceSummaryReport)
+router.post('/exp/deptsect', checkToken, expSummaryDeptSectReport)
+router.post('/exp/empname', checkToken, expSummaryEmpnameReport)
 
 
 module.exports = router;

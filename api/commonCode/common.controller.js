@@ -1012,7 +1012,8 @@ module.exports = {
             if (!results) {
                 return res.status(200).json({
                     success: 2,
-                    message: "Record Not Found"
+                    message: "Record Not Found",
+                    data: []
                 });
             }
 
