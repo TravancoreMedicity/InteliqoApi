@@ -11,7 +11,7 @@ const storage = multer.diskStorage({
         
         // console.log(id);
         // File or directtory check 
-        const filepath = path.join('D:/', "PersonalRecords", `${id}`)
+        const filepath = path.join('D:/DocMeliora/Inteliqo/', "PersonalRecords", `${id}`)
         // const filepath = path.join(__dirname, "api", `${id}`)
         // console.log(filepath)
 
@@ -20,7 +20,7 @@ const storage = multer.diskStorage({
             // console.log("file excist")
             cb(null, `${filepath}`);
         } else {
-            fs.mkdir(path.join('D:', "/PersonalRecords", `${id}`), {}, (err) => {
+            fs.mkdir(path.join('D:/DocMeliora/Inteliqo/', "PersonalRecords", `${id}`), {}, (err) => {
 
                 // console.log(err);
                 if (err) {
@@ -40,7 +40,7 @@ const storagemul = multer.diskStorage({
   destination: (req, file, cb) => {
   
     const id = req.body.em_id;
-    const filepath = path.join('D:/', "PersonalRecords", `${id}`);
+    const filepath = path.join('D:/DocMeliora/Inteliqo/', "PersonalRecords", `${id}`);
     
     if (!fs.existsSync(filepath)) {
       fs.mkdirSync(filepath, { recursive: true });
@@ -185,7 +185,7 @@ module.exports = {
       try {
         const files = req.files;
         const em_id = body.em_id;
-        const em_id_folder = path.join('D:/', "PersonalRecords", `${em_id}`);
+        const em_id_folder = path.join('D:/DocMeliora/Inteliqo/', "PersonalRecords", `${em_id}`);
 
         // Create the em_id folder if it doesn't exist
         if (!fs.existsSync(em_id_folder)) {
