@@ -284,7 +284,7 @@ module.exports = {
 
         pool.query(
             `UPDATE vaccination_master SET firstdose_date=?,second_dose_given_date=?,third_dose_given_date=?,booster_dose_given_date=?,
-            first_dose_status=1,second_dose_status=1,third_dose_status=1,remarkbooster=?,booster_vacc_emid=?,booster_dose_status=1,pending_status=0,annual_dose=? WHERE em_no = ?;`,
+            first_dose_status=1,second_dose_status=1,third_dose_status=1,remarkbooster=?,booster_vacc_emid=?,booster_dose_status=1,pending_status=0,annual_dose=?,booster_dose_due_date=? WHERE em_no = ?;`,
             [
                 data.fromDate,
                 data.fromDate,
@@ -293,9 +293,8 @@ module.exports = {
                 data.remarksbooster,
                 data.em_id,
                 data.annual_dose,
+                data.booster_dose_due_date,
                 data.em_no,
-             
-
 
             ],
             (error, results, feilds) => {
