@@ -1012,7 +1012,8 @@ module.exports = {
             if (!results) {
                 return res.status(200).json({
                     success: 2,
-                    message: "Record Not Found"
+                    message: "Record Not Found",
+                    data: []
                 });
             }
 
@@ -1527,7 +1528,7 @@ module.exports = {
             }
             return res.status(200).json({
                 success: 1,
-                data: results
+                data: [results]
             });
         })
     },

@@ -180,8 +180,20 @@ module.exports = {
 
     getContractCloseDetl: (callBack) => {
         pool.query(
-            `select hrm_emp_contract_detl.em_id,hrm_emp_contract_detl.em_no,dept_name,em_cont_start,em_designation,desg_name,
-            em_cont_close_date,em_cont_close,em_department,em_dept_section,em_name,sect_name
+            `select 
+            ROW_NUMBER() OVER () as slno,
+            hrm_emp_contract_detl.em_id,
+            hrm_emp_contract_detl.em_no,
+            dept_name,
+            em_cont_start,
+            em_designation,
+            desg_name,
+            em_cont_close_date,
+            em_cont_close,
+            em_department,
+            em_dept_section,
+            em_name,
+            sect_name
             from hrm_emp_contract_detl
             left join hrm_emp_master on hrm_emp_master.em_id=hrm_emp_contract_detl.em_id
             left join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
@@ -438,7 +450,7 @@ module.exports = {
     },
     getContractByEmno: (id, callBack) => {
         pool.query(
-            `SELECT * FROM medi_hrm.hrm_emp_contract_detl where em_no=?;`,
+            `SELECT * FROM hrm_emp_contract_detl where em_no=?;`,
             [
                 id
             ],
@@ -452,7 +464,7 @@ module.exports = {
     },
     getContractDetlId: (id, callBack) => {
         pool.query(
-            `SELECT * FROM medi_hrm.hrm_emp_contract_detl where em_id=?;`,
+            `SELECT * FROM hrm_emp_contract_detl where em_id=?;`,
             [
                 id
             ],
@@ -482,4 +494,35 @@ module.exports = {
             }
         )
     },
+    updatePunchmstEmno: (data, callBack) => {
+        return new Promise((resolve, reject) => {
+            data.map((val) => {
+                pool.query(
+                    ` UPDATE punch_master 
+                    SET em_no=?
+                    WHERE duty_day = ? and punch_slno=?`,
+                    [val.em_no, val.duty_day, val.punch_slno],
+                    (error, results, feilds) => {
+                        if (error) {
+                            return reject(error)
+                        }
+                        return resolve(results)
+                    }
+                )
+            })
+
+        })
+    },
+    getEmployeeByUserName: (userName, callBack) => {
+        pool.query(
+            `SELECT * FROM hrm_employee WHERE emp_username = ? AND emp_status = '1'`,
+            [userName],
+            (error, results, fields) => {
+                if (error) {
+                    callBack(error);
+                }
+                return callBack(null, results[0]);
+            }
+        );
+    }
 }

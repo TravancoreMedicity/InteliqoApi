@@ -102,7 +102,7 @@ module.exports = {
                 branch_esi,
                 branch_pf,
                 if(branch_status=1,'Yes','No') status 
-            FROM medi_hrm.hrm_branch `,
+            FROM hrm_branch `,
             [],
             (error, results, feilds) => {
                 if (error) {

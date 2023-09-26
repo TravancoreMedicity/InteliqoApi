@@ -153,6 +153,29 @@ module.exports = {
                 return callBack(null, results[0]);
             }
         );
-    }
+    },
+    changePassword: (data, callBack) => {
+        pool.query(
+            `UPDATE hrm_employee
+                SET
+                emp_password=?,
+                emp_status=?,
+                emp_edit=?
+                WHERE emp_no = ?`,
+            [
+
+                data.emp_password,
+                data.emp_status,
+                data.emp_edit,
+                data.oldempno
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 
 }

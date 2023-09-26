@@ -5,7 +5,7 @@ module.exports = {
     getdeptSection: (data, callBack) => {
         pool.query(
             `SELECT 
-        hrm_dept_section.sect_id,hrm_dept_section.sect_name FROM medi_hrm.hrm_dept_section where dept_sub_sect IN (?)`,
+        hrm_dept_section.sect_id,hrm_dept_section.sect_name FROM hrm_dept_section where dept_sub_sect IN (?)`,
             [
                 data
             ],
@@ -28,7 +28,7 @@ module.exports = {
             hrm_emp_master.em_doj,
             hrm_emp_master.em_mobile,
             case when hrm_dept_section.dept_sub_sect = 1  then 'genral' when hrm_dept_section.dept_sub_sect = 2  then 'OT'  when hrm_dept_section.dept_sub_sect = 3 then 'ICU'  when hrm_dept_section.dept_sub_sect = 4 then 'ER'  end as 'section type'
-            FROM medi_hrm.hrm_dept_section
+            FROM hrm_dept_section
             left join hrm_emp_master on hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
              left join hrm_branch on hrm_emp_master.em_branch = hrm_branch.branch_slno
             left join hrm_department on hrm_dept_section.dept_id = hrm_department.dept_id

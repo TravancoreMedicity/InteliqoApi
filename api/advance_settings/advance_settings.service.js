@@ -58,7 +58,7 @@ module.exports = {
             service_to,
             adv_eligibility,
             monthly_installments
-            FROM medi_hrm.advance_settings `,
+            FROM advance_settings `,
             [],
             (error, results, feilds) => {
                 if (error) {

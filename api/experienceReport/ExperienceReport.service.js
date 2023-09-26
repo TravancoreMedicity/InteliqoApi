@@ -30,7 +30,7 @@ module.exports = {
             TIMESTAMPDIFF( YEAR, hrm_emp_exp.em_from, hrm_emp_exp.em_to ) as 'year',
             TIMESTAMPDIFF( MONTH, hrm_emp_exp.em_from, hrm_emp_exp.em_to ) % 12 as 'month',
             FLOOR( TIMESTAMPDIFF( DAY, hrm_emp_exp.em_from, hrm_emp_exp.em_to ) % 30.4375 ) as 'day'
-            FROM medi_hrm.hrm_emp_master
+            FROM hrm_emp_master
 			left join hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
             left join hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
             left join designation on hrm_emp_master.em_designation=designation.desg_slno
@@ -61,7 +61,7 @@ module.exports = {
             TIMESTAMPDIFF( YEAR, hrm_emp_exp.em_from, hrm_emp_exp.em_to ) as 'year',
             TIMESTAMPDIFF( MONTH, hrm_emp_exp.em_from, hrm_emp_exp.em_to ) % 12 as 'month',
             FLOOR( TIMESTAMPDIFF( DAY, hrm_emp_exp.em_from, hrm_emp_exp.em_to ) % 30.4375 ) as 'day'
-            FROM medi_hrm.hrm_emp_master
+            FROM hrm_emp_master
 			left join hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
             left join hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
             left join designation on hrm_emp_master.em_designation=designation.desg_slno
@@ -93,7 +93,7 @@ module.exports = {
             TIMESTAMPDIFF( YEAR, hrm_emp_exp.em_from, hrm_emp_exp.em_to ) as 'year',
             TIMESTAMPDIFF( MONTH, hrm_emp_exp.em_from, hrm_emp_exp.em_to ) % 12 as 'month',
             FLOOR( TIMESTAMPDIFF( DAY, hrm_emp_exp.em_from, hrm_emp_exp.em_to ) % 30.4375 ) as 'day'
-            FROM medi_hrm.hrm_emp_master
+            FROM hrm_emp_master
 			left join hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
             left join hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
             left join designation on hrm_emp_master.em_designation=designation.desg_slno
@@ -172,6 +172,103 @@ module.exports = {
             [
                 data.dept_id,
                 data.sect_id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    experienceSummaryReport: (data, callBack) => {
+        pool.query(
+            `SELECT hrm_emp_master.em_no,
+            hrm_emp_master.em_name,
+            hrm_department.dept_name,
+            hrm_emp_master.em_institution_type,
+            hrm_dept_section.sect_name,
+            hrm_emp_exp.em_from,
+            hrm_emp_exp.em_to,
+            hrm_emp_exp.em_institution,
+            designation.desg_name,
+           sum(em_total_year)  as 'year',
+            TIMESTAMPDIFF( MONTH, hrm_emp_exp.em_from, hrm_emp_exp.em_to ) % 12 as 'month',
+            FLOOR( TIMESTAMPDIFF( DAY, hrm_emp_exp.em_from, hrm_emp_exp.em_to ) % 30.4375 ) as 'day'
+            FROM hrm_emp_master
+			left join hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
+            left join hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
+            left join designation on hrm_emp_master.em_designation=designation.desg_slno
+            left join hrm_emp_exp on hrm_emp_master.em_id=hrm_emp_exp.em_id
+			where  hrm_emp_master.em_status=1  and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2 and hrm_department.dept_id IN (?)
+            group by hrm_emp_exp.em_no`,
+            [
+                data
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    expSummaryDeptSectReport: (data, callBack) => {
+        pool.query(
+            `SELECT hrm_emp_master.em_no,
+            hrm_emp_master.em_name,
+            hrm_department.dept_name,
+            hrm_emp_master.em_institution_type,
+            hrm_dept_section.sect_name,
+            hrm_emp_exp.em_from,
+            hrm_emp_exp.em_to,
+            hrm_emp_exp.em_institution,
+            designation.desg_name,
+           sum(em_total_year)  as 'year',
+            TIMESTAMPDIFF( MONTH, hrm_emp_exp.em_from, hrm_emp_exp.em_to ) % 12 as 'month',
+            FLOOR( TIMESTAMPDIFF( DAY, hrm_emp_exp.em_from, hrm_emp_exp.em_to ) % 30.4375 ) as 'day'
+            FROM hrm_emp_master
+			left join hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
+            left join hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
+            left join designation on hrm_emp_master.em_designation=designation.desg_slno
+            left join hrm_emp_exp on hrm_emp_master.em_id=hrm_emp_exp.em_id
+			where  hrm_emp_master.em_status=1  and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2 and hrm_department.dept_id IN (?) and hrm_dept_section.sect_id IN (?)
+            group by hrm_emp_exp.em_no;`,
+            [
+                data
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    expSummaryEmpnameReport: (data, callBack) => {
+        pool.query(
+            `SELECT hrm_emp_master.em_no,
+            hrm_emp_master.em_name,
+            hrm_department.dept_name,
+            hrm_emp_master.em_institution_type,
+            hrm_dept_section.sect_name,
+            hrm_emp_exp.em_from,
+            hrm_emp_exp.em_to,
+            hrm_emp_exp.em_institution,
+            designation.desg_name,
+            sum(em_total_year)  as 'year',
+            TIMESTAMPDIFF( MONTH, hrm_emp_exp.em_from, hrm_emp_exp.em_to ) % 12 as 'month',
+            FLOOR( TIMESTAMPDIFF( DAY, hrm_emp_exp.em_from, hrm_emp_exp.em_to ) % 30.4375 ) as 'day'
+            FROM hrm_emp_master
+			left join hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
+            left join hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
+            left join designation on hrm_emp_master.em_designation=designation.desg_slno
+            left join hrm_emp_exp on hrm_emp_master.em_id=hrm_emp_exp.em_id
+			where  (hrm_emp_master.em_status=1  and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2) and hrm_department.dept_id IN (?)  and hrm_dept_section.sect_id IN (?) and hrm_emp_master.em_id IN (?)`,
+            [
+                data.dept_id,
+                data.sect_id,
+                data.em_id
             ],
             (error, results, feilds) => {
                 if (error) {
