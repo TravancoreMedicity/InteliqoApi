@@ -16,6 +16,7 @@ module.exports = {
         }
         // compare
         body.type_name = body_result.value.type_name;
+        body.count_day = body_result.value.count_day;
         body.type_status = body_result.value.type_status;
         checkInsertVal(body, (err, results) => {
             const value = JSON.parse(JSON.stringify(results))
@@ -56,6 +57,7 @@ module.exports = {
             });
         }
         body.type_name = body_result.value.type_name;
+        body.count_day = body_result.value.count_day;
         body.type_status = body_result.value.type_status;
         checkUpdateVal(body, (err, results) => {
             const value = JSON.parse(JSON.stringify(results))

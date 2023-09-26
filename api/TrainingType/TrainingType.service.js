@@ -4,12 +4,13 @@ module.exports = {
     TrainingTypeInsert: (data, callBack) => {
         pool.query(
             `INSERT INTO medi_hrm.training_type (
-                trainingtype_slno, type_name, type_status,create_user
+                trainingtype_slno, type_name,count_day, type_status,create_user
             )
-            VALUES (?,?,?,?)`,
+            VALUES (?,?,?,?,?)`,
             [
                 data.trainingtype_slno,
                 data.type_name,
+                data.count_day,
                 data.type_status,
                 data.create_user
             ],
@@ -24,7 +25,7 @@ module.exports = {
 
     TrainingTypeGet: (callback) => {
         pool.query(`
-        SELECT trainingtype_slno, type_name, type_status FROM medi_hrm.training_type WHERE type_status=1`, [],
+        SELECT trainingtype_slno, type_name,count_day, type_status FROM medi_hrm.training_type WHERE type_status=1`, [],
             (err, results, feilds) => {
                 if (err) {
                     return callback(err)
@@ -39,11 +40,13 @@ module.exports = {
     TrainingTypeUpdate: (data, callback) => {
         pool.query(`UPDATE medi_hrm.training_type SET 
          type_name=?,
+         count_day=?,
           type_status=?,
           edit_user=?
          WHERE trainingtype_slno=?`,
             [
                 data.type_name,
+                data.count_day,
                 data.type_status,
                 data.edit_user,
                 data.trainingtype_slno,
@@ -58,7 +61,6 @@ module.exports = {
         )
     },
     TrainingTypeDelete: (data, callback) => {
-        console.log(data);
         pool.query(
             `UPDATE medi_hrm.training_type 
             SET type_status=0

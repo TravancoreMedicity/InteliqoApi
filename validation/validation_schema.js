@@ -1292,6 +1292,7 @@ const ValidateTrainingType = Joi.object({
                         'string.min': 'Training Type length must be at least 3 characters long',
                         'string.max': 'Training Type length must be less than or equal to 45 characters long'
                 }),
+        count_day: Joi.number().required(),
         type_status: Joi.number().min(0).max(1),
         create_user: Joi.number().optional(),
         edit_user: Joi.number().optional(),

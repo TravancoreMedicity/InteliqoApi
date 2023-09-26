@@ -42,7 +42,7 @@ module.exports = {
             LEFT JOIN designation ON departmental_training_schedule.designation=designation.desg_slno
             LEFT JOIN training_name ON departmental_training_schedule.training_name=training_name.name_slno
             LEFT JOIN training_topic ON departmental_training_schedule.topic_name=training_topic.topic_slno
-            LEFT JOIN scheduling_time ON departmental_training_schedule.schedule_time=scheduling_time.slno;`, [],
+            LEFT JOIN scheduling_time ON departmental_training_schedule.schedule_time=scheduling_time.slno`, [],
 
 
             (err, results, feilds) => {

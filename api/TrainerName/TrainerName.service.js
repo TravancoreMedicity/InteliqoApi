@@ -46,7 +46,8 @@ module.exports = {
             hrm_emp_master.em_id,hrm_emp_master.em_name
             FROM training_trainername LEFT JOIN designation ON 
             training_trainername.trainer_desig=designation.desg_slno
-            LEFT JOIN hrm_department ON training_trainername.trainer_dept=hrm_department.dept_id LEFT JOIN hrm_emp_master ON training_trainername.trainer_name=hrm_emp_master.em_id WHERE trainer_status=1`,
+            LEFT JOIN hrm_department ON training_trainername.trainer_dept=hrm_department.dept_id
+             LEFT JOIN hrm_emp_master ON training_trainername.trainer_name=hrm_emp_master.em_id WHERE trainer_status=1`,
             [],
             (err, results, feilds) => {
                 if (err) {
