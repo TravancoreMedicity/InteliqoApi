@@ -1191,7 +1191,8 @@ const validatecommonsettings = Joi.object({
         pf_employee_amount: Joi.number().optional(),
         pf_employer_amount: Joi.number().optional(),
         noff_count: Joi.number().optional(),
-        onehour_rqst_count: Joi.number().optional()
+        onehour_rqst_count: Joi.number().optional(),
+        areartype: Joi.number().optional(),
 
 })
 //validate carryforward

@@ -19,7 +19,9 @@ const {
     getDataByEmpID,
     createContractDetl,
     UpdateContractDetlStatus,
-    UpdateContractDetl
+    UpdateContractDetl,
+    ActiveEmploye,
+    insertInactiveEmp
 } = require('../hrm_emp_master/empmast.service');
 const { validateempmaster, validateempmasterupdate, validateempmasterEdit } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
@@ -688,6 +690,54 @@ module.exports = {
                 message: "Data Updated Successfully"
             });
 
+        });
+    },
+    ActiveEmploye: (req, res) => {
+        const body = req.body;
+        ActiveEmploye(body, (err, results) => {
+
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 2,
+                message: "Data Updated Successfully"
+            });
+
+        });
+    },
+    insertInactiveEmp: (req, res) => {
+        const body = req.body;
+        insertInactiveEmp(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+            if (!results) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Results Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                message: "Data Created Successfully"
+            });
         });
     },
 }

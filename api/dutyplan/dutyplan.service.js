@@ -80,6 +80,8 @@ module.exports = {
             hrm_emp_master.gross_salary,
             hrm_department.dept_id,
             hrm_dept_section.sect_id,
+            em_department,
+            em_dept_section,
             dept_name, 
             sect_name,
             desg_name
@@ -154,6 +156,7 @@ module.exports = {
         })
     },
     CheckInsertVal: (data, callBack) => {
+
         pool.query(
             `SELECT 
                 plan_slno, emp_id, shift_id, duty_day
