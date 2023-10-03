@@ -606,7 +606,7 @@ module.exports = {
             `
             SELECT * FROM hrm_attendance_marking 
             where attendance_marking_month=?
-            and attendance_status is null and dept_id=? and sect_id=?
+            and  dept_id=? and sect_id=?
             `,
             [
                 data.attendance_marking_month,
@@ -980,6 +980,54 @@ module.exports = {
                 data.emp_id,
                 data.from,
                 data.to
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    InsertArrearSalary: (data, callBack) => {
+        pool.query(
+            `INSERT INTO hrm_emp_arrear (
+                em_id,
+                em_no,
+                arrear_amount,
+                arrear_month,
+                create_user,
+                arear_remark ,
+                department,
+                department_sect                                       
+            )
+            VALUES (?,?,?,?,?,?,?,?)`,
+            [
+                data.em_id,
+                data.em_no,
+                data.arrear_amount,
+                data.arrear_month,
+                data.create_user,
+                data.arear_remark,
+                data.department,
+                data.department_sect
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getArearData: (data, callBack) => {
+        pool.query(
+            `SELECT em_id,em_no,department,department_sect,arrear_amount,arrear_month,arear_remark FROM medi_hrm.hrm_emp_arrear 
+            where department=? and department_sect=? and arrear_month=?`,
+            [
+                data.department,
+                data.department_sect,
+                data.arrear_month
             ],
             (error, results, feilds) => {
                 if (error) {

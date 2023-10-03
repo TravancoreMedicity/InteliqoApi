@@ -32,10 +32,11 @@ module.exports = {
                 leavetype_multiple,
                 pf_employee_amount,
                 pf_employer_amount,
-                onehour_rqst_count
+                onehour_rqst_count,
+                areartype
                 )
 
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
 
 
             [
@@ -67,7 +68,8 @@ module.exports = {
                 JSON.stringify(data.leavetype_multiple),
                 data.pf_employee_amount,
                 data.pf_employer_amount,
-                data.onehour_rqst_count
+                data.onehour_rqst_count,
+                data.areartype
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -120,7 +122,8 @@ module.exports = {
                 leavetype_multiple=?,
                 pf_employee_amount=?,
                 pf_employer_amount=?,
-                onehour_rqst_count=?
+                onehour_rqst_count=?,
+                areartype=?
                 WHERE setting_slno =?`,
             [
                 data.cmmn_grace_period,
@@ -152,6 +155,7 @@ module.exports = {
                 data.pf_employee_amount,
                 data.pf_employer_amount,
                 data.onehour_rqst_count,
+                data.areartype,
                 data.setting_slno
             ],
             (error, results, feilds) => {

@@ -1,4 +1,5 @@
-const { create, update, getDataBySlno, getSelectAllDataById, checkInsertVal, createSalary } = require('../Salary_Increment/Salary_Increment.service');
+const { create, update, getDataBySlno, getSelectAllDataById, checkInsertVal, createSalary,
+    createNewArray } = require('../Salary_Increment/Salary_Increment.service');
 const { validatesalaryIncrement } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -153,7 +154,28 @@ module.exports = {
                 data: results
             });
         });
+    },
+    createNewArray: (req, res) => {
+        const body = req.body;
+        var values = body.map((value, index) => {
+            return [value.em_id, value.em_no, value.earnded_id,
+            value.date, value.amount]
+        })
+
+        createNewArray(values, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                message: "Data Created Successfully"
+            });
+
+        });
     }
-
-
 }
