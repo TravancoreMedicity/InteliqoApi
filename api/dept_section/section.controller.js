@@ -1,5 +1,5 @@
 const { createSect, updateSect, deleteSect, getSect, getSectById, getSelectedSectionByDept, getSectionselect,
-    getAuthorization, getSectEmp } = require('../dept_section/section.service');
+    getAuthorization, getSectEmp, checkInsertVal } = require('../dept_section/section.service');
 const { validateSection } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
 
@@ -16,21 +16,31 @@ module.exports = {
         }
         // let body.dept_name = body_result
         body.sect_name = body_result.value.sect_name;
+        checkInsertVal(body, (err, results) => {
+            const value = JSON.parse(JSON.stringify(results))
+            if (Object.keys(value).length === 0) {
+                createSect(body, (err, results) => {
+                    if (err) {
+                        logger.errorLogger(err)
+                        return res.status(200).json({
+                            success: 0,
+                            message: err
+                        });
+                    }
 
-        createSect(body, (err, results) => {
-            if (err) {
-                logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 0,
-                    message: err
+                    return res.status(200).json({
+                        success: 1,
+                        message: "Record Updated Successfully"
+                    });
                 });
             }
-
-            return res.status(200).json({
-                success: 1,
-                message: "Record Updated Successfully"
-            });
-        });
+            else {
+                return res.status(200).json({
+                    success: 7,
+                    message: "Department Section Name Already Exist"
+                })
+            }
+        })
     },
     updateSect: async (req, res) => {
 

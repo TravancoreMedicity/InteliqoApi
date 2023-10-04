@@ -175,4 +175,26 @@ module.exports = {
             }
         )
     },
+    createNewArray: (data, callBack) => {
+        pool.query(
+            `INSERT INTO hrm_salary_increment
+             (
+                em_id,
+                em_no,
+                em_salary_desc,
+                incr_start_date,
+                incre_amount
+            )
+            VALUES ?`,
+            [
+                data
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }

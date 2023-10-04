@@ -336,11 +336,11 @@ module.exports = {
             em_salary_desc,
             em_amount,
             ernded_slno
-             from hrm_emp_earn_deduction
-             inner join hrm_earning_deduction on hrm_emp_earn_deduction.em_salary_desc=hrm_earning_deduction.earnded_id
-             inner join hrm_earning_type on hrm_earning_deduction.erning_type_id=hrm_earning_type.erning_type_id
-             inner join hrm_emp_master on hrm_emp_earn_deduction.em_no=hrm_emp_master.em_no
-             where  hrm_earning_deduction.erning_type_id=3 and hrm_emp_earn_deduction.em_id=?`,
+            from hrm_emp_earn_deduction
+            inner join hrm_earning_deduction on hrm_emp_earn_deduction.em_salary_desc=hrm_earning_deduction.earnded_id
+            inner join hrm_earning_type on hrm_earning_deduction.erning_type_id=hrm_earning_type.erning_type_id
+            inner join hrm_emp_master on hrm_emp_earn_deduction.em_no=hrm_emp_master.em_no
+            where  hrm_earning_deduction.erning_type_id=3 and hrm_emp_earn_deduction.em_id=?`,
             [
                 data.em_id
             ],
@@ -359,22 +359,24 @@ module.exports = {
             em_no, 
             em_name,
             em_name as emp_name,
-             hrm_branch.branch_name,
-             IF(em_gender = 1, 'Male', 'Female') gender,
-             em_age_year,
-              em_doj,
+            hrm_branch.branch_name,
+            IF(em_gender = 1, 'Male', 'Female') gender,
+            em_age_year,
+            em_doj,
             dept_name, 
             sect_name,
-              em_mobile,
-              designation.desg_name,
-              IF(em_status = 1, 'Yes', 'No') emp_status,
+            em_mobile,
+            designation.desg_name,
+            em_department,
+            em_dept_section,
+            IF(em_status = 1, 'Yes', 'No') emp_status,
             recomend_salary
-             FROM hrm_emp_master 
-             inner join hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
-             inner join hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
-             inner join hrm_branch on hrm_emp_master.em_branch = hrm_branch.branch_slno
-             inner join  designation ON designation.desg_slno = hrm_emp_master.em_designation
-             where em_no=?`,
+            FROM hrm_emp_master 
+            inner join hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
+            inner join hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
+            inner join hrm_branch on hrm_emp_master.em_branch = hrm_branch.branch_slno
+            inner join  designation ON designation.desg_slno = hrm_emp_master.em_designation
+            where em_no=? and em_status=1`,
             [
                 id
             ],
@@ -390,16 +392,10 @@ module.exports = {
     },
     getALLData: (data, callBack) => {
         pool.query(
-            `SELECT 
-            em_id,
-            em_no, 
-            em_name,
-            dept_name, 
-            sect_name,recomend_salary
-             FROM hrm_emp_master 
-             inner join hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
-             inner join hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
-             where em_no=? and em_department=? and em_dept_section=?;`,
+            `SELECT em_id,em_department,em_dept_section, em_no, em_name,dept_name,sect_name,recomend_salary
+            FROM hrm_emp_master inner join hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
+            inner join hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
+            where em_no=? and em_department=? and em_dept_section=?`,
             [
                 data.em_no,
                 data.em_department,
