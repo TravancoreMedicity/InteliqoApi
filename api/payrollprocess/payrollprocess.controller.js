@@ -9,7 +9,8 @@ const { empDeptdata, empDeptSecdata, empNameBasedata, getFixedByEmid,
     createPayrollpayslipDetl, checkAttendanceProcess, getPunchdata, getPunchmastData,
     getattendancemark, getEmpNoDeptWise, getPaySlipData, getIndvidualPayslipDetl,
     checkPayslipDataExist, deptWisePaySlipData, empWisePaySlipDetl, checkInsertVal,
-    InsertPunchInOutHr, updatePunchInOutHr, getPunchInOutHr, CancelPunchInOutHr, getPunchByEmid
+    InsertPunchInOutHr, updatePunchInOutHr, getPunchInOutHr, CancelPunchInOutHr, getPunchByEmid,
+    InsertArrearSalary, getArearData
 } = require('../payrollprocess/payrollprocess.service');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -995,5 +996,44 @@ module.exports = {
             });
         });
     },
+    InsertArrearSalary: (req, res) => {
+        const body = req.body;
+        InsertArrearSalary(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
 
+            return res.status(200).json({
+                success: 1,
+                message: "Data Created Successfully"
+            });
+
+        });
+    },
+    getArearData: (req, res) => {
+        const body = req.body
+        getArearData(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
 }

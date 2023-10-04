@@ -175,6 +175,20 @@ module.exports = {
             }
         );
     },
-
-
+    checkInsertVal: (data, callBack) => {
+        pool.query(
+            `SELECT sect_name
+                FROM hrm_dept_section
+                WHERE sect_name = ?`,
+            [
+                data.sect_name,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error)
+                }
+                return callBack(null, results)
+            }
+        )
+    },
 }

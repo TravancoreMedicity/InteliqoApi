@@ -110,9 +110,8 @@ const PerformanceAppraisalRouter = require("./api/PerformanceAppraisal/Performan
 const ActiveEmpReportRouter = require("./api/ActiveEmpReport/ActiveEmpReport.router")
 const punchTrasfer = require("./api/PunchTransfer/punchtransfer.router")
 const CommonReqst = require("./api/CommonRequest/CommonReqst.router")
+const Vaccination = require("./api/Vaccination/Vaccination.router")
 const CommonRequestMast = require("./api/CommonRequestMaster/master.router")
-
-
 //Training
 const TrainingType = require("./api/TrainingType/TrainingType.router")
 const TrainingCategory = require("./api/TrainingCategory/TrainingCategory.router")
@@ -275,6 +274,8 @@ app.use("/api/ActiveEmpReport", ActiveEmpReportRouter)
 app.use("/api/punchTrasfer", punchTrasfer)
 app.use("/api/CommonReqst", CommonReqst)
 app.use("/api/CommonRequestMast", CommonRequestMast)
+app.use('/api/Vaccination', Vaccination)
+
 
 
 //Traing
