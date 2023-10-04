@@ -1,6 +1,6 @@
 
-const { TrainingAfterJoiningGet, TrainingNewJoineeInsert, JoineeDetailsGet, JoineeDetailsInsert,
-    JoineeDetailsUpdate, ScheduleDetailsGet, ScheduleUpdate, GetTopic, GetTrainers, ScheduleInsert, GetScheduleDetails } = require('./TrainingAfterJoining.service');
+const { TrainingAfterJoiningGet, TrainingNewJoineeInsert, JoineeDetailsInsert,
+    JoineeDetailsUpdate, ScheduleDetailsGet, ScheduleUpdate, ScheduleDateUpdate, GetTopic, GetTrainers, ScheduleInsert, GetScheduleDetails, DepartmentalScheduleInsert, DepartmentalScheduleGet } = require('./TrainingAfterJoining.service');
 
 module.exports = {
 
@@ -45,32 +45,11 @@ module.exports = {
 
         });
     },
-    // JoineeDetailsGet: (req, res) => {
-    //     JoineeDetailsGet((err, results) => {
 
-    //         if (err) {
-    //             return res.status(400).json({
-    //                 success: 0,
-    //                 message: "Error"
-    //             })
-    //         }
-    //         if (results === 0) {
-    //             return res.status(400).json({
-    //                 success: 1,
-    //                 message: "No Record Found"
-    //             })
-    //         }
-    //         return res.status(200).json({
-    //             success: 2,
-    //             data: results
-    //         })
-    //     })
-    // },
 
     JoineeDetailsInsert: (req, res) => {
         const body = req.body;
         var values = body.map((value, index) => {
-            // return [value.trainingtype_slno, value.cat_slno, value.name_slno, tnd_emp_id, value.tns_emp_id
             return [value.tnd_emp_id, value.trainingtype_slno, value.cat_slno, value.name_slno, value.tnd_date, value.create_user]
         })
         JoineeDetailsInsert(values, (err, results) => {
@@ -238,5 +217,70 @@ module.exports = {
                 data: results
             })
         })
-    }
+    },
+
+    DepartmentalScheduleInsert: (req, res) => {
+        const body = req.body;
+        var values = body.map((value, index) => {
+            return [value.department, value.deparment_sect, value.schedule_month, value.schedule_year,
+            value.date, value.topic, JSON.stringify(value.trainer), value.schedule_remark, value.create_user
+            ]
+        })
+        DepartmentalScheduleInsert(values, (err, results) => {
+            if (err) {
+
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Successfully Inserted"
+                });
+            }
+
+        });
+    },
+    DepartmentalScheduleGet: (req, res) => {
+        DepartmentalScheduleGet((err, results) => {
+
+            if (err) {
+                return res.status(400).json({
+                    success: 0,
+                    message: "Error"
+                })
+            }
+            if (results === 0) {
+                return res.status(400).json({
+                    success: 1,
+                    message: "No Record Found"
+                })
+            }
+            return res.status(200).json({
+                success: 2,
+                data: results
+            })
+        })
+    },
+    ScheduleDateUpdate: (req, res) => {
+        const body = req.body;
+        ScheduleDateUpdate(body, (err, results) => {
+            if (err) {
+
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Schedule Date Updated successfully"
+                });
+            }
+
+        });
+    },
 }

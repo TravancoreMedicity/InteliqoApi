@@ -29,7 +29,6 @@ module.exports = {
         )
     },
 
-    //tns_slno, tns_emp_id, tns_dept, tns_dept_sec, tns_type, tns_date, create_user, edit_user, create_date, update_date
     TrainingNewJoineeInsert: (data, callBack) => {
         pool.query(
             `INSERT INTO training_newjoinee_schedule (
@@ -52,26 +51,6 @@ module.exports = {
             }
         )
     },
-    // JoineeDetailsGet: (callback) => {
-
-    //     pool.query(
-    //         `
-    //         SELECT tns_slno, tns_emp_id, tns_dept, tns_dept_sec,tns_date FROM medi_hrm.training_newjoinee_schedule
-    //        `, [],
-
-
-    //         (err, results, feilds) => {
-    //             if (err) {
-    //                 return callback(err)
-
-    //             }
-    //             return callback(null, results)
-
-    //         }
-
-    //     )
-    // },
-
 
     JoineeDetailsInsert: (data, callBack) => {
         pool.query(
@@ -230,6 +209,65 @@ module.exports = {
 
             }
 
+        )
+    },
+
+    DepartmentalScheduleInsert: (data, callBack) => {
+        pool.query(
+            `INSERT INTO medi_hrm.training_departmental_schedule (
+                 department, deparment_sect, schedule_month, schedule_year, schedule_date, schedule_topics, schedule_trainers, schedule_remark, create_user  )
+            values ?`,
+            [
+                data
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    DepartmentalScheduleGet: (callback) => {
+        pool.query(
+            `  
+            SELECT slno, department, deparment_sect, schedule_month,schedule_date, schedule_year, schedule_remark,dept_name,hrm_department.dept_id,
+            topic_slno,training_topic_name,GROUP_CONCAT(em_name)  as traineer_name
+                FROM medi_hrm.training_departmental_schedule
+                LEFT JOIN hrm_department ON hrm_department.dept_id=training_departmental_schedule.deparment_sect
+                LEFT JOIN training_topic ON training_topic.topic_slno=training_departmental_schedule.schedule_topics
+              LEFT JOIN hrm_emp_master on JSON_CONTAINS(training_departmental_schedule.schedule_trainers,cast(hrm_emp_master.em_id as json),'$') 
+              where year(schedule_year)=year(curdate()) GROUP BY slno
+      `
+            , [],
+
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+
+            }
+
+        )
+    },
+    ScheduleDateUpdate: (data, callBack) => {
+        pool.query(
+            `UPDATE training_departmental_schedule set 
+            schedule_date=?
+            where slno=?`,
+            [
+                data.schedule_date,
+                data.slno
+
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
         )
     },
 }
