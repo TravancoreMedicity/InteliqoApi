@@ -1,51 +1,51 @@
 const multer = require('multer');
 const path = require('path');
 const fs = require("fs")
-const { insertProfile, getProfilePic } = require('../uploadFile/upload.service')
+const { insertProfile, getProfilePic, insertPersonalRecord } = require('../uploadFile/upload.service')
 const logger = require('../../logger/logger');
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
+  destination: (req, file, cb) => {
     //  console.log(file);
 
-        const id = req.body.em_id;
-        
-        // console.log(id);
-        // File or directtory check 
-        const filepath = path.join('D:/DocMeliora/Inteliqo/', "PersonalRecords", `${id}`)
-        // const filepath = path.join(__dirname, "api", `${id}`)
-        // console.log(filepath)
+    const id = req.body.em_id;
 
-        if (fs.existsSync(filepath)) {
-            // Do something
-            // console.log("file excist")
-            cb(null, `${filepath}`);
-        } else {
-            fs.mkdir(path.join('D:/DocMeliora/Inteliqo/', "PersonalRecords", `${id}`), {}, (err) => {
+    // console.log(id);
+    // File or directtory check 
+    const filepath = path.join('D:/DocMeliora/Inteliqo/', "PersonalRecords", `${id}`)
+    // const filepath = path.join(__dirname, "api", `${id}`)
+    // console.log(filepath)
 
-                // console.log(err);
-                if (err) {
-                    return cb(new Error('Error Occured while Mkdir'));
-                }
-                cb(null, `${filepath}`);
-            })
+    if (fs.existsSync(filepath)) {
+      // Do something
+      // console.log("file excist")
+      cb(null, `${filepath}`);
+    } else {
+      fs.mkdir(path.join('D:/DocMeliora/Inteliqo/', "PersonalRecords", `${id}`), {}, (err) => {
+
+        // console.log(err);
+        if (err) {
+          return cb(new Error('Error Occured while Mkdir'));
         }
-        // cb(null, 'D:/Upload')
-    },
-    filename: function (req, file, cb) {
-        cb(null, 'profilePic' + path.extname(file.originalname))
-    },
+        cb(null, `${filepath}`);
+      })
+    }
+    // cb(null, 'D:/Upload')
+  },
+  filename: function (req, file, cb) {
+    cb(null, 'profilePic' + path.extname(file.originalname))
+  },
 })
- // for multiple file upload
+// for multiple file upload
 const storagemul = multer.diskStorage({
   destination: (req, file, cb) => {
-  
+
     const id = req.body.em_id;
     const filepath = path.join('D:/DocMeliora/Inteliqo/', "PersonalRecords", `${id}`);
-    
+
     if (!fs.existsSync(filepath)) {
       fs.mkdirSync(filepath, { recursive: true });
     }
-    
+
     cb(null, filepath);
   },
   filename: function (req, file, cb) {
@@ -54,35 +54,35 @@ const storagemul = multer.diskStorage({
     const extension = path.extname(file.originalname);
     const filename = 'vaccination' + uniqueSuffix + extension;
     cb(null, filename);
-    
+
   },
-  
+
 });
 
 
 const maxSize = 2 * 1024 * 1024
 
 const upload = multer({
-    storage: storage,
-    fileFilter: (req, file, cb) => {
-        if (
-            file.mimetype == "image/png" ||
-            file.mimetype == "image/jpg" ||
-            file.mimetype == "image/jpeg"
-        ) {
-            cb(null, true);
-        } else {
-            cb(null, false);
-            // console.log('Only .png, .jpg and .jpeg format allowed!')
-            return cb(new Error('Only .png, .jpg and .jpeg format allowed!'));
-        }
-    },
-    limits: { fileSize: maxSize }
+  storage: storage,
+  fileFilter: (req, file, cb) => {
+    if (
+      file.mimetype == "image/png" ||
+      file.mimetype == "image/jpg" ||
+      file.mimetype == "image/jpeg"
+    ) {
+      cb(null, true);
+    } else {
+      cb(null, false);
+      // console.log('Only .png, .jpg and .jpeg format allowed!')
+      return cb(new Error('Only .png, .jpg and .jpeg format allowed!'));
+    }
+  },
+  limits: { fileSize: maxSize }
 }).single('file');
 
 
 
- // for multiple file upload
+// for multiple file upload
 const uploadmul = multer({
   storage: storagemul,
   fileFilter: (req, file, cb) => {
@@ -101,152 +101,223 @@ const uploadmul = multer({
   limits: { fileSize: maxSize }
 }).array('files', 10);
 
-   
+
 
 module.exports = {
 
-    uploadfile: (req, res) => {
-        upload(req, res, (err) => {
-            const body = req.body;
-            // console.log(body)
-            // FILE SIZE ERROR
-            if (err instanceof multer.MulterError) {
-                // return res.end("Max file size 2MB allowed!");
-                return res.status(200).json({
-                    status: 0,
-                    message: "Max file size 2MB allowed!",
-                })
-            }
-            // INVALID FILE TYPE, message will return from fileFilter callback
-            else if (err) {
-                logger.errorLogger(err)
-                // return res.end(err.message);
-                return res.status(200).json({
-                    status: 0,
-                    message: err.message,
-                })
-            }
-            // FILE NOT SELECTED
-            else if (!req.file) {
-                // return res.end("File is required!");
-                return res.status(200).json({
-                    status: 0,
-                    message: "File is required!",
-                })
-            }
-            // SUCCESS
-            else {
-                // console.log("File uploaded successfully!");
-                // console.log("File response", req.file);
-
-                insertProfile(body, (err, results) => {
-                    if (err) {
-                        logger.errorLogger(err)
-                        return res.status(200).json({
-                            success: 0,
-                            message: err
-                        });
-                    }
-
-                    return res.status(200).json({
-                        success: 1,
-                        message: "File Uploaded SuccessFully"
-                    });
-                })
-            }
-
-
+  uploadfile: (req, res) => {
+    upload(req, res, (err) => {
+      const body = req.body;
+      // console.log(res)
+      // FILE SIZE ERROR
+      if (err instanceof multer.MulterError) {
+        // return res.end("Max file size 2MB allowed!");
+        return res.status(200).json({
+          status: 0,
+          message: "Max file size 2MB allowed!",
         })
-    },
-     // for multiple file upload
+      }
+      // INVALID FILE TYPE, message will return from fileFilter callback
+      else if (err) {
+        logger.errorLogger(err)
+        // return res.end(err.message);
+        return res.status(200).json({
+          status: 0,
+          message: err.message,
+        })
+      }
+      // FILE NOT SELECTED
+      else if (!req.file) {
+        // return res.end("File is required!");
+        return res.status(200).json({
+          status: 0,
+          message: "File is required!",
+        })
+      }
+      // SUCCESS
+      else {
+        // console.log("File uploaded successfully!");
+        // console.log("File response", req.file);
 
-
- uploadfilemultiple: (req, res) => {
-  uploadmul(req, res, async (err) => {
-    const body = req.body;
-
-    if (err instanceof multer.MulterError) {
-      return res.status(200).json({
-        status: 0,
-        message: "Max file size 2MB allowed!",
-      });
-    } else if (err) {
-      logger.errorLogger(err);
-      return res.status(200).json({
-        status: 0,
-        message: err.message,
-      });
-    } else if (!req.files || req.files.length === 0) {
-      return res.status(200).json({
-        status: 0,
-        message: "Files are required!",
-      });
-    } else {
-      try {
-        const files = req.files;
-        const em_id = body.em_id;
-        const em_id_folder = path.join('D:/DocMeliora/Inteliqo/', "PersonalRecords", `${em_id}`);
-
-        // Create the em_id folder if it doesn't exist
-        if (!fs.existsSync(em_id_folder)) {
-          fs.mkdirSync(em_id_folder, { recursive: true });
-        }
-
-        for (const file of files) {
-          // Process each file individually
-         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-         const extension = path.extname(file.originalname);
-          const filename = 'vaccination' + uniqueSuffix + extension;
-
-          // Move the file to the destination folder
-          const destinationPath = path.join(em_id_folder, filename);
-          fs.renameSync(file.path, destinationPath);
-        }
-
-        // Insert the em_id into the database using the reusable function
         insertProfile(body, (err, results) => {
           if (err) {
-            logger.errorLogger(err);
+            logger.errorLogger(err)
             return res.status(200).json({
               success: 0,
-              message: err,
+              message: err
             });
           }
 
           return res.status(200).json({
             success: 1,
-            message: "Files Uploaded Successfully",
+            message: "File Uploaded SuccessFully"
           });
-        });
-      } catch (error) {
-        logger.errorLogger(error);
-        return res.status(200).json({
-          success: 0,
-          message: "An error occurred during file upload.",
-        });
+        })
       }
-    }
-  });
-},
 
-    getEmployeeProfilePic: (req, res) => {
-        const body = req.body;
 
-        getProfilePic(body, (err, results) => {
+    })
+  },
+  // for multiple file upload
+
+
+  uploadfilemultiple: (req, res) => {
+    uploadmul(req, res, async (err) => {
+      const body = req.body;
+
+      if (err instanceof multer.MulterError) {
+        return res.status(200).json({
+          status: 0,
+          message: "Max file size 2MB allowed!",
+        });
+      } else if (err) {
+        logger.errorLogger(err);
+        return res.status(200).json({
+          status: 0,
+          message: err.message,
+        });
+      } else if (!req.files || req.files.length === 0) {
+        return res.status(200).json({
+          status: 0,
+          message: "Files are required!",
+        });
+      } else {
+        try {
+          const files = req.files;
+          const em_id = body.em_id;
+          const em_id_folder = path.join('D:/DocMeliora/Inteliqo/', "PersonalRecords", `${em_id}`);
+
+          // Create the em_id folder if it doesn't exist
+          if (!fs.existsSync(em_id_folder)) {
+            fs.mkdirSync(em_id_folder, { recursive: true });
+          }
+
+          for (const file of files) {
+            // Process each file individually
+            const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+            const extension = path.extname(file.originalname);
+            const filename = 'vaccination' + uniqueSuffix + extension;
+
+            // Move the file to the destination folder
+            const destinationPath = path.join(em_id_folder, filename);
+            fs.renameSync(file.path, destinationPath);
+          }
+
+          // Insert the em_id into the database using the reusable function
+          insertProfile(body, (err, results) => {
             if (err) {
-                logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 0,
-                    message: err
-                });
+              logger.errorLogger(err);
+              return res.status(200).json({
+                success: 0,
+                message: err,
+              });
             }
 
             return res.status(200).json({
-                success: 1,
-                data: results
+              success: 1,
+              message: "Files Uploaded Successfully",
             });
-        })
-    }
+          });
+        } catch (error) {
+          logger.errorLogger(error);
+          return res.status(200).json({
+            success: 0,
+            message: "An error occurred during file upload.",
+          });
+        }
+      }
+    });
+  },
+
+  //  checklist upload
+  uploadchecklist: (req, res) => {
+
+    uploadmul(req, res, async (err) => {
+      const body = req.body;
+      console.log(body);
+      if (err instanceof multer.MulterError) {
+        return res.status(200).json({
+          status: 0,
+          message: "Max file size 2MB allowed!",
+        });
+      } else if (err) {
+        logger.errorLogger(err);
+        return res.status(200).json({
+          status: 0,
+          message: err.message,
+        });
+      } else if (!req.files || req.files.length === 0) {
+        return res.status(200).json({
+          status: 0,
+          message: "Files are required!",
+        });
+      } else {
+        try {
+          const files = req.files;
+          const em_id = body.em_id;
+          const checklistid = body.checklistid;
+          const em_id_folder = path.join('D:/DocMeliora/Inteliqo/', "PersonalRecords", `${em_id}`, "checklist", `${checklistid}`);
+
+          // Create the em_id folder if it doesn't exist
+          if (!fs.existsSync(em_id_folder)) {
+            fs.mkdirSync(em_id_folder, { recursive: true });
+          }
+
+          for (const file of files) {
+            // Process each file individually
+            const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+            const extension = path.extname(file.originalname);
+            const filename = 'emp file checklist' + uniqueSuffix + extension;
+
+            // Move the file to the destination folder
+            const destinationPath = path.join(em_id_folder, filename);
+            fs.renameSync(file.path, destinationPath);
+          }
+
+          // Insert the em_id into the database using the reusable function
+          insertPersonalRecord(body, (err, results) => {
+            if (err) {
+              logger.errorLogger(err);
+              return res.status(200).json({
+                success: 0,
+                message: err,
+              });
+            }
+
+            return res.status(200).json({
+              success: 1,
+              message: "Files Uploaded Successfully",
+            });
+          });
+        } catch (error) {
+          logger.errorLogger(error);
+          return res.status(200).json({
+            success: 0,
+            message: "An error occurred during file upload.",
+          });
+        }
+      }
+    });
+  },
+  getEmployeeProfilePic: (req, res) => {
+    const body = req.body;
+
+    getProfilePic(body, (err, results) => {
+      if (err) {
+        logger.errorLogger(err)
+        return res.status(200).json({
+          success: 0,
+          message: err
+        });
+      }
+
+      return res.status(200).json({
+        success: 1,
+        data: results
+      });
+    })
+  }
+
 
 
 }
