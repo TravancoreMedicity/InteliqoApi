@@ -127,7 +127,8 @@ module.exports = {
                 em_cont_renew=?,
                 em_cont_close_date=?,
                 em_cont_renew_date=?,
-                status=?
+                status=?,
+                edit_user=?
                 WHERE em_no =?`,
             [
                 data.em_cont_close,
@@ -136,6 +137,7 @@ module.exports = {
                 data.em_cont_close_date,
                 data.em_cont_renew_date,
                 data.status,
+                data.edit_user,
                 data.em_no
             ],
             (error, results, feilds) => {

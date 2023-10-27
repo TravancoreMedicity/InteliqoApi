@@ -41,9 +41,12 @@ module.exports = {
                 hrm_religion,
                 contract_status,
                 probation_status,
-                recomend_salary
+                recomend_salary,
+                clinicaltype,
+                doctor_status
+
             )
-            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
                 data.em_no,
                 data.em_salutation,
@@ -82,7 +85,9 @@ module.exports = {
                 data.hrm_religion,
                 data.contractflag,
                 data.probation_status,
-                data.recomend_salary
+                data.recomend_salary,
+                data.clinicaltype,
+                data.doctor_status
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -132,7 +137,9 @@ module.exports = {
                 hrm_religion=?,
                 contract_status=?,
                 probation_status=?,
-                recomend_salary=?
+                recomend_salary=?,
+                clinicaltype=?,
+                doctor_status=?
                 WHERE em_no = ?`,
             [
                 data.em_salutation,
@@ -172,6 +179,8 @@ module.exports = {
                 data.contractflag,
                 data.probation_status,
                 data.recomend_salary,
+                data.clinicaltype,
+                data.doctor_status,
                 data.em_no
             ],
             (error, results, feilds) => {
@@ -327,7 +336,9 @@ module.exports = {
                     em_category,
                     contract_status,
                     probation_status,
-                    recomend_salary
+                    recomend_salary,
+                    clinicaltype,
+                    doctor_status
                 FROM hrm_emp_master
                 WHERE em_no = ?
                 AND em_status=1 `,

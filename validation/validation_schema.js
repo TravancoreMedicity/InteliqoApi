@@ -130,6 +130,7 @@ const validateEmployeeType = Joi.object({
         el_aplicable: Joi.number().min(0).max(1).required(),
         create_user: Joi.number().optional(),
         edit_user: Joi.number().optional(),
+        is_type: Joi.number().required(),
 
 });
 
@@ -321,7 +322,7 @@ const validateearnings = Joi.object({
 const validateempcategory = Joi.object({
         ecat_name: Joi.string().required().trim().uppercase().max(45),
         emp_type: Joi.number().required(),
-        des_type: Joi.number().required(),
+        // des_type: Joi.number().required(),
         ecat_cont: Joi.number(),
         ecat_cont_period: Joi.number(),
         ecat_cont_type: Joi.string().trim().uppercase().min(1),
@@ -334,10 +335,10 @@ const validateempcategory = Joi.object({
         ecat_el_max: Joi.number(),
         ecat_sl: Joi.number(),
         ecat_sl_max: Joi.number(),
-        ecat_nh: Joi.number(),
-        ecat_nh_max: Joi.number(),
-        ecat_fh: Joi.number(),
-        ecat_fh_max: Joi.number(),
+        // ecat_nh: Joi.number(),
+        // ecat_nh_max: Joi.number(),
+        // ecat_fh: Joi.number(),
+        // ecat_fh_max: Joi.number(),
         ecat_woff_allow: Joi.number(),
         ecat_doff_allow: Joi.number(),
         ecat_esi_allow: Joi.number(),
@@ -354,6 +355,12 @@ const validateempcategory = Joi.object({
         cont_grace: Joi.optional(),
         create_users: Joi.optional(),
         edit_user: Joi.optional(),
+        ecat_training: Joi.number(),
+        ecat_training_max: Joi.number().optional(),
+        ecat_holiday: Joi.number(),
+        ecate_pf: Joi.number(),
+        ecat_wwf: Joi.number(),
+        ecat_lwf: Joi.number(),
 })
 
 // VALIDATE REGISTRATON TYPE
@@ -524,6 +531,8 @@ const validateempmaster = Joi.object({
         blood_slno: Joi.number().min(1).required(),
         probation_status: Joi.number().required(),
         recomend_salary: Joi.number().optional(),
+        clinicaltype: Joi.number().min(1).required(),
+        doctor_status: Joi.number().optional()
 })
 
 // VALIDATE EMPLOYEE MASTER EDIT
@@ -568,6 +577,8 @@ const validateempmasterEdit = Joi.object({
         blood_slno: Joi.number().min(1).required(),
         probation_status: Joi.number().required(),
         recomend_salary: Joi.number().optional(),
+        clinicaltype: Joi.number().optional(),
+        doctor_status: Joi.number().optional()
 })
 // VALIDATE EMPLOYEupdate
 const validateempmasterupdate = Joi.object({

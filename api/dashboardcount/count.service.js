@@ -331,19 +331,20 @@ module.exports = {
             dept_name,
             desg_name,
             em_doj,
-            sect_name,
-            hrm_dept_section.sect_id,
-            em_prob_end_date,
-             ecat_name,
-             em_contract_end_date
+            ecat_name,
+            em_prob_end_date as training_end,
+            incharge,
+            hod,
+            hrm_department.dept_id as dept_id,
+            hrm_dept_section.sect_id as sect_id
             from hrm_emp_master
             LEFT JOIN hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
             LEFT JOIN designation ON hrm_emp_master.em_designation=designation.desg_slno
+            LEFT JOIN hrm_emp_category on hrm_emp_master.em_category= hrm_emp_category.category_slno
             LEFT JOIN hrm_dept_section ON hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
-			LEFT JOIN hrm_emp_category on hrm_emp_master.em_category= hrm_emp_category.category_slno
             LEFT JOIN hrm_performance_apprsl ON hrm_emp_master.em_id=hrm_performance_apprsl.em_id
-			where des_type=1 and em_prob_end_date<=curdate() and em_prob_end_date!="2000-01-01" 
-            and em_status=1 and hrm_emp_master.em_id!=1 and probation_status=1 and appraisal_status is null`,
+            where  em_prob_end_date<=curdate() and em_prob_end_date!="2000-01-01" AND ecat_prob=1
+            and hrm_emp_master.em_status=1 and hrm_emp_master.em_id!=1 and probation_status=1 and appraisal_status is null`,
             [],
             (error, results, feilds) => {
                 if (error) {

@@ -3,12 +3,18 @@ const pool = require('../../config/database');
 module.exports = {
     create: (data, callBack) => {
         pool.query(
-            `INSERT INTO employee_type (emptype_name,status,create_user)
-            VALUES (?,?,?)`,
+            `INSERT INTO employee_type (
+                emptype_name,
+                status,
+                is_type,
+                create_user
+                )
+            VALUES (?,?,?,?)`,
             [
                 data.emptype_name,
                 data.el_aplicable,
-                data.create_user
+                data.is_type,
+                data.create_user,
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -22,12 +28,14 @@ module.exports = {
         pool.query(
             `UPDATE employee_type 
                 SET emptype_name = ?,
-                status = ?,
+                    status = ?,
+                    is_type=?,
                     edit_user = ?
                 WHERE emptype_slno = ?`,
             [
                 data.emptype_name,
                 data.el_aplicable,
+                data.is_type,
                 data.edit_user,
                 data.emptype_slno
             ],
@@ -56,8 +64,10 @@ module.exports = {
     getData: (callBack) => {
         pool.query(
             `SELECT emptype_name,
-                if(status = 1 ,'Yes','No') status,
-                emptype_slno
+             status,
+             if(status = 1 ,'Yes','No') Astatus,
+             is_type,
+             emptype_slno
             FROM employee_type `,
             [],
             (error, results, feilds) => {
@@ -88,8 +98,7 @@ module.exports = {
     },
     checkInsertVal: (data, callBack) => {
         pool.query(
-            `SELECT emptype_name,
-            emptype_slno
+            `SELECT emptype_name, emptype_slno
                 FROM employee_type
                 WHERE emptype_name = ?`,
             [
