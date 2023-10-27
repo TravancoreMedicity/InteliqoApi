@@ -262,16 +262,7 @@ module.exports = {
     },
     updateContractComplete: (req, res) => {
         const body = req.body;
-        // const body_result = validateempcontract.validate(body);
-
-        // if (body_result.error) {
-        //     return res.status(200).json({
-        //         success: 1,
-        //         message: body_result.error.details[0].message
-        //     });
-        // }
         updateContractComplete(body, (err, results) => {
-
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
