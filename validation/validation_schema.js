@@ -1294,6 +1294,7 @@ const ValidateTrainingType = Joi.object({
                         'string.min': 'Training Type length must be at least 3 characters long',
                         'string.max': 'Training Type length must be less than or equal to 45 characters long'
                 }),
+
         count_day: Joi.number().required(),
         type_status: Joi.number().min(0).max(1),
         create_user: Joi.number().optional(),
@@ -1354,7 +1355,7 @@ const validationTrainingTopic = Joi.object({
                         'string.max': 'Training Topic length must be less than or equal to 45 characters long'
                 }),
         training_name: Joi.number().min(1).required(),
-
+        hours: Joi.number().optional(),
         training_status: Joi.number().min(0).max(1).required(),
         tutorial_status: Joi.number().min(0).max(1).required(),
         medical_status: Joi.number().min(0).max(1).required(),
@@ -1364,22 +1365,48 @@ const validationTrainingTopic = Joi.object({
         create_user: Joi.number().optional(),
         edit_user: Joi.number().optional()
 })
-
+//q_slno, training_topics, questions, answer_a, answer_b, answer_c, answer_d, right_answer, upload_status, handwrite_answer, marks, create_user, edit_user
 const validateTrainingQuestions = Joi.object({
         q_slno: Joi.number().optional(),
+        training_topics: Joi.number().optional().min(1),
         questions: Joi.string().trim().uppercase().min(3).max(45).required()
                 .messages({
                         'string.empty': 'Traning Question field is required',
                         'string.min': "Traning Question length must be at least 3 characters lonng",
-                        'string.max': 'Training Question length must be less than or equal to 45 characters long'
+                        // 'string.max': 'Training Question length must be less than or equal to 45 characters long'
                 }),
-        answers: Joi.string().trim().uppercase().min(3).max(45).required()
-                .messages({
-                        'string.empty': 'Traning Answer field is required',
-                        'string.min': "Traning Answer length must be at least 3 characters lonng",
-                        'string.max': 'Training Answer length must be less than or equal to 45 characters long'
-                }),
-        training_topics: Joi.number().required().min(1),
+        // answer_a: Joi.string().optional(),
+        // answer_b: Joi.string().optional(),
+        // answer_c: Joi.string().optional(),
+        // answer_d: Joi.string().optional(),
+        // answer_a: Joi.string().optional().trim().uppercase().min(3).max(45)
+        //         .messages({
+        //                 'string.min': "Traning Answer length must be at least 3 characters lonng",
+        //                 'string.max': 'Training Answer length must be less than or equal to 45 characters long'
+        //         }),
+        // answer_b: Joi.string().trim().uppercase().min(3).max(45).optional()
+        //         .messages({
+        //                 'string.min': "Traning Answer length must be at least 3 characters lonng",
+        //                 'string.max': 'Training Answer length must be less than or equal to 45 characters long'
+        //         }),
+        // answer_c: Joi.string().trim().uppercase().min(3).max(45).optional()
+        //         .messages({
+        //                 'string.min': "Traning Answer length must be at least 3 characters lonng",
+        //                 'string.max': 'Training Answer length must be less than or equal to 45 characters long'
+        //         }),
+        // answer_d: Joi.string().trim().uppercase().min(3).max(45).optional()
+        //         .messages({
+        //                 'string.min': "Traning Answer length must be at least 3 characters lonng",
+        //                 'string.max': 'Training Answer length must be less than or equal to 45 characters long'
+        //         }),
+        // right_answer: Joi.number().optional(),
+        //handwrite_answer: Joi.string().uppercase().optional(),
+        // handwrite_answer: Joi.string().trim().uppercase().min(3).max(45).optional()
+        //         .messages({
+        //                 'string.min': "Traning Answer length must be at least 3 characters lonng",
+        //                 'string.max': 'Training Answer length must be less than or equal to 45 characters long'
+        //         }),
+        // upload_status: Joi.number().min(0).max(1).required(),
         marks: Joi.number().min(1).required(),
         create_user: Joi.number().optional(),
         edit_user: Joi.number().optional()

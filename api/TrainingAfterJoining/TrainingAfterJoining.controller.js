@@ -27,7 +27,6 @@ module.exports = {
     },
     TrainingNewJoineeInsert: (req, res) => {
         const body = req.body;
-        console.log(body);
         TrainingNewJoineeInsert(body, (err, results) => {
             if (err) {
 
@@ -221,12 +220,7 @@ module.exports = {
 
     DepartmentalScheduleInsert: (req, res) => {
         const body = req.body;
-        var values = body.map((value, index) => {
-            return [value.department, value.deparment_sect, value.schedule_month, value.schedule_year,
-            value.date, value.topic, JSON.stringify(value.trainer), value.schedule_remark, value.create_user
-            ]
-        })
-        DepartmentalScheduleInsert(values, (err, results) => {
+        DepartmentalScheduleInsert(body, (err, results) => {
             if (err) {
 
                 return res.status(200).json({
@@ -243,14 +237,17 @@ module.exports = {
 
         });
     },
-    DepartmentalScheduleGet: (req, res) => {
-        DepartmentalScheduleGet((err, results) => {
 
+
+    DepartmentalScheduleGet: (req, res) => {
+        const body = req.body;
+        DepartmentalScheduleGet(body, (err, results) => {
             if (err) {
-                return res.status(400).json({
+
+                return res.status(200).json({
                     success: 0,
-                    message: "Error"
-                })
+                    message: err
+                });
             }
             if (results === 0) {
                 return res.status(400).json({
@@ -262,8 +259,10 @@ module.exports = {
                 success: 2,
                 data: results
             })
-        })
+
+        });
     },
+
     ScheduleDateUpdate: (req, res) => {
         const body = req.body;
         ScheduleDateUpdate(body, (err, results) => {

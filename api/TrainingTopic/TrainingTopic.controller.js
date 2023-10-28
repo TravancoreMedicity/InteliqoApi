@@ -15,6 +15,7 @@ module.exports = {
         }
         body.training_topic_name = body_result.value.training_topic_name;
         body.training_name = body_result.value.training_name;
+        body.hours = body_result.value.hours;
         body.training_status = body_result.value.training_status;
         body.tutorial_status = body_result.value.tutorial_status;
         body.medical_status = body_result.value.medical_status;
@@ -59,6 +60,7 @@ module.exports = {
         }
         body.training_topic_name = body_result.value.training_topic_name;
         body.training_name = body_result.value.training_name;
+        body.hours = body_result.value.hours;
         body.training_status = body_result.value.training_status;
         body.tutorial_status = body_result.value.tutorial_status;
         body.medical_status = body_result.value.medical_status;

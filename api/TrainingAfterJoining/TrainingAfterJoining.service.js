@@ -186,10 +186,11 @@ module.exports = {
             }
         )
     },
+
     GetScheduleDetails: (callback) => {
         pool.query(
             `  
-            SELECT tes_slno, tes_dept, tes_dept_sec, tes_topic, tes_emp_name, tes_date, tes_remark ,dept_id,dept_name,desg_slno,desg_name,topic_slno,training_topic_name ,
+            SELECT tes_slno, tes_dept, tes_dept_sec, tes_topic, tes_emp_name, tes_date, tes_remark ,dept_id,dept_name,desg_slno,desg_name,topic_slno,training_topic_name,
             GROUP_CONCAT(em_name)  as traineer_name
             FROM training_employee_schedule
             LEFT JOIN hrm_department ON hrm_department.dept_id=training_employee_schedule.tes_dept
@@ -212,13 +213,23 @@ module.exports = {
         )
     },
 
+
     DepartmentalScheduleInsert: (data, callBack) => {
         pool.query(
             `INSERT INTO medi_hrm.training_departmental_schedule (
-                 department, deparment_sect, schedule_month, schedule_year, schedule_date, schedule_topics, schedule_trainers, schedule_remark, create_user  )
-            values ?`,
+             department, deparment_sect, schedule_month, schedule_year, schedule_date, schedule_topics, schedule_trainers, schedule_remark, create_user  )
+            VALUES (?,?,?,?,?,?,?,?,?)`,
             [
-                data
+
+                data.department,
+                data.deparment_sect,
+                data.schedule_month,
+                data.schedule_year,
+                data.schedule_date,
+                data.schedule_topics,
+                JSON.stringify(data.schedule_trainers),
+                data.schedule_remark,
+                data.create_user
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -228,37 +239,43 @@ module.exports = {
             }
         )
     },
-    DepartmentalScheduleGet: (callback) => {
+
+    DepartmentalScheduleGet: (data, callBack) => {
         pool.query(
-            `  
-            SELECT slno, department, deparment_sect, schedule_month,schedule_date, schedule_year, schedule_remark,dept_name,hrm_department.dept_id,
-            topic_slno,training_topic_name,GROUP_CONCAT(em_name)  as traineer_name
-                FROM medi_hrm.training_departmental_schedule
-                LEFT JOIN hrm_department ON hrm_department.dept_id=training_departmental_schedule.deparment_sect
-                LEFT JOIN training_topic ON training_topic.topic_slno=training_departmental_schedule.schedule_topics
-              LEFT JOIN hrm_emp_master on JSON_CONTAINS(training_departmental_schedule.schedule_trainers,cast(hrm_emp_master.em_id as json),'$') 
-              where year(schedule_year)=year(curdate()) GROUP BY slno
-      `
-            , [],
+            `SELECT slno, department, deparment_sect, schedule_month, schedule_year, schedule_date, schedule_topics, schedule_trainers, 
+            schedule_remark,hrm_department.dept_id,dept_name,  topic_slno,training_topic_name,sect_id,
+            GROUP_CONCAT(em_name)  as traineer_name
+            FROM medi_hrm.training_departmental_schedule
+            LEFT JOIN hrm_department ON hrm_department.dept_id=training_departmental_schedule.department
+            LEFT JOIN training_topic ON training_topic.topic_slno=training_departmental_schedule.schedule_topics
+            LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id =training_departmental_schedule.deparment_sect
+             LEFT JOIN hrm_emp_master on JSON_CONTAINS(training_departmental_schedule.schedule_trainers,cast(hrm_emp_master.em_id as json),'$')
+             where department=? and deparment_sect=? and year(schedule_year)=?
+           GROUP BY slno`,
+            [
+                data.department,
+                data.deparment_sect,
+                data.schedule_year
 
-            (err, results, feilds) => {
-                if (err) {
-                    return callback(err)
-
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
                 }
-                return callback(null, results)
-
+                return callBack(null, results);
             }
-
         )
     },
+
     ScheduleDateUpdate: (data, callBack) => {
         pool.query(
             `UPDATE training_departmental_schedule set 
-            schedule_date=?
+            schedule_date=?,
+            edit_user=?
             where slno=?`,
             [
                 data.schedule_date,
+                data.edit_user,
                 data.slno
 
             ],

@@ -8,6 +8,7 @@ module.exports = {
             (
                 training_topic_name, 
                 training_name,
+                hours,
                 training_status, 
                 tutorial_status,
                 medical_status,
@@ -16,10 +17,11 @@ module.exports = {
                 post_test_status,
                 create_user
             )
-            VALUES (?,?,?,?,?,?,?,?,?)`,
+            VALUES (?,?,?,?,?,?,?,?,?,?)`,
             [
                 data.training_topic_name,
                 data.training_name,
+                data.hours,
                 data.training_status,
                 data.tutorial_status,
                 data.medical_status,
@@ -40,7 +42,7 @@ module.exports = {
     TrainingTopicGet: (callback) => {
         pool.query(
             `SELECT topic_slno,training_topic_name,training_topic.training_name, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status,
-            name_slno,training_name.training_name
+            name_slno,training_name.training_name,hours
             FROM medi_hrm.training_topic LEFT JOIN training_name ON training_topic.training_name=training_name.name_slno`, [],
             (err, results, feilds) => {
                 if (err) {
@@ -57,6 +59,7 @@ module.exports = {
          SET
          training_topic_name=?,
          training_name=?,
+         hours=?,
          training_status=?,
          tutorial_status=?,
          medical_status=?,
@@ -68,6 +71,7 @@ module.exports = {
             [
                 data.training_topic_name,
                 data.training_name,
+                data.hours,
                 data.training_status,
                 data.tutorial_status,
                 data.medical_status,

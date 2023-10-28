@@ -14,7 +14,7 @@ router.get('/SelectTrainer', checkToken, GetTrainers);
 router.post('/scheduleInsert', checkToken, ScheduleInsert);
 router.get('/selectScheduleDetails', checkToken, GetScheduleDetails);
 router.post('/InsertDepartmentalSchedule', checkToken, DepartmentalScheduleInsert);
-router.get('/selectdepartmentalSchedule', checkToken, DepartmentalScheduleGet);
+router.post('/selectdepartmentalSchedule', checkToken, DepartmentalScheduleGet);
 router.patch('/ScheduledateUpdate', checkToken, ScheduleDateUpdate);
 
 module.exports = router;

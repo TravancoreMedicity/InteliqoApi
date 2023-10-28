@@ -16,21 +16,34 @@ module.exports = {
         )
     },
 
+
     TrainingQuestionInsert: (data, callBack) => {
         pool.query(
             `INSERT INTO  medi_hrm.training_questions
             (
-                questions,
-                answers,
                 training_topics,
+                questions,
+                answer_a,
+                answer_b,
+                answer_c,
+                answer_d,
+                right_answer,
+                writtenStatus,
+                handwrite_answer,
                 marks,
                 create_user
             )
-            VALUES (?,?,?,?,?)`,
+            VALUES (?,?,?,?,?,?,?,?,?,?,?)`,
             [
-                data.questions,
-                data.answers,
                 data.training_topics,
+                data.questions,
+                data.answer_a,
+                data.answer_b,
+                data.answer_c,
+                data.answer_d,
+                data.right_answer,
+                data.writtenStatus,
+                data.handwrite_answer,
                 data.marks,
                 data.create_user,
             ],
@@ -42,19 +55,26 @@ module.exports = {
             }
         )
     },
-
     TrainingQuestionGet: (callback) => {
         pool.query(
-            `SELECT 
-            training_questions.q_slno,
-            training_questions.questions,
-            training_questions.answers,
-            training_questions.marks,
+            `SELECT
+            q_slno,
             training_topic.topic_slno,
-            training_topic.training_topic_name
+            training_questions.training_topics,
+            training_topic_name,
+                questions,
+                answer_a,
+                answer_b,
+                answer_c,
+                answer_d,
+                right_answer,
+                writtenStatus,
+                handwrite_answer,
+                marks
             FROM medi_hrm.training_questions
              LEFT JOIN training_topic ON
-             training_questions.training_topics=training_topic.topic_slno`, [],
+             training_questions.training_topics=training_topic.topic_slno`
+            , [],
             (err, results, feilds) => {
                 if (err) {
                     return callback(err)
@@ -66,17 +86,28 @@ module.exports = {
     },
 
     TrainingQuestionUpdate: (data, callback) => {
-        pool.query(`UPDATE medi_hrm.training_questions
-         SET
-         questions=?,
-         answers=?,
-         training_topics=?,
-         marks=?,
-         edit_user=? WHERE q_slno=?`,
+        pool.query(
+            `UPDATE medi_hrm.training_questions
+            SET
+                questions=?,
+                answer_a=?,
+                answer_b=?,
+                answer_c=?,
+                answer_d=?,
+                right_answer=?,
+                writtenStatus=?,
+                handwrite_answer=?,
+                marks=?,
+            edit_user=? WHERE q_slno=?`,
             [
                 data.questions,
-                data.answers,
-                data.training_topics,
+                data.answer_a,
+                data.answer_b,
+                data.answer_c,
+                data.answer_d,
+                data.right_answer,
+                data.writtenStatus,
+                data.handwrite_answer,
                 data.marks,
                 data.edit_user,
                 data.q_slno
@@ -89,42 +120,21 @@ module.exports = {
             }
         )
     },
-    //insert
-    checkInsertVal: (data, callBack) => {
+
+    GetlastEntryDatas: (data, callBack) => {
         pool.query(
-            `SELECT 
-            questions
-                FROM medi_hrm.training_questions
-                WHERE questions = ?`,
+            `SELECT  training_topics, questions, answer_a, answer_b, answer_c, answer_d, right_answer, upload_status, writtenStatus, handwrite_answer, marks FROM medi_hrm.training_questions where q_slno=?
+            `,
             [
-                data.questions
+                data.q_slno
+
             ],
             (error, results, feilds) => {
                 if (error) {
-                    return callBack(error)
+                    return callBack(error);
                 }
-                return callBack(null, results)
+                return callBack(null, results);
             }
         )
     },
-
-    //update
-    checkUpdateVal: (data, callBack) => {
-        pool.query(
-            `SELECT questions,
-            q_slno
-            FROM medi_hrm.training_questions
-            WHERE questions =? AND q_slno != ?`,
-            [
-                data.questions,
-                data.q_slno
-            ],
-            (error, results, feilds) => {
-                if (error) {
-                    return callBack(error)
-                }
-                return callBack(null, results)
-            }
-        )
-    }
 }
