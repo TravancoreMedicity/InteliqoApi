@@ -177,5 +177,19 @@ module.exports = {
             }
         )
     },
+    empDeactivate: (data, callBack) => {
+        pool.query(
+            `UPDATE hrm_employee set emp_status = 0 WHERE emp_slno = ? `,
+            [
+                data.emp_slno
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 
 }

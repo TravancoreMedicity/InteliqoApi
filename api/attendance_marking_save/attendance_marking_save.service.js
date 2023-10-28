@@ -85,10 +85,9 @@ module.exports = {
                 total_lop,
                 total_days,
                 contract_renew_date,
-                updated_user,
-                attendance_status
+                updated_user
                 )
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
                 data.em_id,
                 data.em_no,
@@ -101,8 +100,7 @@ module.exports = {
                 data.total_lop,
                 data.total_days,
                 data.contract_renew_date,
-                data.updated_user,
-                data.attendance_status
+                data.updated_user
             ],
             (error, results, feilds) => {
                 if (error) {

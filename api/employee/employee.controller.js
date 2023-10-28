@@ -1,7 +1,7 @@
 const { genSaltSync, hashSync, compareSync } = require("bcrypt");
 const { sign } = require("jsonwebtoken");
 const { employeeinsert, employeeupdate, getemplpyee, employeeGetById, employeedelete,
-    getEmployeeByUserName, getEmployeeID, changePassword } = require('../employee/employee.service');
+    getEmployeeByUserName, getEmployeeID, changePassword, empDeactivate } = require('../employee/employee.service');
 const { validateEmployee } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
 
@@ -210,5 +210,29 @@ module.exports = {
             });
         });
     },
+    empDeactivate: (req, res) => {
+        const body = req.body;
+        empDeactivate(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
 
+            if (!results) {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 2,
+                message: "Employee Deactivated"
+            });
+
+        });
+    },
 }
