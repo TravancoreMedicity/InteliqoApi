@@ -31,11 +31,16 @@ const {
 router.post("/", checkToken, createempmast)
 router.patch("/", checkToken, updateempmast)
 router.delete("/", checkToken, inactiveempmast)
+
+router.post("/empmaster/getdeptByBranch", checkToken, getEmpBybranch)
+router.post("/empmaster/getdeptByDept", checkToken, getEmpByDeptartment)
+router.post("/getEmpDet", checkToken, getDepartAndSectionEmpDetl)
+
 router.get("/", checkToken, getempmast)
 router.get("/select", checkToken, getSelectEmpmast)
 router.get("/:id", checkToken, getempmastByID)
 router.post("/getempName", checkToken, getDepartmentSectEmployye)
-router.post("/getEmpDet", checkToken, getDepartAndSectionEmpDetl)
+
 router.post("/getEmpDetInactive", checkToken, getInactiveEmpByDeptAndSection)
 router.post("/company", checkToken, createCompanyInfo)//category changes in company information insert to log ttable and update emp_master table
 router.patch("/updatecategory", checkToken, updatecategory)//Category change in company information update it in emp master
@@ -43,8 +48,8 @@ router.get("/getEmpTypeDesg/:id", checkToken, getCategoryType) //get employee Ty
 router.patch("/empmaster/deptsecChange", checkToken, updateDeptSec)// update department section changes
 router.patch("/empmaster/Inactiveemp", checkToken, InActiveEmpHR)
 router.post("/empmast/serialnum", checkToken, updateserialnum)
-router.post("/empmaster/getdeptByBranch", checkToken, getEmpBybranch)
-router.post("/empmaster/getdeptByDept", checkToken, getEmpByDeptartment)
+
+
 router.patch("/empregister/Edit", checkToken, updateEmpRegister)
 router.get("/databyempno/getemid/:id", checkToken, getDataByEmpno)
 router.get("/databyempid/:id", checkToken, getDataByEmpID)
