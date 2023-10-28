@@ -43,6 +43,7 @@ module.exports = {
                 dept_section=?,
                 personal_record_id=?,
                 record_name=?,
+                upload_date=?,
                 upload_status=1
                 `,
             [
@@ -52,6 +53,7 @@ module.exports = {
                 data.sect_name,
                 data.checklistid,
                 data.itemname,
+                data.upload_date
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -61,4 +63,5 @@ module.exports = {
             }
         )
     },
+
 }

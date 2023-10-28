@@ -1,7 +1,7 @@
 const multer = require('multer');
 const path = require('path');
 const fs = require("fs")
-const { insertProfile, getProfilePic, insertPersonalRecord } = require('../uploadFile/upload.service')
+const { insertProfile, getProfilePic, insertPersonalRecord, checklistfiles } = require('../uploadFile/upload.service')
 const logger = require('../../logger/logger');
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -231,10 +231,9 @@ module.exports = {
 
   //  checklist upload
   uploadchecklist: (req, res) => {
-
     uploadmul(req, res, async (err) => {
       const body = req.body;
-      console.log(body);
+
       if (err instanceof multer.MulterError) {
         return res.status(200).json({
           status: 0,
@@ -256,6 +255,8 @@ module.exports = {
           const files = req.files;
           const em_id = body.em_id;
           const checklistid = body.checklistid;
+          const itemname = body.itemname;
+
           const em_id_folder = path.join('D:/DocMeliora/Inteliqo/', "PersonalRecords", `${em_id}`, "checklist", `${checklistid}`);
 
           // Create the em_id folder if it doesn't exist
@@ -264,10 +265,13 @@ module.exports = {
           }
 
           for (const file of files) {
-            // Process each file individually
+            // Process each file
+            const currentDate = new Date();
+            const formattedDate = `${currentDate.getDate().toString().padStart(2, '0')}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${currentDate.getFullYear()}`;
+
             const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
             const extension = path.extname(file.originalname);
-            const filename = 'emp file checklist' + uniqueSuffix + extension;
+            const filename = itemname + "-" + file.originalname + "&" + formattedDate + "&" + uniqueSuffix + extension;
 
             // Move the file to the destination folder
             const destinationPath = path.join(em_id_folder, filename);
@@ -298,6 +302,7 @@ module.exports = {
         }
       }
     });
+
   },
   getEmployeeProfilePic: (req, res) => {
     const body = req.body;
@@ -316,8 +321,25 @@ module.exports = {
         data: results
       });
     })
-  }
+  },
+  // for getting the file
+  checklistfiles: (req, res) => {
+    const { em_id, checklistid } = req.body;
+    const folderPath = `D:/DocMeliora/Inteliqo/PersonalRecords/${em_id}/checklist/${checklistid}`;
+    fs.readdir(folderPath, (err, files) => {
+      if (err) {
+        logger.errorLogger(err)
+        return res.status(200).json({
+          success: 0,
+          message: err
+        });
+      }
+      return res.status(200).json({
+        success: 1,
+        data: files
+      });
+    });
 
-
+  },
 
 }

@@ -160,6 +160,8 @@ const validateDesignation = Joi.object({
         desg_status: Joi.number().min(0).max(1).required(),
         create_user: Joi.number().optional(),
         edit_user: Joi.number().optional(),
+        grade: Joi.number().required(),
+
 });
 
 const validateBankMaster = Joi.object({
