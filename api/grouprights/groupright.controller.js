@@ -60,7 +60,7 @@ module.exports = {
 
                         if (results) {
 
-                            getGroupMenuRigths(postData, (err, results) => {
+                            getGroupMenuRigths(body, (err, results) => {
 
                                 if (err) {
                                     logger.errorLogger(err)
@@ -70,9 +70,17 @@ module.exports = {
                                     });
                                 }
 
+                                if (!results) {
+                                    return res.status(200).json({
+                                        success: 0,
+                                        message: "No Data Found"
+                                    });
+                                }
+
                                 return res.status(200).json({
                                     success: 1,
-                                    data: results
+                                    data: results,
+                                    message: "Updated Successfully"
                                 });
                             })
                         }
@@ -82,8 +90,7 @@ module.exports = {
 
             } else {
                 //Get The Selected Values
-                getGroupMenuRigths(body, (err, results) => {
-
+                getMenuSlno(body, (err, results) => {
                     if (err) {
                         logger.errorLogger(err)
                         return res.status(200).json({
@@ -91,18 +98,79 @@ module.exports = {
                             message: err
                         });
                     }
+                    const menuSLno = JSON.parse(JSON.stringify(results))
+                    let array = menuSLno?.filter((row) => {
+                        return !value?.find((val) => {
+                            return row.menu_slno === val.menu_slno;
+                        })
+                    })
+                    if (Object.keys(array).length === 0) {
+                        getGroupMenuRigths(body, (err, results) => {
 
-                    if (!results) {
-                        return res.status(200).json({
-                            success: 0,
-                            message: "No Data Found"
+                            if (err) {
+                                logger.errorLogger(err)
+                                return res.status(200).json({
+                                    success: 0,
+                                    message: err
+                                });
+                            }
+
+                            if (!results) {
+                                return res.status(200).json({
+                                    success: 0,
+                                    message: "No Data Found"
+                                });
+                            }
+
+                            return res.status(200).json({
+                                success: 1,
+                                data: results,
+                                message: "Updated Successfully"
+                            });
+                        })
+
+                    } else {
+                        const menuDetl = array.map((val) => {
+                            const newArray = [body.user_group_slno, body.module_slno, val.menu_slno]
+                            return newArray;
+                        })
+
+                        insertGroupRight(menuDetl, (err, results) => {
+                            if (err) {
+                                logger.errorLogger(err)
+                                return res.status(200).json({
+                                    success: 0,
+                                    message: err
+                                });
+                            }
+                            if (results) {
+
+                                getGroupMenuRigths(body, (err, results) => {
+
+                                    if (err) {
+                                        logger.errorLogger(err)
+                                        return res.status(200).json({
+                                            success: 0,
+                                            message: err
+                                        });
+                                    }
+
+                                    if (!results) {
+                                        return res.status(200).json({
+                                            success: 0,
+                                            message: "No Data Found"
+                                        });
+                                    }
+
+                                    return res.status(200).json({
+                                        success: 1,
+                                        data: results,
+                                        message: "Updated Successfully"
+                                    });
+                                })
+                            }
                         });
                     }
-
-                    return res.status(200).json({
-                        success: 1,
-                        data: results
-                    });
                 })
             }
         })
@@ -145,7 +213,7 @@ module.exports = {
 
                     return res.status(200).json({
                         success: 1,
-                        message: "Updated",
+                        message: "Updated Successfully",
                         data: results
                     });
                 })
@@ -179,7 +247,6 @@ module.exports = {
     },
     getModuleMenuList: (req, res) => {
         const id = req.params.id;
-        // console.log(body)
         getMenuRightSlno(id, (err, results) => {
             if (err) {
                 logger.errorLogger(err)

@@ -773,11 +773,6 @@ module.exports = {
                 success: 1,
                 message: "Data Created Successfully"
             });
-
-
-
-
-
         });
     },
     select_yearlyprocess: (req, res) => {

@@ -468,7 +468,8 @@ const validateleavetype = Joi.object({
         is_leave: Joi.number().optional(),
         lvetype_slno: Joi.number().optional(),
         create_user: Joi.number().optional(),
-        edit_user: Joi.number().optional()
+        edit_user: Joi.number().optional(),
+        common_leave: Joi.number().optional(),
 })
 
 // VAIDATE DOCOTOR TYPE
@@ -1204,6 +1205,7 @@ const validatecommonsettings = Joi.object({
         noff_count: Joi.number().optional(),
         onehour_rqst_count: Joi.number().optional(),
         areartype: Joi.number().optional(),
+        max_late_day_count: Joi.number().optional(),
 
 })
 //validate carryforward

@@ -33,7 +33,7 @@ module.exports = {
                 data.is_holiday,
                 data.is_leave,
                 data.create_user,
-                data.common
+                data.common_leave
 
             ],
             (error, results, feilds) => {
@@ -76,8 +76,9 @@ module.exports = {
                 data.is_holiday,
                 data.is_leave,
                 data.edit_user,
-                data.lvetype_slno,
-                data.common
+                data.common_leave,
+                data.lvetype_slno
+
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -107,7 +108,17 @@ module.exports = {
                 lvetype_slno,
                 lvetype_desc,
                 lvetype_code,
-                status 
+                carryforward,
+                avail_on_traing_probation,
+                avail_on_after_confirm,
+                half_day_allowed,
+                leave_credit_policy,
+                leave_credit_policy_count,
+                status,
+                if(status = 1 ,'Yes','No') lvstatus,
+                is_lop,
+                is_holiday,
+                is_leave,common_leave
             FROM hrm_leave_type`,
             [],
             (error, results, feilds) => {

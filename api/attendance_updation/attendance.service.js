@@ -696,8 +696,7 @@ module.exports = {
     },
     checkAttendanceProcess: (data, callBack) => {
         pool.query(
-            `
-            SELECT * FROM hrm_attendance_marking where attendance_marking_month=?
+            `SELECT * FROM hrm_attendance_marking where attendance_marking_month=?
             and em_no=?;
             `,
             [
@@ -723,6 +722,23 @@ module.exports = {
             [
                 data.fromDate,
                 data.toDate,
+                data.em_no
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    checkAttendanceProcessDept: (data, callBack) => {
+        pool.query(
+            `SELECT * FROM hrm_attendance_marking where attendance_marking_month='2023-10-01'
+            and em_id IN (?);
+            `,
+            [
+                data.attendance_marking_month,
                 data.em_no
             ],
             (error, results, feilds) => {

@@ -24,7 +24,9 @@ module.exports = {
     },
     validateGroupRights: (data, callBack) => {
         pool.query(
-            `SELECT 
+            `SELECT user_group_slno,
+                module_slno,
+                menu_slno,
                     group_rights_slno
                 FROM user_group_rights 
                 WHERE user_group_slno = ? AND module_slno =?`,

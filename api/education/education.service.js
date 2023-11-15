@@ -100,7 +100,8 @@ module.exports = {
                 edu_slno,
                 edu_desc,
                 edu_create,
-                if(edu_status = 1 ,'Yes','No') edu_status
+                edu_status,
+                if(edu_status = 1 ,'Yes','No') status
             FROM hrm_mast_education`,
             [],
             (error, results, feilds) => {

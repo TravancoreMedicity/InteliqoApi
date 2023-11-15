@@ -601,14 +601,16 @@ module.exports = {
                 logger.errorLogger(err)
                 return res.status(200).json({
                     success: 2,
-                    message: err
+                    message: err,
+                    data: []
                 });
             }
 
             if (results.length == 0) {
                 return res.status(200).json({
                     success: 0,
-                    message: "No Record Found"
+                    message: "No Record Found",
+                    data: []
                 });
             }
 
