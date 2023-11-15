@@ -1,0 +1,162 @@
+const { logger } = require('../../logger/logger')
+const { GetTrainingProcess, AttendanceMarking, GetDepartmentalTrainings, GetTopicAssignToEmp, GetQuestionDetails, UpdateQuestionCount, GetDataBasedOnCount } = require('./TrainingProcess.service')
+module.exports = {
+    GetTrainingProcess: (req, res) => {
+        GetTrainingProcess((err, results) => {
+
+            if (err) {
+                return res.status(400).json({
+                    success: 0,
+                    message: "Error"
+                })
+            }
+            if (results === 0) {
+                return res.status(400).json({
+                    success: 1,
+                    message: "No Record Found"
+                })
+            }
+            return res.status(200).json({
+                success: 2,
+                data: results
+            })
+        })
+    },
+    AttendanceMarking: (req, res) => {
+        const body = req.body;
+        AttendanceMarking(body, (err, results) => {
+            if (err) {
+
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results === 0) {
+                return res.status(400).json({
+                    success: 1,
+                    message: "No Record Found"
+                })
+            }
+            else {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Attendance Marked Successfully"
+                });
+            }
+
+        });
+    },
+    GetDepartmentalTrainings: (req, res) => {
+        GetDepartmentalTrainings((err, results) => {
+
+            if (err) {
+                return res.status(400).json({
+                    success: 0,
+                    message: "Error"
+                })
+            }
+            if (results === 0) {
+                return res.status(400).json({
+                    success: 1,
+                    message: "No Record Found"
+                })
+            }
+            return res.status(200).json({
+                success: 2,
+                data: results
+            })
+        })
+    },
+
+    GetTopicAssignToEmp: (req, res) => {
+        const id = req.params.id;
+        GetTopicAssignToEmp(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "no Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 2,
+                data: results,
+            });
+        });
+    },
+    GetQuestionDetails: (req, res) => {
+        const id = req.params.id;
+        GetQuestionDetails(id, (err, results) => {
+            if (err) {
+                console.log(err);
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+
+    },
+
+    UpdateQuestionCount: (req, res) => {
+        const body = req.body;
+        UpdateQuestionCount(body, (err, results) => {
+            if (err) {
+
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Inserted successfully"
+                });
+            }
+
+        });
+    },
+    GetDataBasedOnCount: (req, res) => {
+        const body = req.body;
+        GetDataBasedOnCount(body, (err, results) => {
+            if (err) {
+
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results === 0) {
+                return res.status(400).json({
+                    success: 1,
+                    message: "No Record Found"
+                })
+            }
+            return res.status(200).json({
+                success: 2,
+                data: results
+            })
+
+        });
+    },
+}

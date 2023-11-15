@@ -217,13 +217,12 @@ module.exports = {
     DepartmentalScheduleInsert: (data, callBack) => {
         pool.query(
             `INSERT INTO medi_hrm.training_departmental_schedule (
-             department, deparment_sect, schedule_month, schedule_year, schedule_date, schedule_topics, schedule_trainers, schedule_remark, create_user  )
-            VALUES (?,?,?,?,?,?,?,?,?)`,
+             department, deparment_sect, schedule_year, schedule_date, schedule_topics, schedule_trainers, schedule_remark, create_user  )
+            VALUES (?,?,?,?,?,?,?,?)`,
             [
 
                 data.department,
                 data.deparment_sect,
-                data.schedule_month,
                 data.schedule_year,
                 data.schedule_date,
                 data.schedule_topics,
@@ -242,8 +241,8 @@ module.exports = {
 
     DepartmentalScheduleGet: (data, callBack) => {
         pool.query(
-            `SELECT slno, department, deparment_sect, schedule_month, schedule_year, schedule_date, schedule_topics, schedule_trainers, 
-            schedule_remark,hrm_department.dept_id,dept_name,  topic_slno,training_topic_name,sect_id,
+            `SELECT slno, department, deparment_sect, schedule_year, schedule_date, schedule_topics, schedule_trainers, 
+            schedule_remark,hrm_department.dept_id,dept_name, topic_slno,training_topic_name,sect_id,
             GROUP_CONCAT(em_name)  as traineer_name
             FROM medi_hrm.training_departmental_schedule
             LEFT JOIN hrm_department ON hrm_department.dept_id=training_departmental_schedule.department
@@ -266,7 +265,6 @@ module.exports = {
             }
         )
     },
-
     ScheduleDateUpdate: (data, callBack) => {
         pool.query(
             `UPDATE training_departmental_schedule set 
@@ -284,6 +282,68 @@ module.exports = {
                     return callBack(error);
                 }
                 return callBack(null, results);
+            }
+        )
+    },
+    getDeptTopic: (id, callback) => {
+        pool.query(
+            `SELECT topic_slno,training_topic_name 
+            FROM training_topic 
+            WHERE training_dept=?`, [id],
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+
+            }
+        )
+    },
+    getEmpNameBydepID: (id, callback) => {
+        pool.query(
+            `SELECT em_id,em_name 
+            FROM hrm_emp_master 
+            WHERE em_department=? and em_status=1`, [id],
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+
+            }
+        )
+    },
+    InsertEmpDetails: (data, callBack) => {
+        pool.query(
+            `INSERT INTO training_employee_details (
+                emp_name,emp_desig, emp_dept, emp_dept_sectn,topic,schedule_date, create_user)
+            values ?`,
+            [
+                data
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    GetDeptEmpNameDetails: (id, callback) => {
+        pool.query(
+            `SELECT em_id,em_name,desg_slno,desg_name,em_designation
+            FROM hrm_emp_master 
+            LEFT JOIN designation ON designation.desg_slno=hrm_emp_master.em_designation
+            WHERE em_department=? and em_status=1`, [id],
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+
             }
         )
     },

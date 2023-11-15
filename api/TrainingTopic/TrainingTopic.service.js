@@ -1,11 +1,13 @@
 const pool = require('../../config/database');
 
 module.exports = {
-
+    //topic_slno, training_dept, dept_status, training_topic_name, training_name, hours, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status, create_user, edit_user, create_date, update_date
     TrainingTopicInsert: (data, callBack) => {
         pool.query(
             `INSERT INTO medi_hrm.training_topic 
             (
+                training_dept,
+                dept_status,
                 training_topic_name, 
                 training_name,
                 hours,
@@ -17,8 +19,10 @@ module.exports = {
                 post_test_status,
                 create_user
             )
-            VALUES (?,?,?,?,?,?,?,?,?,?)`,
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
+                data.training_dept,
+                data.dept_status,
                 data.training_topic_name,
                 data.training_name,
                 data.hours,
@@ -41,9 +45,11 @@ module.exports = {
 
     TrainingTopicGet: (callback) => {
         pool.query(
-            `SELECT topic_slno,training_topic_name,training_topic.training_name, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status,
-            name_slno,training_name.training_name,hours
-            FROM medi_hrm.training_topic LEFT JOIN training_name ON training_topic.training_name=training_name.name_slno`, [],
+            `SELECT topic_slno,training_dept,training_topic.dept_status,training_topic_name,training_topic.training_name, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status,
+            name_slno,training_name.training_name,hours,hrm_department.dept_id,dept_name
+            FROM medi_hrm.training_topic
+            LEFT JOIN hrm_department ON hrm_department.dept_id=training_topic.training_dept
+            LEFT JOIN training_name ON training_topic.training_name=training_name.name_slno`, [],
             (err, results, feilds) => {
                 if (err) {
                     return callback(err)
@@ -57,6 +63,8 @@ module.exports = {
     TrainingTopicUpdate: (data, callback) => {
         pool.query(`UPDATE medi_hrm.training_topic
          SET
+         training_dept=?,
+         dept_status=?,
          training_topic_name=?,
          training_name=?,
          hours=?,
@@ -69,6 +77,8 @@ module.exports = {
          edit_user=?
          WHERE topic_slno=?`,
             [
+                data.training_dept,
+                data.dept_status,
                 data.training_topic_name,
                 data.training_name,
                 data.hours,

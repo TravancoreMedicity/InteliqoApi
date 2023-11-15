@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const { checkToken } = require("../../auth/token_validation");
-const { TrainingAfterJoiningGet, ScheduleUpdate, TrainingNewJoineeInsert, ScheduleInsert, GetTopic, ScheduleDateUpdate, GetTrainers, JoineeDetailsInsert, JoineeDetailsUpdate, ScheduleDetailsGet, GetScheduleDetails, DepartmentalScheduleInsert, DepartmentalScheduleGet } = require('./TrainingAfterJoining.controller');
+const { TrainingAfterJoiningGet, ScheduleUpdate, TrainingNewJoineeInsert, ScheduleInsert, GetTopic, ScheduleDateUpdate, GetTrainers, JoineeDetailsInsert, JoineeDetailsUpdate, ScheduleDetailsGet, GetScheduleDetails, DepartmentalScheduleInsert, DepartmentalScheduleGet, getDeptTopic, getEmpNameBydepID, InsertEmpDetails, GetDeptEmpNameDetails } = require('./TrainingAfterJoining.controller');
 
 
 router.get('/select', checkToken, TrainingAfterJoiningGet);
@@ -16,6 +16,12 @@ router.get('/selectScheduleDetails', checkToken, GetScheduleDetails);
 router.post('/InsertDepartmentalSchedule', checkToken, DepartmentalScheduleInsert);
 router.post('/selectdepartmentalSchedule', checkToken, DepartmentalScheduleGet);
 router.patch('/ScheduledateUpdate', checkToken, ScheduleDateUpdate);
+router.get('/deptTrainingtopic/:id', checkToken, getDeptTopic)
+router.get('/select/:id', checkToken, getEmpNameBydepID)
+router.post('/insertEmployees', checkToken, InsertEmpDetails)
+router.get('/selectemp/:id', checkToken, GetDeptEmpNameDetails)
+
 
 module.exports = router;
+
 

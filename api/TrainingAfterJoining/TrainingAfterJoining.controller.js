@@ -1,6 +1,6 @@
 
 const { TrainingAfterJoiningGet, TrainingNewJoineeInsert, JoineeDetailsInsert,
-    JoineeDetailsUpdate, ScheduleDetailsGet, ScheduleUpdate, ScheduleDateUpdate, GetTopic, GetTrainers, ScheduleInsert, GetScheduleDetails, DepartmentalScheduleInsert, DepartmentalScheduleGet } = require('./TrainingAfterJoining.service');
+    JoineeDetailsUpdate, ScheduleDetailsGet, ScheduleUpdate, ScheduleDateUpdate, GetTopic, GetTrainers, ScheduleInsert, GetScheduleDetails, DepartmentalScheduleInsert, DepartmentalScheduleGet, getDeptTopic, getEmpNameBydepID, InsertEmpDetails, GetDeptEmpNameDetails } = require('./TrainingAfterJoining.service');
 
 module.exports = {
 
@@ -238,7 +238,6 @@ module.exports = {
         });
     },
 
-
     DepartmentalScheduleGet: (req, res) => {
         const body = req.body;
         DepartmentalScheduleGet(body, (err, results) => {
@@ -280,6 +279,98 @@ module.exports = {
                 });
             }
 
+        });
+    },
+
+    getDeptTopic: (req, res) => {
+        const id = req.params.id;
+        getDeptTopic(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "no Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results,
+            });
+        });
+    },
+    getEmpNameBydepID: (req, res) => {
+        const id = req.params.id;
+        getEmpNameBydepID(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "no Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results,
+            });
+        });
+    },
+
+    InsertEmpDetails: (req, res) => {
+        const body = req.body;
+        var values = body.map((value, index) => {
+            return [value.emp_name, value.emp_desig, value.emp_dept, value.emp_dept_sectn, value.topic, value.schedule_date,
+            value.create_user
+            ]
+        })
+        InsertEmpDetails(values, (err, results) => {
+            if (err) {
+
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Successfully Inserted"
+                });
+            }
+
+        });
+    },
+    GetDeptEmpNameDetails: (req, res) => {
+        const id = req.params.id;
+        GetDeptEmpNameDetails(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "no Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results,
+            });
         });
     },
 }

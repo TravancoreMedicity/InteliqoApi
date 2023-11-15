@@ -1359,6 +1359,8 @@ const validateTrainerName = Joi.object({
 
 const validationTrainingTopic = Joi.object({
         topic_slno: Joi.number().optional(),
+        dept_status: Joi.number().min(0).max(1).optional(),
+        training_dept: Joi.number().optional(),
         training_topic_name: Joi.string().trim().uppercase().min(3).max(45).required()
                 .messages({
                         'string.empty': 'Traning Topic is required',

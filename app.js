@@ -126,6 +126,7 @@ const TrainingUpdate = require("./api/TrainingUpdate/TrainingUpdate.router")
 const TrainingEmployeeSchedule = require("./api/TrainingEmployeeSchedule/TrainingEmployeeSchedule.router")
 const TrainingAfterJoining = require("./api/TrainingAfterJoining/TrainingAfterJoining.router")
 const trainUploadCheck = require("./api/training_upload/training_upload.router")
+const TrainingProcess = require("./api/TrainingProcess/TrainingProcess.router")
 
 app.use(express.json({ limit: '50mb' }));
 app.use((req, res, next) => {
@@ -291,8 +292,8 @@ app.use("/api/DepartmentalTrainingSchedule", DepartmentalTrainingSchedule)
 app.use("/api/TrainingUpdate", TrainingUpdate)
 app.use("/api/TrainingEmployeeSchedule", TrainingEmployeeSchedule)
 app.use("/api/TrainingAfterJoining", TrainingAfterJoining)
-
 app.use("/api/trainUploadCheck", trainUploadCheck)
+app.use("/api/TrainingProcess", TrainingProcess)
 
 
 
