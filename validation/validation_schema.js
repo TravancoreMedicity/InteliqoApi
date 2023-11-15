@@ -1336,6 +1336,45 @@ const validateCommonreqstMast = Joi.object({
         update_user: Joi.number().optional(),
         slno: Joi.number().optional(),
 });
+const ManpowerRequest = Joi.object({
+        dept_id: Joi.number().required(),
+        desg_id: Joi.number().required(),
+        requiredNo: Joi.number().min(1)
+                .messages({
+                        'number.min': ' Required No Not selected',
+
+                }),
+        date: Joi.date().required(),
+        other_essen: Joi.string().required()
+                .messages({
+                        'string.empty': 'Other essential attributes is empty',
+
+                }),
+        training: Joi.string().required()
+                .messages({
+                        'string.empty': 'training field  is empty',
+
+                }),
+        value: Joi.optional(),
+        Permanent_status: Joi.optional(),
+        Contract_status: Joi.optional(),
+        Apprenticeship_status: Joi.optional(),
+        Trainee_status: Joi.optional(),
+        New_Position_status: Joi.optional(),
+        Addition_status: Joi.optional(),
+        Replacement_status: Joi.optional(),
+        Fresher_status: Joi.optional(),
+        TraineeExp_status: Joi.optional(),
+        ApprenticeshipExp_status: Joi.optional(),
+        Experience_status: Joi.optional(),
+        selectEmpno: Joi.optional(),
+        salaryto: Joi.optional(),
+        salaryfrom: Joi.optional(),
+        expfrom: Joi.optional(),
+        expto: Joi.optional(),
+
+})
+
 
 module.exports = {
         authSchema,  //authSchema:authSchema
@@ -1426,5 +1465,6 @@ module.exports = {
         validatePerformanceAppraisalRights,
         validateKRA,
         validateOneHourReqst,
-        validateCommonreqstMast
+        validateCommonreqstMast,
+        ManpowerRequest
 }

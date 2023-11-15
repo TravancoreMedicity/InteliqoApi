@@ -1,3 +1,4 @@
+const { log } = require('winston');
 const pool = require('../../config/database');
 
 module.exports = {
@@ -50,7 +51,9 @@ module.exports = {
                 deptsection,
                 desg_slno,
                 mincount,
-                maxcount
+                maxcount,
+                salaryfrom,
+                salaryto
                 )
             VALUES ?`,
             [
@@ -91,6 +94,8 @@ module.exports = {
             DISTINCT d.desg_name,
             mincount as MinCount, 
             maxcount  as MaxCount,
+            salaryfrom as salaryfrom,
+            salaryto as salaryto,
             m.desg_slno AS em_designation_number,
             d.desg_grade,
             g.grade_desc AS grade_desg
@@ -128,10 +133,12 @@ module.exports = {
                 pool.query(
                     ` update hrm_manpowerplanning_master 
                     set mincount=?,
-                    maxcount=?
+                    maxcount=?,
+                    salaryfrom=?,
+                    salaryto=?
                     where
                  desg_slno=?`,
-                    [val.MinCount, val.MaxCount, val.em_designation_number],
+                    [val.MinCount, val.MaxCount, val.salaryfrom, val.salaryto, val.em_designation_number],
                     (error, results, feilds) => {
                         if (error) {
                             return reject(error)
@@ -142,5 +149,332 @@ module.exports = {
             })
 
         })
+    },
+
+    getData: (data, callBack) => {
+        pool.query(
+            `SELECT  
+            maxcount,
+            salaryfrom,
+            salaryto,
+            mincount
+             from  hrm_manpowerplanning_master
+              where dept=? and desg_slno=?
+            `,
+            [
+                data.dept_id,
+                data.desg_id,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    insertmanpowerrequest: (data, callBack) => {
+        pool.query(
+            `INSERT INTO hrm_manpower_request (
+                dept_id ,
+                desg_id,
+                permanent_status,
+                contract_status,
+                apprentice_status,
+                trainee_status,
+                manpower_required_no,
+                required_date,
+                new_position_status,
+                addition_status,
+                replacement_status,
+                replacement_emid,
+                salaryfrom,
+                salaryto,
+                qualification,
+                experiencefrom,
+                experienceto,
+                exp_fresher,
+                exp_trainee,
+                exp_apprentice,
+                experience_status,
+                other_attribute,
+                training
+            )values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) `,
+            [
+                data.dept_id,
+                data.desg_id,
+                data.Permanent_status,
+                data.Contract_status,
+                data.Apprenticeship_status,
+                data.Trainee_status,
+                data.requiredNo,
+                data.date,
+                data.New_Position_status,
+                data.Addition_status,
+                data.Replacement_status,
+                data.selectEmpno,
+                data.salaryfrom,
+                data.salaryto,
+                JSON.stringify(data.value),
+                data.expfrom,
+                data.expto,
+                data.Fresher_status,
+                data.TraineeExp_status,
+                data.ApprenticeshipExp_status,
+                data.Experience_status,
+                data.other_essen,
+                data.training
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getapproval: (callBack) => {
+        pool.query(
+            `SELECT  
+            hrm_manpower_request.dept_id,
+            desg_id,
+            permanent_status,
+            hrm_manpower_request.contract_status,
+         apprentice_status,
+         trainee_status,
+         manpower_required_no,
+         required_date,
+         new_position_status,
+         addition_status,
+         replacement_status,
+         replacement_emid,
+         salaryfrom,
+         salaryto,
+         ed_approval_status,
+         Hod_approval_status,
+         Hr_approval_status,
+         dept_name,
+         desg_name,
+         createdate,
+         em_name,
+         announcement_status
+              from  hrm_manpower_request
+              LEFT JOIN hrm_department ON hrm_manpower_request.dept_id = hrm_department.dept_id
+              LEFT JOIN designation ON hrm_manpower_request.desg_id = designation.desg_slno
+              LEFT JOIN hrm_emp_master ON hrm_manpower_request.replacement_emid = hrm_emp_master.em_no
+               `,
+            [],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getapprovalhod: (data, callBack) => {
+
+        pool.query(
+            `SELECT  
+            hrm_manpower_request.dept_id,
+            desg_id,
+            permanent_status,
+            hrm_manpower_request.contract_status,
+         apprentice_status,
+         trainee_status,
+         manpower_required_no,
+         required_date,
+         new_position_status,
+         addition_status,
+         replacement_status,
+         replacement_emid,
+         salaryfrom,
+         salaryto,
+         ed_approval_status,
+         Hod_approval_status,
+         Hr_approval_status,
+         dept_name,
+         desg_name,
+         createdate,
+         em_name
+              from  hrm_manpower_request
+              LEFT JOIN hrm_department ON hrm_manpower_request.dept_id = hrm_department.dept_id
+              LEFT JOIN designation ON hrm_manpower_request.desg_id = designation.desg_slno
+              LEFT JOIN hrm_emp_master ON hrm_manpower_request.replacement_emid = hrm_emp_master.em_no
+              WHERE hrm_manpower_request.dept_id=?
+               `,
+            [
+                data.dept_id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    updateDataManpowerapproval: (data, callBack) => {
+        pool.query(
+            `UPDATE hrm_manpower_request 
+            SET ed_approval_remark=?,
+            ed_approval_date=?,
+            ed_approval_status=?
+            WHERE desg_id = ? and dept_id=?`,
+            [
+                data.remark,
+                data.fromDate,
+                data.ed_approval_status,
+                data.desg_id,
+                data.dept_id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    updateHodapproval: (data, callBack) => {
+        pool.query(
+            `UPDATE hrm_manpower_request 
+            SET Hod_approval_remark=?,
+            Hod_approval_date=?,
+            Hod_approval_status=?
+            WHERE desg_id = ? and dept_id=?`,
+            [
+                data.remark,
+                data.fromDate,
+                data.Hod_approval_status,
+                data.desg_id,
+                data.dept_id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    updateHrapproval: (data, callBack) => {
+        pool.query(
+            `UPDATE hrm_manpower_request 
+            SET Hr_approval_remark=?,
+            Hr_approval_date=?,
+            Hr_approval_status=?
+            WHERE desg_id = ? and dept_id=?`,
+            [
+                data.remark,
+                data.fromDate,
+                data.Hr_approval_status,
+                data.desg_id,
+                data.dept_id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    checkInsertVal: (data, callBack) => {
+        pool.query(
+            `SELECT dept_id,
+            desg_id
+                FROM hrm_manpower_request
+                WHERE dept_id = ? and  desg_id=?`,
+            [
+                data.dept_id,
+                data.desg_id,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error)
+                }
+                return callBack(null, results)
+            }
+        )
+    },
+    getapprove: (data, callBack) => {
+        pool.query(
+            `SELECT  
+            desg_id,
+            ed_approval_status,
+            Hod_approval_status,
+            Hr_approval_status,
+            createdate,
+            desg_name
+            FROM hrm_manpower_request
+            LEFT JOIN designation ON hrm_manpower_request.desg_id = designation.desg_slno
+            WHERE dept_id = ?
+            `,
+            [
+                data.dept_id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+
+            }
+        )
+    },
+    getvacancy: (data, callBack) => {
+        pool.query(
+            `SELECT  
+            desg_id,
+            ed_approval_status,
+            Hod_approval_status,
+            Hr_approval_status,
+            createdate,
+            desg_name,
+            manpower_required_no,
+            ed_approval_date,
+            required_date,
+            dept_name,
+            hrm_manpower_request.dept_id
+            FROM hrm_manpower_request
+            LEFT JOIN designation ON hrm_manpower_request.desg_id = designation.desg_slno
+			LEFT JOIN hrm_department ON hrm_manpower_request.dept_id = hrm_department.dept_id
+            WHERE hrm_manpower_request.dept_id =? and ed_approval_status=1 and announcement_status=0
+            `,
+            [
+                data.dept_id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+
+            }
+        )
+    },
+    updateannouncement: (data, callBack) => {
+
+        pool.query(
+            `UPDATE hrm_manpower_request 
+            SET
+            annouced_date=?,
+            announcement_status=?
+            WHERE desg_id = ? and dept_id=?`,
+            [
+
+                data.fromDate,
+                data.Announcement_status,
+                data.desg_id,
+                data.dept_id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
     },
 }

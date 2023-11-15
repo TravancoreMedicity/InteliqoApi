@@ -1636,5 +1636,24 @@ module.exports = {
             }
         );
     },
+    getEmployeName: (id, callBack) => {
+        pool.query(
+            `SELECT 
+            em_name,
+            em_no
+            from  hrm_emp_master
+            where
+            em_department =? and em_status=1 and  em_id!=1 `,
+            [
+                id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }
 
