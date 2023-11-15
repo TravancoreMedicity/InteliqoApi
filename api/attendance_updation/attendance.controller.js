@@ -11,7 +11,8 @@ const { getEmployeeDetl, getEmployeeShiftDetl, getDepartmentShiftMast,
     getCommonSettings, updateholidaycredit, updateholidaytaken,
     getPunchDataEmCodeWise, getPunchMasterData, getShiftfromPunchMaster,
     updatePunchMasterData, updatePunchMastDuty, getHolidayDate, getDutyPlan,
-    getPunchMastDataCheckWoff, updatePunchMasWoff, checkAttendanceProcess, checkInOutMarked
+    getPunchMastDataCheckWoff, updatePunchMasWoff, checkAttendanceProcess, checkInOutMarked,
+    checkAttendanceProcessDept
 } = require("../attendance_updation/attendance.service")
 //SHIFT DETAILS
 //get the shift details 
@@ -1160,5 +1161,29 @@ module.exports = {
                 data: results
             });
         });
+    },
+    checkAttendanceProcessDept: (req, res) => {
+        const body = req.body;
+        checkAttendanceProcessDept(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
     },
 }

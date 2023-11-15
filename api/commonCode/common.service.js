@@ -579,6 +579,7 @@ module.exports = {
                 ecat_lop,
                 ecat_sl,
                 em_doj,
+                ecat_holiday,
                 ecat_mate
               FROM hrm_emp_master,hrm_emp_category 
               where hrm_emp_master.em_id=? 
@@ -826,14 +827,13 @@ module.exports = {
             `SELECT 
                 duty_day,
                 punch_slno,
-                mis_punch_flag,
                 punch_master.shift_id,
                 hrm_shift_mast.shft_slno,
                 hrm_shift_mast.shft_chkin_time,
                 hrm_shift_mast.shft_chkout_time, 
                 punch_in,
                 punch_out,
-                ot_amount,ot_request_flag
+                ot_amount
             FROM punch_master
             LEFT JOIN hrm_shift_mast ON hrm_shift_mast.shft_slno=punch_master.shift_id
             LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id = punch_master.emp_id
@@ -1285,6 +1285,8 @@ module.exports = {
                C.category_slno,
                C.emp_type,
                C.des_type,
+               C.ecat_prob,
+               C.ecat_training,
                E.probation_status
         FROM hrm_emp_master E
             LEFT JOIN hrm_branch B ON B.branch_slno = E.em_branch
