@@ -5,7 +5,8 @@ const { validateAttendance, processAttendData, getpunchmastcalcu,
     updatePunchInandPunchOut, updatePunchState, updateholidaycredit,
     updateholidaytaken, getPunchDataEmCodeWise, getPunchMasterData, getShiftfromPunchMaster,
     updatePunchMasterData, updatePunchMastDuty, getHolidayDate, getDutyPlan,
-    getPunchMastDataCheckWoff, updatePunchMasWoff, checkAttendanceProcess, checkInOutMarked
+    getPunchMastDataCheckWoff, updatePunchMasWoff, checkAttendanceProcess, checkInOutMarked,
+    checkAttendanceProcessDept
 } = require("../attendance_updation/attendance.controller")
 
 router.post("/", checkToken, validateAttendance);
@@ -31,5 +32,7 @@ router.post("/updatePunchMasWoff", checkToken, updatePunchMasWoff);
 
 router.post("/checkAttendanceProcess", checkToken, checkAttendanceProcess)
 router.post("/checkInOutMarked", checkToken, checkInOutMarked)
+
+router.post("/checkallEmp", checkToken, checkAttendanceProcessDept)
 
 module.exports = router;
