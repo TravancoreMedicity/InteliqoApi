@@ -33,10 +33,11 @@ module.exports = {
                 pf_employee_amount,
                 pf_employer_amount,
                 onehour_rqst_count,
-                areartype
+                areartype,
+                max_late_day_count
                 )
 
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
 
 
             [
@@ -69,7 +70,8 @@ module.exports = {
                 data.pf_employee_amount,
                 data.pf_employer_amount,
                 data.onehour_rqst_count,
-                data.areartype
+                data.areartype,
+                data.max_late_day_count
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -123,7 +125,8 @@ module.exports = {
                 pf_employee_amount=?,
                 pf_employer_amount=?,
                 onehour_rqst_count=?,
-                areartype=?
+                areartype=?,
+                max_late_day_count=?
                 WHERE setting_slno =?`,
             [
                 data.cmmn_grace_period,
@@ -156,6 +159,7 @@ module.exports = {
                 data.pf_employer_amount,
                 data.onehour_rqst_count,
                 data.areartype,
+                data.max_late_day_count,
                 data.setting_slno
             ],
             (error, results, feilds) => {

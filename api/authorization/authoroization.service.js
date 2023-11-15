@@ -57,7 +57,7 @@ module.exports = {
     },
     getData: (callBack) => {
         pool.query(
-            `SELECT auth_slno,dept_section, dept_name, auth_post,post, dept_name_post, name_emp  FROM(
+            `SELECT auth_slno,dept_section, dept_name, auth_post,auth_id,post, dept_name_post, name_emp  FROM(
                 SELECT 
                             auth_slno AS auth_slno,
                             dept_section AS dept_section,
@@ -65,6 +65,7 @@ module.exports = {
                            auth_post AS post,
                             if(auth_post=1,'HOD','Incharge'  ) auth_post  ,
                             P.sect_name AS dept_name_post,
+                            emp_id AS auth_id,
                             em_name AS name_emp              
                             FROM hrm_authorization_assign
                             LEFT JOIN hrm_dept_section D ON D.sect_id = hrm_authorization_assign.dept_section
@@ -221,7 +222,38 @@ module.exports = {
             }
         )
     },
-
-
+    getHodWiseList: (id, callBack) => {
+        pool.query(
+            `SELECT * FROM hrm_authorization_assign where emp_id=?`,
+            [
+                id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    updateEmpmaster: (data, callBack) => {
+        pool.query(
+            `UPDATE hrm_emp_master 
+            SET hod = ? ,
+            incharge = ?
+            WHERE em_id = ?`,
+            [
+                data.hod,
+                data.incharge,
+                data.em_id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 
 }

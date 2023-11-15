@@ -60,6 +60,7 @@ module.exports = {
             `SELECT 
                     user_grp_slno,
                     user_group_name,
+                    user_group_status,
                     if(user_group_status = 1,'Active','Inactive') grp_status
             FROM user_group_mast`,
             [],
