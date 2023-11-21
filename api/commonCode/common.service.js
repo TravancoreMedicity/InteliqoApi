@@ -580,7 +580,8 @@ module.exports = {
                 ecat_sl,
                 em_doj,
                 ecat_holiday,
-                ecat_mate
+                ecat_mate,
+                ecat_training
               FROM hrm_emp_master,hrm_emp_category 
               where hrm_emp_master.em_id=? 
               and hrm_emp_master.em_category = hrm_emp_category.category_slno`,
