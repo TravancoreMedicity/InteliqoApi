@@ -65,7 +65,6 @@ module.exports = {
     checkprocesstable: (req, res) => {
         const body = req.body;
         checkTable(body, (err, results) => {
-
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
@@ -73,12 +72,13 @@ module.exports = {
                     message: err
                 });
             }
-            if (results.length == 0) {
+            if (results.length === 0) {
                 return res.status(200).json({
                     success: 0,
                     message: "No Results Found"
                 });
             }
+
 
             return res.status(200).json({
                 success: 1,
