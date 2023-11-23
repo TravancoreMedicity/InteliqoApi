@@ -82,12 +82,17 @@ module.exports = {
     },
     GetTopicAssignToEmp: (id, callback) => {
         pool.query(
-            `    SELECT ROW_NUMBER() OVER () as slno,topic,topic_slno,training_topic_name,emp_name,em_id,em_name,question_count,schedule_topics
-            FROM training_employee_details 
-            LEFT JOIN training_topic ON training_topic.topic_slno=training_employee_details.topic
-             LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_employee_details.emp_name
-             lEFT JOIN training_departmental_schedule ON training_departmental_schedule.schedule_topics=training_employee_details.topic
-            WHERE emp_name=? and training_employee_details.training_status=1`, [id],
+            `SELECT ROW_NUMBER() OVER () as slno,topic,topic_slno,training_topic_name,emp_name,em_id,em_name,question_count,schedule_topics,
+            emp_desig,training_employee_details.emp_dept,emp_dept_sectn,desg_slno,desg_name,hrm_department.dept_id,dept_name,sect_id,sect_name,training_pretest.pretest_status
+                       FROM training_employee_details 
+                       LEFT JOIN training_topic ON training_topic.topic_slno=training_employee_details.topic
+                        LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_employee_details.emp_name
+                        lEFT JOIN training_departmental_schedule ON training_departmental_schedule.schedule_topics=training_employee_details.topic
+                        LEFT JOIN designation ON designation.desg_slno=training_employee_details.emp_desig
+                        LEFT JOIN hrm_department ON hrm_department.dept_id=training_employee_details.emp_dept
+                        LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=training_employee_details.emp_dept_sectn
+                        LEFT JOIN training_pretest ON training_pretest.emp_id=training_employee_details.emp_name
+                       WHERE emp_name=? and training_employee_details.training_status=1`, [id],
             (err, results, feilds) => {
                 if (err) {
                     return callback(err)
@@ -156,6 +161,38 @@ module.exports = {
                 data.schedule_topics,
                 data.question_count
 
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    InsertPretest: (data, callBack) => {
+        pool.query(
+            `INSERT INTO  medi_hrm.training_pretest
+            (
+                emp_id,
+                emp_dept,
+                emp_dept_sec,
+                emp_desg,
+                emp_topic,
+                pretest_status,
+                mark,
+                create_user
+            )
+            VALUES (?,?,?,?,?,?,?,?)`,
+            [
+                data.emp_id,
+                data.emp_dept,
+                data.emp_dept_sec,
+                data.emp_desg,
+                data.emp_topic,
+                data.pretest_status,
+                data.mark,
+                data.create_user
             ],
             (error, results, feilds) => {
                 if (error) {

@@ -28,7 +28,6 @@ module.exports = {
     TrainingQuestionInsert: (req, res) => {
         const body = req.body;
         TrainingQuestionInsert(body, (err, results) => {
-            console.log(results);
             if (err) {
 
                 return res.status(200).json({

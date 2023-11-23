@@ -3,7 +3,6 @@ const pool = require('../../config/database');
 module.exports = {
 
     updateUploadStatus: (data, callBack) => {
-        console.log(data);
         pool.query(
             `UPDATE medi_hrm.training_questions SET 
             upload_status=1

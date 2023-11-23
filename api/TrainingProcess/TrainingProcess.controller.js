@@ -1,5 +1,5 @@
 const { logger } = require('../../logger/logger')
-const { GetTrainingProcess, AttendanceMarking, GetDepartmentalTrainings, GetTopicAssignToEmp, GetQuestionDetails, UpdateQuestionCount, GetDataBasedOnCount } = require('./TrainingProcess.service')
+const { GetTrainingProcess, AttendanceMarking, GetDepartmentalTrainings, GetTopicAssignToEmp, GetQuestionDetails, UpdateQuestionCount, GetDataBasedOnCount, InsertPretest } = require('./TrainingProcess.service')
 module.exports = {
     GetTrainingProcess: (req, res) => {
         GetTrainingProcess((err, results) => {
@@ -159,4 +159,24 @@ module.exports = {
 
         });
     },
+    InsertPretest: (req, res) => {
+        const body = req.body;
+        InsertPretest(body, (err, results) => {
+            if (err) {
+
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else {
+                return res.status(200).json({
+                    success: 1,
+                    message: "PreTest over Successfully",
+                });
+            }
+
+        });
+    },
+
 }
