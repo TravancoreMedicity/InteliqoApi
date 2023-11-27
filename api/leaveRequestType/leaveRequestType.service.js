@@ -97,7 +97,8 @@ module.exports = {
             lrequest_slno,
              lrequest_type,
              lrequest_short,
-                if(lrequest_status = 1 ,'Yes','No')lrequest_status
+             lrequest_status,
+                if(lrequest_status = 1 ,'Yes','No')status
             FROM hrm_leave_request_type `,
             [],
             (error, results, feilds) => {

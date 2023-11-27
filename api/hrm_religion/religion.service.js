@@ -75,7 +75,8 @@ module.exports = {
             `SELECT 
                 relg_slno,
                 relg_name,
-                relg_status
+                relg_status,
+                if(relg_status = 1 ,'Yes','No')status
             FROM hrm_religion`,
             [],
             (error, results, feilds) => {

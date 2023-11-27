@@ -82,7 +82,8 @@ module.exports = {
         pool.query(
             `SELECT duemast_slno,
             due_desc,due_shortname,
-            if(due_status = 1 ,'Yes','No') due_status
+            due_status,
+            if(due_status = 1 ,'Yes','No') status
             FROM due_clearence_mastrer`,
             [],
             (error, results, feilds) => {
