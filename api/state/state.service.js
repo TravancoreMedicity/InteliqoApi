@@ -62,7 +62,9 @@ module.exports = {
             `SELECT state_slno,
             state_name,
              hrm_nation.nat_name,
-            if(state_status = 1 , 'Yes','No') state_status  
+             state_nat_slno,
+             state_status,
+            if(state_status = 1 , 'Yes','No') status  
                 FROM hrm_state                
             LEFT JOIN hrm_nation ON hrm_state.state_nat_slno = hrm_nation.nat_slno`,
             [],

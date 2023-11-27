@@ -86,10 +86,9 @@ module.exports = {
 
     getData: (callBack) => {
         pool.query(
-            `SELECT board_slno,
-            board_name,
+            `SELECT board_slno, board_name,   board_status,  education_slno,
             hrm_mast_education.edu_desc, 
-            if(board_status = 1 , 'Yes','No') board_status,
+            if(board_status = 1 , 'Yes','No') status,
             create_user
       FROM hrm_board
        LEFT JOIN hrm_mast_education ON hrm_board.education_slno = hrm_mast_education.edu_slno`,

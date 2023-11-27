@@ -100,10 +100,9 @@ module.exports = {
     },
     getData: (callBack) => {
         pool.query(
-            `SELECT cour_slno,
-            cour_desc,
+            `SELECT cour_slno,  cour_desc,  cour_status, hrm_mast_course.edu_slno,
             hrm_mast_education.edu_desc, 
-            if(cour_status = 1 , 'Yes','No') cour_status,
+            if(cour_status = 1 , 'Yes','No') status,
             cour_created
       FROM hrm_mast_course
        LEFT JOIN hrm_mast_education ON hrm_mast_course.edu_slno = hrm_mast_education.edu_slno`,
