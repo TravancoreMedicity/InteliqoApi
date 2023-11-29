@@ -70,11 +70,8 @@ module.exports = {
     },
     getData: (callBack) => {
         pool.query(
-            `SELECT bank_slno,
-            bank_name,
-            bank_master.bankmast_name,
-            bank_ifsc,
-            bank_address,
+            `SELECT bank_slno, bank_name, bank_master.bankmast_name, bank_ifsc,
+            bank_address,bank_master.bankmast_slno,bank_status,
             if(bank_status = 1 ,'Active','Inactive') status
             FROM hrm_bank
         left join bank_master on bank_master.bankmast_slno=hrm_bank.bank_mastname`,

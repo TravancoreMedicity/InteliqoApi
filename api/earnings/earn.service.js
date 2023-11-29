@@ -99,14 +99,14 @@ module.exports = {
     },
     getData: (callBack) => {
         pool.query(
-            `SELECT earnded_id,
-                    earnded_name,
-                    if(include_esi = 1 ,'Yes','No') include_esi,
-                    if(include_lwf = 1 , 'Yes','No') include_lwf,
-                    if(include_pf = 1 , 'Yes','No') include_pf,
-                    if(include_protax = 1, 'Yes','No') include_protax ,
+            `SELECT earnded_id, earnded_name,  include_esi, include_lwf,include_pf, include_protax,
+            hrm_earning_type.erning_type_id, earnded_status,
+                    if(include_esi = 1 ,'Yes','No') esi,
+                    if(include_lwf = 1 , 'Yes','No') lwf,
+                    if(include_pf = 1 , 'Yes','No') pf,
+                    if(include_protax = 1, 'Yes','No') protax ,
                     hrm_earning_type.earning_type_name,
-                    if(earnded_status = 1 , 'Yes','No') earnded_status
+                    if(earnded_status = 1 , 'Yes','No')status
             FROM hrm_earning_deduction
             LEFT JOIN hrm_earning_type ON  hrm_earning_type.erning_type_id = hrm_earning_deduction.erning_type_id`,
             [],

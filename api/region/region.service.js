@@ -66,10 +66,8 @@ module.exports = {
     },
     getData: (callBack) => {
         pool.query(
-            `SELECT reg_slno,
-            reg_name,dist_name,
-            reg_pincode,
-             if(reg_status = 1 ,'Yes','No') reg_status
+            `SELECT reg_slno, reg_name,dist_name,reg_dist_slno,  reg_pincode, reg_status,
+             if(reg_status = 1 ,'Yes','No') status
         FROM hrm_region,hrm_district where hrm_region.reg_dist_slno=hrm_district.dist_slno`,
             //and reg_dist_slno='3'
             [],

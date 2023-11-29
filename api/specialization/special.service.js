@@ -102,8 +102,10 @@ module.exports = {
             `SELECT     
                spec_slno,
                spec_desc,
+               hrm_mast_specializtion.cour_slno,
                hrm_mast_course.cour_desc,
-            if(spec_status = 1 ,'Yes','No') spec_status
+               spec_status,
+            if(spec_status = 1 ,'Yes','No') status
         FROM hrm_mast_specializtion
         LEFT JOIN hrm_mast_course ON hrm_mast_specializtion.cour_slno = hrm_mast_course.cour_slno`,
             [],

@@ -81,7 +81,8 @@ module.exports = {
             `SELECT unver_slno,
                 unver_name,
                 unver_alias,
-                if(unver_status = 1 ,'Yes','No') unver_status
+                unver_status,
+                if(unver_status = 1 ,'Yes','No') status
             FROM hrm_university`,
             [],
             (error, results, feilds) => {

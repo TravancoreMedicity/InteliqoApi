@@ -94,7 +94,8 @@ module.exports = {
         pool.query(
             `SELECT reg_id,
                 registration_name,
-                if(registration_status   = 1 ,'Yes','No') registration_status                         
+                registration_status,
+                if(registration_status   = 1 ,'Yes','No') status                         
             FROM hrm_emp_registrationtype`,
             [],
             (error, results, feilds) => {
