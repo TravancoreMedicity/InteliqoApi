@@ -2,7 +2,6 @@ const { TrainingNameGet, TrainingScheduleInsert, TrainingScheduleGet, TrainingSc
 
 module.exports = {
     TrainingNameGet: (req, res) => {
-
         TrainingNameGet((err, results) => {
             if (err) {
                 return res.status(400).json({
@@ -25,7 +24,6 @@ module.exports = {
 
     TrainingScheduleInsert: (req, res) => {
         const body = req.body;
-
         TrainingScheduleInsert(body, (err, result) => {
             if (err) {
                 logger.errorLogger(err)
@@ -44,9 +42,7 @@ module.exports = {
     },
 
     TrainingScheduleGet: (req, res) => {
-
         TrainingScheduleGet((err, results) => {
-
             if (err) {
                 return res.status(400).json({
                     success: 0,
@@ -67,7 +63,6 @@ module.exports = {
     },
     TrainingScheduleUpdate: (req, res) => {
         const body = req.body;
-
         TrainingScheduleUpdate(body, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
