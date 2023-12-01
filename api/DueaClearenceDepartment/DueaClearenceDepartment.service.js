@@ -69,11 +69,13 @@ module.exports = {
     getSelect: (callBack) => {
         pool.query(
             `SELECT 
-                due_dept_slno,
-              hrm_due_clearence_dept_master.dept_id,dept_name,
-               hrm_due_clearence_dept_master.sect_id,sect_name,
-               due_dept_code,
-               updated_user     
+            due_dept_slno,
+            hrm_due_clearence_dept_master.dept_id,
+            dept_name,
+            hrm_due_clearence_dept_master.sect_id,
+            sect_name,
+            due_dept_code,
+            updated_user     
        FROM hrm_due_clearence_dept_master 
        left join hrm_department
        on hrm_department.dept_id=hrm_due_clearence_dept_master.dept_id

@@ -67,6 +67,7 @@ module.exports = {
                 salary_from,
                 salary_to,
                 tax_amt,
+                prof_status,
                 if(prof_status = 1 ,'Yes','No' ) status
             FROM hrm_professional_tax`,
             [],
