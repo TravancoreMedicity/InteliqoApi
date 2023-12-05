@@ -3,13 +3,14 @@ const pool = require('../../config/database');
 module.exports = {
     GetTrainingProcess: (callback) => {
         pool.query(
-            `SELECT ROW_NUMBER() OVER () as sn,slno, emp_name, emp_dept, emp_dept_sectn, topic, schedule_date, training_employee_details.training_status,emp_name,training_employee_details.pretest_status, training_employee_details.posttest_status, dept_name, sect_name,training_topic_name,em_name,
-            hrm_department.dept_id,em_id,sect_id,topic_slno
-            FROM medi_hrm.training_employee_details
-            left join hrm_department on hrm_department.dept_id=training_employee_details.emp_dept
-            LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_employee_details.emp_name
-            left join hrm_dept_section on hrm_dept_section.sect_id=training_employee_details.emp_dept_sectn
-            left join training_topic on training_topic.topic_slno=training_employee_details.topic
+            `SELECT ROW_NUMBER() OVER () as sn,slno, emp_name, emp_dept, emp_dept_sectn, topic, schedule_date, training_employee_details.training_status,
+            emp_name,training_employee_details.pretest_status, training_employee_details.posttest_status, dept_name, sect_name,training_topic_name,em_name,posttest_permission,
+                        hrm_department.dept_id,em_id,sect_id,topic_slno
+                        FROM medi_hrm.training_employee_details
+                        left join hrm_department on hrm_department.dept_id=training_employee_details.emp_dept
+                        LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_employee_details.emp_name
+                        left join hrm_dept_section on hrm_dept_section.sect_id=training_employee_details.emp_dept_sectn
+                        left join training_topic on training_topic.topic_slno=training_employee_details.topic
             `, [],
 
             (err, results, feilds) => {
@@ -49,7 +50,7 @@ module.exports = {
              LEFT JOIN training_topic ON training_topic.topic_slno=training_departmental_schedule.schedule_topics
              LEFT JOIN hrm_emp_master ON JSON_CONTAINS(training_departmental_schedule.schedule_trainers,cast(hrm_emp_master.em_id as json),'$')
              LEFT JOIN training_employee_details ON training_employee_details.topic=training_departmental_schedule.schedule_topics
-             GROUP BY slno, hrm_department.dept_id, dept_name, sect_id, sect_name, topic_slno, training_topic_name
+             GROUP BY slno, hrm_department.dept_id, dept_name, sect_id, sect_name, topic_slno, training_topic_name,schedule_date
             `, [],
 
             (err, results, feilds) => {
@@ -81,7 +82,7 @@ module.exports = {
         pool.query(
             `             
             SELECT ROW_NUMBER() OVER () as sl,training_employee_details.slno, emp_name, emp_desig, emp_dept, emp_dept_sectn, topic, training_employee_details.schedule_date,training_employee_details.training_status, 
-            training_employee_details.pretest_status, posttest_status,topic_slno,training_topic_name,question_count,em_id,em_name,desg_slno,desg_name,hrm_department.dept_id,dept_name,sect_id,sect_name
+            training_employee_details.pretest_status, posttest_status,topic_slno,training_topic_name,question_count,em_id,em_name,desg_slno,desg_name,hrm_department.dept_id,dept_name,sect_id,sect_name,posttest_permission
             FROM training_employee_details
             LEFT JOIN training_topic ON training_topic.topic_slno=training_employee_details.topic
             INNER JOIN  training_departmental_schedule ON training_departmental_schedule.schedule_topics=training_employee_details.topic
@@ -105,11 +106,11 @@ module.exports = {
         const limit = parseInt(id)
         pool.query(
             `SELECT q_slno, training_topics, questions, answer_a, answer_b, answer_c,
-             answer_d, right_answer, upload_status, writtenStatus, handwrite_answer, marks,topic_slno
-             FROM training_questions
-             LEFT JOIN  training_topic ON training_topic.topic_slno=training_questions.training_topics
-             ORDER BY RAND() 
-             LIMIT ? `,
+            answer_d, right_answer, training_topic_name,upload_status, writtenStatus, handwrite_answer, marks,topic_slno,online_status,offline_status,both_status
+            FROM training_questions
+            LEFT JOIN  training_topic ON training_topic.topic_slno=training_questions.training_topics
+            ORDER BY RAND() 
+            LIMIT ? `,
             [
                 limit
             ],
@@ -276,6 +277,23 @@ module.exports = {
                 data.schedule_date,
                 data.edit_user,
                 data.slno
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    EmpVerification: (data, callBack) => {
+        pool.query(
+            `UPDATE training_employee_details set 
+            posttest_permission=1
+             where slno=?`,
+            [
+                data.slno
+
             ],
             (error, results, feilds) => {
                 if (error) {

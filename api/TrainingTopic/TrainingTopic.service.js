@@ -19,9 +19,10 @@ module.exports = {
                 online_status,
                 offline_status,
                 both_status,
+                video_link,
                 create_user
             )
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
                 data.training_dept,
                 data.dept_status,
@@ -37,6 +38,7 @@ module.exports = {
                 data.online_status,
                 data.offline_status,
                 data.both_status,
+                data.video_link,
                 data.create_user
             ],
             (error, results, feilds) => {
@@ -51,7 +53,7 @@ module.exports = {
     TrainingTopicGet: (callback) => {
         pool.query(
             `SELECT topic_slno,training_dept,training_topic.dept_status,training_topic_name,training_topic.training_name, training_status, tutorial_status, medical_status, non_medical_status,
-            pretest_status, post_test_status,online_status, offline_status, both_status,
+            pretest_status, post_test_status,online_status, offline_status, both_status,video_link,
             name_slno,training_name.training_name,hours,hrm_department.dept_id,dept_name,name_slno
             FROM medi_hrm.training_topic
             LEFT JOIN hrm_department ON hrm_department.dept_id=training_topic.training_dept
@@ -83,6 +85,7 @@ module.exports = {
          online_status=?,
          offline_status=?,
          both_status=?,
+         video_link=?,
          edit_user=?
          WHERE topic_slno=?`,
             [
@@ -100,6 +103,7 @@ module.exports = {
                 data.online_status,
                 data.offline_status,
                 data.both_status,
+                data.video_link,
                 data.edit_user,
                 data.topic_slno
             ],

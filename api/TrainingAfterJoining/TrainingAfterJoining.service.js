@@ -287,9 +287,7 @@ module.exports = {
     },
     getDeptTopic: (id, callback) => {
         pool.query(
-            `SELECT topic_slno,training_topic_name 
-            FROM training_topic 
-            WHERE training_dept=?`, [id],
+            ` SELECT topic_slno,training_topic_name FROM training_topic WHERE training_dept=?`, [id],
             (err, results, feilds) => {
                 if (err) {
                     return callback(err)

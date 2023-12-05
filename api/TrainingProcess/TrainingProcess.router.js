@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const { checkToken } = require("../../auth/token_validation");
-const { GetTrainingProcess, AttendanceMarking, GetDepartmentalTrainings, InsertpostTest, GetTopicAssignToEmp, GetQuestionDetails, UpdateQuestionCount, GetDataBasedOnCount, InsertPretest, UpdateTrainingDate } = require('./TrainingProcess.controller');
+const { GetTrainingProcess, AttendanceMarking, GetDepartmentalTrainings, EmpVerification, InsertpostTest, GetTopicAssignToEmp, GetQuestionDetails, UpdateQuestionCount, GetDataBasedOnCount, InsertPretest, UpdateTrainingDate } = require('./TrainingProcess.controller');
 
 router.get('/select', checkToken, GetTrainingProcess)
 router.patch('/attendance', checkToken, AttendanceMarking)
@@ -12,5 +12,6 @@ router.post('/ScheduleBasedonCount', checkToken, GetDataBasedOnCount)
 router.post('/pretest', checkToken, InsertPretest)
 router.post('/postTest', checkToken, InsertpostTest)
 router.patch('/resheduledate', checkToken, UpdateTrainingDate)
+router.patch('/empverification', checkToken, EmpVerification)
 
 module.exports = router;

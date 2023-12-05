@@ -1,5 +1,5 @@
 const { logger } = require('../../logger/logger')
-const { GetTrainingProcess, AttendanceMarking, GetDepartmentalTrainings, UpdatePretestStatus, InsertpostTest, UpdatePosttestStatus, GetTopicAssignToEmp, GetQuestionDetails, UpdateQuestionCount, GetDataBasedOnCount, InsertPretest, UpdateTrainingDate } = require('./TrainingProcess.service')
+const { GetTrainingProcess, AttendanceMarking, EmpVerification, GetDepartmentalTrainings, UpdatePretestStatus, InsertpostTest, UpdatePosttestStatus, GetTopicAssignToEmp, GetQuestionDetails, UpdateQuestionCount, GetDataBasedOnCount, InsertPretest, UpdateTrainingDate } = require('./TrainingProcess.service')
 module.exports = {
     GetTrainingProcess: (req, res) => {
         GetTrainingProcess((err, results) => {
@@ -91,7 +91,6 @@ module.exports = {
         const id = req.params.id;
         GetQuestionDetails(id, (err, results) => {
             if (err) {
-                console.log(err);
                 return res.status(200).json({
                     success: 0,
                     message: err
@@ -217,6 +216,29 @@ module.exports = {
                 return res.status(200).json({
                     success: 1,
                     message: "Updated successfully"
+                });
+            }
+        });
+    },
+    EmpVerification: (req, res) => {
+        const body = req.body;
+        EmpVerification(body, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results === 0) {
+                return res.status(400).json({
+                    success: 1,
+                    message: "No Record Found"
+                })
+            }
+            else {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Employee Verified Successfully"
                 });
             }
         });
