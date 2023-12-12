@@ -118,11 +118,8 @@ module.exports = {
     },
     getSelectedSectionByDept: (id, callback) => {
         pool.query(
-            `SELECT 
-                sect_id,
-                sect_name
-            FROM hrm_dept_section 
-            WHERE dept_id = ? ORDER BY sect_name ASC`,
+            `SELECT  sect_id,  sect_name  FROM hrm_dept_section 
+        WHERE dept_id = ? and sect_status=1 ORDER BY sect_name `,
             [id],
             (error, results, feilds) => {
                 if (error) {

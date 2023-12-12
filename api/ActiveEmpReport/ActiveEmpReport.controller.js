@@ -13,6 +13,7 @@ const {
     getDeptActiveEmpDate,
     getEmpdetl
 } = require('../ActiveEmpReport/ActiveEmpReport.service')
+const logger = require('../../logger/logger')
 
 module.exports = {
     getBranchActiveEmployees: (req, res) => {
