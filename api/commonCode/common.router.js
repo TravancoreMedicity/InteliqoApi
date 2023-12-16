@@ -69,7 +69,8 @@ const {
     getEmployeeInformation,
     insertErrorLog,
     getgrossSalary,
-    getEmployeName
+    getEmployeName,
+    getapplicationid
 } = require('../commonCode/common.controller');
 
 router.get("/getdept", checkToken, getDepartmentName)
@@ -148,5 +149,6 @@ router.get("/getEmpoyeeInfomation/:id", checkToken, getEmployeeInformation)
 router.post("/errorLog", checkToken, insertErrorLog)
 router.get("/getgrossSalary/:id", checkToken, getgrossSalary)
 router.get("/getemp/:id", checkToken, getEmployeName)
+router.get("/getapplicationid", checkToken, getapplicationid)   //get application form number
 
 module.exports = router;

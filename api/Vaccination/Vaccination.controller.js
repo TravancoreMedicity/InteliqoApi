@@ -1,5 +1,5 @@
-const { getData,getEmpdetl,getEmpDataByEmno, vaccinationInsert,vaccinationentry,annualvaccinationbooster,getannualvac, vaccinationBoosterInsert,annualvaccinationInsert, getVaccination,updateannualinsert, SeconddoseInsert, ThirddoseInsert,hicinsertseconddose,hicinsertboosterdose,hicinsertthirddose, getDataVaccination, hicinsertfirstdose,vaccinationInsertEntry, vaccinationInsertBooster } = require('../Vaccination/Vaccination.service');
-
+const { getData, getEmpdetl, getEmpDataByEmno, vaccinationInsert, vaccinationentry, annualvaccinationbooster, getannualvac, vaccinationBoosterInsert, annualvaccinationInsert, getVaccination, updateannualinsert, SeconddoseInsert, ThirddoseInsert, hicinsertseconddose, hicinsertboosterdose, hicinsertthirddose, getDataVaccination, hicinsertfirstdose, vaccinationInsertEntry, vaccinationInsertBooster } = require('../Vaccination/Vaccination.service');
+const logger = require('../../logger/logger')
 module.exports = {
     getData: (req, res) => {
 
@@ -93,7 +93,7 @@ module.exports = {
 
     // seconddose boosterdose date
     SeconddoseInsert: (req, res) => {
-        
+
         const body = req.body;
         SeconddoseInsert(body, (err, results) => {
             if (err) {
@@ -110,7 +110,7 @@ module.exports = {
     },
     // thirddose boosterdose date
     ThirddoseInsert: (req, res) => {
-        
+
         const body = req.body;
         ThirddoseInsert(body, (err, results) => {
             if (err) {
@@ -171,7 +171,7 @@ module.exports = {
     },
 
     vaccinationInsertBooster: (req, res) => {
-        
+
         const body = req.body;
         vaccinationInsertBooster(body, (err, results) => {
             if (err) {
@@ -189,7 +189,7 @@ module.exports = {
 
     // hicapi
 
-     hicinsertfirstdose: (req, res) => {
+    hicinsertfirstdose: (req, res) => {
         const body = req.body;
         hicinsertfirstdose(body, (err, results) => {
             if (err) {
@@ -204,7 +204,7 @@ module.exports = {
             })
         })
     },
- hicinsertseconddose: (req, res) => {
+    hicinsertseconddose: (req, res) => {
         const body = req.body;
         hicinsertseconddose(body, (err, results) => {
             if (err) {
@@ -219,7 +219,7 @@ module.exports = {
             })
         })
     },
-hicinsertthirddose: (req, res) => {
+    hicinsertthirddose: (req, res) => {
         const body = req.body;
         hicinsertthirddose(body, (err, results) => {
             if (err) {
@@ -251,7 +251,7 @@ hicinsertthirddose: (req, res) => {
     },
 
     // annual vaccination insert
- annualvaccinationInsert: (req, res) => {
+    annualvaccinationInsert: (req, res) => {
         const body = req.body;
         annualvaccinationInsert(body, (err, results) => {
             if (err) {
@@ -260,7 +260,7 @@ hicinsertthirddose: (req, res) => {
                     message: err
                 })
             }
-           else {
+            else {
                 updateannualinsert(body, (err, results) => {
                     if (err) {
                         logger.errorLogger(err)
@@ -285,7 +285,7 @@ hicinsertthirddose: (req, res) => {
             }
         })
     },
-     annualvaccinationbooster: (req, res) => {
+    annualvaccinationbooster: (req, res) => {
         const body = req.body;
         annualvaccinationbooster(body, (err, results) => {
             if (err) {
@@ -294,7 +294,7 @@ hicinsertthirddose: (req, res) => {
                     message: err
                 })
             }
-           else {
+            else {
                 updateannualinsert(body, (err, results) => {
                     if (err) {
                         logger.errorLogger(err)
@@ -319,9 +319,9 @@ hicinsertthirddose: (req, res) => {
             }
         })
     },
- getannualvac: (req, res) => {
+    getannualvac: (req, res) => {
         const id = req.params.id;
-        
+
         getannualvac(id, (err, results) => {
 
             if (err) {
@@ -345,8 +345,8 @@ hicinsertthirddose: (req, res) => {
             });
         });
     },
-     vaccinationentry: (req, res) => {
-        
+    vaccinationentry: (req, res) => {
+
         const body = req.body;
         vaccinationentry(body, (err, results) => {
             if (err) {
@@ -361,8 +361,8 @@ hicinsertthirddose: (req, res) => {
             })
         })
     },
-// hic vaccination list
- getEmpdetl: (req, res) => {
+    // hic vaccination list
+    getEmpdetl: (req, res) => {
         const body = req.body;
         getEmpdetl(body, (err, results) => {
             if (err) {
@@ -386,7 +386,7 @@ hicinsertthirddose: (req, res) => {
             });
         })
     },
-      getEmpDataByEmno: (req, res) => {
+    getEmpDataByEmno: (req, res) => {
         const id = req.params.id;
         getEmpDataByEmno(id, (err, results) => {
             if (err) {

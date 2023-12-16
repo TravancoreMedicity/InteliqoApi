@@ -1,6 +1,6 @@
 const { getEmpByDeptAndSection, insertmanpowerplanning, getData, getname, getdesignation, updateannouncement, getapprovalhod, updateHodapproval, getapprove, getvacancy, checkInsertVal, updateHrapproval, getapproval, updateDataManpowerapproval, updatemanpowerplanning, insertmanpowerrequest } = require('../Manpower/Manpower.service');
 const { ManpowerRequest } = require('../../validation/validation_schema')
-
+const logger = require('../../logger/logger')
 module.exports = {
     getDepartAndSectionEmpDetl: (req, res) => {
         const body = req.body

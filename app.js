@@ -114,7 +114,7 @@ const Vaccination = require("./api/Vaccination/Vaccination.router")
 const CommonRequestMast = require("./api/CommonRequestMaster/master.router")
 const PersonalChecklist = require("./api/PersonalChecklist/personalchecklist.router")
 const Manpower = require("./api/Manpower/Manpower.router")
-
+const Applicationform = require("./api/Applicationform/applicationform.router")
 app.use(express.json({ limit: '50mb' }));
 app.use((req, res, next) => {
     //     res.header("Access-Control-Allow-Origin", "http://192.168.10.170:8080
@@ -265,7 +265,7 @@ app.use("/api/CommonRequestMast", CommonRequestMast)
 app.use('/api/Vaccination', Vaccination)
 app.use('/api/PersonalChecklist', PersonalChecklist)
 app.use('/api/Manpower', Manpower)
-
+app.use('/api/Applicationform', Applicationform)
 
 
 // ------ Database Connection --------

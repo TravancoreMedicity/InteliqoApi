@@ -1,4 +1,5 @@
 const { getData } = require('../PersonalChecklist/personalchecklist.service');
+const logger = require('../../logger/logger')
 module.exports = {
     getData: (req, res) => {
 

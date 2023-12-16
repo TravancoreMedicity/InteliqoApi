@@ -1657,5 +1657,18 @@ module.exports = {
             }
         )
     },
+    getapplicationid: (callBack) => {
+        pool.query(
+            `SELECT * FROM master_serialno where serial_slno=8`,
+            [],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+
+    },
 }
 

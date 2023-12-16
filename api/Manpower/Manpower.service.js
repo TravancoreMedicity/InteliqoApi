@@ -10,23 +10,23 @@ module.exports = {
             hrm_emp_master.em_designation AS em_designation_number,
             designation.desg_grade,
             g.grade_desc AS grade_desg
-        FROM hrm_emp_master
-        LEFT JOIN hrm_salutation ON hrm_salutation.sa_code = hrm_emp_master.em_salutation
-        LEFT JOIN hrm_branch ON hrm_branch.branch_slno = hrm_emp_master.em_branch
-        LEFT JOIN hrm_department ON hrm_department.dept_id = hrm_emp_master.em_department
-        LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
-        LEFT JOIN designation ON designation.desg_slno = hrm_emp_master.em_designation
-        LEFT JOIN hrm_emp_category ON hrm_emp_category.category_slno = hrm_emp_master.em_category
-        LEFT JOIN grade g ON designation.desg_grade = g.grade_slno
-        WHERE hrm_department.dept_id = ?
+            FROM hrm_emp_master
+            LEFT JOIN hrm_salutation ON hrm_salutation.sa_code = hrm_emp_master.em_salutation
+            LEFT JOIN hrm_branch ON hrm_branch.branch_slno = hrm_emp_master.em_branch
+            LEFT JOIN hrm_department ON hrm_department.dept_id = hrm_emp_master.em_department
+            LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
+            LEFT JOIN designation ON designation.desg_slno = hrm_emp_master.em_designation
+            LEFT JOIN hrm_emp_category ON hrm_emp_category.category_slno = hrm_emp_master.em_category
+            LEFT JOIN grade g ON designation.desg_grade = g.grade_slno
+            WHERE hrm_department.dept_id = ?
             AND hrm_dept_section.sect_id = ?
             AND em_status = 1
             AND em_id != 1
             AND em_no != 2
-        ORDER BY
+            ORDER BY
             CASE
-                WHEN grade_desg IS NULL THEN 1
-                ELSE 0
+            WHEN grade_desg IS NULL THEN 1
+            ELSE 0
             END, grade_desg
         
             `,
@@ -99,17 +99,17 @@ module.exports = {
             m.desg_slno AS em_designation_number,
             d.desg_grade,
             g.grade_desc AS grade_desg
-        FROM hrm_manpowerplanning_master m
-        LEFT JOIN hrm_department ON hrm_department.dept_id = m.dept
-        LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id = m.deptsection
-        LEFT JOIN designation d ON d.desg_slno = m.desg_slno
-        left join grade g on d.desg_grade=g.grade_slno
-        WHERE hrm_department.dept_id = ?
+            FROM hrm_manpowerplanning_master m
+            LEFT JOIN hrm_department ON hrm_department.dept_id = m.dept
+            LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id = m.deptsection
+            LEFT JOIN designation d ON d.desg_slno = m.desg_slno
+            left join grade g on d.desg_grade=g.grade_slno
+            WHERE hrm_department.dept_id = ?
             AND hrm_dept_section.sect_id = ?
             ORDER BY
             CASE
-                WHEN grade_desg IS NULL THEN 1
-                ELSE 0
+            WHEN grade_desg IS NULL THEN 1
+            ELSE 0
             END, grade_desg
         
             `,
@@ -137,7 +137,7 @@ module.exports = {
                     salaryfrom=?,
                     salaryto=?
                     where
-                 desg_slno=?`,
+                    desg_slno=?`,
                     [val.MinCount, val.MaxCount, val.salaryfrom, val.salaryto, val.em_designation_number],
                     (error, results, feilds) => {
                         if (error) {
@@ -240,24 +240,25 @@ module.exports = {
             desg_id,
             permanent_status,
             hrm_manpower_request.contract_status,
-         apprentice_status,
-         trainee_status,
-         manpower_required_no,
-         required_date,
-         new_position_status,
-         addition_status,
-         replacement_status,
-         replacement_emid,
-         salaryfrom,
-         salaryto,
-         ed_approval_status,
-         Hod_approval_status,
-         Hr_approval_status,
-         dept_name,
-         desg_name,
-         createdate,
-         em_name,
-         announcement_status
+            apprentice_status,
+            trainee_status,
+            manpower_required_no,
+            required_date,
+            new_position_status,
+            addition_status,
+            replacement_status,
+            replacement_emid,
+            salaryfrom,
+            salaryto,
+            ed_approval_status,
+            Hod_approval_status,
+            Hr_approval_status,
+            dept_name,
+            desg_name,
+            createdate,
+            em_name,
+            qualification,
+            announcement_status
               from  hrm_manpower_request
               LEFT JOIN hrm_department ON hrm_manpower_request.dept_id = hrm_department.dept_id
               LEFT JOIN designation ON hrm_manpower_request.desg_id = designation.desg_slno
@@ -280,23 +281,23 @@ module.exports = {
             desg_id,
             permanent_status,
             hrm_manpower_request.contract_status,
-         apprentice_status,
-         trainee_status,
-         manpower_required_no,
-         required_date,
-         new_position_status,
-         addition_status,
-         replacement_status,
-         replacement_emid,
-         salaryfrom,
-         salaryto,
-         ed_approval_status,
-         Hod_approval_status,
-         Hr_approval_status,
-         dept_name,
-         desg_name,
-         createdate,
-         em_name
+           apprentice_status,
+           trainee_status,
+           manpower_required_no,
+           required_date,
+           new_position_status,
+           addition_status,
+           replacement_status,
+           replacement_emid,
+           salaryfrom,
+           salaryto,
+           ed_approval_status,
+           Hod_approval_status,
+           Hr_approval_status,
+           dept_name,
+           desg_name,
+           createdate,
+           em_name
               from  hrm_manpower_request
               LEFT JOIN hrm_department ON hrm_manpower_request.dept_id = hrm_department.dept_id
               LEFT JOIN designation ON hrm_manpower_request.desg_id = designation.desg_slno
