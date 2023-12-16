@@ -222,7 +222,7 @@ module.exports = {
             ecat_training,
             ecat_training_max,
             ecate_pf, ecat_wwf, ecat_lwf
-            FROM medi_hrm_policy.hrm_emp_category
+            FROM hrm_emp_category
             inner join employee_type on hrm_emp_category.emp_type=employee_type.emptype_slno;`,
             [],
             (error, results, feilds) => {

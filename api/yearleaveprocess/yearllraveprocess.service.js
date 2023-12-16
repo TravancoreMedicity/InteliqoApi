@@ -353,7 +353,6 @@ module.exports = {
     },
     // update common process slno
     updatecasualleaveupdateslno: (data, callBack) => {
-        // console.log(data)
         pool.query(
             //Update casual leave inactive (as "1" ) // inactive status --> "1" consider for the leave carry forward
             `update hrm_leave_cl 

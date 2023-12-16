@@ -77,11 +77,13 @@ module.exports = {
         pool.query(
             `SELECT sect_id,
             sect_name,
+            hrm_dept_section.dept_id,
             dept_sub_sect,
+            sect_status,
             (case when dept_sub_sect=1 then 'General'when dept_sub_sect=2 then 'OT' when dept_sub_sect=3 then 'ICU' when dept_sub_sect=4 then 'ER' else 'Nil' end) as sub_sect_name,
             hrm_department.dept_name,
-            if(authorization_incharge=1,'Yes','No')authorization_incharge,
-            if(authorization_hod=1,'Yes','No')authorization_hod,
+            if(authorization_incharge=1,'Yes','No')incharge,
+            if(authorization_hod=1,'Yes','No')hod,
             if(sect_status = 1,'Yes','No') status
         FROM hrm_dept_section
         LEFT JOIN hrm_department ON hrm_dept_section.dept_id = hrm_department.dept_id`,
@@ -116,11 +118,8 @@ module.exports = {
     },
     getSelectedSectionByDept: (id, callback) => {
         pool.query(
-            `SELECT 
-                sect_id,
-                sect_name
-            FROM hrm_dept_section 
-            WHERE dept_id = ? ORDER BY sect_name ASC`,
+            `SELECT  sect_id,  sect_name  FROM hrm_dept_section 
+        WHERE dept_id = ? and sect_status=1 ORDER BY sect_name `,
             [id],
             (error, results, feilds) => {
                 if (error) {

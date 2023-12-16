@@ -101,6 +101,7 @@ module.exports = {
                 branch_email,
                 branch_esi,
                 branch_pf,
+                branch_status,
                 if(branch_status=1,'Yes','No') status 
             FROM hrm_branch `,
             [],

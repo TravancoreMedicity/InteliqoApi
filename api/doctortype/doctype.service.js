@@ -95,8 +95,9 @@ module.exports = {
             `SELECT 
                 doctype_slno,
                 doctype_desc,
-                if(doctype_status = 1 ,'Yes','No') doctype_status
-            FR doctor_type `,
+                doctype_status,
+                if(doctype_status = 1 ,'Yes','No') status
+            FROM doctor_type `,
             [],
             (error, results, feilds) => {
                 if (error) {

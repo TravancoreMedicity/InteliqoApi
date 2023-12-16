@@ -102,13 +102,19 @@ module.exports = {
 
     getCarry: (callBack) => {
         pool.query(
-            `SELECT carry_slno,    
-                 hrm_dept_section.sect_name,
-                 employee_type.emptype_name,
-                 if(carry_hl = 1,'Yes','No')carry_hl,
-                if(carry_cl = 1,'Yes','No')carry_cl,
-                if(carry_el = 1,'Yes','No')carry_el,
-                if(carry_sl = 1,'Yes','No')carry_sl
+            `SELECT carry_slno,
+                dept_sec,
+                emp_type,
+                carry_hl,
+                carry_cl,
+                carry_el,
+                carry_sl,     
+                hrm_dept_section.sect_name,
+                employee_type.emptype_name,
+                if(carry_hl = 1,'Yes','No')hl,
+                if(carry_cl = 1,'Yes','No')cl,
+                if(carry_el = 1,'Yes','No')el,
+                if(carry_sl = 1,'Yes','No')sl
                FROM hrm_carryforward_leave
             LEFT JOIN hrm_dept_section ON hrm_carryforward_leave.dept_sec = hrm_dept_section.sect_id
             LEFT JOIN employee_type ON hrm_carryforward_leave.emp_type = employee_type.emptype_slno`,

@@ -61,8 +61,10 @@ module.exports = {
         pool.query(
             `SELECT dist_slno,
             dist_name,
+            dist_status,
+            dist_state_slno,
            hrm_state.state_name,                      
-                if(dist_status = 1 , 'Yes','No') dist_status  
+                if(dist_status = 1 , 'Yes','No') status  
                    FROM hrm_district
                 LEFT JOIN hrm_state ON hrm_district.dist_state_slno = hrm_state.state_slno`,
             [],

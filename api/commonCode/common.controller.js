@@ -841,7 +841,6 @@ module.exports = {
                     data: "No Record Found"
                 });
             }
-
             return res.status(200).json({
                 success: 1,
                 data: results
