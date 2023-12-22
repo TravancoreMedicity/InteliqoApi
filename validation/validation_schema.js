@@ -1206,6 +1206,7 @@ const validatecommonsettings = Joi.object({
         onehour_rqst_count: Joi.number().optional(),
         areartype: Joi.number().optional(),
         max_late_day_count: Joi.number().optional(),
+        leave_count: Joi.number().optional(),
 
 })
 //validate carryforward
