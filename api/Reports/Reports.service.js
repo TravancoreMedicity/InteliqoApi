@@ -384,7 +384,6 @@ module.exports = {
         )
     },
     getEducationById: (data, callBack) => {
-        console.log(data);
         pool.query(
             `SELECT hrm_emp_master.em_no,
             hrm_emp_master.em_name,
@@ -803,7 +802,7 @@ module.exports = {
             }
         )
     },
-        RegistrationTypeReport: (data, callBack) => {
+    RegistrationTypeReport: (data, callBack) => {
         pool.query(
             `SELECT 
             hrm_emp_qual.em_id, 
@@ -965,7 +964,7 @@ module.exports = {
             }
         )
     },
-        getDesignationExp: (data, callBack) => {
+    getDesignationExp: (data, callBack) => {
         pool.query(
             `SELECT hrm_emp_master.em_no,
             hrm_emp_master.em_name,
@@ -1010,7 +1009,7 @@ module.exports = {
 
         )
     },
-        getdeptSection: (data, callBack) => {
+    getdeptSection: (data, callBack) => {
         pool.query(
             `SELECT 
             hrm_dept_section.sect_id,hrm_dept_section.sect_name FROM medi_hrm.hrm_dept_section where dept_sub_sect IN (?)`,
@@ -1025,7 +1024,7 @@ module.exports = {
             }
         )
     },
-    
+
     getSectionTypeDetl: (data, callBack) => {
         pool.query(
             `SELECT
@@ -1055,7 +1054,7 @@ module.exports = {
             }
         )
     }
-    
-    
-    
+
+
+
 }

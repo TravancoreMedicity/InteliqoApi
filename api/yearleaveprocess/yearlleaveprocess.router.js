@@ -9,7 +9,7 @@ const {
     allowableconleave, holidaylistyear, insertyearly, select_yearlyprocess, dataannualcalculationEmployee,
     creditPrivilegeLeave, getLeaveProccedData, inactiveLastYearProcessData, inactiveCasualLeave,
     inactiveEarnLeave, inactiveHoliday, inactiveCommonLeave, getEsiPfDetails, getleaveProcessData,
-    inactiveSickLeave
+    inactiveSickLeave, inactiveEsiLeave
 } = require('../yearleaveprocess/yearleaveprocess.controller');
 
 router.post("/", checkToken, checkprocesstable)
@@ -50,5 +50,7 @@ router.post("/inactiveCommonLeave", checkToken, inactiveCommonLeave)
 router.get("/esidetails/:id", checkToken, getEsiPfDetails)
 router.get("/leaveproccess/data/:id", checkToken, getleaveProcessData)
 router.patch("/inactive/sick", checkToken, inactiveSickLeave)
+router.patch("/inactive/esi", checkToken, inactiveEsiLeave)
+
 
 module.exports = router;

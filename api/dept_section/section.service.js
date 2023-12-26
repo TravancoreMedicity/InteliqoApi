@@ -134,7 +134,7 @@ module.exports = {
             `SELECT 
             sect_id,
             sect_name
-        FROM hrm_dept_section order by sect_name asc; `
+        FROM hrm_dept_section where sect_status=1 order by sect_name asc; `
             ,
             [],
             (error, results, feilds) => {
