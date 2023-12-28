@@ -25,7 +25,8 @@ const {
     UpdateContractDetlStatus,
     UpdateContractDetl,
     ActiveEmploye,
-    insertInactiveEmp
+    insertInactiveEmp,
+    getEmpList
 } = require('../hrm_emp_master/empmast.controller');
 
 router.post("/", checkToken, createempmast)
@@ -62,5 +63,6 @@ router.patch('/update/contractdetl', checkToken, UpdateContractDetl)
 
 router.patch('/empmsater/active', checkToken, ActiveEmploye)
 router.post("/insert/inactive", checkToken, insertInactiveEmp)
+router.post("/emplist/show", checkToken, getEmpList)
 
 module.exports = router;
