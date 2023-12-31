@@ -445,7 +445,7 @@ module.exports = {
     },
     renewCategory: (callBack) => {
         pool.query(
-            `SELECT * FROM hrm_emp_category where ecat_cl!=0 && ecat_cont=1 &&ecat_sl=1;`,
+            `SELECT * FROM hrm_emp_category where ecat_cont=1`,
             [],
             (error, results, feilds) => {
                 if (error) {

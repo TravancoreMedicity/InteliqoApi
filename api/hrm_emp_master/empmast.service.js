@@ -840,17 +840,18 @@ module.exports = {
                 em_cont_start,
                 em_cont_end,
                 em_prob_end_date,
-                em_conf_end_date
+                em_conf_end_date,
+                status
                 )
-                VALUES (?,?,?,?,?,?);`,
+                VALUES (?,?,?,?,?,?,?);`,
             [
                 data.em_id,
                 data.em_no,
                 data.em_cont_start,
                 data.em_cont_end,
                 data.em_prob_end_date,
-                data.em_age_year,
                 data.em_conf_end_date,
+                data.status
             ],
             (error, results, feilds) => {
                 if (error) {
