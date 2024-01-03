@@ -153,4 +153,42 @@ module.exports = {
             }
         )
     },
+    checkshiftforSection: (data, callBack) => {
+        pool.query(
+            `select dept_id,sect_id
+            from hrm_department_shift_master
+            where  sect_id=?`,
+            [
+                data.em_dept_section
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getSectionShiftbyshiftid: (data, callBack) => {
+        pool.query(
+            `SELECT 
+                dept_shift_Slno,
+                shft_code                 
+            FROM hrm_department_shift_master 
+            left join hrm_department
+            on hrm_department.dept_id=hrm_department_shift_master.dept_id
+                left join hrm_dept_section
+            on hrm_dept_section.sect_id=hrm_department_shift_master.sect_id
+            where hrm_department_shift_master.sect_id=?`,
+            [
+                data.sect_id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }
