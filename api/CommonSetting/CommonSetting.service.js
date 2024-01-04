@@ -35,10 +35,12 @@ module.exports = {
                 onehour_rqst_count,
                 areartype,
                 max_late_day_count,
-                leave_count
+                leave_count,
+                noff_selct_day_count,
+                noff
                 )
 
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
 
 
             [
@@ -73,7 +75,9 @@ module.exports = {
                 data.onehour_rqst_count,
                 data.areartype,
                 data.max_late_day_count,
-                data.leave_count
+                data.leave_count,
+                data.noff_selct_day_count,
+                data.noff
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -129,7 +133,9 @@ module.exports = {
                 onehour_rqst_count=?,
                 areartype=?,
                 max_late_day_count=?,
-                leave_count=?
+                leave_count=?,
+                noff_selct_day_count=?,
+                noff=?
                 WHERE setting_slno =?`,
             [
                 data.cmmn_grace_period,
@@ -164,6 +170,8 @@ module.exports = {
                 data.areartype,
                 data.max_late_day_count,
                 data.leave_count,
+                data.noff_selct_day_count,
+                data.noff,
                 data.setting_slno
             ],
             (error, results, feilds) => {

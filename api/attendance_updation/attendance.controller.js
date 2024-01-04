@@ -12,7 +12,7 @@ const { getEmployeeDetl, getEmployeeShiftDetl, getDepartmentShiftMast,
     getPunchDataEmCodeWise, getPunchMasterData, getShiftfromPunchMaster,
     updatePunchMasterData, updatePunchMastDuty, getHolidayDate, getDutyPlan,
     getPunchMastDataCheckWoff, updatePunchMasWoff, checkAttendanceProcess, checkInOutMarked,
-    checkAttendanceProcessDept
+    checkAttendanceProcessDept, getEmpList
 } = require("../attendance_updation/attendance.service")
 //SHIFT DETAILS
 //get the shift details 
@@ -1165,6 +1165,30 @@ module.exports = {
     checkAttendanceProcessDept: (req, res) => {
         const body = req.body;
         checkAttendanceProcessDept(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    getEmpList: (req, res) => {
+        const body = req.body;
+        getEmpList(body, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
