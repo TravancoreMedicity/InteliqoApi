@@ -749,4 +749,39 @@ module.exports = {
             }
         )
     },
+    getEmpList: (data, callBack) => {
+        pool.query(
+            `select hrm_emp_master.em_no,
+            hrm_emp_master.em_name,
+            hrm_emp_master.em_id,
+            hrm_emp_master.em_doj,
+            hrm_emp_contract_detl.em_cont_start,
+            hrm_emp_master.contract_status,
+            hrm_emp_master.gross_salary,
+            hrm_department.dept_id,
+            hrm_dept_section.sect_id,
+            em_department,
+            em_dept_section,
+            dept_name, 
+            sect_name,
+            desg_name
+            FROM hrm_emp_master
+            left join hrm_emp_contract_detl on hrm_emp_contract_detl.em_no = hrm_emp_master.em_no and hrm_emp_contract_detl.status = 0
+            inner join hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
+            inner join hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
+            inner join designation on hrm_emp_master.em_designation=designation.desg_slno
+            where  hrm_emp_master.em_dept_section=?
+                and hrm_emp_master.em_status=1
+                and hrm_emp_master.em_no not in (1 ,2) ;`,
+            [
+                data.em_dept_section
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }

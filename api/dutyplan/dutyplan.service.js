@@ -312,8 +312,8 @@ module.exports = {
             inner join hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
             inner join designation on hrm_emp_master.em_designation=designation.desg_slno
             where  hrm_emp_master.em_dept_section=?
-                and hrm_emp_master.em_status=1
-                and hrm_emp_master.em_no not in (1 ,2)  `,
+                and hrm_emp_master.em_status=1 and hrm_emp_master.doctor_status=0
+                and hrm_emp_master.em_no not in (1 ,2) ; `,
             [
                 data.em_dept_section,
                 // data.em_branch
