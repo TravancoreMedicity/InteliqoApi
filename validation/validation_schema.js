@@ -1208,7 +1208,8 @@ const validatecommonsettings = Joi.object({
         max_late_day_count: Joi.number().optional(),
         leave_count: Joi.number().optional(),
         noff_selct_day_count: Joi.number().optional(),
-        noff: Joi.number().optional()
+        noff: Joi.number().optional(),
+        group_slno: Joi.number().optional()
 
 })
 //validate carryforward

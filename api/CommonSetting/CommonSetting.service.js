@@ -37,10 +37,11 @@ module.exports = {
                 max_late_day_count,
                 leave_count,
                 noff_selct_day_count,
-                noff
+                noff,
+                group_slno
                 )
 
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
 
 
             [
@@ -77,7 +78,8 @@ module.exports = {
                 data.max_late_day_count,
                 data.leave_count,
                 data.noff_selct_day_count,
-                data.noff
+                data.noff,
+                data.group_slno
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -135,7 +137,8 @@ module.exports = {
                 max_late_day_count=?,
                 leave_count=?,
                 noff_selct_day_count=?,
-                noff=?
+                noff=?,
+                group_slno=?
                 WHERE setting_slno =?`,
             [
                 data.cmmn_grace_period,
@@ -172,6 +175,7 @@ module.exports = {
                 data.leave_count,
                 data.noff_selct_day_count,
                 data.noff,
+                data.group_slno,
                 data.setting_slno
             ],
             (error, results, feilds) => {
