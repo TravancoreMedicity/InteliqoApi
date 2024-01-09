@@ -664,7 +664,7 @@ module.exports = {
     },
     creditPrivilegeLeave: (data, callBack) => {
         pool.query(
-            `UPDATE hrm_leave_earnlv SET credit_status = 1 ,credit_year = ?  WHERE year(ernlv_year) = ? AND em_no = ?`,
+            `UPDATE hrm_leave_earnlv SET credit_status = 1 ,ernlv_credit=1,credit_year = ?  WHERE year(ernlv_year) = ? AND em_no = ?`,
             [
                 data.currentYear,
                 data.creditYear,
