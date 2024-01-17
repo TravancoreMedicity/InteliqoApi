@@ -921,7 +921,7 @@ module.exports = {
 
     getCeoPending: (callBack) => {
         pool.query(
-            `SELECT 
+            `            SELECT 
             ROW_NUMBER() OVER () as rslno,
             leave_slno,
             dept_section,
@@ -930,6 +930,7 @@ module.exports = {
                 hrm_leave_request.em_no,
                 dept_name,
                 em_name ,
+                   sect_name,
                 inc_apprv_req,
                 incapprv_status,
                 hod_apprv_req,
@@ -950,7 +951,8 @@ module.exports = {
                 FROM hrm_leave_request 
                 inner join hrm_emp_master on  hrm_leave_request.em_no =hrm_emp_master.em_no
                 inner join hrm_department on  hrm_leave_request.dept_id =hrm_department.dept_id
-                where  lv_cancel_status=0  and lv_cancel_status_user=0`,
+                inner join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
+                where  lv_cancel_status=0  and lv_cancel_status_user=0;`,
             [],
             (error, results, feilds) => {
                 if (error) {
@@ -1000,6 +1002,7 @@ module.exports = {
             dept_name,
             hrm_halfdayrequest.em_no,
             em_name,
+            sect_name,
             hf_incapprv_status,
             dept_section, 
             hf_inc_apprv_req,
@@ -1019,6 +1022,7 @@ module.exports = {
             FROM hrm_halfdayrequest
             inner join hrm_emp_master on  hrm_halfdayrequest.em_no =hrm_emp_master.em_no
             inner join hrm_department on  hrm_halfdayrequest.dept_id =hrm_department.dept_id
+			inner join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
             where  lv_cancel_req_status_user=0 and lv_cancel_status_user=0`,
             [],
             (error, results, feilds) => {
@@ -1064,6 +1068,7 @@ module.exports = {
             punslno,dept_name,
             np_incapprv_status, 
             em_name,
+            sect_name,
             nopunchrequest.em_dept_section, 
             np_inc_apprv_req,
             np_incapprv_status,
@@ -1083,6 +1088,7 @@ module.exports = {
             FROM nopunchrequest
             left join hrm_emp_master on  nopunchrequest.em_no =hrm_emp_master.em_no
             left join hrm_department on  nopunchrequest.em_department =hrm_department.dept_id
+            inner join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
             where lv_cancel_req_status_user=0 and lv_cancel_status_user=0;`,
             [],
             (error, results, feilds) => {
@@ -1122,6 +1128,7 @@ module.exports = {
 			comp_off_request.em_dept_section,
 			dept_name,
             leave_date,
+            sect_name,
              durationpunch,
             reqtype_name,
             cf_reason,
@@ -1140,6 +1147,7 @@ module.exports = {
             FROM comp_off_request 
             left join hrm_emp_master on  comp_off_request.em_no =hrm_emp_master.em_no
             left join hrm_department on  comp_off_request.em_department =hrm_department.dept_id
+            inner join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
             where  lv_cancel_status=0 and lv_cancel_status_user=0;`,
             [],
             (error, results, feilds) => {
