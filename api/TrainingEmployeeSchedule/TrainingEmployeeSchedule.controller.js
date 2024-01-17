@@ -51,7 +51,6 @@ module.exports = {
 
     TrainingEmployeeScheduleInsert: (req, res) => {
         const body = req.body;
-        console.log(body);
         TrainingEmployeeScheduleInsert(body, (err, result) => {
             if (err) {
                 logger.errorLogger(err)

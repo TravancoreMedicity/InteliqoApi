@@ -112,7 +112,6 @@ module.exports = {
                     else {
                         UpdateReTestStatus(body, (err, results) => {
                             if (err) {
-                                console.log(err);
                                 return res.status(200).json({
                                     success: 0,
                                     message: err

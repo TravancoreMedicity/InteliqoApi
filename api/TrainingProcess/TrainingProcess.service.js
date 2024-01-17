@@ -250,7 +250,6 @@ module.exports = {
     },
 
     InsertpostTest: (data, callBack) => {
-        console.log(data);
         pool.query(
             `INSERT INTO  medi_hrm.training_posttest
             (

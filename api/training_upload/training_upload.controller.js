@@ -115,7 +115,6 @@ module.exports = {
         const folderPath = `D:/DocMeliora/Inteliqo/Training/${topic_slno}/${checklistid}`;
         fs.readdir(folderPath, (err, files) => {
             if (err) {
-                // console.log(err);
                 logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
