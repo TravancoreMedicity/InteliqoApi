@@ -1,9 +1,9 @@
 const router = require("express").Router();
 const { checkToken } = require("../../auth/token_validation");
-const { uploadtrainingFiles, selectUploads } = require("../training_upload/training_upload.controller")
+const { uploadtrainingFiles, selectUploads } = require("./Training_topic_uploads.controller")
 
 
-router.post("/uploadtrainingfiles", uploadtrainingFiles);
+router.post("/uploadtrainingfiles", checkToken, uploadtrainingFiles);
 router.post('/selectuploads', selectUploads)
 
 

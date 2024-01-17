@@ -128,6 +128,9 @@ const TrainingAfterJoining = require("./api/TrainingAfterJoining/TrainingAfterJo
 const trainUploadCheck = require("./api/training_upload/training_upload.router")
 const TrainingProcess = require("./api/TrainingProcess/TrainingProcess.router")
 const TrainingOnline = require("./api/TrainingOnline/TrainingOnline.router")
+const Training_topic_uploads = require("./api/Training_topic_uploads/Training_topic_uploads.router")
+const TrainingEmployee_Dashboard = require("./api/TrainingEmployee_Dashboard/TrainingEmployee_Dashboard.router")
+const TrainingMonthlyReport = require("./api/TrainingMonthlyReport/MonthlyReport.router")
 
 app.use(express.json({ limit: '50mb' }));
 app.use((req, res, next) => {
@@ -296,6 +299,10 @@ app.use("/api/TrainingAfterJoining", TrainingAfterJoining)
 app.use("/api/trainUploadCheck", trainUploadCheck)
 app.use("/api/TrainingProcess", TrainingProcess)
 app.use("/api/TrainingOnline", TrainingOnline)
+app.use("/api/Training_topic_uploads", Training_topic_uploads)
+app.use("/api/TrainingEmployee_Dashboard", TrainingEmployee_Dashboard)
+app.use("/api/TrainingMonthlyReport", TrainingMonthlyReport)
+
 
 
 

@@ -18,6 +18,7 @@ module.exports = {
                 return res.status(200).json({
                     success: 1,
                     message: "Training Topic Added Successfully",
+                    insetId: results.insertId
                 });
             }
 

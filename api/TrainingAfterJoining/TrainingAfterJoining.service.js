@@ -316,7 +316,7 @@ module.exports = {
     InsertEmpDetails: (data, callBack) => {
         pool.query(
             `INSERT INTO training_employee_details (
-                emp_name,emp_desig, emp_dept, emp_dept_sectn,topic,schedule_date, create_user)
+                scheduled_slno,emp_name,emp_desig, emp_dept, emp_dept_sectn,topic,schedule_date, create_user)
             values ?`,
             [
                 data
@@ -342,6 +342,28 @@ module.exports = {
                 }
                 return callback(null, results)
 
+            }
+        )
+    },
+    InsertTrainingMaster: (data, callBack) => {
+        pool.query(
+            `INSERT INTO training_master (
+                 emp_no, emp_id, joining_date, assign_status, create_user
+            )
+            VALUES (?,?,?,?,?)`,
+            [
+
+                data.em_no,
+                data.em_id,
+                data.joining_date,
+                data.assign_status,
+                data.create_user
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
             }
         )
     },

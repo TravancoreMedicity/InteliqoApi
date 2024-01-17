@@ -1,17 +1,35 @@
 const router = require('express').Router();
 const { checkToken } = require("../../auth/token_validation");
-const { GetTrainingProcess, AttendanceMarking, GetDepartmentalTrainings, EmpVerification, InsertpostTest, GetTopicAssignToEmp, GetQuestionDetails, UpdateQuestionCount, GetDataBasedOnCount, InsertPretest, UpdateTrainingDate } = require('./TrainingProcess.controller');
+const { GetTrainingProcess, AttendanceMarking, GetDepartmentalTrainings, EmpVerification, InsertpostTest, GetTopicAssignToEmp, GetQuestionDetails, UpdateQuestionCount, GetDataBasedOnCount, InsertPretest, UpdateTrainingDate,
+    GetTrainingCompletedList, GetTodaysTrainingList, GetAttendanceList, GetTrainingEmpDetailsAll, GetTrainingEmp, AllotToPostTest, GetpreTestEmpListAll, GetpostTestEmpListAll, UpdateOnlineMode, UpdateOfflineMode } = require('./TrainingProcess.controller');
 
 router.get('/select', checkToken, GetTrainingProcess)
 router.patch('/attendance', checkToken, AttendanceMarking)
 router.get('/selectdepartmentaltrainings', checkToken, GetDepartmentalTrainings)
 router.get('/empTopics/:id', checkToken, GetTopicAssignToEmp)
-router.get('/selectQuest/list/:id', checkToken, GetQuestionDetails)
+// router.get('/selectQuest/list/:id', checkToken, GetQuestionDetails)
+router.post('/selectQuest/list', GetQuestionDetails)
 router.patch('/questionCount', checkToken, UpdateQuestionCount)
 router.post('/ScheduleBasedonCount', checkToken, GetDataBasedOnCount)
-router.post('/pretest', checkToken, InsertPretest)
-router.post('/postTest', checkToken, InsertpostTest)
+router.post('/pretest', InsertPretest)
+router.post('/postTest', InsertpostTest)
 router.patch('/resheduledate', checkToken, UpdateTrainingDate)
-router.patch('/empverification', checkToken, EmpVerification)
+//new 
+router.get('/trainingcompleted', checkToken, GetTrainingCompletedList)
+router.get('/todaystrainings', checkToken, GetTodaysTrainingList)
+router.get('/attendancedetails/:id', checkToken, GetAttendanceList)
+router.get('/showEmpDetails', checkToken, GetTrainingEmpDetailsAll)
+router.get('/trainingEmployees', checkToken, GetTrainingEmp)
+router.get('/allotPostTest', AllotToPostTest)
+//ORCODE
+router.patch('/empverificationQR', EmpVerification)
+router.get('/postTestEmpAll', GetpostTestEmpListAll)
+router.get('/preTestEmpAll', GetpreTestEmpListAll)
+
+router.patch('/update_online', UpdateOnlineMode)
+router.patch('/update_offline', UpdateOfflineMode)
+
 
 module.exports = router;
+
+

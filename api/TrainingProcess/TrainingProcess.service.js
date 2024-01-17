@@ -5,12 +5,12 @@ module.exports = {
         pool.query(
             `SELECT ROW_NUMBER() OVER () as sn,slno, emp_name, emp_dept, emp_dept_sectn, topic, schedule_date, training_employee_details.training_status,
             emp_name,training_employee_details.pretest_status, training_employee_details.posttest_status, dept_name, sect_name,training_topic_name,em_name,posttest_permission,
-                        hrm_department.dept_id,em_id,sect_id,topic_slno
-                        FROM medi_hrm.training_employee_details
-                        left join hrm_department on hrm_department.dept_id=training_employee_details.emp_dept
-                        LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_employee_details.emp_name
-                        left join hrm_dept_section on hrm_dept_section.sect_id=training_employee_details.emp_dept_sectn
-                        left join training_topic on training_topic.topic_slno=training_employee_details.topic
+            hrm_department.dept_id,em_id,sect_id,topic_slno
+            FROM medi_hrm.training_employee_details
+            left join hrm_department on hrm_department.dept_id=training_employee_details.emp_dept
+            LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_employee_details.emp_name
+            left join hrm_dept_section on hrm_dept_section.sect_id=training_employee_details.emp_dept_sectn
+            left join training_topic on training_topic.topic_slno=training_employee_details.topic
             `, [],
 
             (err, results, feilds) => {
@@ -39,10 +39,14 @@ module.exports = {
             }
         )
     },
+
+
+
     GetDepartmentalTrainings: (callback) => {
         pool.query(
-            ` SELECT training_departmental_schedule.slno, department, deparment_sect,schedule_year, training_employee_details.schedule_date, schedule_topics, 
-            schedule_trainers,question_count,hrm_department.dept_id,dept_name,sect_id,sect_name,topic_slno,training_topic_name,
+
+            `SELECT training_departmental_schedule.slno, department, deparment_sect,schedule_year, training_employee_details.schedule_date, schedule_topics, 
+             schedule_trainers,hrm_department.dept_id,dept_name,sect_id,sect_name,topic_slno,training_topic_name,
              GROUP_CONCAT(em_name)  as traineer_name
              FROM medi_hrm.training_departmental_schedule
              LEFT JOIN hrm_department ON hrm_department.dept_id=training_departmental_schedule.department
@@ -74,45 +78,47 @@ module.exports = {
 
                 }
                 return callback(null, results)
-
             }
         )
     },
+
+
     GetTopicAssignToEmp: (id, callback) => {
         pool.query(
             `             
             SELECT ROW_NUMBER() OVER () as sl,training_employee_details.slno, emp_name, emp_desig, emp_dept, emp_dept_sectn, topic, training_employee_details.schedule_date,training_employee_details.training_status, 
-            training_employee_details.pretest_status, posttest_status,topic_slno,training_topic_name,question_count,em_id,em_name,desg_slno,desg_name,hrm_department.dept_id,dept_name,sect_id,sect_name,posttest_permission
+            training_employee_details.pretest_status, posttest_status,topic_slno,training_topic_name,training_employee_details.question_count,em_id,em_name,desg_slno,desg_name,hrm_department.dept_id,dept_name,sect_id,sect_name,posttest_permission
             FROM training_employee_details
             LEFT JOIN training_topic ON training_topic.topic_slno=training_employee_details.topic
-            INNER JOIN  training_departmental_schedule ON training_departmental_schedule.schedule_topics=training_employee_details.topic
             LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_employee_details.emp_name
             LEFT JOIN designation ON designation.desg_slno=training_employee_details.emp_desig
             LEFT JOIN hrm_department ON hrm_department.dept_id=training_employee_details.emp_dept
             LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=training_employee_details.emp_dept_sectn
-            WHERE emp_name=? and training_employee_details.training_status=1 and question_count!=0`, [id],
+            WHERE emp_name=?`, [id],
             (err, results, feilds) => {
                 if (err) {
                     return callback(err)
 
                 }
                 return callback(null, results)
-
             }
         )
     },
 
-    GetQuestionDetails: (id, callBack) => {
-        const limit = parseInt(id)
+
+    GetQuestionDetails: (data, callBack) => {
         pool.query(
             `SELECT q_slno, training_topics, questions, answer_a, answer_b, answer_c,
-            answer_d, right_answer, training_topic_name,upload_status, writtenStatus, handwrite_answer, marks,topic_slno,online_status,offline_status,both_status
-            FROM training_questions
-            LEFT JOIN  training_topic ON training_topic.topic_slno=training_questions.training_topics
-            ORDER BY RAND() 
-            LIMIT ? `,
+             answer_d, right_answer, training_topic_name,training_questions.upload_status, writtenStatus, handwrite_answer, marks,topic_slno,online_status,offline_status,both_status
+             FROM training_questions
+             LEFT JOIN  training_topic ON training_topic.topic_slno=training_questions.training_topics
+             WHERE training_topic.topic_slno=?
+             ORDER BY RAND() 
+             LIMIT ?`,
             [
-                limit
+                data.topic_slno,
+                data.questCount
+
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -124,24 +130,24 @@ module.exports = {
     },
 
     UpdateQuestionCount: (data, callBack) => {
-        pool.query(
-            `UPDATE training_departmental_schedule set 
-             schedule_date=?,
-             question_count=?
-             where slno=?`,
-            [
-                data.schedule_date,
-                data.question_count,
-                data.slno
+        return new Promise((resolve, reject) => {
+            data.map((val) => {
+                pool.query(
+                    `UPDATE training_employee_details set
+                     training_status=?,
+                     question_count=?
+                     where slno=?`,
+                    [val.training_status, val.question_count, val.slno],
+                    (error, results, feilds) => {
+                        if (error) {
+                            return reject(error)
+                        }
+                        return resolve(results)
+                    }
+                )
+            })
 
-            ],
-            (error, results, feilds) => {
-                if (error) {
-                    return callBack(error);
-                }
-                return callBack(null, results);
-            }
-        )
+        })
     },
     GetDataBasedOnCount: (data, callBack) => {
         pool.query(
@@ -168,6 +174,7 @@ module.exports = {
             }
         )
     },
+    //QR CODE
     InsertPretest: (data, callBack) => {
         pool.query(
             `INSERT INTO  medi_hrm.training_pretest
@@ -199,13 +206,37 @@ module.exports = {
         )
     },
 
+    //Check PreTest Exits or Not
+    checkPreeTestEntryExistORNot: (data, callback) => {
+        pool.query(
+            `     
+            SELECT emp_id,emp_topic
+            FROM training_pretest 
+            WHERE emp_id=? and emp_topic=?
+            `, [
+            data.emp_id,
+            data.emp_topic
+        ],
+
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+            }
+        )
+    },
+    //QR CODE
     UpdatePretestStatus: (data, callBack) => {
         pool.query(
             `UPDATE training_employee_details set 
-            pretest_status=?
+             pretest_status=?,
+             posttest_permission=?
              WHERE slno=?`,
             [
                 data.pretest_status,
+                data.posttest_permission,
                 data.slno
 
             ],
@@ -219,6 +250,7 @@ module.exports = {
     },
 
     InsertpostTest: (data, callBack) => {
+        console.log(data);
         pool.query(
             `INSERT INTO  medi_hrm.training_posttest
             (
@@ -248,10 +280,32 @@ module.exports = {
             }
         )
     },
+
+    checkPostTestEntryExistORNot: (data, callback) => {
+        pool.query(
+            `     
+            SELECT emp_id,emp_topic
+            FROM training_posttest 
+            WHERE emp_id=? and emp_topic=?
+            `, [
+            data.emp_id,
+            data.emp_topic
+        ],
+
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+            }
+        )
+    },
+
     UpdatePosttestStatus: (data, callBack) => {
         pool.query(
             `UPDATE training_employee_details set 
-            posttest_status=?
+             posttest_status=?
              WHERE slno=?`,
             [
                 data.posttest_status,
@@ -289,9 +343,268 @@ module.exports = {
     EmpVerification: (data, callBack) => {
         pool.query(
             `UPDATE training_employee_details set 
-            posttest_permission=1
+             posttest_permission=1
              where slno=?`,
             [
+                data.slno
+
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    GetTrainingCompletedList: (callback) => {
+        pool.query(
+            `SELECT ROW_NUMBER() OVER () as sn, training_employee_details.slno,scheduled_slno, em_id,hrm_emp_master.em_name, emp_dept,emp_dept_sectn,topic,
+            training_employee_details.schedule_date, training_employee_details.training_status, question_count,
+            training_employee_details.pretest_status, posttest_status, posttest_permission,topic_slno,training_topic_name,
+            hrm_dept_section.sect_id,hrm_dept_section.sect_name
+            FROM training_employee_details
+            LEFT JOIN training_topic ON training_topic.topic_slno=training_employee_details.topic
+            LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_employee_details.emp_name
+            LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=training_employee_details.emp_dept_sectn
+            where training_employee_details.training_status = 1 and training_employee_details.posttest_status = 1 and training_employee_details.pretest_status = 1
+            `, [],
+
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+            }
+        )
+    },
+    GetTodaysTrainingList: (callback) => {
+        pool.query(
+            `     
+            SELECT training_departmental_schedule.slno, department, deparment_sect, schedule_year, training_departmental_schedule.schedule_date, schedule_topics
+            topic_slno,training_topic_name
+            FROM medi_hrm.training_departmental_schedule
+            LEFT JOIN training_topic ON training_topic.topic_slno=training_departmental_schedule.schedule_topics
+            where schedule_date=current_date()
+            `, [],
+
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+            }
+        )
+    },
+
+    GetAttendanceList: (id, callback) => {
+        pool.query(
+            `  SELECT slno, em_id,hrm_emp_master.em_name, topic, schedule_date, training_employee_details.training_status, question_count,
+               training_employee_details.pretest_status, posttest_status, posttest_permission,topic_slno,training_topic_name
+               FROM training_employee_details
+               LEFT JOIN training_topic ON training_topic.topic_slno=training_employee_details.topic
+               LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_employee_details.emp_name
+               where topic_slno=? and schedule_date=current_date()`, [id],
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+
+            }
+        )
+    },
+    GetTrainingEmpDetailsAll: (callback) => {
+        pool.query(
+            `     
+  SELECT schedule_topics,schedule_date,topic_slno,training_topic_name FROM medi_hrm.training_departmental_schedule        
+  LEFT JOIN training_topic ON training_topic.topic_slno=training_departmental_schedule.schedule_topics 
+            `, [],
+
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+            }
+        )
+    },
+    GetTrainingEmp: (callback) => {
+        pool.query(
+            `     
+            SELECT ROW_NUMBER() OVER () as sn, training_employee_details.slno,scheduled_slno, emp_name,hrm_emp_master.em_id,hrm_emp_master.em_name, emp_desig, emp_dept, emp_dept_sectn, topic,
+            training_topic.topic_slno,training_topic.training_topic_name,training_employee_details.schedule_date, 
+            training_employee_details.training_status, training_employee_details.question_count, training_employee_details.pretest_status,
+            training_employee_details.posttest_status, training_employee_details.posttest_permission,training_departmental_schedule.slno as shSlno,
+            training_departmental_schedule.schedule_year,training_departmental_schedule.schedule_trainers,training_departmental_schedule.schedule_remark
+            FROM training_employee_details
+            left join hrm_emp_master on hrm_emp_master.em_id=training_employee_details.emp_name
+            left join training_topic on training_topic.topic_slno=training_employee_details.topic
+            left join training_departmental_schedule on training_departmental_schedule.slno=training_employee_details.scheduled_slno
+            where training_employee_details.pretest_status = 0 and  training_employee_details.posttest_status = 0
+            `, [],
+
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+            }
+        )
+    },
+
+    checkTopicExistORNot: (data, callback) => {
+        pool.query(
+            `     
+            SELECT department,deparment_sect 
+            FROM training_departmental_schedule 
+            WHERE schedule_topics=? and schedule_date=?
+            `, [
+            data.topic_slno,
+            data.schedule_date
+        ],
+
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+            }
+        )
+    },
+
+    InsertScheduleTable: (data, callBack) => {
+        pool.query(
+            `INSERT INTO medi_hrm.training_departmental_schedule (
+             department, deparment_sect, schedule_year, schedule_date, schedule_topics, schedule_trainers, schedule_remark, create_user  )
+             VALUES (?,?,?,?,?,?,?,?)`,
+            [
+                data.emp_dept,
+                data.emp_dept_sectn,
+                data.schedule_year,
+                data.schedule_date,
+                data.topic_slno,
+                data.schedule_trainers,
+                data.schedule_remark,
+                data.create_user
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    AllotToPostTest: (callback) => {
+        pool.query(
+            `     
+            SELECT ROW_NUMBER() OVER () as sn, training_employee_details.slno,scheduled_slno, em_id,hrm_emp_master.em_name, emp_dept,emp_dept_sectn,topic,
+            training_employee_details.schedule_date, training_employee_details.training_status, question_count,
+                  training_employee_details.pretest_status, posttest_status, posttest_permission,topic_slno,training_topic_name,video_time,pdf_time
+                  FROM training_employee_details
+                  LEFT JOIN training_topic ON training_topic.topic_slno=training_employee_details.topic
+                  LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_employee_details.emp_name
+                  WHERE  training_employee_details.training_status=1 and training_employee_details.pretest_status=1 and training_employee_details.posttest_status=0
+            `, [],
+
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+            }
+        )
+    },
+    GetpreTestEmpListAll: (callback) => {
+        pool.query(
+            `     
+            SELECT ROW_NUMBER() OVER () as sl,training_employee_details.slno, emp_name, emp_desig, emp_dept, emp_dept_sectn, topic,
+            training_employee_details.schedule_date,training_employee_details.training_status, 
+                       training_employee_details.pretest_status, posttest_status,topic_slno,training_topic_name,training_employee_details.question_count,
+                       em_id,em_name,desg_slno,desg_name,hrm_department.dept_id,dept_name,sect_id,sect_name,posttest_permission
+                       FROM training_employee_details
+                       LEFT JOIN training_topic ON training_topic.topic_slno=training_employee_details.topic
+                       LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_employee_details.emp_name
+                       LEFT JOIN designation ON designation.desg_slno=training_employee_details.emp_desig
+                       LEFT JOIN hrm_department ON hrm_department.dept_id=training_employee_details.emp_dept
+                       LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=training_employee_details.emp_dept_sectn
+                       WHERE training_employee_details.training_status=1 
+            `, [],
+
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+            }
+        )
+    },
+    GetpostTestEmpListAll: (callback) => {
+        pool.query(
+            `     
+            SELECT ROW_NUMBER() OVER () as sl,training_employee_details.slno, emp_name, emp_desig, emp_dept, emp_dept_sectn, topic,
+            training_employee_details.schedule_date,training_employee_details.training_status, 
+                       training_employee_details.pretest_status, posttest_status,topic_slno,training_topic_name,training_employee_details.question_count,
+                       em_id,em_name,desg_slno,desg_name,hrm_department.dept_id,dept_name,sect_id,sect_name,posttest_permission
+                       FROM training_employee_details
+                       LEFT JOIN training_topic ON training_topic.topic_slno=training_employee_details.topic
+                       LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_employee_details.emp_name
+                       LEFT JOIN designation ON designation.desg_slno=training_employee_details.emp_desig
+                       LEFT JOIN hrm_department ON hrm_department.dept_id=training_employee_details.emp_dept
+                       LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=training_employee_details.emp_dept_sectn
+                       WHERE training_employee_details.training_status=1 and training_employee_details.pretest_status=1
+                       AND training_employee_details.posttest_permission=1
+            `, [],
+
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+            }
+        )
+    },
+
+    UpdateOnlineMode: (data, callBack) => {
+        pool.query(
+            `UPDATE training_employee_details set 
+             online_mode=?,
+             offline_mode=?
+             WHERE slno=?`,
+            [
+                data.online_mode,
+                data.offline_mode,
+                data.slno
+
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+
+    UpdateOfflineMode: (data, callBack) => {
+        pool.query(
+            `UPDATE training_employee_details set 
+             online_mode=?,
+             offline_mode=?
+             WHERE slno=?`,
+            [
+                data.online_mode,
+                data.offline_mode,
                 data.slno
 
             ],

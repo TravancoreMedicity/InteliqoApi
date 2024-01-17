@@ -1,5 +1,9 @@
 const { logger } = require('../../logger/logger')
-const { GetTrainingProcess, AttendanceMarking, EmpVerification, GetDepartmentalTrainings, UpdatePretestStatus, InsertpostTest, UpdatePosttestStatus, GetTopicAssignToEmp, GetQuestionDetails, UpdateQuestionCount, GetDataBasedOnCount, InsertPretest, UpdateTrainingDate } = require('./TrainingProcess.service')
+const { GetTrainingProcess, AttendanceMarking, EmpVerification, GetDepartmentalTrainings, UpdatePretestStatus,
+    InsertpostTest, UpdatePosttestStatus, GetTopicAssignToEmp, GetQuestionDetails, UpdateQuestionCount,
+    GetDataBasedOnCount, InsertPretest, UpdateTrainingDate, GetTrainingCompletedList, GetTodaysTrainingList,
+    GetAttendanceList, GetTrainingEmpDetailsAll, GetTrainingEmp, checkTopicExistORNot, InsertScheduleTable, AllotToPostTest,
+    GetpreTestEmpListAll, GetpostTestEmpListAll, checkPreeTestEntryExistORNot, checkPostTestEntryExistORNot, UpdateOnlineMode, UpdateOfflineMode } = require('./TrainingProcess.service')
 module.exports = {
     GetTrainingProcess: (req, res) => {
         GetTrainingProcess((err, results) => {
@@ -87,44 +91,45 @@ module.exports = {
             });
         });
     },
+
+
     GetQuestionDetails: (req, res) => {
-        const id = req.params.id;
-        GetQuestionDetails(id, (err, results) => {
+        const body = req.body;
+        GetQuestionDetails(body, (err, results) => {
             if (err) {
                 return res.status(200).json({
                     success: 0,
                     message: err
                 });
             }
-            if (results.length == 0) {
-                return res.status(200).json({
-                    success: 0,
+            if (results === 0) {
+                return res.status(400).json({
+                    success: 1,
                     message: "No Record Found"
-                });
+                })
             }
             return res.status(200).json({
-                success: 1,
+                success: 2,
                 data: results
-            });
+            })
         });
     },
 
+
     UpdateQuestionCount: (req, res) => {
         const body = req.body;
-        UpdateQuestionCount(body, (err, results) => {
-            if (err) {
+        const result = UpdateQuestionCount(body)
+            .then((r) => {
                 return res.status(200).json({
                     success: 0,
                     message: err
                 });
-            }
-            else {
+            }).catch((e) => {
                 return res.status(200).json({
                     success: 1,
                     message: "Inserted successfully"
                 });
-            }
-        });
+            })
     },
     GetDataBasedOnCount: (req, res) => {
         const body = req.body;
@@ -147,18 +152,13 @@ module.exports = {
             })
         });
     },
+
     InsertPretest: (req, res) => {
         const body = req.body;
-        InsertPretest(body, (err, results) => {
-            if (err) {
-                return res.status(200).json({
-                    success: 0,
-                    message: err
-                });
-            }
-
-            else {
-                UpdatePretestStatus(body, (err, results) => {
+        checkPreeTestEntryExistORNot(body, (err, result) => {
+            const value = JSON.parse(JSON.stringify(result))
+            if (Object.keys(value).length === 0) {
+                InsertPretest(body, (err, results) => {
                     if (err) {
                         return res.status(200).json({
                             success: 0,
@@ -166,26 +166,37 @@ module.exports = {
                         });
                     }
                     else {
-                        return res.status(200).json({
-                            success: 1,
-                            message: "PreTest over Successfully"
+                        UpdatePretestStatus(body, (err, results) => {
+                            if (err) {
+                                return res.status(200).json({
+                                    success: 0,
+                                    message: err
+                                });
+                            }
+                            else {
+                                return res.status(200).json({
+                                    success: 1,
+                                    message: "PreTest over Successfully"
+                                });
+                            }
                         });
                     }
                 });
             }
-        });
+            else {
+                return res.status(200).json({
+                    success: 2,
+                    message: "You Already Attend the Test"
+                });
+            }
+        })
     },
     InsertpostTest: (req, res) => {
         const body = req.body;
-        InsertpostTest(body, (err, results) => {
-            if (err) {
-                return res.status(200).json({
-                    success: 0,
-                    message: err
-                });
-            }
-            else {
-                UpdatePosttestStatus(body, (err, results) => {
+        checkPostTestEntryExistORNot(body, (err, result) => {
+            const value = JSON.parse(JSON.stringify(result))
+            if (Object.keys(value).length === 0) {
+                InsertpostTest(body, (err, results) => {
                     if (err) {
                         return res.status(200).json({
                             success: 0,
@@ -193,33 +204,83 @@ module.exports = {
                         });
                     }
                     else {
-                        return res.status(200).json({
-                            success: 1,
-                            message: "PostTest over Successfully"
+                        UpdatePosttestStatus(body, (err, results) => {
+                            if (err) {
+                                return res.status(200).json({
+                                    success: 0,
+                                    message: err
+                                });
+                            }
+                            else {
+                                return res.status(200).json({
+                                    success: 1,
+                                    message: "Post-Test over Successfully"
+                                });
+                            }
                         });
                     }
                 });
             }
-        });
+            else {
+                return res.status(200).json({
+                    success: 2,
+                    message: "You Already Attend the Test"
+                });
+            }
+        })
     },
 
     UpdateTrainingDate: (req, res) => {
         const body = req.body;
-        UpdateTrainingDate(body, (err, results) => {
-            if (err) {
-                return res.status(200).json({
-                    success: 0,
-                    message: err
+        checkTopicExistORNot(body, (err, result) => {
+            const value = JSON.parse(JSON.stringify(result))
+            if (Object.keys(value).length === 0) {
+                InsertScheduleTable(body, (err, results) => {
+                    if (err) {
+                        return res.status(200).json({
+                            success: 0,
+                            message: err
+                        });
+                    }
+                    else {
+                        UpdateTrainingDate(body, (err, results) => {
+                            if (err) {
+                                return res.status(200).json({
+                                    success: 0,
+                                    message: err
+                                });
+                            }
+                            else {
+                                return res.status(200).json({
+                                    success: 1,
+                                    message: "Updated successfully"
+                                });
+                            }
+                        });
+                    }
                 });
             }
             else {
-                return res.status(200).json({
-                    success: 1,
-                    message: "Updated successfully"
+                UpdateTrainingDate(body, (err, results) => {
+                    if (err) {
+                        return res.status(200).json({
+                            success: 0,
+                            message: err
+                        });
+                    }
+                    else {
+                        return res.status(200).json({
+                            success: 1,
+                            message: "Updated successfully"
+                        });
+                    }
                 });
+
             }
-        });
+        })
+
     },
+
     EmpVerification: (req, res) => {
         const body = req.body;
         EmpVerification(body, (err, results) => {
@@ -242,6 +303,210 @@ module.exports = {
                 });
             }
         });
+    },
+    ////New
+    GetTrainingCompletedList: (req, res) => {
+        GetTrainingCompletedList((err, results) => {
+            if (err) {
+                return res.status(400).json({
+                    success: 0,
+                    message: "Error"
+                })
+            }
+            if (results === 0) {
+                return res.status(400).json({
+                    success: 1,
+                    message: "No Record Found"
+                })
+            }
+            return res.status(200).json({
+                success: 2,
+                data: results
+            })
+        })
+    },
+    GetTodaysTrainingList: (req, res) => {
+        GetTodaysTrainingList((err, results) => {
+            if (err) {
+                return res.status(400).json({
+                    success: 0,
+                    message: "Error"
+                })
+            }
+            if (results === 0) {
+                return res.status(400).json({
+                    success: 1,
+                    message: "No Record Found"
+                })
+            }
+            return res.status(200).json({
+                success: 2,
+                data: results
+            })
+        })
+    },
+
+
+    GetAttendanceList: (req, res) => {
+        const id = req.params.id;
+        GetAttendanceList(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "no Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 2,
+                data: results,
+            });
+        });
+    },
+
+    GetTrainingEmpDetailsAll: (req, res) => {
+        GetTrainingEmpDetailsAll((err, results) => {
+            if (err) {
+                return res.status(400).json({
+                    success: 0,
+                    message: "Error"
+                })
+            }
+            if (results === 0) {
+                return res.status(400).json({
+                    success: 1,
+                    message: "No Record Found"
+                })
+            }
+            return res.status(200).json({
+                success: 2,
+                data: results
+            })
+        })
+    },
+    GetTrainingEmp: (req, res) => {
+        GetTrainingEmp((err, results) => {
+            if (err) {
+                return res.status(400).json({
+                    success: 0,
+                    message: "Error"
+                })
+            }
+            if (results === 0) {
+                return res.status(400).json({
+                    success: 1,
+                    message: "No Record Found"
+                })
+            }
+            return res.status(200).json({
+                success: 2,
+                data: results
+            })
+        })
+    },
+    AllotToPostTest: (req, res) => {
+        AllotToPostTest((err, results) => {
+            if (err) {
+                return res.status(400).json({
+                    success: 0,
+                    message: "Error"
+                })
+            }
+            if (results === 0) {
+                return res.status(400).json({
+                    success: 1,
+                    message: "No Record Found"
+                })
+            }
+            return res.status(200).json({
+                success: 2,
+                data: results
+            })
+        })
+    },
+    GetpreTestEmpListAll: (req, res) => {
+        GetpreTestEmpListAll((err, results) => {
+            if (err) {
+                return res.status(400).json({
+                    success: 0,
+                    message: "Error"
+                })
+            }
+            if (results === 0) {
+                return res.status(400).json({
+                    success: 1,
+                    message: "No Record Found"
+                })
+            }
+            return res.status(200).json({
+                success: 2,
+                data: results
+            })
+        })
+    },
+    GetpostTestEmpListAll: (req, res) => {
+        GetpostTestEmpListAll((err, results) => {
+            if (err) {
+                return res.status(400).json({
+                    success: 0,
+                    message: "Error"
+                })
+            }
+            if (results === 0) {
+                return res.status(400).json({
+                    success: 1,
+                    message: "No Record Found"
+                })
+            }
+            return res.status(200).json({
+                success: 2,
+                data: results
+            })
+        })
+    },
+
+    UpdateOnlineMode: (req, res) => {
+        const body = req.body;
+        UpdateOnlineMode(body, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Online status updated successfully"
+                });
+            }
+
+        })
+    },
+
+    UpdateOfflineMode: (req, res) => {
+        const body = req.body;
+        UpdateOfflineMode(body, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Offline status updated successfully"
+                });
+            }
+
+        })
     },
 
 }

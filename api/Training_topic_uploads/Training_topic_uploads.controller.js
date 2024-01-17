@@ -3,15 +3,14 @@ const path = require('path');
 const fs = require("fs")
 const logger = require('../../logger/logger');
 const { log } = require('winston');
-const { updateUploadStatus } = require('./training_upload.service');
+const { updateUploadStatus } = require('./Training_topic_uploads.service');
 
 
 // for multiple file upload
 const storagemul = multer.diskStorage({
     destination: (req, file, cb) => {
-
-        const Topic_id = req.body.training;
-        const filepath = path.join('D:/DocMeliora/Inteliqo/', "Training", `${Topic_id}`);
+        const insetId = req.body.insertID;
+        const filepath = path.join('D:/DocMeliora/Inteliqo/', "TrainingTopicUploads", `${insetId}`);
         if (!fs.existsSync(filepath)) {
             fs.mkdirSync(filepath, { recursive: true });
         }
@@ -44,7 +43,6 @@ module.exports = {
     uploadtrainingFiles: (req, res) => {
         uploadmul(req, res, async (err) => {
             const body = req.body;
-
             if (err instanceof multer.MulterError) {
                 return res.status(200).json({
                     status: 0,
@@ -58,32 +56,31 @@ module.exports = {
                 });
             } else {
                 try {
-                    const Image_Id = body.imgId
                     const files = req.files;
-                    const Topic_id = body.training
-                    const insetId = body.img;
-
-                    const Topic_folder = path.join('D:/DocMeliora/Inteliqo/', "Training", `${Topic_id}`, `${insetId}`);
+                    const insetId = body.insertID;
+                    const Upload_folder = path.join(`D:/DocMeliora/Inteliqo/`, "TrainingTopicUploads", `${insetId}`);
 
                     // Create the em_id folder if it doesn't exist
-                    if (!fs.existsSync(Topic_folder)) {
-                        fs.mkdirSync(Topic_folder, { recursive: true });
+                    if (!fs.existsSync(Upload_folder)) {
+                        fs.mkdirSync(Upload_folder, { recursive: true });
                     }
 
-                    for (let i = 0; i < files.length; i++) {
-                        const id = files[i];
-                        const Img_Id = Image_Id[i];
-                        const extension = '.jpg';
-                        const filename = `${Img_Id}${extension}`;
-                        const destinationPath = path.join(Topic_folder, filename);
-                        fs.renameSync(id.path, destinationPath);
+                    for (const file of files) {
+                        // Process each file individually
+                        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+                        const extension = path.extname(file.originalname);
+                        const filename = 'TopicUploads' + uniqueSuffix + extension;
+
+                        // Move the file to the destination folder
+                        const destinationPath = path.join(Upload_folder, filename);
+                        fs.renameSync(file.path, destinationPath);
                     }
 
                     const data = {
-                        q_slno: insetId
+                        topic_slno: insetId
                     }
 
-                    // Insert the qsl_no into the database using the reusable function
+                    // Insert the topic_slno into the database using the reusable function
                     updateUploadStatus(data, (err, results) => {
                         if (err) {
                             logger.errorLogger(err);
@@ -109,13 +106,13 @@ module.exports = {
         });
     },
 
+
     // for getting the file
     selectUploads: (req, res) => {
-        const { topic_slno, checklistid } = req.body;
-        const folderPath = `D:/DocMeliora/Inteliqo/Training/${topic_slno}/${checklistid}`;
+        const { topic_slno } = req.body;
+        const folderPath = `D:/DocMeliora/Inteliqo/TrainingTopicUploads/${topic_slno}`;
         fs.readdir(folderPath, (err, files) => {
             if (err) {
-                // console.log(err);
                 logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
