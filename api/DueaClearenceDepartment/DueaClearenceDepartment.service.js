@@ -30,9 +30,9 @@ module.exports = {
             `SELECT dept_id,
             sect_id     
                 FROM hrm_due_clearence_dept_master
-                WHERE dept_id = ?`,
+                WHERE sect_id = ?`,
             [
-                data.dept_id
+                data.sect_id
             ],
             (error, results, feilds) => {
                 if (error) {

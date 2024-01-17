@@ -4,7 +4,7 @@ const pool = require('../../config/database');
 module.exports = {
     getDesignation: (callBack) => {
         pool.query(
-            `select desg_slno,desg_name FROM designation `,
+            `select desg_slno,desg_name FROM designation where desg_status=1; `,
             [],
             (error, results, feilds) => {
                 if (error) {

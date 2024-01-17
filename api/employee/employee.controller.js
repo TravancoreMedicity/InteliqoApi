@@ -167,6 +167,8 @@ module.exports = {
                     user: results.emp_username,
                     emp_no: results.emp_no,
                     emp_id: results.emp_id,
+                    em_name: results.em_name,
+                    sect_name: results.sect_name
 
                 });
             } else {

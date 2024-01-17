@@ -664,7 +664,7 @@ module.exports = {
     },
     creditPrivilegeLeave: (data, callBack) => {
         pool.query(
-            `UPDATE hrm_leave_earnlv SET credit_status = 1 ,credit_year = ?  WHERE year(ernlv_year) = ? AND em_no = ?`,
+            `UPDATE hrm_leave_earnlv SET credit_status = 1 ,ernlv_credit=1,credit_year = ?  WHERE year(ernlv_year) = ? AND em_no = ?`,
             [
                 data.currentYear,
                 data.creditYear,
@@ -817,5 +817,41 @@ module.exports = {
             }
         )
     },
+    insertSickLeave: (data, callBack) => {
+        pool.query(
+            `insert  into hrm_leave_common(
+                em_no, 
+                llvetype_slno,
+                cmn_lv_allowedflag,
+                cmn_lv_allowed, 
+                cmn_lv_taken, 
+                cmn_lv_balance, 
+                Iv_process_slno,
+                update_user,
+                em_id,
+                cmn_lv_year
+                ) 
+                values (?,?,?,?,?,?,?,?,?,?)`,
+            [
+                data.em_no,
+                data.llvetype_slno,
+                data.cmn_lv_allowedflag,
+                data.cmn_lv_allowed,
+                data.cmn_lv_taken,
+                data.cmn_lv_balance,
+                data.Iv_process_slno,
+                data.update_user,
+                data.em_id,
+                data.cmn_lv_year
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+
 
 }

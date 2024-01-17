@@ -840,17 +840,18 @@ module.exports = {
                 em_cont_start,
                 em_cont_end,
                 em_prob_end_date,
-                em_conf_end_date
+                em_conf_end_date,
+                status
                 )
-                VALUES (?,?,?,?,?,?);`,
+                VALUES (?,?,?,?,?,?,?);`,
             [
                 data.em_id,
                 data.em_no,
                 data.em_cont_start,
                 data.em_cont_end,
                 data.em_prob_end_date,
-                data.em_age_year,
                 data.em_conf_end_date,
+                data.status
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -932,6 +933,43 @@ module.exports = {
                 data.remark,
                 0,
                 data.create_user
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getEmpList: (data, callBack) => {
+        pool.query(
+            `select hrm_emp_master.em_no,
+            hrm_emp_master.em_name,
+            hrm_emp_master.em_id,
+            hrm_emp_master.em_doj,
+            hrm_emp_master.contract_status,
+            hrm_emp_master.gross_salary,
+            hrm_department.dept_id,
+            hrm_dept_section.sect_id,
+            em_department,
+            em_dept_section,
+            dept_name, 
+            sect_name,
+            desg_name
+            FROM hrm_emp_master
+            inner join hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
+            inner join hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
+            inner join designation on hrm_emp_master.em_designation=designation.desg_slno
+            where hrm_emp_master.em_department=?
+                and hrm_emp_master.em_dept_section=?
+                and hrm_emp_master.em_branch=?
+                and hrm_emp_master.em_status=1
+                and hrm_emp_master.em_no not in (1 ,2)`,
+            [
+                data.em_department,
+                data.em_dept_section,
+                data.em_branch
             ],
             (error, results, feilds) => {
                 if (error) {

@@ -1,5 +1,5 @@
 const { create, update, getDataById, getDataBySlno, getEsiallow, createNpsdata,
-    esinotallowedUpdate } = require('../hrm_emp_pfesi/empesipf.service');
+    esinotallowedUpdate, InactiveEsi } = require('../hrm_emp_pfesi/empesipf.service');
 const { validateempesipf } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -127,7 +127,6 @@ module.exports = {
 
     },
     getEsiallow: (req, res) => {
-
         const id = req.params.id;
         getEsiallow(id, (err, results) => {
             if (err) {
@@ -174,6 +173,29 @@ module.exports = {
 
         const body = req.body;
         esinotallowedUpdate(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (!results) {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Record Not Found"
+                });
+            }
+            return res.status(200).json({
+                success: 2,
+                message: "Data Updated Successfully"
+            });
+
+        });
+    },
+    InactiveEsi: (req, res) => {
+        const body = req.body;
+        InactiveEsi(body, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({

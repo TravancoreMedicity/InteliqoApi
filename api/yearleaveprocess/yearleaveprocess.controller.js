@@ -8,9 +8,11 @@ const {
     dataannualcalculation, holidaylistyear, insertyearly, select_yearlyprocess,
     dataannualcalculationEmployee, creditPrivilegeLeave, getLeaveProccedData, inactiveLastYearProcessData,
     inactiveCasualLeave, inactiveEarnLeave, inactiveHoliday, inactiveCommonLeave,
-    getEsiPfDetails, getleaveProcessData, inactiveSickLeave, insertStatutoryCommonleave
+    getEsiPfDetails, getleaveProcessData, inactiveSickLeave, insertStatutoryCommonleave,
+    insertSickLeave
 } = require('../yearleaveprocess/yearllraveprocess.service');
-const logger = require('../../logger/logger')
+const logger = require('../../logger/logger');
+const { differenceInMonths, endOfYear, startOfYear } = require('date-fns');
 module.exports = {
     getLeaveProccedData: (req, res) => {
         const body = req.body;
@@ -1014,6 +1016,8 @@ module.exports = {
             update_user,
             em_id,
             cmn_lv_year } = req.body
+        const startMonth = startOfYear(new Date())
+        const result = differenceInDays(new Date(), startMonth)
 
         const updatedata = {
             hrm_lv_cmn: hrm_lv_cmn
@@ -1022,9 +1026,9 @@ module.exports = {
             em_no: em_no,
             llvetype_slno: 6,
             cmn_lv_allowedflag,
-            cmn_lv_allowed: 1,
+            cmn_lv_allowed: result,
             cmn_lv_taken: 0,
-            cmn_lv_balance: 1,
+            cmn_lv_balance: result,
             Iv_process_slno: Iv_process_slno,
             update_user: update_user,
             em_id: em_id,
@@ -1055,6 +1059,56 @@ module.exports = {
             }
         })
     },
+    inactiveEsiLeave: (req, res) => {
+
+        const { hrm_lv_cmn, em_no,
+            cmn_lv_allowedflag,
+            Iv_process_slno,
+            update_user,
+            em_id,
+            cmn_lv_year } = req.body
+        const endMonth = endOfYear(new Date())
+        const result = differenceInMonths(endMonth, new Date())
+        const updatedata = {
+            hrm_lv_cmn: hrm_lv_cmn
+        }
+        const postdata = {
+            em_no: em_no,
+            llvetype_slno: 7,
+            cmn_lv_allowedflag,
+            cmn_lv_allowed: result,
+            cmn_lv_taken: 0,
+            cmn_lv_balance: result,
+            Iv_process_slno: Iv_process_slno,
+            update_user: update_user,
+            em_id: em_id,
+            cmn_lv_year: cmn_lv_year
+        }
+        inactiveSickLeave(updatedata, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else {
+                insertSickLeave(postdata, (err, results) => {
+                    if (err) {
+                        logger.errorLogger(err)
+                        return res.status(200).json({
+                            success: 0,
+                            message: err
+                        });
+                    }
+                    return res.status(200).json({
+                        success: 1,
+                        message: "Data Created Successfully"
+                    });
+                });
+            }
+        })
+    }
 }
 
 

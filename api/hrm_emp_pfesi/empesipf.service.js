@@ -229,4 +229,49 @@ module.exports = {
             }
         )
     },
+    InactiveEsi: (data, callBack) => {
+        pool.query(
+            `UPDATE hrm_emp_pfesi
+                SET em_id =?,
+                    em_pf_status =?,
+                    em_pf_no =?,
+                    em_uan_no =?,
+                    em_esi_status =?,
+                    em_esi_no =?,
+                    em_grade =?,
+                    edit_user =?,
+                    nps=?,
+                    npsnumber=?,
+                    npsamount=?,
+                    lwf_status=?,
+                    lwfnumber=?,
+                    lwfamount=?,
+                    inactive_status=?
+                WHERE esi_slno = ?`,
+            [
+                data.em_id,
+                data.em_pf_status,
+                data.em_pf_no,
+                data.em_uan_no,
+                data.em_esi_status,
+                data.em_esi_no,
+                data.em_grade,
+                data.edit_user,
+                data.nps,
+                data.npsnumber,
+                data.npsamount,
+                data.lwf_status,
+                data.lwfnumber,
+                data.lwfamount,
+                1,
+                data.esi_slno,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }
