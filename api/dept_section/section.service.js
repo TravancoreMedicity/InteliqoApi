@@ -80,6 +80,8 @@ module.exports = {
             hrm_dept_section.dept_id,
             dept_sub_sect,
             sect_status,
+            authorization_incharge,
+            authorization_hod,
             (case when dept_sub_sect=1 then 'General'when dept_sub_sect=2 then 'OT' when dept_sub_sect=3 then 'ICU' when dept_sub_sect=4 then 'ER' else 'Nil' end) as sub_sect_name,
             hrm_department.dept_name,
             if(authorization_incharge=1,'Yes','No')incharge,
