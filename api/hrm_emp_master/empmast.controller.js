@@ -323,7 +323,6 @@ module.exports = {
     },
     getEmpByDeptartment: (req, res) => {
         const body = req.body
-
         getEmpByDeptartment(body, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
