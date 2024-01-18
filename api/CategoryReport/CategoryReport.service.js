@@ -5,13 +5,8 @@ const pool = require('../../config/database');
 module.exports = {
     getCatogery: (callBack) => {
         pool.query(
-            `Select 
-
-            category_slno,
-            emp_type,
-            des_type,
-            ecat_prob,
-            CONCAT(UPPER(SUBSTRING(ecat_name,1,1)),LOWER(SUBSTRING(ecat_name,2))) AS ecat_name from hrm_emp_category`,
+            `Select  category_slno, emp_type,  des_type,   ecat_prob,
+            CONCAT(UPPER(SUBSTRING(ecat_name,1,1)),LOWER(SUBSTRING(ecat_name,2))) AS ecat_name from hrm_emp_category where ecat_status=1;`,
             [],
             (error, results, feilds) => {
                 if (error) {
