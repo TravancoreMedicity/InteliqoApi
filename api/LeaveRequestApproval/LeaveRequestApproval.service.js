@@ -1211,17 +1211,16 @@ module.exports = {
         pool.query(
             `UPDATE hrm_halfdayrequest
             SET lv_cancel_status_user=1,
-            lv_cancel_req_status_user=?,
+            lv_cancel_req_status_user=1,
             lv_cancel_cmnt_user=?,
             lv_cancel_date_user=?,
             lv_cancel_us_code_user=? 
         WHERE half_slno=?`,
             [
-                data.status,
-                data.comment,
-                data.apprvdate,
-                data.us_code,
-                data.slno,
+                data.lv_cancel_cmnt,
+                data.lv_cancel_date,
+                data.lv_cancel_us_code,
+                data.half_slno,
             ],
             (error, results, feilds) => {
                 if (error) {

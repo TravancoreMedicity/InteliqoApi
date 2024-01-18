@@ -1225,9 +1225,49 @@ module.exports = {
                 });
             }
             else {
-                return res.status(200).json({
-                    success: 1,
-                    message: "Data Updated Successfully"
+                // return res.status(200).json({
+                //     success: 1,
+                //     message: "Data Updated Successfully"
+                // });
+                HalfDayHrRejectCl(body, (err, results) => {
+                    if (err) {
+                        logger.errorLogger(err)
+                        return res.status(200).json({
+                            success: 0,
+                            message: err
+                        });
+                    }
+                    else if (!results) {
+                        return res.status(200).json({
+                            success: 2,
+                            message: "Record Not Found"
+                        });
+                    }
+                    else {
+                        HalfDayHrCancelPunchMast(body, (err, results) => {
+                            if (err) {
+                                logger.errorLogger(err)
+                                return res.status(200).json({
+                                    success: 0,
+                                    message: err
+                                });
+                            }
+                            else if (!results) {
+                                return res.status(200).json({
+                                    success: 2,
+                                    message: "Record Not Found"
+                                });
+                            }
+                            else {
+                                return res.status(200).json({
+                                    success: 1,
+                                    message: "Leave Request Rejected Successfully"
+                                });
+
+                            }
+                        });
+
+                    }
                 });
             }
         });
