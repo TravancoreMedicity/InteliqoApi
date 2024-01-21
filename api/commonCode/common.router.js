@@ -29,22 +29,28 @@ const {
     GetDeductionSalry,
     getFineSlno,
     GetLastChangedSalary,
-    getannprocess, getcasual,
+    getannprocess,
+    getcasual,
     getleaveholiday,
     getleavecommon,
     getCompanyById,
     getcompanylogId,
-    GetEmployeeAllowanceDetails, getprocess, getearnleave,
+    GetEmployeeAllowanceDetails,
+    getprocess,
+    getearnleave,
     getEmployeeID,
     getEmployeeDetailsByEmpID,
     getShiftdetails,
-    getCasualLeave, getCasualeavearry,
+    getCasualLeave,
+    getCasualeavearry,
     getBoardById,
     getEmpName,
     getUserDetl,
     getDeptsectIncharge,
     getCEOlevel,
-    getDeptsectHOD, getleaverequwestslno, getShiftdata,
+    getDeptsectHOD,
+    getleaverequwestslno,
+    getShiftdata,
     getActiveEmployees,
     getInActiveEmployees,
     getResignedEmployess,
@@ -54,7 +60,8 @@ const {
     getLeaveCount,
     getENameLeaveCarry,
     getEmployeeProfileInform,
-    getCoffDetails, getfrndenddata,
+    getCoffDetails,
+    getfrndenddata,
     EmpNameCategory,
     getdutydaycheck,
     getCarryDetails,
@@ -68,7 +75,8 @@ const {
     getSectionBasedEmpoyeeHodIncharge,
     getEmployeeInformation,
     insertErrorLog,
-    getgrossSalary
+    getgrossSalary,
+    getEmpCoff
 } = require('../commonCode/common.controller');
 
 router.get("/getdept", checkToken, getDepartmentName)
@@ -146,5 +154,6 @@ router.get("/getSectionBasedEmpoyeeHodIncharge/:id", checkToken, getSectionBased
 router.get("/getEmpoyeeInfomation/:id", checkToken, getEmployeeInformation)
 router.post("/errorLog", checkToken, insertErrorLog)
 router.get("/getgrossSalary/:id", checkToken, getgrossSalary)
+router.post("/empCoffdata", checkToken, getEmpCoff)
 
 module.exports = router;
