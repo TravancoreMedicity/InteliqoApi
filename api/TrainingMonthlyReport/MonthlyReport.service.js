@@ -3,8 +3,10 @@ const pool = require('../../config/database');
 module.exports = {
     GetMonthlyReportByMonth: (data, callback) => {
         pool.query(
-            `SELECT ROW_NUMBER() OVER () as calender_slno, training_employee_details.slno, emp_name, emp_desig, training_employee_details.emp_dept, emp_dept_sectn, topic, 
-            schedule_date, training_employee_details.pretest_status, training_employee_details.posttest_status,
+            `SELECT ROW_NUMBER() OVER () as calender_slno, training_employee_details.slno, emp_name, emp_desig, training_employee_details.emp_dept, emp_dept_sectn, topic,
+            training_retest_emp_details.retest_date,training_employee_details.schedule_date,
+            training_employee_details.training_status,training_employee_details.online_mode,training_employee_details.offline_mode,
+            training_employee_details.pretest_status, training_employee_details.posttest_status,
             training_topic.topic_slno,training_topic.training_topic_name,hrm_emp_master.em_name,online_status,offline_status,
             training_posttest.mark as posttest_mark,training_retest_emp_details.retest_mark,training_retest_emp_details.retest_status,
             em_id,training_pretest.mark as Pretest_mark,training_employee_details.online_mode,training_employee_details.offline_mode,
@@ -13,17 +15,18 @@ module.exports = {
             LEFT JOIN training_topic ON training_topic.topic_slno=training_employee_details.topic
             LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_employee_details.emp_name
             LEFT JOIN training_posttest ON training_posttest.emp_id=training_employee_details.emp_name
-            LEFT JOIN training_pretest ON training_pretest.emp_id=training_employee_details.emp_name
+            LEFT JOIN training_pretest ON training_pretest.emp_topic=training_employee_details.topic
             LEFT JOIN training_retest_emp_details ON training_retest_emp_details.candidate_em_no=training_employee_details.emp_name
             LEFT JOIN hrm_department ON hrm_department.dept_id=training_employee_details.emp_dept
             LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=training_employee_details.emp_dept_sectn
-            WHERE month(schedule_date)=? and training_employee_details.emp_dept=1 and training_employee_details.emp_dept_sectn=? and training_employee_details.posttest_status=?
-            and training_employee_details.topic=?`,
+            WHERE  training_employee_details.emp_dept=? and training_employee_details.emp_dept_sectn=?
+            and training_employee_details.topic=? and training_employee_details.schedule_date between ?  AND ?`,
             [
                 data.dept,
                 data.deptSect,
-                data.getmonth,
-                data.topic
+                data.topic,
+                data.fromdate,
+                data.todate
             ],
             (err, results, feilds) => {
                 if (err) {
@@ -34,6 +37,7 @@ module.exports = {
             }
         )
     },
+
     GetTrainingList: (data, callback) => {
         pool.query(
             `SELECT training_departmental_schedule.slno, department, deparment_sect, training_departmental_schedule.schedule_date, schedule_topics, 
@@ -222,6 +226,159 @@ module.exports = {
                 }
                 return callback(null, results)
 
+            }
+        )
+    },
+
+    getAllotedTrainingEmpReports: (data, callback) => {
+        pool.query(
+            `SELECT ROW_NUMBER() OVER () as calender_slno, training_employee_details.slno, emp_name, emp_desig, training_employee_details.emp_dept, emp_dept_sectn, topic,
+            training_employee_details.training_status,
+                       schedule_date, training_employee_details.pretest_status, training_employee_details.posttest_status,
+                       training_topic.topic_slno,training_topic.training_topic_name,hrm_emp_master.em_name,online_status,offline_status,
+                       training_posttest.mark as posttest_mark,training_retest_emp_details.retest_mark,training_retest_emp_details.retest_status,
+                       em_id,training_pretest.mark as Pretest_mark,training_employee_details.online_mode,training_employee_details.offline_mode,
+                       hrm_department.dept_id,hrm_department.dept_name,sect_id,sect_name
+                       FROM training_employee_details
+                       LEFT JOIN training_topic ON training_topic.topic_slno=training_employee_details.topic
+                       LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_employee_details.emp_name
+                       LEFT JOIN training_posttest ON training_posttest.emp_id=training_employee_details.emp_name
+                       LEFT JOIN training_pretest ON training_pretest.emp_topic=training_employee_details.topic
+                       LEFT JOIN training_retest_emp_details ON training_retest_emp_details.candidate_em_no=training_employee_details.emp_name
+                       LEFT JOIN hrm_department ON hrm_department.dept_id=training_employee_details.emp_dept
+                       LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=training_employee_details.emp_dept_sectn
+                       WHERE  training_employee_details.emp_dept=? and training_employee_details.emp_dept_sectn=?
+                       and training_employee_details.topic=? and schedule_date between ? AND ?`,
+            [
+                data.dept,
+                data.deptSect,
+                data.topic,
+                data.fromdate,
+                data.todate
+            ],
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+            }
+        )
+    },
+    getTrainingCompletionEmpReports: (data, callback) => {
+        pool.query(
+            `SELECT ROW_NUMBER() OVER () as calender_slno, training_employee_details.slno, emp_name, emp_desig, training_employee_details.emp_dept, emp_dept_sectn, topic,
+            training_employee_details.training_status,
+                       schedule_date, training_employee_details.pretest_status, training_employee_details.posttest_status,
+                       training_topic.topic_slno,training_topic.training_topic_name,hrm_emp_master.em_name,online_status,offline_status,
+                       training_posttest.mark as posttest_mark,training_retest_emp_details.retest_mark,training_retest_emp_details.retest_status,
+                       em_id,training_pretest.mark as Pretest_mark,training_employee_details.online_mode,training_employee_details.offline_mode,
+                       hrm_department.dept_id,hrm_department.dept_name,sect_id,sect_name
+                       FROM training_employee_details
+                       LEFT JOIN training_topic ON training_topic.topic_slno=training_employee_details.topic
+                       LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_employee_details.emp_name
+                       LEFT JOIN training_posttest ON training_posttest.emp_id=training_employee_details.emp_name
+                       LEFT JOIN training_pretest ON training_pretest.emp_topic=training_employee_details.topic
+                       LEFT JOIN training_retest_emp_details ON training_retest_emp_details.candidate_em_no=training_employee_details.emp_name
+                       LEFT JOIN hrm_department ON hrm_department.dept_id=training_employee_details.emp_dept
+                       LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=training_employee_details.emp_dept_sectn
+                       WHERE  training_employee_details.emp_dept=? and training_employee_details.emp_dept_sectn=?
+                       and training_employee_details.topic=? and schedule_date between ? AND ?
+                       and training_employee_details.training_status=1
+                       and training_employee_details.pretest_status=1
+                       and training_employee_details.posttest_status=1`,
+            [
+                data.dept,
+                data.deptSect,
+                data.topic,
+                data.fromdate,
+                data.todate
+            ],
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+            }
+        )
+    },
+    getTrainingPendingEmpReports: (data, callback) => {
+        pool.query(
+            `SELECT ROW_NUMBER() OVER () as calender_slno, training_employee_details.slno, emp_name, emp_desig, training_employee_details.emp_dept, emp_dept_sectn, topic,
+            training_retest_emp_details.retest_date,training_employee_details.schedule_date,
+                      training_employee_details.training_status,training_employee_details.online_mode,training_employee_details.offline_mode,
+                             training_employee_details.pretest_status, training_employee_details.posttest_status,
+                                 training_topic.topic_slno,training_topic.training_topic_name,hrm_emp_master.em_name,online_status,offline_status,
+                                 training_posttest.mark as posttest_mark,training_retest_emp_details.retest_mark,training_retest_emp_details.retest_status,
+                                 em_id,training_pretest.mark as Pretest_mark,training_employee_details.online_mode,training_employee_details.offline_mode,
+                                 hrm_department.dept_id,hrm_department.dept_name,sect_id,sect_name
+                                 FROM training_employee_details
+                                 LEFT JOIN training_topic ON training_topic.topic_slno=training_employee_details.topic
+                                 LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_employee_details.emp_name
+                                 LEFT JOIN training_posttest ON training_posttest.emp_id=training_employee_details.emp_name
+                                 LEFT JOIN training_pretest ON training_pretest.emp_id=training_employee_details.emp_name
+                                 LEFT JOIN training_retest_emp_details ON training_retest_emp_details.candidate_em_no=training_employee_details.emp_name
+                                 LEFT JOIN hrm_department ON hrm_department.dept_id=training_employee_details.emp_dept
+                                 LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=training_employee_details.emp_dept_sectn
+                                WHERE  training_employee_details.emp_dept=?
+                       and training_employee_details.emp_dept_sectn=?
+                       and training_employee_details.topic=?
+                       and schedule_date between ? AND ?
+                       and training_employee_details.training_status=0
+                       and training_employee_details.pretest_status=0
+                       and training_employee_details.posttest_status=0
+                       and training_employee_details.online_mode=0
+                       and training_employee_details.offline_mode=0`,
+            [
+                data.dept,
+                data.deptSect,
+                data.topic,
+                data.fromdate,
+                data.todate
+            ],
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+            }
+        )
+    },
+    getTrainingRetestEmpReports: (data, callback) => {
+        pool.query(
+            `SELECT ROW_NUMBER() OVER () as calender_slno, training_employee_details.slno, emp_name, emp_desig, training_employee_details.emp_dept, emp_dept_sectn, topic,  training_retest_emp_details.retest_date,
+            training_employee_details.training_status,training_employee_details.online_mode,training_employee_details.offline_mode,
+            training_employee_details.schedule_date, training_employee_details.pretest_status, training_employee_details.posttest_status,
+                       training_topic.topic_slno,training_topic.training_topic_name,hrm_emp_master.em_name,online_status,offline_status,
+                       training_posttest.mark as posttest_mark,training_retest_emp_details.retest_mark,training_retest_emp_details.retest_status,
+                       em_id,training_pretest.mark as Pretest_mark,training_employee_details.online_mode,training_employee_details.offline_mode,
+                       hrm_department.dept_id,hrm_department.dept_name,sect_id,sect_name
+                       FROM training_employee_details
+                       LEFT JOIN training_topic ON training_topic.topic_slno=training_employee_details.topic
+                       LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_employee_details.emp_name
+                       LEFT JOIN training_posttest ON training_posttest.emp_id=training_employee_details.emp_name
+                       LEFT JOIN training_pretest ON training_pretest.emp_topic=training_employee_details.topic
+                       LEFT JOIN training_retest_emp_details ON training_retest_emp_details.candidate_em_no=training_employee_details.emp_name
+                       LEFT JOIN hrm_department ON hrm_department.dept_id=training_employee_details.emp_dept
+                       LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=training_employee_details.emp_dept_sectn
+                       WHERE  training_employee_details.emp_dept=? and training_employee_details.emp_dept_sectn=?
+                       and training_employee_details.topic=? and schedule_date between ? AND ?
+                      and training_retest_emp_details.retest_status=1`,
+            [
+                data.dept,
+                data.deptSect,
+                data.topic,
+                data.fromdate,
+                data.todate
+            ],
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
             }
         )
     },

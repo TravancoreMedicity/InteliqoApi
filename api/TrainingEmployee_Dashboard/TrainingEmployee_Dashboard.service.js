@@ -1,6 +1,32 @@
 const pool = require('../../config/database');
 
 module.exports = {
+
+    GetBelowAvgEmpList: (callback) => {
+        pool.query(
+            `    
+            SELECT ROW_NUMBER() OVER () as sn, training_employee_details.slno, scheduled_slno, training_employee_details.emp_name, training_employee_details.emp_desig,
+            training_employee_details.emp_dept, training_employee_details.emp_dept_sectn, topic, training_employee_details.schedule_date, 
+            training_employee_details.training_status, question_count, training_employee_details.pretest_status, 
+            training_employee_details.posttest_status,training_employee_details.posttest_permission,emp_topic,
+            em_id as candid_id,em_name,topic_slno,training_topic_name,training_posttest.mark ,training_retest_emp_details.retest_status
+            FROM training_employee_details
+            LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_employee_details.emp_name
+            LEFT JOIN training_topic ON training_topic.topic_slno=training_employee_details.topic
+            LEFT JOIN training_posttest ON training_posttest.emp_id=training_employee_details.emp_name
+            LEFT JOIN training_retest_emp_details ON training_retest_emp_details.candidate_dept=training_employee_details.emp_dept
+            where training_employee_details.posttest_status=1 and training_posttest.mark <2 
+            `, [],
+
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+            }
+        )
+    },
     InsertRetestEmp: (data, callBack) => {
         pool.query(
             `INSERT INTO  medi_hrm.training_retest_emp_details
@@ -50,32 +76,6 @@ module.exports = {
                     return callBack(error);
                 }
                 return callBack(null, results);
-            }
-        )
-    },
-    GetBelowAvgEmpList: (callback) => {
-        pool.query(
-            `     
-           
-           SELECT ROW_NUMBER() OVER () as sn, training_employee_details.slno, scheduled_slno, training_employee_details.emp_name, training_employee_details.emp_desig,
-           training_employee_details.emp_dept, training_employee_details.emp_dept_sectn, topic, training_employee_details.schedule_date, 
-           training_employee_details.training_status, question_count, training_employee_details.pretest_status, 
-           training_employee_details.posttest_status,training_employee_details.posttest_permission,emp_topic,
-           em_id as candid_id,em_name,topic_slno,training_topic_name,training_posttest.mark ,training_retest_emp_details.retest_status
-           FROM training_employee_details
-           LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_employee_details.emp_name
-           LEFT JOIN training_topic ON training_topic.topic_slno=training_employee_details.topic
-           LEFT JOIN training_posttest ON training_posttest.emp_id=training_employee_details.emp_name
-           LEFT JOIN training_retest_emp_details ON training_retest_emp_details.candidate_dept=training_employee_details.emp_dept
-           where training_posttest.mark <2 
-            `, [],
-
-            (err, results, feilds) => {
-                if (err) {
-                    return callback(err)
-
-                }
-                return callback(null, results)
             }
         )
     },

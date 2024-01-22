@@ -7,13 +7,14 @@ module.exports = {
             `             
             SELECT ROW_NUMBER() OVER () as sno,training_employee_details.slno,emp_name,topic,training_employee_details.training_status,training_employee_details.pretest_status,posttest_status,
             topic_slno,training_topic_name,online_status,both_status,video_link,posttest_permission,upload_status,video_time,pdf_time,training_pretest.create_date as exact_date,question_count,
-            em_id,em_name
+            em_id,em_name,
+            online_status
             FROM training_employee_details
             LEFT JOIN training_topic ON training_topic.topic_slno=training_employee_details.topic
-            LEFT JOIN training_pretest ON training_pretest.emp_id=training_employee_details.emp_name
+            LEFT JOIN training_pretest ON training_pretest.emp_topic=training_employee_details.topic
             LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_employee_details.emp_name
-            WHERE emp_name=?
-            and training_employee_details.pretest_status=1   `, [id],
+            WHERE emp_name=168
+            and training_employee_details.pretest_status=1 and training_employee_details.online_mode=1   `, [id],
             (err, results, feilds) => {
                 if (err) {
                     return callback(err)
