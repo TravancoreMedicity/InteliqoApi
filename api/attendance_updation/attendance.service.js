@@ -784,4 +784,18 @@ module.exports = {
             }
         )
     },
+    getEmployeeRights: (data, callBack) => {
+        pool.query(
+            `  SELECT * FROM medi_hrm.module_group_user_rights where emp_slno=?`,
+            [
+                data.emid
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }

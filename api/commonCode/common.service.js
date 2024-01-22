@@ -1322,7 +1322,7 @@ module.exports = {
             `SELECT 
                 hrm_calc_holiday,
                 calculated_date,
-                credited 
+                credited,specail_remark 
             FROM hrm_leave_calculated
             WHERE emp_id = ?
             AND sysdate() <  DATE_ADD(credited_date , interval 30 day)
@@ -1638,6 +1638,28 @@ module.exports = {
                 return callBack(null, results)
             }
         );
+    },
+    getEmpCoff: (data, callBack) => {
+        pool.query(
+            `SELECT 
+                hrm_calc_holiday,
+                calculated_date,
+                credited,specail_remark 
+            FROM hrm_leave_calculated
+            WHERE emp_id = ?
+            AND sysdate() <  DATE_ADD(credited_date , interval ? day)
+            AND taken=0`,
+            [
+                data.em_id,
+                data.count
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
     },
 }
 

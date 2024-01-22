@@ -2277,5 +2277,23 @@ module.exports = {
             }
         )
     },
-
+    UpdateHalfdayCasual: (data, callBack) => {
+        pool.query(
+            `UPDATE 
+            hrm_leave_cl
+        SET cl_lv_taken = 0.5,
+            cl_bal_leave = 0,
+            hl_lv_tkn_status = 0
+        WHERE hrm_cl_slno = ?`,
+            [
+                data.planSlno
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }
