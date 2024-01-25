@@ -339,7 +339,8 @@ module.exports = {
     updatePunchInandPunchOut: (data, callBack) => {
         pool.query(
             `update punch_master
-                set punch_in=?,
+                set lve_tble_updation_flag=1,
+                punch_in=?,
                     punch_out=?,
                     hrs_worked = ?,
                     late_in=?,
