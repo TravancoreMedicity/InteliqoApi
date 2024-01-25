@@ -566,6 +566,7 @@ module.exports = {
              SET 
              leave_status=1,
              lvereq_desc='HDL',
+             duty_desc = 'HDL',
              lve_tble_updation_flag=1
             WHERE duty_day=? and em_no=?`,
             [
@@ -1816,6 +1817,9 @@ module.exports = {
         pool.query(
             `UPDATE punch_master
             SET punch_in =?,
+            duty_status = 1,
+            lvereq_desc = 'P',
+            duty_desc = 'P',
             lve_tble_updation_flag=1
         WHERE punch_slno=?`,
             [
@@ -1834,6 +1838,9 @@ module.exports = {
         pool.query(
             `UPDATE punch_master
             SET punch_out =?,
+            duty_status = 1,
+            lvereq_desc = 'P',
+            duty_desc = 'P',
             lve_tble_updation_flag=1
         WHERE punch_slno=?`,
             [
