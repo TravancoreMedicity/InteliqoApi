@@ -722,6 +722,9 @@ module.exports = {
         pool.query(
             `UPDATE punch_master
             SET punch_in =?,
+            duty_status = 1,
+            lvereq_desc = 'P',
+            duty_desc = 'P',
             lve_tble_updation_flag=1
          WHERE em_no=? and duty_day=?`,
             [
@@ -741,6 +744,9 @@ module.exports = {
         pool.query(
             `UPDATE punch_master
             SET punch_out =?,
+            duty_status = 1,
+            lvereq_desc = 'P',
+            duty_desc = 'P',
             lve_tble_updation_flag=1
             WHERE em_no=? and duty_day=?`,
             [

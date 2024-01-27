@@ -6,7 +6,7 @@ module.exports = {
             `select hrm_emp_master.em_id,hrm_emp_master.em_no,em_name,em_dob,if(em_gender=1,'Male','Female')em_gender,em_doj,em_mobile,em_email,branch_name,dept_name,
             sect_name,inst_emp_type,desg_name,doctype_desc,ecat_name,em_contract_end_date,em_adhar_no,
             em_retirement_date,addressPresent1,addressPresent2,hrm_pin2,contract_status,em_account_no,
-            em_passport_no,em_pf_no,em_esi_no,em_uan_no
+            em_passport_no,em_pf_no,em_esi_no,em_uan_no,gross_salary
             from hrm_emp_master
             left join hrm_employee on hrm_emp_master.em_id=hrm_employee.emp_id
             left join hrm_emp_personal on hrm_emp_personal.em_id=hrm_emp_master.em_id
@@ -35,7 +35,7 @@ module.exports = {
             `select hrm_emp_master.em_id,hrm_emp_master.em_no,em_name,em_dob,if(em_gender=1,'Male','Female')em_gender,em_doj,em_mobile,em_email,branch_name,dept_name,
             sect_name,inst_emp_type,desg_name,doctype_desc,ecat_name,em_contract_end_date,em_adhar_no,
             em_retirement_date,addressPresent1,addressPresent2,hrm_pin2,contract_status,em_account_no,
-            em_passport_no,em_pf_no,em_esi_no,em_uan_no
+            em_passport_no,em_pf_no,em_esi_no,em_uan_no,gross_salary
             from hrm_emp_master
             left join hrm_employee on hrm_emp_master.em_id=hrm_employee.emp_id
             left join hrm_emp_personal on hrm_emp_personal.em_id=hrm_emp_master.em_id
@@ -65,7 +65,7 @@ module.exports = {
             `select hrm_emp_master.em_id,hrm_emp_master.em_no,em_name,em_dob,if(em_gender=1,'Male','Female')em_gender,em_doj,em_mobile,em_email,branch_name,dept_name,
             sect_name,inst_emp_type,desg_name,doctype_desc,ecat_name,em_contract_end_date,em_adhar_no,
             em_retirement_date,addressPresent1,addressPresent2,hrm_pin2,contract_status,em_account_no,
-            em_passport_no,em_pf_no,em_esi_no
+            em_passport_no,em_pf_no,em_esi_no,gross_salary
             from hrm_emp_master
             left join hrm_employee on hrm_emp_master.em_id=hrm_employee.emp_id
             left join hrm_emp_personal on hrm_emp_personal.em_id=hrm_emp_master.em_id
@@ -96,7 +96,7 @@ module.exports = {
             `select hrm_emp_master.em_id,hrm_emp_master.em_no,em_name,em_dob,if(em_gender=1,'Male','Female')em_gender,em_doj,em_mobile,em_email,branch_name,dept_name,
             sect_name,inst_emp_type,desg_name,doctype_desc,ecat_name,em_contract_end_date,em_adhar_no,
             em_retirement_date,addressPresent1,addressPresent2,hrm_pin2,contract_status,em_account_no,
-            em_passport_no,em_pf_no,em_esi_no,em_uan_no
+            em_passport_no,em_pf_no,em_esi_no,em_uan_no,gross_salary
             from hrm_emp_master
             left join hrm_employee on hrm_emp_master.em_id=hrm_employee.emp_id
             left join hrm_emp_personal on hrm_emp_personal.em_id=hrm_emp_master.em_id
@@ -127,7 +127,7 @@ module.exports = {
             `select hrm_emp_master.em_id,hrm_emp_master.em_no,em_name,em_dob,if(em_gender=1,'Male','Female')em_gender,em_doj,em_mobile,em_email,branch_name,dept_name,
             sect_name,inst_emp_type,desg_name,doctype_desc,ecat_name,em_contract_end_date,em_adhar_no,
             em_retirement_date,addressPresent1,addressPresent2,hrm_pin2,contract_status,em_account_no,
-            em_passport_no,em_pf_no,em_esi_no,em_uan_no
+            em_passport_no,em_pf_no,em_esi_no,em_uan_no,gross_salary
             from hrm_emp_master
             left join hrm_employee on hrm_emp_master.em_id=hrm_employee.emp_id
             left join hrm_emp_personal on hrm_emp_personal.em_id=hrm_emp_master.em_id
@@ -159,7 +159,7 @@ module.exports = {
             `select hrm_emp_master.em_id,hrm_emp_master.em_no,em_name,em_dob,if(em_gender=1,'Male','Female')em_gender,em_doj,em_mobile,em_email,branch_name,dept_name,
             sect_name,inst_emp_type,desg_name,doctype_desc,ecat_name,em_contract_end_date,em_adhar_no,
             em_retirement_date,addressPresent1,addressPresent2,hrm_pin2,contract_status,em_account_no,
-            em_passport_no,em_pf_no,em_esi_no,em_uan_no
+            em_passport_no,em_pf_no,em_esi_no,em_uan_no,gross_salary
             from hrm_emp_master
             left join hrm_employee on hrm_emp_master.em_id=hrm_employee.emp_id
             left join hrm_emp_personal on hrm_emp_personal.em_id=hrm_emp_master.em_id
