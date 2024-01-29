@@ -131,7 +131,7 @@ const TrainingOnline = require("./api/TrainingOnline/TrainingOnline.router")
 const Training_topic_uploads = require("./api/Training_topic_uploads/Training_topic_uploads.router")
 const TrainingEmployee_Dashboard = require("./api/TrainingEmployee_Dashboard/TrainingEmployee_Dashboard.router")
 const TrainingMonthlyReport = require("./api/TrainingMonthlyReport/MonthlyReport.router")
-
+// const LeaveReports = require("./api/LeaveReports/Leavereports.router")
 app.use(express.json({ limit: '50mb' }));
 app.use((req, res, next) => {
     //     res.header("Access-Control-Allow-Origin", "http://192.168.10.170:8080
@@ -280,7 +280,7 @@ app.use("/api/punchTrasfer", punchTrasfer)
 app.use("/api/CommonReqst", CommonReqst)
 app.use("/api/CommonRequestMast", CommonRequestMast)
 app.use('/api/Vaccination', Vaccination)
-
+// app.use("/api/LeaveReports", LeaveReports)
 
 
 //Training
