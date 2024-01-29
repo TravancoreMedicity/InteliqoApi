@@ -58,7 +58,7 @@ module.exports = {
         pool.query(
             `SELECT topic_slno,training_dept,training_topic.dept_status,training_topic_name,training_topic.training_name, training_status, tutorial_status, medical_status, non_medical_status,
             pretest_status, post_test_status,online_status, offline_status, both_status,video_link,video_time,
-            name_slno,training_name.training_name,hours,hrm_department.dept_id,dept_name,name_slno
+            name_slno,training_name.training_name,hours,hrm_department.dept_id,dept_name,name_slno,upload_status
             FROM medi_hrm.training_topic
             LEFT JOIN hrm_department ON hrm_department.dept_id=training_topic.training_dept
             LEFT JOIN training_name ON training_topic.training_name=training_name.name_slno`, [],

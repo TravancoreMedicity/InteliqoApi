@@ -795,7 +795,7 @@ module.exports = {
     },
     getPunchByDate: (id, callBack) => {
         pool.query(
-            `SELECT punch_time,slno,punch_taken FROM 
+            `SELECT punch_time,slno,punch_taken,punch_state FROM 
             punch_data WHERE  punch_time BETWEEN ? AND ? AND emp_code = ? `,
             [
                 id.date1, id.date2, id.em_no,

@@ -1,5 +1,5 @@
 const { logger } = require('../../logger/logger');
-const { GetTrainingList, GetscheduledDetails, GetMonthlyReportByMonth, GetDepartmentNames, getDeptTopicsByDepartId, GetDepartmentSecNames, GetDepartmentalTrainingTopics, GetDepartmentNamesById, GetDepartmentSecNamesById, getDeptTopicsById } = require('./MonthlyReport.service');
+const { GetTrainingList, GetscheduledDetails, GetMonthlyReportByMonth, GetDepartmentNames, getDeptTopicsByDepartId, GetDepartmentSecNames, GetDepartmentalTrainingTopics, GetDepartmentNamesById, GetDepartmentSecNamesById, getDeptTopicsById, getAllotedTrainingEmpReports, getTrainingCompletionEmpReports, getTrainingPendingEmpReports, getTrainingRetestEmpReports } = require('./MonthlyReport.service');
 module.exports = {
 
     GetMonthlyReportByMonth: (req, res) => {
@@ -214,6 +214,94 @@ module.exports = {
     getDeptTopicsByDepartId: (req, res) => {
         const id = req.params.id;
         getDeptTopicsByDepartId(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "no Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 2,
+                data: results,
+            });
+        });
+    },
+    getAllotedTrainingEmpReports: (req, res) => {
+        const body = req.body;
+        getAllotedTrainingEmpReports(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "no Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 2,
+                data: results,
+            });
+        });
+    },
+    getTrainingCompletionEmpReports: (req, res) => {
+        const body = req.body;
+        getTrainingCompletionEmpReports(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "no Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 2,
+                data: results,
+            });
+        });
+    },
+    getTrainingPendingEmpReports: (req, res) => {
+        const body = req.body;
+        getTrainingPendingEmpReports(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "no Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 2,
+                data: results,
+            });
+        });
+    },
+    getTrainingRetestEmpReports: (req, res) => {
+        const body = req.body;
+        getTrainingRetestEmpReports(body, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({

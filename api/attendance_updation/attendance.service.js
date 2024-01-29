@@ -339,7 +339,8 @@ module.exports = {
     updatePunchInandPunchOut: (data, callBack) => {
         pool.query(
             `update punch_master
-                set punch_in=?,
+                set lve_tble_updation_flag=1,
+                punch_in=?,
                     punch_out=?,
                     hrs_worked = ?,
                     late_in=?,
@@ -775,6 +776,20 @@ module.exports = {
                 and hrm_emp_master.em_no not in (1 ,2) ;`,
             [
                 data.em_dept_section
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getEmployeeRights: (data, callBack) => {
+        pool.query(
+            `  SELECT * FROM medi_hrm.module_group_user_rights where emp_slno=?`,
+            [
+                data.emid
             ],
             (error, results, feilds) => {
                 if (error) {

@@ -1209,7 +1209,9 @@ const validatecommonsettings = Joi.object({
         leave_count: Joi.number().optional(),
         noff_selct_day_count: Joi.number().optional(),
         noff: Joi.number().optional(),
-        group_slno: Joi.number().optional()
+        group_slno: Joi.optional(),
+        eoff: Joi.number().optional(),
+        comp_day_count: Joi.number().optional(),
 
 })
 //validate carryforward
