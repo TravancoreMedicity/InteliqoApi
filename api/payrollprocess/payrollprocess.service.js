@@ -210,7 +210,7 @@ module.exports = {
             ernded_slno,em_id,
             em_amount
              FROM hrm_emp_earn_deduction
-			WHERE em_id =2350  and em_earning_type IN(1,2)`,
+			WHERE em_id =?  and em_earning_type IN(1,2)`,
             [
                 id
             ],
