@@ -24,6 +24,8 @@ module.exports = {
 
         });
     },
+
+
     TrainingTopicUpdate: (req, res) => {
         const body = req.body;
         TrainingTopicUpdate(body, (err, results) => {

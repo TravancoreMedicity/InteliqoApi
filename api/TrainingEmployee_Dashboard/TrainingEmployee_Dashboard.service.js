@@ -9,14 +9,16 @@ module.exports = {
             training_employee_details.emp_dept, training_employee_details.emp_dept_sectn, topic, training_employee_details.schedule_date, 
             training_employee_details.training_status, question_count, training_employee_details.pretest_status, 
             training_employee_details.posttest_status,training_employee_details.posttest_permission,emp_topic,
-            em_id as candid_id,em_name,topic_slno,training_topic_name,training_posttest.mark ,training_retest_emp_details.retest_status
+            em_id as candid_id,em_name,topic_slno,training_topic_name,training_posttest.mark,
+            training_retest_emp_details.retest_status
             FROM training_employee_details
             LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_employee_details.emp_name
             LEFT JOIN training_topic ON training_topic.topic_slno=training_employee_details.topic
-            LEFT JOIN training_posttest ON training_posttest.emp_id=training_employee_details.emp_name
-            LEFT JOIN training_retest_emp_details ON training_retest_emp_details.candidate_dept=training_employee_details.emp_dept
-            where training_employee_details.posttest_status=1 and training_posttest.mark <2 
+            LEFT JOIN training_posttest ON training_posttest.emp_topic=training_employee_details.topic
+            LEFT JOIN training_retest_emp_details ON training_retest_emp_details.candidate_em_no=training_employee_details.emp_name
+            where  training_employee_details.posttest_status=1 and training_retest_emp_details.retest_status=0 and training_posttest.mark <2
             `, [],
+
 
             (err, results, feilds) => {
                 if (err) {
@@ -63,12 +65,14 @@ module.exports = {
     UpdateReTestDate: (data, callBack) => {
         pool.query(
             `UPDATE training_employee_details set 
-             schedule_date=?,
+            schedule_date=?,
              edit_user=?
-             where slno=?`,
+             where emp_name=? and topic=? and slno=?`,
             [
                 data.retest_date,
                 data.edit_user,
+                data.candidate_em_no,
+                data.retest_topic,
                 data.slno
             ],
             (error, results, feilds) => {
@@ -84,12 +88,19 @@ module.exports = {
             `             
             SELECT ROW_NUMBER() OVER () as sn, retest_sl_no, candidate_em_no, candidate_dept, candidate_dept_sec, retest_date,
             retest_topic, attendance_status, retest_quest_count, retest_status, retest_mark,
-            em_id as candid_id,em_name,topic_slno,training_topic_name,hrm_department.dept_id,dept_name,sect_id,sect_name
+            em_id as candid_id,em_name,topic_slno,training_topic_name,hrm_department.dept_id,dept_name,sect_id,sect_name,
+            training_pretest.mark as premark,training_posttest.mark as postmark,training_employee_details.pretest_status,
+            training_employee_details.posttest_status,training_employee_details.online_mode,training_employee_details.training_status,
+            hrm_emp_master.em_no,designation.desg_slno,designation.desg_name,hrm_emp_master.em_id
             FROM training_retest_emp_details
             LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_retest_emp_details.candidate_em_no
             LEFT JOIN training_topic ON training_topic.topic_slno=training_retest_emp_details.retest_topic
             LEFT JOIN hrm_department ON hrm_department.dept_id=training_retest_emp_details.candidate_dept
             LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=training_retest_emp_details.candidate_dept_sec
+			LEFT JOIN training_pretest ON training_pretest.emp_topic=training_retest_emp_details.retest_topic
+            LEFT JOIN training_posttest ON training_posttest.emp_topic=training_retest_emp_details.retest_topic
+            LEFT JOIN training_employee_details ON training_employee_details.topic=training_retest_emp_details.retest_topic
+            LEFT JOIN designation ON designation.desg_slno=training_employee_details.emp_desig
             WHERE candidate_em_no=?`, [id],
             (err, results, feilds) => {
                 if (err) {
@@ -195,6 +206,39 @@ module.exports = {
                 data.retest_sl_no
 
             ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    GetRetestEmpDetails: (data, callBack) => {
+        pool.query(
+            ` 
+            SELECT ROW_NUMBER() OVER () as sn, retest_sl_no, candidate_em_no, candidate_dept, candidate_dept_sec, retest_date,
+            retest_topic, attendance_status, retest_quest_count, retest_status, retest_mark,
+            em_id as candid_id,em_name,topic_slno,training_topic_name,hrm_department.dept_id,dept_name,sect_id,sect_name,
+            training_pretest.mark as premark,training_posttest.mark as postmark,training_employee_details.pretest_status,
+            training_employee_details.posttest_status,training_employee_details.online_mode,training_employee_details.training_status,
+            hrm_emp_master.em_no,designation.desg_slno,designation.desg_name,hrm_emp_master.em_id
+            FROM training_retest_emp_details
+            LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_retest_emp_details.candidate_em_no
+            LEFT JOIN training_topic ON training_topic.topic_slno=training_retest_emp_details.retest_topic
+            LEFT JOIN hrm_department ON hrm_department.dept_id=training_retest_emp_details.candidate_dept
+            LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=training_retest_emp_details.candidate_dept_sec
+			LEFT JOIN training_pretest ON training_pretest.emp_topic=training_retest_emp_details.retest_topic
+            LEFT JOIN training_posttest ON training_posttest.emp_topic=training_retest_emp_details.retest_topic
+            LEFT JOIN training_employee_details ON training_employee_details.topic=training_retest_emp_details.retest_topic
+            LEFT JOIN designation ON designation.desg_slno=training_employee_details.emp_desig
+            WHERE candidate_em_no=? and retest_topic=?`,
+            [
+                data.emId,
+                data.tslno
+
+            ],
+
             (error, results, feilds) => {
                 if (error) {
                     return callBack(error);

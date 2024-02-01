@@ -131,6 +131,8 @@ const TrainingOnline = require("./api/TrainingOnline/TrainingOnline.router")
 const Training_topic_uploads = require("./api/Training_topic_uploads/Training_topic_uploads.router")
 const TrainingEmployee_Dashboard = require("./api/TrainingEmployee_Dashboard/TrainingEmployee_Dashboard.router")
 const TrainingMonthlyReport = require("./api/TrainingMonthlyReport/MonthlyReport.router")
+const CommonPreTestPage = require("./api/TrainingCommonTest/TrainingCommonTest.router")
+
 
 app.use(express.json({ limit: '50mb' }));
 app.use((req, res, next) => {
@@ -302,6 +304,7 @@ app.use("/api/TrainingOnline", TrainingOnline)
 app.use("/api/Training_topic_uploads", Training_topic_uploads)
 app.use("/api/TrainingEmployee_Dashboard", TrainingEmployee_Dashboard)
 app.use("/api/TrainingMonthlyReport", TrainingMonthlyReport)
+app.use("/api/CommonPreTestPage", CommonPreTestPage)
 
 
 
