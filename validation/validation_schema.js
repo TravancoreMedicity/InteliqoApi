@@ -531,6 +531,7 @@ const validateempmaster = Joi.object({
         perPincode: Joi.number().max(999999).required(),
         blood_slno: Joi.number().min(1).required(),
         probation_status: Joi.number().required(),
+        gross_salary: Joi.number().optional(),
         recomend_salary: Joi.number().optional(),
         clinicaltype: Joi.number().min(1).required(),
         doctor_status: Joi.number().optional()
@@ -577,6 +578,7 @@ const validateempmasterEdit = Joi.object({
         perPincode: Joi.number().max(999999).required(),
         blood_slno: Joi.number().min(1).required(),
         probation_status: Joi.number().required(),
+        gross_salary: Joi.number().optional(),
         recomend_salary: Joi.number().optional(),
         clinicaltype: Joi.number().optional(),
         doctor_status: Joi.number().optional()

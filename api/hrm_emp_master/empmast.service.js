@@ -43,10 +43,11 @@ module.exports = {
                 probation_status,
                 recomend_salary,
                 clinicaltype,
-                doctor_status
+                doctor_status,
+                gross_salary
 
             )
-            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
                 data.em_no,
                 data.em_salutation,
@@ -87,7 +88,8 @@ module.exports = {
                 data.probation_status,
                 data.recomend_salary,
                 data.clinicaltype,
-                data.doctor_status
+                data.doctor_status,
+                data.recomend_salary,
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -139,7 +141,8 @@ module.exports = {
                 probation_status=?,
                 recomend_salary=?,
                 clinicaltype=?,
-                doctor_status=?
+                doctor_status=?,
+                gross_salary=?
                 WHERE em_no = ?`,
             [
                 data.em_salutation,
@@ -181,6 +184,7 @@ module.exports = {
                 data.recomend_salary,
                 data.clinicaltype,
                 data.doctor_status,
+                data.recomend_salary,
                 data.em_no
             ],
             (error, results, feilds) => {
