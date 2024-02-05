@@ -1,7 +1,7 @@
 
 const { logger } = require('../../logger/logger')
 const { GetBelowAvgEmpList, InsertRetestEmp, UpdateReTestDate, GetEmpRetestTopics, GetRetestQuestions,
-    InsertRetestDetails, checkRetestEntryExistORNot, UpdateReTestStatus } = require('./TrainingEmployee_Dashboard.service')
+    InsertRetestDetails, checkRetestEntryExistORNot, UpdateReTestStatus, GetRetestEmpDetails } = require('./TrainingEmployee_Dashboard.service')
 
 module.exports = {
 
@@ -135,4 +135,26 @@ module.exports = {
             }
         })
     },
+    GetRetestEmpDetails: (req, res) => {
+        const body = req.body;
+        GetRetestEmpDetails(body, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results === 0) {
+                return res.status(400).json({
+                    success: 1,
+                    message: "No Record Found"
+                })
+            }
+            return res.status(200).json({
+                success: 2,
+                data: results
+            })
+        });
+    },
+
 }

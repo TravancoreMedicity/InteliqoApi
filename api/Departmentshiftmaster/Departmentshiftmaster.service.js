@@ -139,7 +139,8 @@ module.exports = {
             `SELECT 
                 shft_slno,
                 shft_chkin_time,
-                shft_chkout_time
+                shft_chkout_time,
+                shft_cross_day
             FROM hrm_shift_mast 
             WHERE shft_slno IN (?)`,
             [

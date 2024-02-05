@@ -531,6 +531,7 @@ const validateempmaster = Joi.object({
         perPincode: Joi.number().max(999999).required(),
         blood_slno: Joi.number().min(1).required(),
         probation_status: Joi.number().required(),
+        gross_salary: Joi.number().optional(),
         recomend_salary: Joi.number().optional(),
         clinicaltype: Joi.number().min(1).required(),
         doctor_status: Joi.number().optional()
@@ -577,6 +578,7 @@ const validateempmasterEdit = Joi.object({
         perPincode: Joi.number().max(999999).required(),
         blood_slno: Joi.number().min(1).required(),
         probation_status: Joi.number().required(),
+        gross_salary: Joi.number().optional(),
         recomend_salary: Joi.number().optional(),
         clinicaltype: Joi.number().optional(),
         doctor_status: Joi.number().optional()
@@ -1375,14 +1377,14 @@ const validationTrainingTopic = Joi.object({
                         'string.min': "Traning Topic length must be at least 3 characters lonng",
                         'string.max': 'Training Topic length must be less than or equal to 45 characters long'
                 }),
-        training_name: Joi.number().min(1).required(),
+        training_name: Joi.number().min(1).optional(),
         hours: Joi.number().optional(),
-        training_status: Joi.number().min(0).max(1).required(),
-        tutorial_status: Joi.number().min(0).max(1).required(),
-        medical_status: Joi.number().min(0).max(1).required(),
-        non_medical_status: Joi.number().min(0).max(1).required(),
-        pretest_status: Joi.number().min(0).max(1).required(),
-        post_test_status: Joi.number().min(0).max(1).required(),
+        training_status: Joi.number().min(0).max(1).optional(),
+        tutorial_status: Joi.number().min(0).max(1).optional(),
+        medical_status: Joi.number().min(0).max(1).optional(),
+        non_medical_status: Joi.number().min(0).max(1).optional(),
+        pretest_status: Joi.number().min(0).max(1).optional(),
+        post_test_status: Joi.number().min(0).max(1).optional(),
         create_user: Joi.number().optional(),
         edit_user: Joi.number().optional()
 })
