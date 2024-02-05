@@ -41,4 +41,109 @@ module.exports = {
             }
         )
     },
+    getEmpWiseReport: (data, callBack) => {
+        pool.query(
+            `SELECT 
+            emp_code,
+            punch_time
+        FROM punch_data
+        left join hrm_emp_master on hrm_emp_master.em_no=punch_data.emp_code
+        WHERE hrm_emp_master.em_status = 1 and  punch_time 
+        BETWEEN ?  AND ? AND emp_code = ?`,
+            [
+                data.fromdate, data.todate, data.empno
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getEmpWisePunchReport: (data, callBack) => {
+        pool.query(
+            ` SELECT 
+            punch_master.em_no,
+            shift_in,
+            shift_out,
+            duty_day ,
+            em_name,
+            dept_name,
+            sect_name,
+            shift_id,
+            shft_cross_day
+            FROM punch_master
+			left join hrm_emp_master on hrm_emp_master.em_no=punch_master.em_no
+            left join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
+            left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
+            left join hrm_shift_mast on hrm_shift_mast.shft_slno=punch_master.shift_id
+            WHERE  hrm_emp_master.em_status = 1 and duty_day 
+            BETWEEN ?  AND ?
+            AND punch_master.em_no = ?`,
+            [
+                data.fromdate, data.todate, data.empno
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getEmpWisePunchReportdep: (data, callBack) => {
+        pool.query(
+            ` SELECT 
+            emp_code,
+            punch_time
+        FROM punch_data
+        left join hrm_emp_master on hrm_emp_master.em_no=punch_data.emp_code
+        WHERE hrm_emp_master.em_department=?
+         and hrm_emp_master.em_dept_section=?
+          AND hrm_emp_master.em_status = 1 and   punch_time
+         BETWEEN ?  AND ?`,
+            [
+                data.deptno, data.deptsec, data.fromdate, data.todate
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getpunchReportmasterdep: (data, callBack) => {
+        pool.query(
+            ` SELECT 
+            punch_master.em_no,
+            shift_in,
+            shift_out,
+            duty_day ,
+            em_name,
+            dept_name,
+            sect_name,
+            shift_id,
+            shft_cross_day
+            FROM punch_master
+			left join hrm_emp_master on hrm_emp_master.em_no=punch_master.em_no
+            left join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
+            left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
+			left join hrm_shift_mast on hrm_shift_mast.shft_slno=punch_master.shift_id
+            WHERE hrm_emp_master.em_department=?
+             and hrm_emp_master.em_dept_section=?
+             and hrm_emp_master.em_status = 1 and  duty_day
+            BETWEEN ?  AND ? `,
+            [
+                data.deptno, data.deptsec, data.fromdate, data.todate
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }
