@@ -703,10 +703,14 @@ module.exports = {
     },
     getEmpNoDeptWise: (data, callBack) => {
         pool.query(
-            `select hrm_emp_master.em_no,em_name,gross_salary,em_id          
-                FROM hrm_emp_master          
-                where hrm_emp_master.em_department=?
-                 and hrm_emp_master.em_dept_section=?  and em_status=1  and em_no!=1
+            `select hrm_emp_master.em_no,em_name,gross_salary,hrm_emp_master.em_id ,dept_name ,sect_name,
+            em_account_no           
+               FROM hrm_emp_master 
+               inner join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
+               inner join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
+               inner join hrm_emp_personal on hrm_emp_personal.em_id=hrm_emp_master.em_id
+               where hrm_emp_master.em_department=?
+               and hrm_emp_master.em_dept_section=?  and em_status=1  and hrm_emp_master.em_no!=1;
                 `,
             [
                 data.em_department,
@@ -1028,6 +1032,29 @@ module.exports = {
                 data.department,
                 data.department_sect,
                 data.arrear_month
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getAllEmployee: (data, callBack) => {
+        pool.query(
+            `select hrm_emp_master.em_no,em_name,gross_salary,hrm_emp_master.em_id ,dept_name ,sect_name,
+            em_account_no           
+               FROM hrm_emp_master 
+               inner join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
+               inner join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
+               inner join hrm_emp_personal on hrm_emp_personal.em_id=hrm_emp_master.em_id
+               where hrm_emp_master.em_department IN (?)
+               and hrm_emp_master.em_dept_section IN (?)  and em_status=1  and hrm_emp_master.em_no!=1;
+                `,
+            [
+                data.em_department,
+                data.em_dept_section
             ],
             (error, results, feilds) => {
                 if (error) {

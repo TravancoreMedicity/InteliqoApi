@@ -926,7 +926,7 @@ module.exports = {
             ROW_NUMBER() OVER () as rslno,
             leave_slno,
             dept_section,
-                lve_uniq_no,
+            hrm_leave_request.lve_uniq_no,
                 leave_date,
                 hrm_leave_request.em_no,
                 dept_name,
@@ -948,11 +948,15 @@ module.exports = {
                 inc_apprv_cmnt,
                 ceo_req_status,
                 ceo_apprv_status,
-                request_date
+                request_date,
+                hrm_leave_request.dept_id,
+                leavetype_name,
+                leave_name
                 FROM hrm_leave_request 
                 inner join hrm_emp_master on  hrm_leave_request.em_no =hrm_emp_master.em_no
                 inner join hrm_department on  hrm_leave_request.dept_id =hrm_department.dept_id
                 inner join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
+                inner join hrm_leave_request_detl ON hrm_leave_request.lve_uniq_no = hrm_leave_request_detl.lve_uniq_no
                 where  lv_cancel_status=0  and lv_cancel_status_user=0;`,
             [],
             (error, results, feilds) => {
@@ -1019,7 +1023,8 @@ module.exports = {
             month,		
             checkIn,
             checkOut,
-            hf_reason
+            hf_reason,
+            hrm_halfdayrequest.dept_id
             FROM hrm_halfdayrequest
             inner join hrm_emp_master on  hrm_halfdayrequest.em_no =hrm_emp_master.em_no
             inner join hrm_department on  hrm_halfdayrequest.dept_id =hrm_department.dept_id
@@ -1085,7 +1090,8 @@ module.exports = {
             checkouttime,
             checkinflag,
             checkoutflag,
-            creteddate
+            creteddate,
+            nopunchrequest.em_department
             FROM nopunchrequest
             left join hrm_emp_master on  nopunchrequest.em_no =hrm_emp_master.em_no
             left join hrm_department on  nopunchrequest.em_department =hrm_department.dept_id
@@ -1144,7 +1150,8 @@ module.exports = {
             cf_ceo_apprv_status,
             cf_inc_apprv_cmnt,
             cf_hod_apprv_cmnt,
-            cf_hr_apprv_cmnt
+            cf_hr_apprv_cmnt,
+            comp_off_request.em_department
             FROM comp_off_request 
             left join hrm_emp_master on  comp_off_request.em_no =hrm_emp_master.em_no
             left join hrm_department on  comp_off_request.em_department =hrm_department.dept_id
