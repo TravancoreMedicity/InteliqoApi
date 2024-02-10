@@ -13,7 +13,7 @@ module.exports = {
             LEFT JOIN training_topic ON training_topic.topic_slno=training_employee_details.topic
             LEFT JOIN training_pretest ON training_pretest.emp_topic=training_employee_details.topic
             LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_employee_details.emp_name
-            WHERE emp_name=168
+            WHERE emp_name=?
             and training_employee_details.pretest_status=1 and training_employee_details.online_mode=1   `, [id],
             (err, results, feilds) => {
                 if (err) {

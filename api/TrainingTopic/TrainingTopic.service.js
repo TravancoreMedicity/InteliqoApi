@@ -2,7 +2,7 @@ const pool = require('../../config/database');
 
 module.exports = {
 
-    // topic_slno, training_dept, dept_status, training_topic_name, training_name, hours, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status, online_status, offline_status, both_status, video_link, video_time, upload_status, pdf_time
+
     TrainingTopicInsert: (data, callBack) => {
         pool.query(
             `INSERT INTO medi_hrm.training_topic 
@@ -11,6 +11,7 @@ module.exports = {
                 dept_status,
                 training_topic_name, 
                 training_name,
+                trainers,
                 hours,
                 training_status, 
                 tutorial_status,
@@ -25,12 +26,13 @@ module.exports = {
                 video_time,
                 create_user
             )
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
                 data.training_dept,
                 data.dept_status,
                 data.training_topic_name,
                 data.training_name,
+                JSON.stringify(data.trainers),
                 data.hours,
                 data.training_status,
                 data.tutorial_status,
@@ -56,12 +58,16 @@ module.exports = {
 
     TrainingTopicGet: (callback) => {
         pool.query(
-            `SELECT topic_slno,training_dept,training_topic.dept_status,training_topic_name,training_topic.training_name, training_status, tutorial_status, medical_status, non_medical_status,
+            `SELECT topic_slno,training_dept,training_topic.dept_status,training_topic_name,training_topic.training_name,training_status, tutorial_status, medical_status, non_medical_status,
             pretest_status, post_test_status,online_status, offline_status, both_status,video_link,video_time,
-            name_slno,training_name.training_name,hours,hrm_department.dept_id,dept_name,name_slno,upload_status
+            name_slno,training_name.training_name,hours,hrm_department.dept_id,dept_name,name_slno,upload_status,
+            GROUP_CONCAT(em_name)  as trainers_name,trainers
             FROM medi_hrm.training_topic
             LEFT JOIN hrm_department ON hrm_department.dept_id=training_topic.training_dept
-            LEFT JOIN training_name ON training_topic.training_name=training_name.name_slno`, [],
+            LEFT JOIN training_name ON training_topic.training_name=training_name.name_slno
+            LEFT JOIN hrm_emp_master on JSON_CONTAINS(training_topic.trainers,cast(hrm_emp_master.em_id as json),'$')  
+            group by topic_slno`, [],
+
             (err, results, feilds) => {
                 if (err) {
                     return callback(err)
@@ -79,6 +85,7 @@ module.exports = {
          dept_status=?,
          training_topic_name=?,
          training_name=?,
+         trainers=?,
          hours=?,
          training_status=?,
          tutorial_status=?,
@@ -98,6 +105,7 @@ module.exports = {
                 data.dept_status,
                 data.training_topic_name,
                 data.training_name,
+                JSON.stringify(data.trainers),
                 data.hours,
                 data.training_status,
                 data.tutorial_status,
@@ -158,5 +166,28 @@ module.exports = {
                 return callBack(null, results)
             }
         )
-    }
+    },
+
+    //Induction training type wise topic select
+    TrainingTypeWiseTopic: (id, callback) => {
+        pool.query(
+            `SELECT topic_slno,training_topic_name,training_topic.training_name,
+            name_slno,training_name.training_name,name_slno,training_name.type_slno,
+            training_topic.trainers,
+            GROUP_CONCAT(em_name)  as trainers_name
+            FROM medi_hrm.training_topic
+            LEFT JOIN training_name ON training_topic.training_name=training_name.name_slno
+            LEFT JOIN hrm_emp_master on JSON_CONTAINS(training_topic.trainers,cast(hrm_emp_master.em_id as json),'$')  
+            where type_slno=?
+            group by topic_slno`, [id],
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+
+            }
+        )
+    },
 }

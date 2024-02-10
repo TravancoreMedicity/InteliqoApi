@@ -1,5 +1,5 @@
 
-const { TrainingTopicInsert, TrainingTopicGet, TrainingTopicUpdate, checkInsertVal, checkUpdateVal } = require('./TrainingTopic.service');
+const { TrainingTopicInsert, TrainingTopicGet, TrainingTopicUpdate, checkInsertVal, checkUpdateVal, TrainingTypeWiseTopic } = require('./TrainingTopic.service');
 const { logger } = require('../../logger/logger');
 const { validationTrainingTopic } = require('../../validation/validation_schema');
 module.exports = {
@@ -25,6 +25,28 @@ module.exports = {
         });
     },
 
+    TrainingTypeWiseTopic: (req, res) => {
+        const id = req.params.id;
+        TrainingTypeWiseTopic(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "no Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 2,
+                data: results,
+            });
+        });
+    },
 
     TrainingTopicUpdate: (req, res) => {
         const body = req.body;

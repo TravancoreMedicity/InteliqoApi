@@ -1,6 +1,8 @@
 
 const { TrainingAfterJoiningGet, TrainingNewJoineeInsert, JoineeDetailsInsert,
-    JoineeDetailsUpdate, ScheduleDetailsGet, ScheduleUpdate, ScheduleDateUpdate, GetTopic, GetTrainers, ScheduleInsert, GetScheduleDetails, DepartmentalScheduleInsert, DepartmentalScheduleGet, getDeptTopic, getEmpNameBydepID, InsertEmpDetails, GetDeptEmpNameDetails, InsertTrainingMaster } = require('./TrainingAfterJoining.service');
+    JoineeDetailsUpdate, ScheduleDetailsGet, ScheduleUpdate, ScheduleDateUpdate, GetTopic, GetTrainers, ScheduleInsert,
+    GetScheduleDetails, DepartmentalScheduleInsert, DepartmentalScheduleGet, getDeptTopic, getEmpNameBydepID, InsertEmpDetails,
+    GetDeptEmpNameDetails, InsertTrainingMaster, ScheduleDateDetailUpdate, UpdateTrainers } = require('./TrainingAfterJoining.service');
 
 module.exports = {
 
@@ -273,14 +275,51 @@ module.exports = {
                 });
             }
             else {
-                return res.status(200).json({
-                    success: 1,
-                    message: "Schedule Date Updated successfully"
+
+                ScheduleDateDetailUpdate(body, (err, results) => {
+                    if (err) {
+
+                        return res.status(200).json({
+                            success: 0,
+                            message: err
+                        });
+                    }
+                    else {
+
+
+                        return res.status(200).json({
+                            success: 1,
+                            message: "Schedule Date Updated successfully"
+                        });
+                    }
+
                 });
             }
 
         });
     },
+
+    UpdateTrainers: (req, res) => {
+        const body = req.body;
+        UpdateTrainers(body, (err, results) => {
+            if (err) {
+
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Trainers Updated successfully"
+                });
+            }
+
+        });
+    },
+
+
 
     getDeptTopic: (req, res) => {
         const id = req.params.id;
@@ -393,4 +432,5 @@ module.exports = {
 
         });
     },
+
 }
