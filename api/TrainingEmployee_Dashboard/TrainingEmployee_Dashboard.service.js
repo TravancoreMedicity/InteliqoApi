@@ -13,14 +13,12 @@ module.exports = {
             FROM training_employee_details
             LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_employee_details.emp_name
             LEFT JOIN training_topic ON training_topic.topic_slno=training_employee_details.topic
-            LEFT JOIN training_posttest ON training_posttest.emp_topic=training_employee_details.topic
-            LEFT JOIN training_retest_emp_details ON training_retest_emp_details.candidate_dept =training_employee_details.emp_dept
-            where  training_employee_details.posttest_status=1 and  training_posttest.mark <2 
+            LEFT JOIN training_posttest ON training_posttest.emp_id=training_employee_details.emp_name
+            where training_employee_details.posttest_status=1 and training_posttest.mark <2
             `, [],
             (err, results, feilds) => {
                 if (err) {
                     return callback(err)
-
                 }
                 return callback(null, results)
             }
@@ -95,11 +93,11 @@ module.exports = {
             LEFT JOIN training_topic ON training_topic.topic_slno=training_retest_emp_details.retest_topic
             LEFT JOIN hrm_department ON hrm_department.dept_id=training_retest_emp_details.candidate_dept
             LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=training_retest_emp_details.candidate_dept_sec
-			LEFT JOIN training_pretest ON training_pretest.emp_topic=training_retest_emp_details.retest_topic
-            LEFT JOIN training_posttest ON training_posttest.emp_topic=training_retest_emp_details.retest_topic
-            LEFT JOIN training_employee_details ON training_employee_details.topic=training_retest_emp_details.retest_topic
+			LEFT JOIN training_pretest ON training_pretest.emp_id=training_retest_emp_details.candidate_em_no
+            LEFT JOIN training_posttest ON training_posttest.emp_id=training_retest_emp_details.candidate_em_no
+            LEFT JOIN training_employee_details ON training_employee_details.emp_name=training_retest_emp_details.candidate_em_no
             LEFT JOIN designation ON designation.desg_slno=training_employee_details.emp_desig
-            WHERE candidate_em_no=?`, [id],
+            WHERE candidate_em_no=? `, [id],
             (err, results, feilds) => {
                 if (err) {
                     return callback(err)

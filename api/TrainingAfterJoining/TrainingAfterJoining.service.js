@@ -285,6 +285,26 @@ module.exports = {
             }
         )
     },
+    ScheduleDateDetailUpdate: (data, callBack) => {
+        pool.query(
+            `UPDATE training_employee_details set 
+            schedule_date=?,
+            edit_user=?
+            where scheduled_slno=?`,
+            [
+                data.schedule_date,
+                data.edit_user,
+                data.slno
+
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
     getDeptTopic: (id, callback) => {
         pool.query(
             ` SELECT topic_slno,training_topic_name FROM training_topic WHERE training_dept=?`, [id],
@@ -352,12 +372,32 @@ module.exports = {
             )
             VALUES (?,?,?,?,?)`,
             [
-
                 data.em_no,
                 data.em_id,
                 data.joining_date,
                 data.assign_status,
                 data.create_user
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+
+    UpdateTrainers: (data, callBack) => {
+        pool.query(
+            `UPDATE training_departmental_schedule set 
+            schedule_trainers=?,
+            edit_user=?
+            where slno=?`,
+            [
+                JSON.stringify(data.trainer),
+                data.edit_user,
+                data.slno
+
             ],
             (error, results, feilds) => {
                 if (error) {

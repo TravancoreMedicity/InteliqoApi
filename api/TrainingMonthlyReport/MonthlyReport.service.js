@@ -15,12 +15,12 @@ module.exports = {
             LEFT JOIN training_topic ON training_topic.topic_slno=training_employee_details.topic
             LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_employee_details.emp_name
             LEFT JOIN training_posttest ON training_posttest.emp_id=training_employee_details.emp_name
-            LEFT JOIN training_pretest ON training_pretest.emp_topic=training_employee_details.topic
+            LEFT JOIN training_pretest ON training_pretest.emp_id=training_employee_details.emp_name
             LEFT JOIN training_retest_emp_details ON training_retest_emp_details.candidate_em_no=training_employee_details.emp_name
             LEFT JOIN hrm_department ON hrm_department.dept_id=training_employee_details.emp_dept
             LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=training_employee_details.emp_dept_sectn
             WHERE  training_employee_details.emp_dept=? and training_employee_details.emp_dept_sectn=?
-            and training_employee_details.topic=? and training_employee_details.schedule_date between ?  AND ?`,
+            and training_employee_details.topic=? and training_employee_details.schedule_date between  ? AND ?`,
             [
                 data.dept,
                 data.deptSect,
@@ -243,7 +243,7 @@ module.exports = {
                        LEFT JOIN training_topic ON training_topic.topic_slno=training_employee_details.topic
                        LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_employee_details.emp_name
                        LEFT JOIN training_posttest ON training_posttest.emp_id=training_employee_details.emp_name
-                       LEFT JOIN training_pretest ON training_pretest.emp_topic=training_employee_details.topic
+                       LEFT JOIN training_pretest ON training_pretest.emp_id=training_employee_details.emp_name
                        LEFT JOIN training_retest_emp_details ON training_retest_emp_details.candidate_em_no=training_employee_details.emp_name
                        LEFT JOIN hrm_department ON hrm_department.dept_id=training_employee_details.emp_dept
                        LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=training_employee_details.emp_dept_sectn
@@ -278,7 +278,7 @@ module.exports = {
                        LEFT JOIN training_topic ON training_topic.topic_slno=training_employee_details.topic
                        LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_employee_details.emp_name
                        LEFT JOIN training_posttest ON training_posttest.emp_id=training_employee_details.emp_name
-                       LEFT JOIN training_pretest ON training_pretest.emp_topic=training_employee_details.topic
+                       LEFT JOIN training_pretest ON training_pretest.emp_id=training_employee_details.emp_name
                        LEFT JOIN training_retest_emp_details ON training_retest_emp_details.candidate_em_no=training_employee_details.emp_name
                        LEFT JOIN hrm_department ON hrm_department.dept_id=training_employee_details.emp_dept
                        LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=training_employee_details.emp_dept_sectn
@@ -359,12 +359,12 @@ module.exports = {
                        LEFT JOIN training_topic ON training_topic.topic_slno=training_employee_details.topic
                        LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_employee_details.emp_name
                        LEFT JOIN training_posttest ON training_posttest.emp_id=training_employee_details.emp_name
-                       LEFT JOIN training_pretest ON training_pretest.emp_topic=training_employee_details.topic
+                       LEFT JOIN training_pretest ON training_pretest.emp_id=training_employee_details.emp_name
                        LEFT JOIN training_retest_emp_details ON training_retest_emp_details.candidate_em_no=training_employee_details.emp_name
                        LEFT JOIN hrm_department ON hrm_department.dept_id=training_employee_details.emp_dept
                        LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=training_employee_details.emp_dept_sectn
                        WHERE  training_employee_details.emp_dept=? and training_employee_details.emp_dept_sectn=?
-                       and training_employee_details.topic=? and schedule_date between ? AND ?
+                       and training_employee_details.topic=? and schedule_date between ?  AND ?
                       and training_retest_emp_details.retest_status=1`,
             [
                 data.dept,
