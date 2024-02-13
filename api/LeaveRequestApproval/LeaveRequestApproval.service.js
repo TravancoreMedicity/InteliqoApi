@@ -2310,4 +2310,18 @@ module.exports = {
             }
         )
     },
+    updateCompFlag: (data, callBack) => {
+        pool.query(
+            `UPDATE punch_master SET ot_request_flag = 0  WHERE punch_slno = ?`,
+            [
+                data.punchSlno,
+            ],
+            (error, result, feild) => {
+                if (error) {
+                    callBack(error)
+                }
+                return callBack(null, result);
+            }
+        )
+    },
 }

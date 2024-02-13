@@ -18,7 +18,7 @@ const { getleaverequestdep, nopunchreq, halfrequst, getcompenoff,
     CoffReqCancelHr, CoffCancelHR,
     CancelHolidayLeave, CancelCasualyLeave, CancelEarnLeave, CancelCoffLeave, CancelCommonLeave,
     CancelpunchMastEsiLeave,
-    CancelpunchMastLwfLeave, CancelpunchMastLeave, UpdateHalfdayCasual
+    CancelpunchMastLwfLeave, CancelpunchMastLeave, UpdateHalfdayCasual,updateCompFlag
 } = require('../LeaveRequestApproval/LeaveRequestApproval.service');
 const { validationinchageapprv, validateotcancel } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
@@ -1328,10 +1328,20 @@ module.exports = {
                 });
             }
             else {
-                return res.status(200).json({
-                    success: 1,
-                    message: "Data Updated Successfully"
-                });
+                updateCompFlag(body, (err, results) => {
+                    if (err) {
+                        logger.errorLogger(err)
+                        return res.status(200).json({
+                            success: 0,
+                            message: err
+                        });
+                    }
+
+                    return res.status(200).json({
+                        success: 1,
+                        message: "Data Created Successfully"
+                    });
+                })
             }
         });
     },
