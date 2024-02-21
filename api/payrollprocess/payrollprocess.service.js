@@ -710,7 +710,7 @@ module.exports = {
                inner join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
                left join hrm_emp_personal on hrm_emp_personal.em_id=hrm_emp_master.em_id
                where hrm_emp_master.em_department=?
-               and hrm_emp_master.em_dept_section=?  and em_status=1  and hrm_emp_master.em_no!=1;
+               and hrm_emp_master.em_dept_section=?  and em_status=1  and hrm_emp_master.em_no!=1 and doctor_status=0;
                 `,
             [
                 data.em_department,
@@ -1050,7 +1050,7 @@ module.exports = {
                inner join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
                left join hrm_emp_personal on hrm_emp_personal.em_id=hrm_emp_master.em_id
                where hrm_emp_master.em_department IN (?)
-               and hrm_emp_master.em_dept_section IN (?)  and em_status=1  and hrm_emp_master.em_no!=1;
+               and hrm_emp_master.em_dept_section IN (?)  and em_status=1  and hrm_emp_master.em_no!=1 and doctor_status=0;
                 `,
             [
                 data.em_department,
