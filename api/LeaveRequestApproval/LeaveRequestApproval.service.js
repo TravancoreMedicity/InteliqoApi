@@ -949,14 +949,11 @@ module.exports = {
                 ceo_req_status,
                 ceo_apprv_status,
                 request_date,
-                hrm_leave_request.dept_id,
-                leavetype_name,
-                leave_name
+                hrm_leave_request.dept_id
                 FROM hrm_leave_request 
                 inner join hrm_emp_master on  hrm_leave_request.em_no =hrm_emp_master.em_no
                 inner join hrm_department on  hrm_leave_request.dept_id =hrm_department.dept_id
                 inner join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
-                inner join hrm_leave_request_detl ON hrm_leave_request.lve_uniq_no = hrm_leave_request_detl.lve_uniq_no
                 where  lv_cancel_status=0  and lv_cancel_status_user=0;`,
             [],
             (error, results, feilds) => {
