@@ -982,4 +982,29 @@ module.exports = {
             }
         )
     },
+    insertActivateEmp: (data, callBack) => {
+        pool.query(
+            `INSERT INTO hrm_active_employee_details (
+                em_id,
+                em_no,
+                remark,
+                em_status,
+                create_user
+                )
+                VALUES (?,?,?,?,?)`,
+            [
+                data.em_id,
+                data.em_no,
+                data.remark,
+                1,
+                data.create_user
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }
