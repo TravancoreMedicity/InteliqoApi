@@ -29,17 +29,16 @@ module.exports = {
             }
         )
     },
-
     ScheduleInductionTrainings: (data, callBack) => {
         pool.query(
             `INSERT INTO medi_hrm.training_induction_schedule (
                 schedule_type, schedule_topic, trainers, induction_date,create_user )
             VALUES (?,?,?,?,?)`,
             [
-                data.type,
-                data.topic,
+                data.type_slno,
+                data.topic_slno,
                 JSON.stringify(data.trainers),
-                data.scheduledDate,
+                data.date,
                 data.create_user,
             ],
             (error, results, feilds) => {
@@ -50,10 +49,11 @@ module.exports = {
             }
         )
     },
+
     InsertInductionEmps: (data, callBack) => {
         pool.query(
             `INSERT INTO training_induction_emp_details (
-                schedule_no, indct_emp_no, induct_emp_dept, induct_emp_sec, induct_type, induct_topic, induct_date, create_user)
+                schedule_no, indct_emp_no, induct_emp_dept, induct_emp_sec, create_user)
             values ?`,
             [
                 data
@@ -63,6 +63,159 @@ module.exports = {
                     return callBack(error);
                 }
                 return callBack(null, results);
+            }
+        )
+    },
+    GetTypeWiseTraining: (id, callback) => {
+        pool.query(
+            `            
+            SELECT schedule_slno, schedule_type, schedule_topic, induction_date,topic_slno,training_topic_name,training_induction_schedule.trainers,
+            training_type.trainingtype_slno,training_type.type_name,
+             GROUP_CONCAT(em_name)  as trainers_name
+             FROM medi_hrm.training_induction_schedule
+             LEFT JOIN training_induction_emp_details ON training_induction_emp_details.schedule_no=training_induction_schedule.schedule_slno
+             LEFT JOIN training_topic ON training_topic.topic_slno=training_induction_schedule.schedule_topic
+             LEFT JOIN training_type ON training_type.trainingtype_slno=training_induction_schedule.schedule_type
+             LEFT JOIN hrm_emp_master ON JSON_CONTAINS(training_induction_schedule.trainers,cast(hrm_emp_master.em_id as json),'$') 
+             WHERE schedule_type=?
+             GROUP BY  schedule_slno `, [id],
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+            }
+        )
+    },
+    ScheduleDateUpdate: (data, callBack) => {
+        pool.query(
+            `UPDATE training_induction_schedule set 
+            induction_date=?,
+            edit_user=?
+            where schedule_slno=?`,
+            [
+                data.schedule_date,
+                data.edit_user,
+                data.schedule_slno
+
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+
+    UpdateTrainers: (data, callBack) => {
+        pool.query(
+            `UPDATE training_induction_schedule set 
+            trainers=?,
+            edit_user=?
+            where schedule_slno=?`,
+            [
+                JSON.stringify(data.NewTrainers),
+                data.edit_user,
+                data.schedule_slno
+
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+
+    UpdateDate: (data, callBack) => {
+        pool.query(
+            `UPDATE training_induction_schedule set 
+            induction_date=?,
+            edit_user=?
+            where schedule_slno=?`,
+            [
+                data.Reschedule,
+                data.edit_user,
+                data.schedule_slno
+
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    GetTraineers: (data, callback) => {
+        pool.query(
+            `
+           SELECT trainers as trainer ,schedule_topic as topic, GROUP_CONCAT(em_name)  as trainer_name
+           FROM medi_hrm.training_induction_schedule
+           LEFT JOIN hrm_emp_master on JSON_CONTAINS(training_induction_schedule.trainers,cast(hrm_emp_master.em_id as json),'$')
+           where schedule_slno=? and schedule_type=? and schedule_topic=?`,
+            [
+                data.schedule_slno,
+                data.trainingtype_slno,
+                data.topic_slno
+            ],
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+            }
+        )
+    },
+    GetInductionCanderDetails: (callback) => {
+        pool.query(
+            `SELECT schedule_slno, schedule_type, schedule_topic, training_induction_schedule.trainers, induction_date,
+            training_type.trainingtype_slno,training_type.type_name,topic_slno,training_topic_name,GROUP_CONCAT(em_name)  as trainer_name
+            FROM medi_hrm.training_induction_schedule
+            LEFT JOIN training_type ON training_type.trainingtype_slno=training_induction_schedule.schedule_type
+            LEFT JOIN training_topic ON training_topic.topic_slno=training_induction_schedule.schedule_topic
+             LEFT JOIN hrm_emp_master on JSON_CONTAINS(training_induction_schedule.trainers,cast(hrm_emp_master.em_id as json),'$')
+            group by schedule_slno,schedule_type
+            `, [],
+
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+            }
+        )
+    },
+    GetIncutCalenderEmpDetails: (data, callback) => {
+        pool.query(
+            `
+            SELECT schedule_slno, schedule_type, schedule_topic, training_induction_schedule.trainers, induction_date,
+            topic_slno,training_topic_name,indct_emp_no,E.em_name as employee_name,T.em_name as trainer_name,
+            training_type.trainingtype_slno,training_type.type_name,sect_id,sect_name
+             FROM medi_hrm.training_induction_schedule
+             LEFT JOIN training_induction_emp_details ON training_induction_emp_details.schedule_no=training_induction_schedule.schedule_slno
+             LEFT JOIN training_topic ON training_topic.topic_slno=training_induction_schedule.schedule_topic
+            LEFT JOIN hrm_emp_master E  ON E.em_id=training_induction_emp_details.indct_emp_no
+             LEFT JOIN training_type ON training_type.trainingtype_slno=training_induction_schedule.schedule_type
+              LEFT JOIN hrm_emp_master T on JSON_CONTAINS(training_induction_schedule.trainers,cast(T.em_id as json),'$')
+              LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=training_induction_emp_details.induct_emp_sec
+             WHERE schedule_type=? AND schedule_topic=? and induction_date=?`,
+            [
+                data.trainingtype_slno,
+                data.topic_slno,
+                data.induction_date
+            ],
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
             }
         )
     },

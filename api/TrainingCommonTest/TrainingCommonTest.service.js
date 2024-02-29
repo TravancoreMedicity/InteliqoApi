@@ -1,13 +1,15 @@
 const pool = require('../../config/database');
 
 module.exports = {
-    GetTrainingTopics: (callback) => {
+    GetTrainingTopics: (id, callback) => {
         pool.query(
-            ` SELECT ROW_NUMBER() OVER () as sno,topic,training_topic.topic_slno,training_topic.training_topic_name
-            FROM training_employee_details
-            LEFT JOIN training_topic ON training_topic.topic_slno=training_employee_details.topic
-            group by training_employee_details.topic
-            `, [],
+            ` 
+            SELECT ROW_NUMBER() OVER () as sno,topic,training_topic.topic_slno,training_topic.training_topic_name
+                        FROM training_employee_details
+                        LEFT JOIN training_topic ON training_topic.topic_slno=training_employee_details.topic
+                        where emp_dept=?
+                        group by training_employee_details.topic 
+            `, [id],
 
             (err, results, feilds) => {
                 if (err) {

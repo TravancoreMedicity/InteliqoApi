@@ -306,7 +306,8 @@ module.exports = {
     },
     ////New
     GetTrainingCompletedList: (req, res) => {
-        GetTrainingCompletedList((err, results) => {
+        const id = req.params.id;
+        GetTrainingCompletedList(id, (err, results) => {
             if (err) {
                 return res.status(400).json({
                     success: 0,
@@ -326,7 +327,8 @@ module.exports = {
         })
     },
     GetTodaysTrainingList: (req, res) => {
-        GetTodaysTrainingList((err, results) => {
+        const id = req.params.id;
+        GetTodaysTrainingList(id, (err, results) => {
             if (err) {
                 return res.status(400).json({
                     success: 0,
@@ -370,8 +372,10 @@ module.exports = {
         });
     },
 
+
     GetTrainingEmpDetailsAll: (req, res) => {
-        GetTrainingEmpDetailsAll((err, results) => {
+        const id = req.params.id;
+        GetTrainingEmpDetailsAll(id, (err, results) => {
             if (err) {
                 return res.status(400).json({
                     success: 0,
@@ -391,7 +395,8 @@ module.exports = {
         })
     },
     GetTrainingEmp: (req, res) => {
-        GetTrainingEmp((err, results) => {
+        const id = req.params.id;
+        GetTrainingEmp(id, (err, results) => {
             if (err) {
                 return res.status(400).json({
                     success: 0,

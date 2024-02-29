@@ -2,7 +2,7 @@ const pool = require('../../config/database');
 
 module.exports = {
 
-    GetBelowAvgEmpList: (callback) => {
+    GetBelowAvgEmpList: (id, callback) => {
         pool.query(
             `    
             SELECT ROW_NUMBER() OVER () as sn, training_employee_details.slno, scheduled_slno, training_employee_details.emp_name, training_employee_details.emp_desig,
@@ -14,8 +14,8 @@ module.exports = {
             LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_employee_details.emp_name
             LEFT JOIN training_topic ON training_topic.topic_slno=training_employee_details.topic
             LEFT JOIN training_posttest ON training_posttest.emp_id=training_employee_details.emp_name
-            where training_employee_details.posttest_status=1 and training_posttest.mark <2
-            `, [],
+            where training_employee_details.posttest_status=1 and training_posttest.mark <2 and training_employee_details.emp_dept=?
+            `, [id],
             (err, results, feilds) => {
                 if (err) {
                     return callback(err)
@@ -87,7 +87,7 @@ module.exports = {
             em_id as candid_id,em_name,topic_slno,training_topic_name,hrm_department.dept_id,dept_name,sect_id,sect_name,
             training_pretest.mark as premark,training_posttest.mark as postmark,training_employee_details.pretest_status,
             training_employee_details.posttest_status,training_employee_details.online_mode,training_employee_details.training_status,
-            hrm_emp_master.em_no,designation.desg_slno,designation.desg_name,hrm_emp_master.em_id
+            hrm_emp_master.em_no,designation.desg_slno,designation.desg_name,hrm_emp_master.em_id,training_retest_emp_details.retest_status
             FROM training_retest_emp_details
             LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_retest_emp_details.candidate_em_no
             LEFT JOIN training_topic ON training_topic.topic_slno=training_retest_emp_details.retest_topic
@@ -243,4 +243,176 @@ module.exports = {
             }
         )
     },
+
+
+    //induction retest
+    GetInductionEmpRetestTopics: (id, callback) => {
+        pool.query(
+            `             
+            SELECT ROW_NUMBER() OVER () as sn, retest_slno, retest_em_no, re_emp_dept, re_dept_sec, retest_date, re_topic, re_attendance, re_questn_count,hrm_emp_master.em_no,hrm_emp_master.em_id,hrm_emp_master.em_name,training_topic.topic_slno,training_topic.training_topic_name,hrm_department.dept_id,hrm_department.dept_name,
+            hrm_dept_section.sect_id,hrm_dept_section.sect_name,hrm_emp_master.em_designation,designation.desg_slno,designation.desg_name,
+            training_induct_posttest.mark as postmark,training_induction_pretest.mark as premark,
+            training_induction_emp_details.pretest_status,training_induction_emp_details.posttest_status,training_induction_emp_details.online_mode,
+            training_induction_emp_details.training_status,training_induction_emp_details.induction_slno,training_induction_emp_details.retest,training_induction_retest.retest_mark,
+            training_induction_retest.retest_status
+            from training_induction_retest
+            LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_induction_retest.retest_em_no
+            LEFT JOIN training_topic ON training_topic.topic_slno=training_induction_retest.re_topic
+            LEFT JOIN hrm_department ON hrm_department.dept_id=training_induction_retest.re_emp_dept
+            LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=training_induction_retest.re_dept_sec
+            LEFT JOIN designation ON designation.desg_slno=hrm_emp_master.em_designation
+            LEFT JOIN training_induction_pretest ON training_induction_pretest.emp_id=training_induction_retest.retest_em_no
+            LEFT JOIN training_induct_posttest ON training_induct_posttest.emp_id=training_induction_retest.retest_em_no
+            LEFT JOIN training_induction_emp_details ON training_induction_emp_details.indct_emp_no=training_induction_retest.retest_em_no
+            WHERE retest_em_no=? and training_induction_emp_details.training_status=1 and training_induction_emp_details.retest=1`, [id],
+
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+            }
+        )
+    },
+    GetinductRetestQuestions: (data, callBack) => {
+        pool.query(
+            ` 
+            SELECT q_slno, training_topics, questions, answer_a, answer_b, answer_c,
+            answer_d, right_answer,training_questions.upload_status, writtenStatus, handwrite_answer,
+            marks,training_topic.online_status,training_topic.offline_status,training_topic.both_status,
+            training_induction_retest.retest_em_no,training_induction_retest.re_questn_count,
+            training_induction_retest.re_emp_dept,training_induction_retest.retest_status, training_induction_retest.retest_mark,
+            training_induction_retest.re_dept_sec,hrm_emp_master.em_id,hrm_emp_master.em_name,
+            training_induction_retest.re_topic,training_induction_retest.retest_slno
+            FROM training_questions
+            LEFT JOIN  training_induction_retest ON  training_induction_retest.re_topic=training_questions.training_topics
+            LEFT JOIN training_topic ON training_topic.topic_slno=training_induction_retest.re_topic
+            LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_induction_retest.retest_em_no
+            WHERE training_induction_retest.re_topic=? and training_induction_retest.retest_em_no=?
+            ORDER BY RAND() 
+            LIMIT ?`,
+            [
+                data.topic_slno,
+                data.Em_id,
+                data.questCount
+
+            ],
+
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    //select * from induct_retest_exam_details;
+
+    //induct_re_slno, induct_emp_id, induct_dept, induct_dept_Sec, induct_re_topic, induct_retest_mark, create_user, edit_user
+    InsertInductRetestDetails: (data, callBack) => {
+        pool.query(
+            `INSERT INTO  medi_hrm.induct_retest_exam_details
+            (
+                induct_emp_id,
+                induct_dept,
+                induct_dept_Sec,
+                induct_re_topic,
+                induct_retest_mark,
+                create_user
+            )
+            VALUES (?,?,?,?,?,?)`,
+            [
+                data.candidate_em_no,
+                data.re_emp_dept,
+                data.re_dept_sec,
+                data.retest_topic,
+                data.mark,
+                data.create_user
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+
+    checkInductRetestEntryExistORNot: (data, callback) => {
+        pool.query(
+            `     
+            SELECT induct_emp_id,induct_re_topic
+            FROM induct_retest_exam_details 
+            WHERE induct_emp_id=? and induct_re_topic=?
+            `, [
+            data.candidate_em_no,
+            data.retest_topic
+        ],
+
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+            }
+        )
+    },
+
+    UpdateInductReTestStatus: (data, callBack) => {
+        pool.query(
+            `UPDATE training_induction_retest set 
+             retest_status=?,
+             retest_mark=?
+             WHERE retest_slno=?`,
+            [
+                data.retest_status,
+                data.mark,
+                data.retest_slno
+
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+
+    GetRetestQREmpDetails: (data, callBack) => {
+        pool.query(
+            ` 
+            SELECT ROW_NUMBER() OVER () as sn, retest_slno, retest_em_no, re_emp_dept, re_dept_sec, retest_date, re_topic, re_attendance, re_questn_count,hrm_emp_master.em_no,hrm_emp_master.em_id,hrm_emp_master.em_name,training_topic.topic_slno,training_topic.training_topic_name,hrm_department.dept_id,hrm_department.dept_name,
+            hrm_dept_section.sect_id,hrm_dept_section.sect_name,hrm_emp_master.em_designation,designation.desg_slno,designation.desg_name,
+            training_induct_posttest.mark as postmark,training_induction_pretest.mark as premark,
+            training_induction_emp_details.pretest_status,training_induction_emp_details.posttest_status,training_induction_emp_details.online_mode,
+            training_induction_emp_details.training_status,training_induction_emp_details.induction_slno,training_induction_emp_details.retest,training_induction_retest.retest_mark,
+            training_induction_retest.retest_status
+            from training_induction_retest
+            LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_induction_retest.retest_em_no
+            LEFT JOIN training_topic ON training_topic.topic_slno=training_induction_retest.re_topic
+            LEFT JOIN hrm_department ON hrm_department.dept_id=training_induction_retest.re_emp_dept
+            LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=training_induction_retest.re_dept_sec
+            LEFT JOIN designation ON designation.desg_slno=hrm_emp_master.em_designation
+            LEFT JOIN training_induction_pretest ON training_induction_pretest.emp_id=training_induction_retest.retest_em_no
+            LEFT JOIN training_induct_posttest ON training_induct_posttest.emp_id=training_induction_retest.retest_em_no
+            LEFT JOIN training_induction_emp_details ON training_induction_emp_details.indct_emp_no=training_induction_retest.retest_em_no
+            WHERE retest_em_no=? and re_topic=? and training_induction_emp_details.training_status=1`,
+            [
+                data.emId,
+                data.tslno
+
+            ],
+
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+
 } 

@@ -135,8 +135,8 @@ const TrainingMonthlyReport = require("./api/TrainingMonthlyReport/MonthlyReport
 const CommonPreTestPage = require("./api/TrainingCommonTest/TrainingCommonTest.router")
 
 const InductionTraining = require("./api/TrainingInduction/TrainingInduction.route")
-
-
+const InductionTest = require("./api/TrainingInductionTest/InductionTest.router")
+const InductionProcess = require("./api/TrainingInductionProcess/InductionProcess.router")
 app.use(express.json({ limit: '50mb' }));
 app.use((req, res, next) => {
     //     res.header("Access-Control-Allow-Origin", "http://192.168.10.170:8080
@@ -309,6 +309,8 @@ app.use("/api/TrainingEmployee_Dashboard", TrainingEmployee_Dashboard)
 app.use("/api/TrainingMonthlyReport", TrainingMonthlyReport)
 app.use("/api/CommonPreTestPage", CommonPreTestPage)
 app.use("/api/InductionTraining", InductionTraining)
+app.use("/api/InductionTest", InductionTest)
+app.use("/api/InductionProcess", InductionProcess)
 
 
 // ------ Database Connection --------
