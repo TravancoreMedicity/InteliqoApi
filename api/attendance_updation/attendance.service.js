@@ -799,4 +799,51 @@ module.exports = {
             }
         )
     },
+    sectionwiseEmppunchMast: (data, callBack) => {
+        pool.query(
+            `select punch_slno, duty_day,shift_id,punch_master.emp_id,punch_master.em_no,
+            hrm_emp_master.em_name,punch_in,
+            punch_out,shift_in,shift_out,hrs_worked,over_time,late_in,
+            early_out,duty_status,holiday_status,leave_status,holiday_slno,
+            lvereq_desc,duty_desc,lve_tble_updation_flag
+            from  punch_master
+            left join hrm_emp_master on hrm_emp_master.em_no=punch_master.em_no
+            left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
+            where  date(duty_day) between ? and ? and em_dept_section=?
+            `,
+            [
+                data.fromDate,
+                data.toDate,
+                data.sect_id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    sectionwiseEmpDutyplan: (data, callBack) => {
+        pool.query(
+            `SELECT plan_slno,emp_id,hrm_emp_master.em_no,hrm_emp_master.em_name,shift_id,duty_day,
+            attendance_update_flag,holiday,offday_flag,holiday_name,holiday_slno
+            FROM medi_hrm.hrm_duty_plan
+            left join hrm_emp_master on hrm_emp_master.em_no=hrm_duty_plan.em_no
+            left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
+            where  duty_day between ? and ? and em_dept_section=?
+            `,
+            [
+                data.fromDate,
+                data.toDate,
+                data.sect_id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }
