@@ -504,7 +504,7 @@ module.exports = {
         try {
             data?.map((e) => {
                 pool.query(
-                    `UPDATE hrm_leave_calculated SET hl_lv_tkn_status = 1 WHERE hrm_cakc_holiday = ?`,
+                    `UPDATE hrm_leave_calculated SET hl_lv_tkn_status = 1 WHERE hrm_calc_holiday = ?`,
                     [
                         e.caulmnth,
                     ],
