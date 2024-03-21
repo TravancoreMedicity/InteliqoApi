@@ -23,7 +23,8 @@ const {
     ActiveEmploye,
     insertInactiveEmp,
     getEmpList,
-    insertActivateEmp
+    insertActivateEmp,
+    createCompany
 } = require('../hrm_emp_master/empmast.service');
 const { validateempmaster, validateempmasterupdate, validateempmasterEdit } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
@@ -785,6 +786,34 @@ module.exports = {
                 success: 1,
                 message: "Data Created Successfully"
             });
+        });
+    },
+    createCompany: (req, res) => {
+
+        const body = req.body;
+
+        createCompany(body, (err, results) => {
+
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                message: "Data Updated Successfully"
+            });
+
         });
     },
 }
