@@ -1066,7 +1066,8 @@ module.exports = {
             ROW_NUMBER() OVER () as rslno,
             nopunch_slno,
             plan_slno,
-            shift_id,
+            nopunchrequest.shift_id,
+            hrm_shift_mast.shft_desc,
             nopunchrequest.em_no,
             punslno,dept_name,
             np_incapprv_status, 
@@ -1093,7 +1094,8 @@ module.exports = {
             left join hrm_emp_master on  nopunchrequest.em_no =hrm_emp_master.em_no
             left join hrm_department on  nopunchrequest.em_department =hrm_department.dept_id
             inner join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
-            where lv_cancel_req_status_user=0 and lv_cancel_status_user=0;`,
+             LEFT JOIN hrm_shift_mast ON hrm_shift_mast.shft_slno=nopunchrequest.shift_id
+            where lv_cancel_req_status_user=0 and lv_cancel_status_user=0`,
             [],
             (error, results, feilds) => {
                 if (error) {
