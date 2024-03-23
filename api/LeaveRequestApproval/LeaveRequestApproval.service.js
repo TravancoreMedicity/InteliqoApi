@@ -2294,8 +2294,8 @@ module.exports = {
         pool.query(
             `UPDATE 
             hrm_leave_cl
-        SET cl_lv_taken = 0.5,
-            cl_bal_leave = 0,
+        SET cl_lv_taken = cl_lv_taken+0.5,
+            cl_bal_leave = abs(cl_bal_leave- 0.5),
             hl_lv_tkn_status = 0
         WHERE hrm_cl_slno = ?`,
             [
