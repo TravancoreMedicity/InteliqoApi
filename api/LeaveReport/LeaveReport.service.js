@@ -180,4 +180,77 @@ module.exports = {
             }
         )
     },
+    getOneHour: (callBack) => {
+        pool.query(
+            `SELECT 
+            ROW_NUMBER() OVER () as rslno,
+            request_slno,
+            one_hour_request.em_id,
+            one_hour_request.em_no,
+            one_hour_request.dept_id,
+            dept_sect_id,
+            one_hour_duty_day,
+            dept_name,
+            em_name,
+            sect_name,
+            incharge_req_status,
+            incharge_approval_status,
+            hod_req_status,
+            hod_approval_status,
+            hr_req_status,
+            hr_approval_status,
+            request_date,
+            incharge_approval_comment,
+            hod_approval_comment,
+            hr_approval_comment
+            FROM one_hour_request
+            inner join hrm_emp_master on  one_hour_request.em_no =hrm_emp_master.em_no
+            inner join hrm_department on  one_hour_request.dept_id =hrm_department.dept_id
+			inner join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
+            where  cancel_status=0`,
+            [],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getOnduty: (callBack) => {
+        pool.query(
+            `SELECT 
+            ROW_NUMBER() OVER () as rslno,
+            on_duty_request.em_no,
+            onduty_slno,
+            dept_sect_id,
+            on_duty_request.dept_id,
+            on_duty_date,
+            dept_name,
+            em_name,
+            sect_name,
+            incharge_req_status,
+            incharge_approval_status,
+            hod_req_status,
+            hod_approval_status,
+            hr_req_status,
+            hr_approval_status,
+            request_date,
+            incharge_approval_comment,
+            hod_approval_comment,
+            hr_approval_comment
+            FROM on_duty_request
+            inner join hrm_emp_master on  on_duty_request.em_no =hrm_emp_master.em_no
+            inner join hrm_department on  on_duty_request.dept_id =hrm_department.dept_id
+			inner join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
+            where  cancel_status=0`,
+            [],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }
