@@ -193,7 +193,7 @@ module.exports = {
                 left join hrm_religion on  hrm_emp_master.hrm_religion = hrm_religion.relg_slno
                 left join hrm_emp_category on hrm_emp_master.em_category = hrm_emp_category.category_slno
                 left join hrm_emp_personal on hrm_emp_master.em_id = hrm_emp_personal.em_id
-                where hrm_emp_master.em_status = 1 and designation.desg_slno IN (?)`,
+                where hrm_emp_master.em_status = 1 and doctor_status=0 and designation.desg_slno IN (?)`,
             [
                 data
             ],
@@ -247,7 +247,7 @@ module.exports = {
             left join hrm_emp_personal on hrm_emp_master.em_id = hrm_emp_personal.em_id
             left join hrm_region on hrm_emp_master.hrm_region2=hrm_region.reg_slno
             left join hrm_district on hrm_region.reg_dist_slno=hrm_district.dist_slno
-            where hrm_region.reg_slno=? and hrm_emp_master.em_status = 1`,
+            where hrm_region.reg_slno=? and hrm_emp_master.em_status = 1 and doctor_status=0`,
             [
                 id
             ],
@@ -301,7 +301,7 @@ module.exports = {
             left join hrm_emp_personal on hrm_emp_master.em_id = hrm_emp_personal.em_id
             left join hrm_region on hrm_emp_master.hrm_region2=hrm_region.reg_slno
             left join hrm_district on hrm_region.reg_dist_slno=hrm_district.dist_slno
-            where hrm_district.dist_slno IN (?) and hrm_emp_master.em_status = 1`,
+            where hrm_district.dist_slno IN (?) and hrm_emp_master.em_status = 1 and doctor_status=0`,
             [
                 data
             ],
@@ -358,7 +358,7 @@ module.exports = {
             left join hrm_region on hrm_emp_master.hrm_region2=hrm_region.reg_slno
             left join hrm_district on hrm_region.reg_dist_slno=hrm_district.dist_slno
             where hrm_district.dist_slno IN (?) 
-            and hrm_region.reg_slno IN (?) and hrm_emp_master.em_status = 1`,
+            and hrm_region.reg_slno IN (?) and hrm_emp_master.em_status = 1 and doctor_status=0`,
             [
                 data.district,
                 data.region
@@ -416,7 +416,7 @@ module.exports = {
             left join hrm_mast_education on  hrm_emp_qual.em_education = hrm_mast_education.edu_slno
             left join hrm_mast_course on hrm_emp_qual.em_course = hrm_mast_course.cour_slno
             left join hrm_mast_specializtion on hrm_emp_qual.em_specialization = hrm_mast_specializtion.spec_slno
-            where hrm_mast_education.edu_slno IN (?) and hrm_emp_master.em_status = 1 ` ,
+            where hrm_mast_education.edu_slno IN (?) and hrm_emp_master.em_status = 1 and doctor_status=0` ,
             [
                 data
             ],
@@ -475,7 +475,7 @@ module.exports = {
             left join hrm_mast_education on  hrm_emp_qual.em_education = hrm_mast_education.edu_slno
             left join hrm_mast_course on hrm_emp_qual.em_course = hrm_mast_course.cour_slno
             left join hrm_mast_specializtion on hrm_emp_qual.em_specialization = hrm_mast_specializtion.spec_slno
-            where  hrm_mast_education.edu_slno IN (?)  and   hrm_mast_course.cour_slno IN (?) and hrm_emp_master.em_status = 1 `,
+            where  hrm_mast_education.edu_slno IN (?)  and   hrm_mast_course.cour_slno IN (?) and hrm_emp_master.em_status = 1 and doctor_status=0`,
             [
                 data.education,
                 data.course
@@ -540,7 +540,7 @@ module.exports = {
             left join hrm_mast_education on  hrm_emp_qual.em_education = hrm_mast_education.edu_slno
             left join hrm_mast_course on hrm_emp_qual.em_course = hrm_mast_course.cour_slno
             left join hrm_mast_specializtion on hrm_emp_qual.em_specialization = hrm_mast_specializtion.spec_slno
-            where hrm_mast_specializtion.spec_slno IN (?) and   hrm_mast_course.cour_slno  IN (?) and  hrm_mast_education.edu_slno IN(?) and  hrm_emp_master.em_status = 1 `,
+            where hrm_mast_specializtion.spec_slno IN (?) and   hrm_mast_course.cour_slno  IN (?) and  hrm_mast_education.edu_slno IN(?) and  hrm_emp_master.em_status = 1 and doctor_status=0`,
             [
                 data.specialization,
                 data.course,
@@ -996,7 +996,7 @@ module.exports = {
             left join hrm_emp_category on hrm_emp_master.em_category = hrm_emp_category.category_slno
             left join hrm_emp_personal on hrm_emp_master.em_id = hrm_emp_personal.em_id
             left join hrm_emp_exp on designation.desg_slno =  hrm_emp_exp.em_designation
-            where hrm_emp_master.em_status = 1 and   hrm_emp_exp.em_designation IN (?)`,
+            where hrm_emp_master.em_status = 1 and doctor_status=0 and   hrm_emp_exp.em_designation IN (?)`,
             [
                 data
             ],

@@ -2,7 +2,7 @@ const { createmastleave, createdetlleave, updateserialnum, gethafdayshift, getfi
     getsecondhalf, inserthalfdayreque, insertnopunchrequest, insertcompensatyoff,
     getLeaveCancelEmpdetl, getPunchMasterSlno, checkMispunchRequest, updatePunchSlno, getLeaveCount,
     updateCommonLeave, updateCasualLeave, updateCompansatoryOff, updateEarnLeave, updateNationalHoliday, halfDayRequestCheck,
-    updateHaldayValueInTable } = require('../LeaveRequest/LeaveRequest.service');
+    updateHaldayValueInTable, getHolidayStatus } = require('../LeaveRequest/LeaveRequest.service');
 // const { validateleavetype } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger');
 const { attMarkingExcistFrLveReq } = require('../attendance_marking_save/attendance_marking_save.service');
@@ -438,6 +438,31 @@ module.exports = {
                     message: err
                 });
             }
+            if (results?.length === 0) {
+                return res.status(400).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+
+    },
+    getHolidayStatus: (req, res) => {
+        const body = req.body;
+        getPunchMasterSlno(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
             if (results?.length === 0) {
                 return res.status(400).json({
                     success: 0,

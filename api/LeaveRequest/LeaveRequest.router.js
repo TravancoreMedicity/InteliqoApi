@@ -2,7 +2,8 @@ const router = require("express").Router();
 const { checkToken } = require('../../auth/token_validation');
 const { createmastleave, createdetlleave, gethafdayshift,
     getfirsthalf, getsecondhalf, inserthalfdayreque, insertnopunchrequest, insertcompensatyoff,
-    getLeaveCancelEmpdetl } = require('../LeaveRequest/LeaveRequest.controller');
+    getLeaveCancelEmpdetl,
+    getHolidayStatus } = require('../LeaveRequest/LeaveRequest.controller');
 
 router.post("/", checkToken, createmastleave)
 router.post("/inserthalfdayreque", checkToken, inserthalfdayreque)
@@ -13,4 +14,7 @@ router.post("/insertcompensatyoff", checkToken, insertcompensatyoff)
 router.get("/", checkToken, getfirsthalf)
 router.get("/getsecondhalf", checkToken, getsecondhalf)
 router.get("/leavecancel/:id", checkToken, getLeaveCancelEmpdetl)
+
+router.post('/getHoliday', checkToken, getHolidayStatus)
+
 module.exports = router;

@@ -358,6 +358,7 @@ module.exports = {
     getPunchMasterSlno: (data, callBack) => {
         pool.query(
             `SELECT 
+            holiday_status,
                 punch_slno
             FROM punch_master
             WHERE emp_id=? AND duty_day = ?`,
@@ -556,5 +557,5 @@ module.exports = {
             }
         )
     },
-  
+
 }

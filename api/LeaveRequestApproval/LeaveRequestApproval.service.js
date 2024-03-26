@@ -221,7 +221,9 @@ module.exports = {
             cf_reason,
             cf_inc_apprv_req,
             cf_incapprv_status,
-            reqestdate
+            reqestdate,
+            punchindata,
+            punchoutdata
              FROM comp_off_request 
              inner join hrm_emp_master on comp_off_request.em_id=hrm_emp_master.em_id 
              where cmp_off_reqid=?`,
@@ -1135,7 +1137,7 @@ module.exports = {
 			dept_name,
             leave_date,
             sect_name,
-             durationpunch,
+            durationpunch,
             reqtype_name,
             cf_reason,
             reqestdate,
@@ -1150,6 +1152,8 @@ module.exports = {
             cf_inc_apprv_cmnt,
             cf_hod_apprv_cmnt,
             cf_hr_apprv_cmnt,
+            punchindata,
+            punchoutdata,
             comp_off_request.em_department
             FROM comp_off_request 
             left join hrm_emp_master on  comp_off_request.em_no =hrm_emp_master.em_no
