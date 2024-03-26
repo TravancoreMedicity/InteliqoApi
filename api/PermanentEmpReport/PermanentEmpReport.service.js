@@ -19,7 +19,7 @@ module.exports = {
             LEFT JOIN hrm_branch ON hrm_emp_master.em_branch = hrm_branch.branch_slno
             LEFT JOIN hrm_emp_category ON hrm_emp_master.em_category = hrm_emp_category.category_slno
             LEFT JOIN hrm_emp_contract_detl ON hrm_emp_master.em_id=hrm_emp_contract_detl.em_id
-            WHERE hrm_branch.branch_slno IN (?) AND hrm_emp_master.em_status=1 AND hrm_emp_category.emp_type=1 and hrm_emp_category.des_type=3 and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2`,
+            WHERE hrm_branch.branch_slno IN (?) AND hrm_emp_master.em_status=1 AND hrm_emp_category.emp_type=1 and hrm_emp_category.des_type=3 and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2 and doctor_status=0`,
             [
                 data
             ],
@@ -49,7 +49,7 @@ module.exports = {
             LEFT JOIN hrm_branch ON hrm_emp_master.em_branch = hrm_branch.branch_slno
             LEFT JOIN hrm_emp_category ON hrm_emp_master.em_category = hrm_emp_category.category_slno
             LEFT JOIN hrm_emp_contract_detl ON hrm_emp_master.em_id=hrm_emp_contract_detl.em_id
-            WHERE hrm_branch.branch_slno IN (?) AND hrm_emp_master.em_status=1 AND hrm_emp_category.emp_type=1 and hrm_emp_category.des_type=3 and hrm_department.dept_id IN (?) `,
+            WHERE hrm_branch.branch_slno IN (?) AND hrm_emp_master.em_status=1 AND hrm_emp_category.emp_type=1 and hrm_emp_category.des_type=3 and and doctor_status=0 hrm_department.dept_id IN (?) `,
             [
                 data.branch_slno,
                 data.dept_id
@@ -80,7 +80,7 @@ module.exports = {
             LEFT JOIN hrm_branch ON hrm_emp_master.em_branch = hrm_branch.branch_slno
             LEFT JOIN hrm_emp_category ON hrm_emp_master.em_category = hrm_emp_category.category_slno
             LEFT JOIN hrm_emp_contract_detl ON hrm_emp_master.em_id=hrm_emp_contract_detl.em_id
-            WHERE hrm_branch.branch_slno IN (?) AND hrm_emp_master.em_status=1 AND hrm_emp_category.emp_type=1 and hrm_emp_category.des_type=3 and hrm_department.dept_id IN (?) AND hrm_dept_section.sect_id IN (?) `,
+            WHERE hrm_branch.branch_slno IN (?) AND hrm_emp_master.em_status=1 AND hrm_emp_category.emp_type=1 and doctor_status=0 and hrm_emp_category.des_type=3 and hrm_department.dept_id IN (?) AND hrm_dept_section.sect_id IN (?) `,
             [
                 data.branch_slno,
                 data.dept_id,

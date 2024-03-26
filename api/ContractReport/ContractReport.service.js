@@ -35,7 +35,7 @@ module.exports = {
             LEFT JOIN designation ON hrm_emp_master.em_designation=designation.desg_slno
             LEFT JOIN hrm_emp_contract_detl ON hrm_emp_master.em_id=hrm_emp_contract_detl.em_id
             LEFT JOIN hrm_emp_category ON hrm_emp_master.em_category=hrm_emp_category.category_slno
-            WHERE  hrm_emp_master.em_status=1 AND hrm_emp_category.category_slno IN (?) and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2 `,
+            WHERE  hrm_emp_master.em_status=1 AND hrm_emp_category.category_slno IN (?) and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2 and doctor_status=0 `,
             [
                 data
             ],
@@ -67,7 +67,7 @@ module.exports = {
             LEFT JOIN designation ON hrm_emp_master.em_designation=designation.desg_slno
             LEFT JOIN hrm_emp_contract_detl ON hrm_emp_master.em_id=hrm_emp_contract_detl.em_id
             LEFT JOIN hrm_emp_category ON hrm_emp_master.em_category=hrm_emp_category.category_slno
-            WHERE  hrm_emp_master.em_status=1 AND hrm_emp_category.category_slno IN (?) AND DATE(em_cont_end) between curdate() AND ? and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2 `,
+            WHERE  hrm_emp_master.em_status=1 AND hrm_emp_category.category_slno IN (?) AND DATE(em_cont_end) between curdate() AND ? and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2 and doctor_status=0 `,
             [
                 data.category_slno,
                 data.em_cont_end
@@ -106,7 +106,7 @@ module.exports = {
             left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
             left join designation on designation.desg_slno=hrm_emp_master.em_designation
             left join hrm_emp_category on hrm_emp_category.category_slno=hrm_emp_master.em_category
-            where hrm_branch.branch_slno =? and hrm_emp_master.em_no !=1`,
+            where hrm_branch.branch_slno =? and hrm_emp_master.em_no !=1 and doctor_status=0`,
             [
                 data.branch_slno
             ],
@@ -142,7 +142,7 @@ module.exports = {
             left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
             left join designation on designation.desg_slno=hrm_emp_master.em_designation
             left join hrm_emp_category on hrm_emp_category.category_slno=hrm_emp_master.em_category
-            where hrm_branch.branch_slno =? and hrm_department.dept_id = ?  and hrm_emp_master.em_no !=1`,
+            where hrm_branch.branch_slno =? and hrm_department.dept_id = ?  and hrm_emp_master.em_no !=1 and doctor_status=0`,
             [
                 data.branch_slno,
                 data.dept_id
@@ -180,7 +180,7 @@ module.exports = {
             left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
             left join designation on designation.desg_slno=hrm_emp_master.em_designation
             left join hrm_emp_category on hrm_emp_category.category_slno=hrm_emp_master.em_category
-            where hrm_branch.branch_slno =? and hrm_department.dept_id = ? and hrm_dept_section.sect_id = ? and hrm_emp_master.em_no !=1`,
+            where hrm_branch.branch_slno =? and hrm_department.dept_id = ? and hrm_dept_section.sect_id = ? and hrm_emp_master.em_no !=1 and doctor_status=0`,
             [
                 data.branch_slno,
                 data.dept_id,
@@ -226,7 +226,7 @@ module.exports = {
             left join doctor_type on doctor_type.doctype_slno=hrm_emp_master.em_doc_type
             left join hrm_emp_category on hrm_emp_category.category_slno=hrm_emp_master.em_category
             left join hrm_emp_contract_detl on hrm_emp_contract_detl.em_id=hrm_emp_master.em_id
-            where em_cont_compl_status='C' and em_cont_renew='R' and em_cont_close='C' and hrm_branch.branch_slno IN (?) and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2`,
+            where em_cont_compl_status='C' and em_cont_renew='R' and em_cont_close='C' and hrm_branch.branch_slno IN (?) and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2 and doctor_status=0`,
             [
                 data
             ],
@@ -270,7 +270,7 @@ module.exports = {
             left join doctor_type on doctor_type.doctype_slno=hrm_emp_master.em_doc_type
             left join hrm_emp_category on hrm_emp_category.category_slno=hrm_emp_master.em_category
             left join hrm_emp_contract_detl on hrm_emp_contract_detl.em_id=hrm_emp_master.em_id
-            where em_cont_compl_status='C' and em_cont_renew='R' and em_cont_close='C' and hrm_branch.branch_slno IN (?) and hrm_department.dept_id IN(?) and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2`,
+            where em_cont_compl_status='C' and em_cont_renew='R' and em_cont_close='C' and hrm_branch.branch_slno IN (?) and hrm_department.dept_id IN(?) and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2 and doctor_status=0`,
             [
                 data.branch_slno,
                 data.dept_id
@@ -315,7 +315,7 @@ module.exports = {
             left join doctor_type on doctor_type.doctype_slno=hrm_emp_master.em_doc_type
             left join hrm_emp_category on hrm_emp_category.category_slno=hrm_emp_master.em_category
             left join hrm_emp_contract_detl on hrm_emp_contract_detl.em_id=hrm_emp_master.em_id
-            where em_cont_compl_status='C' and em_cont_renew='R' and em_cont_close='C' and hrm_branch.branch_slno IN (?) and hrm_department.dept_id IN(?) and hrm_dept_section.sect_id IN (?) and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2`,
+            where em_cont_compl_status='C' and em_cont_renew='R' and em_cont_close='C' and hrm_branch.branch_slno IN (?) and hrm_department.dept_id IN(?) and hrm_dept_section.sect_id IN (?) and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2 and doctor_status=0`,
             [
                 data.branch_slno,
                 data.dept_id,
@@ -360,7 +360,7 @@ module.exports = {
             left join institution_type on institution_type.inst_slno=hrm_emp_master.em_institution_type
             left join designation on designation.desg_slno=hrm_emp_master.em_designation
             left join hrm_emp_category on hrm_emp_category.category_slno=hrm_emp_master.em_category
-            where em_cont_compl_status is null and em_cont_close is null and em_cont_renew is null and branch_slno IN (?) and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2`,
+            where em_cont_compl_status is null and em_cont_close is null and em_cont_renew is null and branch_slno IN (?) and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2 and doctor_status=0`,
             [
                 data
             ],
@@ -403,7 +403,7 @@ module.exports = {
             left join institution_type on institution_type.inst_slno=hrm_emp_master.em_institution_type
             left join designation on designation.desg_slno=hrm_emp_master.em_designation
             left join hrm_emp_category on hrm_emp_category.category_slno=hrm_emp_master.em_category
-            where em_cont_compl_status is null and em_cont_close is null and em_cont_renew is null and branch_slno IN (?) and hrm_department.dept_id= IN (?) and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2`,
+            where em_cont_compl_status is null and em_cont_close is null and em_cont_renew is null and branch_slno IN (?) and hrm_department.dept_id= IN (?) and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2 and doctor_status=0`,
             [
                 data.branch_slno,
                 data.dept_id
@@ -447,7 +447,7 @@ module.exports = {
             left join institution_type on institution_type.inst_slno=hrm_emp_master.em_institution_type
             left join designation on designation.desg_slno=hrm_emp_master.em_designation
             left join hrm_emp_category on hrm_emp_category.category_slno=hrm_emp_master.em_category
-            where em_cont_compl_status is null and em_cont_close is null and em_cont_renew is null and branch_slno IN (?) and hrm_department.dept_id IN (?) and hrm_dept_section.sect_id IN (?) and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2`,
+            where em_cont_compl_status is null and em_cont_close is null and em_cont_renew is null and branch_slno IN (?) and hrm_department.dept_id IN (?) and hrm_dept_section.sect_id IN (?) and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2 and doctor_status=0`,
             [
                 data.branch_slno,
                 data.dept_id,
@@ -495,7 +495,7 @@ module.exports = {
                 FROM hrm_emp_contract_detl
                 GROUP BY hrm_emp_contract_detl.em_id
                 HAVING COUNT(*) >1
-            ) and branch_slno IN (?) and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2`,
+            ) and branch_slno IN (?) and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2 and doctor_status=0`,
             [
                 data
             ],
@@ -541,7 +541,7 @@ module.exports = {
                 FROM hrm_emp_contract_detl
                 GROUP BY hrm_emp_contract_detl.em_id
                 HAVING COUNT(*) >1
-            ) and branch_slno IN (?) and hrm_department.dept_id IN (?) and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2`,
+            ) and branch_slno IN (?) and hrm_department.dept_id IN (?) and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2 and doctor_status=0`,
             [
                 data.branch_slno,
                 data.dept_id
@@ -588,7 +588,7 @@ module.exports = {
                 FROM hrm_emp_contract_detl
                 GROUP BY hrm_emp_contract_detl.em_id
                 HAVING COUNT(*) >1
-            ) and branch_slno IN (?) and hrm_department.dept_id IN (?) and hrm_dept_section.sect_id IN (?) and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2`,
+            ) and branch_slno IN (?) and hrm_department.dept_id IN (?) and hrm_dept_section.sect_id IN (?) and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2 and doctor_status=0`,
             [
                 data.branch_slno,
                 data.dept_id,
