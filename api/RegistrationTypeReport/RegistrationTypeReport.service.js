@@ -78,7 +78,7 @@ module.exports = {
             LEFT JOIN hrm_dept_section ON hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
             LEFT JOIN hrm_emp_qual ON hrm_emp_master.em_id=hrm_emp_qual.em_id
             LEFT JOIN hrm_emp_registrationtype ON hrm_emp_qual.em_reg_type=hrm_emp_registrationtype.reg_id
-            WHERE em_status=1 AND hrm_emp_registrationtype.reg_id IN(?) and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2`,
+            WHERE em_status=1 AND hrm_emp_registrationtype.reg_id IN(?) and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2 and doctor_status=0`,
             [
                 data
             ],
