@@ -892,16 +892,16 @@ module.exports = {
     },
     InsertPunchInOutHr: (data, callBack) => {
         pool.query(
-            `INSERT INTO punchmarking_hr (marking_month,dept_slno,deptsec_slno,status,create_user)
-                VALUES (?,?,?,?,?)`,
+            `INSERT INTO punchmarking_hr (marking_month,dept_slno,deptsec_slno,status,create_date,edit_date,create_user,edit_user,last_update_date)
+            VALUES ?`,
             [
-                data.marking_month,
-                data.dept_slno,
-                data.deptsec_slno,
-                data.status,
-                data.create_user
+                data
             ],
             (error, results, feilds) => {
+
+                console.log(error)
+                console.log(results)
+
                 if (error) {
                     return callBack(error);
                 }
@@ -1057,6 +1057,43 @@ module.exports = {
             [
                 data.em_department,
                 data.em_dept_section
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getPunchMarkingHr: (data, callBack) => {
+        pool.query(
+            `SELECT 
+                *
+            FROM punchmarking_hr 
+            WHERE deptsec_slno = ? AND marking_month = ? `,
+            [
+                data.section,
+                data.month
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getPunchMarkingHrFull: (data, callBack) => {
+        pool.query(
+            `SELECT
+                deptsec_slno,
+                marking_month,
+                last_update_date
+            FROM punchmarking_hr 
+            WHERE marking_month = ? `,
+            [
+                data.month
             ],
             (error, results, feilds) => {
                 if (error) {

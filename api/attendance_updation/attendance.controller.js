@@ -12,8 +12,10 @@ const { getEmployeeDetl, getEmployeeShiftDetl, getDepartmentShiftMast,
     getPunchDataEmCodeWise, getPunchMasterData, getShiftfromPunchMaster,
     updatePunchMasterData, updatePunchMastDuty, getHolidayDate, getDutyPlan,
     getPunchMastDataCheckWoff, updatePunchMasWoff, checkAttendanceProcess, checkInOutMarked,
-    checkAttendanceProcessDept, getEmpList, getEmployeeRights,sectionwiseEmppunchMast,
-    sectionwiseEmpDutyplan
+    checkAttendanceProcessDept, getEmpList, getEmployeeRights, sectionwiseEmppunchMast,
+    sectionwiseEmpDutyplan, checkAttendanceProcessSectionWise, getHolidayListDateWise,
+    getPunchDataEmCodeWiseDateWise, getDutyPlanBySection, getPunchMasterDataSectionWise,
+    updatePunchMaster, updatePunchMarkingHR, updateDutyPlanTable, updateDelStatDutyPlanTable
 } = require("../attendance_updation/attendance.service")
 //SHIFT DETAILS
 //get the shift details 
@@ -931,9 +933,60 @@ module.exports = {
 
         });
     },
+    getPunchDataEmCodeWiseDateWise: (req, res) => {
+        const body = req.body;
+        getPunchDataEmCodeWiseDateWise(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    su: 0,
+                    mesge: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    su: 2,
+                    mesge: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                su: 1,
+                result_data: results
+            });
+
+        });
+    },
     getPunchMasterData: (req, res) => {
         const body = req.body;
         getPunchMasterData(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                logger.infoLogger("No Records Found")
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                planData: results
+            });
+
+        });
+    },
+    getPunchMasterDataSectionWise: (req, res) => {
+        const body = req.body;
+        getPunchMasterDataSectionWise(body, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
@@ -997,6 +1050,27 @@ module.exports = {
             });
         })
     },
+    updatePunchMaster: async (req, res) => {
+        const body = req.body;
+        updatePunchMaster(body).then(results => {
+            if (results === 1) {
+                return res.status(200).json({
+                    success: 1,
+                    message: 'Update Successfully'
+                });
+            } else {
+                return res.status(200).json({
+                    success: 0,
+                    message: results
+                })
+            }
+        }).catch(err => {
+            return res.status(200).json({
+                success: 0,
+                message: "Error Occured , Please Contact HRD / IT"
+            });
+        })
+    },
     updatePunchMastDuty: async (req, res) => {
         const body = req.body;
         updatePunchMastDuty(body).then(results => {
@@ -1037,10 +1111,62 @@ module.exports = {
 
         });
     },
+    getHolidayListDateWise: (req, res) => {
+        const body = req.body;
+        getHolidayListDateWise(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    suc: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                logger.infoLogger("No Records Found")
+                return res.status(200).json({
+                    suc: 2,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                suc: 1,
+                holidaydata: results
+            });
+
+        });
+    },
 
     getDutyPlan: (req, res) => {
         const body = req.body;
         getDutyPlan(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                logger.infoLogger("No Records Found")
+                return res.status(200).json({
+                    succes: 2,
+                    messagee: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                succes: 1,
+                shiftdetail: results
+            });
+
+        });
+    },
+    getDutyPlanBySection: (req, res) => {
+        const body = req.body;
+        getDutyPlanBySection(body, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
@@ -1279,4 +1405,93 @@ module.exports = {
             });
         });
     },
+    checkAttendanceProcessSectionWise: (req, res) => {
+        const body = req.body
+        checkAttendanceProcessSectionWise(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length === 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    updatePunchMarkingHR: (req, res) => {
+        const body = req.body
+        updatePunchMarkingHR(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    sus: 0,
+                    message: err
+                });
+            }
+            if (results.length === 0) {
+                return res.status(200).json({
+                    sus: 0,
+                    message: "Error Updating PunchMarking HR"
+                });
+            }
+            return res.status(200).json({
+                sus: 1,
+                data: results
+            });
+        });
+    },
+    updateDutyPlanTable: (req, res) => {
+        const body = req.body
+        updateDutyPlanTable(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    susc: 0,
+                    message: err
+                });
+            }
+            if (results.length === 0) {
+                return res.status(200).json({
+                    susc: 0,
+                    message: "Error Updating PunchMarking HR"
+                });
+            }
+            return res.status(200).json({
+                susc: 1,
+                data: results
+            });
+        });
+    },
+    updateDelStatDutyPlanTable: (req, res) => {
+        const body = req.body
+        updateDelStatDutyPlanTable(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    susc: 0,
+                    message: err
+                });
+            }
+            if (results.length === 0) {
+                return res.status(200).json({
+                    susc: 0,
+                    message: "Error Updating PunchMarking HR"
+                });
+            }
+            return res.status(200).json({
+                susc: 1,
+                data: results
+            });
+        });
+    },
+
 }

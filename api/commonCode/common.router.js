@@ -76,7 +76,8 @@ const {
     getEmployeeInformation,
     insertErrorLog,
     getgrossSalary,
-    getEmpCoff
+    getEmpCoff,
+    getgrossSalaryByEmployeeNo
 } = require('../commonCode/common.controller');
 
 router.get("/getdept", checkToken, getDepartmentName)
@@ -154,6 +155,7 @@ router.get("/getSectionBasedEmpoyeeHodIncharge/:id", checkToken, getSectionBased
 router.get("/getEmpoyeeInfomation/:id", checkToken, getEmployeeInformation)
 router.post("/errorLog", checkToken, insertErrorLog)
 router.get("/getgrossSalary/:id", checkToken, getgrossSalary)
+router.get("/getgrossSalaryByEmployeeNo/:id", checkToken, getgrossSalaryByEmployeeNo)
 router.post("/empCoffdata", checkToken, getEmpCoff)
 
 module.exports = router;

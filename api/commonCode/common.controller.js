@@ -67,7 +67,8 @@ const {
     getEmployeeInformation,
     insertErrorLog,
     getgrossSalary,
-    getEmpCoff
+    getEmpCoff,
+    getgrossSalaryByEmployeeNo
 } = require('../commonCode/common.service');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -1908,6 +1909,30 @@ module.exports = {
 
             return res.status(200).json({
                 success: 1,
+                dataa: results
+            });
+        });
+    },
+    getgrossSalaryByEmployeeNo: (req, res) => {
+        const id = req.params.id;
+        getgrossSalaryByEmployeeNo(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    su: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(400).json({
+                    su: 0,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                su: 1,
                 dataa: results
             });
         });

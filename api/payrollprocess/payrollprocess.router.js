@@ -12,7 +12,8 @@ const { empDeptdata, empDeptSecdata, empNameBasedata, getFixedByEmid, getEarning
     getattendancemark, getEmpNoDeptWise, getPunchmastData, DutyPlanLock, dutyPlanUnLock, getPaySlipData,
     getIndvidualPayslipDetl, checkPayslipDataExist, deptWisePaySlipData,
     empWisePaySlipDetl, punchMastLock, InsertPunchInOutHr, getPunchInOutHr,
-    CancelPunchInOutHr, getPunchByEmid, InsertArrearSalary, getArearData, getAllEmployee
+    CancelPunchInOutHr, getPunchByEmid, InsertArrearSalary, getArearData, getAllEmployee,
+    getPunchMarkingHr, getPunchMarkingHrFull
 
 } = require('../payrollprocess/payrollprocess.controller');
 
@@ -78,6 +79,9 @@ router.post("/punchbiId", checkToken, getPunchByEmid)
 router.post("/insert/arear", checkToken, InsertArrearSalary)
 router.post("/get/arear", checkToken, getArearData)
 router.post("/getAllEmployee", checkToken, getAllEmployee)
+
+router.post("/getPunchMarkingHrInfo", checkToken, getPunchMarkingHr)
+router.post("/getPunchMarkingHrFull", checkToken, getPunchMarkingHrFull)
 
 
 

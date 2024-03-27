@@ -1642,6 +1642,22 @@ module.exports = {
             }
         );
     },
+    getgrossSalaryByEmployeeNo: (id, callBack) => {
+        pool.query(
+            `SELECT
+                em_no,
+                gross_salary
+            FROM hrm_emp_master
+            WHERE em_dept_section = ? AND em_status = 1`,
+            [id],
+            (error, results, fields) => {
+                if (error) {
+                    callBack(error)
+                }
+                return callBack(null, results)
+            }
+        );
+    },
     getEmpCoff: (data, callBack) => {
         pool.query(
             `SELECT 
