@@ -18,10 +18,12 @@ module.exports = {
         )
     },
 
-    TrainerNameInsert: (data, callBack) => {
+    TrainerNameInsert: (data, callback) => {
         pool.query(
-            `INSERT INTO medi_hrm.training_trainername (trainer_name, trainer_dept,trainer_desig,trainer_status,create_user)
-            VALUES (?,?,?,?,?)`,
+            `INSERT INTO training_trainername (
+                trainer_name,trainer_dept,trainer_desig,trainer_status,create_user             
+               )
+                VALUES(?,?,?,?,?)`,
             [
                 data.trainer_name,
                 data.trainer_dept,
@@ -29,25 +31,29 @@ module.exports = {
                 data.trainer_status,
                 data.create_user
             ],
-            (error, results, feilds) => {
-                if (error) {
-                    return callBack(error);
-                }
-                return callBack(null, results);
-            }
-        )
-    },
+            (error, results, fields) => {
 
+                if (error) {
+                    return callback(error);
+                }
+                return callback(null, results);
+            }
+        );
+    },
     TrainerNameGet: (callback) => {
         pool.query(
-            `SELECT training_trainername.trainer_slno,training_trainername.trainer_status,
-            designation.desg_slno,medi_hrm.designation.desg_name,
-            hrm_department.dept_id,hrm_department.dept_name,
-            hrm_emp_master.em_id,hrm_emp_master.em_name
-            FROM training_trainername LEFT JOIN designation ON 
-            training_trainername.trainer_desig=designation.desg_slno
-            LEFT JOIN hrm_department ON training_trainername.trainer_dept=hrm_department.dept_id
-             LEFT JOIN hrm_emp_master ON training_trainername.trainer_name=hrm_emp_master.em_id WHERE trainer_status=1`,
+            `SELECT ROW_NUMBER() OVER () as slno,trainer_slno, trainer_name, trainer_dept, training_trainername.trainer_desig, trainer_status,
+            hrm_emp_master.em_id,hrm_emp_master.em_no,hrm_emp_master.em_name,hrm_emp_master.em_status,
+             hrm_department.dept_name,hrm_dept_section.sect_name,designation.desg_name,
+             hrm_department.dept_id,hrm_dept_section.sect_id,designation.desg_slno,hrm_authorization_assign.auth_post
+            FROM training_trainername   
+                      LEFT JOIN hrm_department ON hrm_department.dept_id=training_trainername.trainer_dept
+                       LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_trainername.trainer_name
+                       LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
+                       LEFT JOIN designation ON designation.desg_slno=training_trainername.trainer_desig
+                       LEFT JOIN hrm_authorization_assign ON hrm_authorization_assign.emp_id=training_trainername.trainer_name
+                       where em_status=1 AND trainer_status=1
+                       group by trainer_slno`,
             [],
             (err, results, feilds) => {
                 if (err) {
@@ -55,9 +61,7 @@ module.exports = {
 
                 }
                 return callback(null, results)
-
             }
-
         )
     },
 
@@ -137,6 +141,29 @@ module.exports = {
                 return callBack(null, results)
             }
         )
-    }
+    },
+    GetTrainerDetails: (id, callback) => {
+        pool.query(
+            `
+            SELECT em_id as employee_id,em_no,em_name,em_department,em_dept_section,em_designation,em_status,
+            hrm_department.dept_name,hrm_dept_section.sect_name,designation.desg_name,hrm_authorization_assign.auth_post,
+            hrm_department.dept_id,hrm_dept_section.sect_id,designation.desg_slno
+            FROM medi_hrm.hrm_emp_master
+            LEFT JOIN hrm_authorization_assign ON hrm_authorization_assign.emp_id=hrm_emp_master.em_id
+            LEFT JOIN hrm_department ON hrm_department.dept_id=hrm_emp_master.em_department
+            LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
+            LEFT JOIN designation ON designation.desg_slno=hrm_emp_master.em_designation
+            where em_status=1 AND em_no=?
+            group by em_id            
+           `, [id],
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+            }
+        )
+    },
 
 }

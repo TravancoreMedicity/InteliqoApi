@@ -8,7 +8,7 @@ module.exports = {
             SELECT ROW_NUMBER() OVER () as sn, training_employee_details.slno, scheduled_slno, training_employee_details.emp_name, training_employee_details.emp_desig,
             training_employee_details.emp_dept, training_employee_details.emp_dept_sectn, topic, training_employee_details.schedule_date, 
             training_employee_details.training_status, question_count, training_employee_details.pretest_status, 
-            training_employee_details.posttest_status,training_employee_details.posttest_permission,emp_topic,
+            training_employee_details.posttest_status,training_employee_details.posttest_permission,emp_topic,hrm_emp_master.em_no,
             em_id as candid_id,em_name,topic_slno,training_topic_name,training_posttest.mark,training_employee_details.retest
             FROM training_employee_details
             LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_employee_details.emp_name
@@ -307,9 +307,7 @@ module.exports = {
             }
         )
     },
-    //select * from induct_retest_exam_details;
 
-    //induct_re_slno, induct_emp_id, induct_dept, induct_dept_Sec, induct_re_topic, induct_retest_mark, create_user, edit_user
     InsertInductRetestDetails: (data, callBack) => {
         pool.query(
             `INSERT INTO  medi_hrm.induct_retest_exam_details

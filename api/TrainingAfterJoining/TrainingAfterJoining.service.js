@@ -351,7 +351,7 @@ module.exports = {
     },
     GetDeptEmpNameDetails: (id, callback) => {
         pool.query(
-            `SELECT em_id,em_name,desg_slno,desg_name,em_designation
+            `SELECT em_id,em_no,em_name,desg_slno,desg_name,em_designation
             FROM hrm_emp_master 
             LEFT JOIN designation ON designation.desg_slno=hrm_emp_master.em_designation
             WHERE em_department=? and em_status=1`, [id],
@@ -404,6 +404,24 @@ module.exports = {
                     return callBack(error);
                 }
                 return callBack(null, results);
+            }
+        )
+    },
+    //show trainer names when selecting the trainings
+    getTrainerByTopic: (id, callback) => {
+        pool.query(
+            `select topic_slno ,trainers ,GROUP_CONCAT(em_name)  as trainer_name
+            from training_topic
+            LEFT JOIN hrm_emp_master on JSON_CONTAINS(training_topic.trainers,cast(hrm_emp_master.em_id as json),'$')
+            Where topic_slno=?
+            group by topic_slno`, [id],
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+
             }
         )
     },

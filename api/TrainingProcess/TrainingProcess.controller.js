@@ -3,7 +3,7 @@ const { GetTrainingProcess, AttendanceMarking, EmpVerification, GetDepartmentalT
     InsertpostTest, UpdatePosttestStatus, GetTopicAssignToEmp, GetQuestionDetails, UpdateQuestionCount,
     GetDataBasedOnCount, InsertPretest, UpdateTrainingDate, GetTrainingCompletedList, GetTodaysTrainingList,
     GetAttendanceList, GetTrainingEmpDetailsAll, GetTrainingEmp, checkTopicExistORNot, InsertScheduleTable, AllotToPostTest,
-    GetpreTestEmpListAll, GetpostTestEmpListAll, checkPreeTestEntryExistORNot, checkPostTestEntryExistORNot, UpdateOnlineMode, UpdateOfflineMode } = require('./TrainingProcess.service')
+    GetpreTestEmpListAll, GetpostTestEmpListAll, checkPreeTestEntryExistORNot, checkPostTestEntryExistORNot, UpdateOnlineMode, UpdateOfflineMode, InsertReScheduleTable } = require('./TrainingProcess.service')
 module.exports = {
     GetTrainingProcess: (req, res) => {
         GetTrainingProcess((err, results) => {
@@ -229,13 +229,66 @@ module.exports = {
             }
         })
     },
+    //orginal code
 
+    // UpdateTrainingDate: (req, res) => {
+    //     const body = req.body;
+    //     checkTopicExistORNot(body, (err, result) => {
+    //         const value = JSON.parse(JSON.stringify(result))
+    //         if (Object.keys(value).length === 0) {
+    //             InsertScheduleTable(body, (err, results) => {
+    //                 if (err) {
+    //                     return res.status(200).json({
+    //                         success: 0,
+    //                         message: err
+    //                     });
+    //                 }
+    //                 else {
+    //                     UpdateTrainingDate(body, (err, results) => {
+    //                         if (err) {
+    //                             return res.status(200).json({
+    //                                 success: 0,
+    //                                 message: err
+    //                             });
+    //                         }
+    //                         else {
+    //                             return res.status(200).json({
+    //                                 success: 1,
+    //                                 message: "Updated successfully"
+    //                             });
+    //                         }
+    //                     });
+    //                 }
+    //             });
+    //         }
+    //         else {
+    //             UpdateTrainingDate(body, (err, results) => {
+    //                 if (err) {
+    //                     return res.status(200).json({
+    //                         success: 0,
+    //                         message: err
+    //                     });
+    //                 }
+    //                 else {
+    //                     return res.status(200).json({
+    //                         success: 1,
+    //                         message: "Updated successfully"
+    //                     });
+    //                 }
+    //             });
+
+    //         }
+    //     })
+
+    // },
+
+    //try code
     UpdateTrainingDate: (req, res) => {
         const body = req.body;
         checkTopicExistORNot(body, (err, result) => {
             const value = JSON.parse(JSON.stringify(result))
             if (Object.keys(value).length === 0) {
-                InsertScheduleTable(body, (err, results) => {
+                InsertReScheduleTable(body, (err, results) => {
                     if (err) {
                         return res.status(200).json({
                             success: 0,

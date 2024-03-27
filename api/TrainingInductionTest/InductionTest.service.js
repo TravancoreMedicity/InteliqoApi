@@ -3,10 +3,12 @@ const pool = require('../../config/database');
 module.exports = {
     GetInductionTestTopics: (callback) => {
         pool.query(
-            ` SELECT ROW_NUMBER() OVER () as sno,schedule_slno, schedule_type, schedule_topic, induction_date,
+            `SELECT ROW_NUMBER() OVER () as sno,schedule_slno, schedule_type, schedule_topic, induction_date,
             training_topic.topic_slno,training_topic.training_topic_name
              FROM medi_hrm.training_induction_schedule
              LEFT JOIN training_topic ON training_topic.topic_slno=training_induction_schedule.schedule_topic
+             where training_topic.training_status=1 and training_topic.pretest_status=1 and
+             training_topic.post_test_status=1 and date(training_induction_schedule.induction_date)=current_date()
             `, [],
 
             (err, results, feilds) => {
@@ -18,6 +20,30 @@ module.exports = {
             }
         )
     },
+
+    // SELECT em_id, em_no, em_name, em_mobile, 
+    // em_department, em_dept_section, em_designation,
+    // hrm_department.dept_id,hrm_department.dept_name,hrm_dept_section.sect_id,
+    // hrm_dept_section.sect_name, designation.desg_slno,designation.desg_name,
+    // training_induction_schedule.schedule_topic,
+    // training_induction_emp_details.indct_emp_no,
+    // training_topic.topic_slno,training_topic.training_topic_name,training_induction_emp_details.question_count,
+    // training_induction_emp_details.pretest_status,training_induction_emp_details.posttest_status,training_induction_emp_details.online_mode,
+    // training_induction_emp_details.offline_mode,training_induction_emp_details.training_status,training_induction_pretest.mark ,
+    // training_induct_posttest.mark as postmark,
+    // training_induction_emp_details.induction_slno as Emslno,
+    // training_induction_emp_details.schedule_no
+    // FROM medi_hrm.hrm_emp_master
+    // LEFT JOIN hrm_department ON hrm_department.dept_id=hrm_emp_master.em_department
+    // LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
+    // LEFT JOIN designation ON designation.desg_slno=hrm_emp_master.em_designation
+    // LEFT JOIN training_induction_emp_details ON training_induction_emp_details.indct_emp_no=hrm_emp_master.em_id
+    // LEFT JOIN training_induction_schedule ON training_induction_schedule.schedule_slno=training_induction_emp_details.schedule_no
+    // LEFT JOIN training_topic ON training_topic.topic_slno=training_induction_schedule.schedule_topic
+    // LEFT JOIN training_induction_pretest ON training_induction_pretest.emp_topic=training_induction_schedule.schedule_topic
+    // LEFT JOIN training_induct_posttest ON training_induct_posttest.emp_topic=training_induction_schedule.schedule_topic
+    // where hrm_emp_master.em_no=? and hrm_emp_master.em_mobile=? and  training_induction_schedule.schedule_topic=?
+    // and training_induction_emp_details.schedule_no=?
     GetLogEmpDetails: (data, callBack) => {
         pool.query(
             ` 
@@ -42,13 +68,12 @@ module.exports = {
             LEFT JOIN training_topic ON training_topic.topic_slno=training_induction_schedule.schedule_topic
             LEFT JOIN training_induction_pretest ON training_induction_pretest.emp_topic=training_induction_schedule.schedule_topic
             LEFT JOIN training_induct_posttest ON training_induct_posttest.emp_topic=training_induction_schedule.schedule_topic
-            where hrm_emp_master.em_no=? and hrm_emp_master.em_mobile=? and  training_induction_schedule.schedule_topic=?
-            and training_induction_emp_details.schedule_no=?`,
+            where hrm_emp_master.em_no=? and hrm_emp_master.em_mobile=? and  training_induction_schedule.schedule_topic=?`,
             [
                 data.em_no,
                 data.em_mobile,
-                data.topic_slno,
-                data.slno
+                data.topic_slno
+                // data.slno
             ],
 
             (error, results, feilds) => {
@@ -218,10 +243,6 @@ module.exports = {
             }
         )
     },
-    // training_induct_posttest;
-
-
-    // induct_post_slno, emp_id, emp_dept, emp_dept_sec, emp_desg, emp_topic, mark, create_user
 
     InsertPostTest: (data, callBack) => {
         pool.query(

@@ -1,5 +1,5 @@
 const { logger } = require('../../logger/logger');
-const { GetDatewiseEmps, ScheduleInductionTrainings, InsertInductionEmps, GetTypeWiseTraining, UpdateTrainers, UpdateDate, GetTraineers, GetInductionCanderDetails, GetIncutCalenderEmpDetails } = require('./TrainingInduction.service');
+const { GetDatewiseEmps, ScheduleInductionTrainings, InsertInductionEmps, GetTypeWiseTraining, UpdateTrainers, UpdateDate, GetTraineers, GetInductionCanderDetails, GetIncutCalenderEmpDetails, GetIncutCalenderTrainers } = require('./TrainingInduction.service');
 module.exports = {
 
     GetDatewiseEmps: (req, res) => {
@@ -38,7 +38,8 @@ module.exports = {
             else {
                 return res.status(200).json({
                     success: 1,
-                    insertId: results.insertId
+                    insertId: results.insertId,
+                    message: "Training Scheduled Succesfully"
                 });
             }
 
@@ -48,7 +49,7 @@ module.exports = {
     InsertInductionEmps: (req, res) => {
         const body = req.body;
         var values = body.map((value, index) => {
-            return [value.insertId, value.emp_id, value.dept_id, value.sect_id, value.create_user]
+            return [value.insertId, value.emp_id, value.date, value.dept_id, value.sect_id, value.create_user]
         })
         InsertInductionEmps(values, (err, results) => {
             if (err) {
@@ -174,6 +175,28 @@ module.exports = {
     GetIncutCalenderEmpDetails: (req, res) => {
         const body = req.body;
         GetIncutCalenderEmpDetails(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "no Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 2,
+                data: results,
+            });
+        });
+    },
+    GetIncutCalenderTrainers: (req, res) => {
+        const body = req.body;
+        GetIncutCalenderTrainers(body, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({

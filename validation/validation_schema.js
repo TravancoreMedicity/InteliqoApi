@@ -1359,10 +1359,10 @@ const validateTrainingName = Joi.object({
 
 const validateTrainerName = Joi.object({
         trainer_slno: Joi.number().optional(),
-        trainer_name: Joi.number().required(),
-        trainer_dept: Joi.number().required(),
-        trainer_desig: Joi.number().required(),
-        trainer_status: Joi.number().min(0).max(1).required(),
+        trainer_name: Joi.optional(),
+        trainer_dept: Joi.optional(),
+        trainer_desig: Joi.optional(),
+        trainer_status: Joi.optional(),
         create_user: Joi.number().optional(),
         edit_user: Joi.number().optional()
 })
