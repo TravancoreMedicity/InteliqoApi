@@ -139,6 +139,8 @@ const InductionTest = require("./api/TrainingInductionTest/InductionTest.router"
 const InductionProcess = require("./api/TrainingInductionProcess/InductionProcess.router")
 const TrainingInductionReport = require("./api/TrainingInductionReport/TrainingInductionReport.router")
 const TrainingDetails = require("./api/TrainingDetails/TrainingDetails.route")
+const LeaveReport = require("./api/LeaveReport/LeaveReport.router")
+
 app.use(express.json({ limit: '50mb' }));
 app.use((req, res, next) => {
     //     res.header("Access-Control-Allow-Origin", "http://192.168.10.170:8080
@@ -315,6 +317,8 @@ app.use("/api/InductionTest", InductionTest)
 app.use("/api/InductionProcess", InductionProcess)
 app.use("/api/TrainingInductionReport", TrainingInductionReport)
 app.use("/api/TrainingDetails", TrainingDetails)
+app.use("/api/LeaveReport", LeaveReport)
+
 
 // ------ Database Connection --------
 

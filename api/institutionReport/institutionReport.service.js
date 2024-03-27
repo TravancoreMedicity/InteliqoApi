@@ -19,7 +19,7 @@ module.exports = {
             left join hrm_dept_section on hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
             left join hrm_branch on hrm_emp_master.em_branch = hrm_branch.branch_slno
             left join designation on hrm_emp_master.em_designation = designation.desg_slno
-            where hrm_emp_master.em_status = 1 and institution_type.inst_slno IN(?) and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2`,
+            where hrm_emp_master.em_status = 1 and institution_type.inst_slno IN(?) and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2 and doctor_status=0`,
             [
                 data
             ],

@@ -47,7 +47,7 @@ module.exports = {
             left join hrm_mast_education on  hrm_emp_qual.em_education = hrm_mast_education.edu_slno
             left join hrm_mast_course on hrm_emp_qual.em_course = hrm_mast_course.cour_slno
             left join hrm_mast_specializtion on hrm_emp_qual.em_specialization = hrm_mast_specializtion.spec_slno
-            where hrm_mast_education.edu_slno IN (?) and hrm_emp_master.em_status = 1 and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2 ` ,
+            where hrm_mast_education.edu_slno IN (?) and hrm_emp_master.em_status = 1 and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2 and doctor_status=0` ,
             [
                 data
             ],
@@ -109,7 +109,7 @@ module.exports = {
             left join hrm_mast_education on  hrm_emp_qual.em_education = hrm_mast_education.edu_slno
             left join hrm_mast_course on hrm_emp_qual.em_course = hrm_mast_course.cour_slno
             left join hrm_mast_specializtion on hrm_emp_qual.em_specialization = hrm_mast_specializtion.spec_slno
-            where  hrm_mast_education.edu_slno IN (?)  and   hrm_mast_course.cour_slno IN (?) and hrm_emp_master.em_status = 1 and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2`,
+            where  hrm_mast_education.edu_slno IN (?)  and   hrm_mast_course.cour_slno IN (?) and hrm_emp_master.em_status = 1 and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2 and doctor_status=0`,
             [
                 data.education,
                 data.course
@@ -174,7 +174,7 @@ module.exports = {
             left join hrm_mast_education on  hrm_emp_qual.em_education = hrm_mast_education.edu_slno
             left join hrm_mast_course on hrm_emp_qual.em_course = hrm_mast_course.cour_slno
             left join hrm_mast_specializtion on hrm_emp_qual.em_specialization = hrm_mast_specializtion.spec_slno
-            where hrm_mast_specializtion.spec_slno IN (?) and   hrm_mast_course.cour_slno  IN (?) and  hrm_mast_education.edu_slno IN(?) and  hrm_emp_master.em_status = 1 and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2`,
+            where hrm_mast_specializtion.spec_slno IN (?) and   hrm_mast_course.cour_slno  IN (?) and  hrm_mast_education.edu_slno IN(?) and  hrm_emp_master.em_status = 1 and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2 and doctor_status=0`,
             [
                 data.specialization,
                 data.course,

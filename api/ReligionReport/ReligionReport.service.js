@@ -29,7 +29,7 @@ module.exports = {
                 left join hrm_religion on  hrm_emp_master.hrm_religion = hrm_religion.relg_slno
                 left join hrm_emp_category on hrm_emp_master.em_category = hrm_emp_category.category_slno
                 left join hrm_emp_personal on hrm_emp_master.em_id = hrm_emp_personal.em_id 
-                where hrm_religion.relg_slno IN (?) and hrm_emp_master.em_status = 1 and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2`,
+                where hrm_religion.relg_slno IN (?) and hrm_emp_master.em_status = 1 and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2 and doctor_status=0`,
             [
                 data
             ],
@@ -72,6 +72,7 @@ module.exports = {
             dept_name,
             sect_name,
             shift_id,
+            shft_desc,
             shft_cross_day
             FROM punch_master
 			left join hrm_emp_master on hrm_emp_master.em_no=punch_master.em_no
@@ -125,6 +126,7 @@ module.exports = {
             dept_name,
             sect_name,
             shift_id,
+            shft_desc,
             shft_cross_day
             FROM punch_master
 			left join hrm_emp_master on hrm_emp_master.em_no=punch_master.em_no
@@ -137,6 +139,59 @@ module.exports = {
             BETWEEN ?  AND ? `,
             [
                 data.deptno, data.deptsec, data.fromdate, data.todate
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getSectionEmpPunch: (data, callBack) => {
+        pool.query(
+            ` SELECT 
+            emp_code,
+            punch_time
+        FROM punch_data
+        left join hrm_emp_master on hrm_emp_master.em_no=punch_data.emp_code
+        WHERE  hrm_emp_master.em_dept_section=?
+          AND hrm_emp_master.em_status = 1 and   punch_time
+         BETWEEN ?  AND ?`,
+            [
+                data.deptsec, data.fromdate, data.todate
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getSectionPunchMast: (data, callBack) => {
+        pool.query(
+            ` SELECT 
+            punch_master.em_no,
+            shift_in,
+            shift_out,
+            duty_day ,
+            em_name,
+            dept_name,
+            sect_name,
+            shift_id,
+            shft_desc,
+            shft_cross_day
+            FROM punch_master
+			left join hrm_emp_master on hrm_emp_master.em_no=punch_master.em_no
+            left join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
+            left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
+			left join hrm_shift_mast on hrm_shift_mast.shft_slno=punch_master.shift_id
+            WHERE  hrm_emp_master.em_dept_section=?
+             and hrm_emp_master.em_status = 1 and  duty_day
+            BETWEEN ?  AND ? `,
+            [
+                data.deptsec, data.fromdate, data.todate
             ],
             (error, results, feilds) => {
                 if (error) {

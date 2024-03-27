@@ -1,32 +1,87 @@
 const router = require("express").Router();
 const { checkToken } = require('../../auth/token_validation');
-const { getleaverequestdep, nopunchreq, halfrequst, getcompenoff,
-    getlevereqmast, getlevereqdetl, gethalfdaydetl, getnopunchreq,
-    compensatoryoffdata, inchargeapprv, inchargeapprvhalfday, inchargeapprvNopunch,
-    inchargeapprvCoff, HodApprvlLeave, HodApprvlHalfday, HodApprvlNopunch, HodApprvlCoff,
-    CEOApprvLeave, CEOHalfDay, CEONopunch, CEOCoff,
-    HRLeaveApprv, HRhalfDay, HRNopunch, HRCoff,
-    updateLeavePunchMast, updateHalfdayPunchMast, updateNoPunchPunchMast, InsertCoffLeaveCalculated,
-    updateNoPunchOUTPunchMast, leaveReqCancel, HalfdayCancel, NopunchCancel, CoffCancel,
-    getCeoPending, getHRpending, CeoHalfdayPending, HRHalfdayPending, CeoNopunchReq, HrNopunchReq,
-    CeoCoffReq, HrCoffReq,
-    CoffCancelUser, NopunchCancelUser, HalfdayCancelUser, leaveReqCancelUser,
-    AllList, AllListHOD, AllListCeo, AllListHr,
-    updateCasualLeaveDetlTable, updateNationalHolidayDetlTable, updateEarnLeaveDetlTable, updateCoffDetlTable,
-    updatePunchMasterEsi, updatePunchMasterlwf, updatePunchMasterLeave, leaveReqRejectHr, HalfDayReqRejectHr,
-    NoPunchReqRejectHr, CoffReqRejectHr, CoffReqCancelHr, NoPunchReqCancelHr, HalfDayReqCancelHr,
+const {
+    getleaverequestdep,
+    nopunchreq,
+    halfrequst,
+    getcompenoff,
+    getlevereqmast,
+    getlevereqdetl,
+    gethalfdaydetl,
+    getnopunchreq,
+    compensatoryoffdata,
+    inchargeapprv,
+    inchargeapprvhalfday,
+    inchargeapprvNopunch,
+    inchargeapprvCoff,
+    HodApprvlLeave,
+    HodApprvlHalfday,
+    HodApprvlNopunch,
+    HodApprvlCoff,
+    CEOApprvLeave,
+    CEOHalfDay,
+    CEONopunch,
+    CEOCoff,
+    HRLeaveApprv,
+    HRhalfDay,
+    HRNopunch,
+    HRCoff,
+    updateLeavePunchMast,
+    updateHalfdayPunchMast,
+    updateNoPunchPunchMast,
+    InsertCoffLeaveCalculated,
+    updateNoPunchOUTPunchMast,
+    leaveReqCancel,
+    HalfdayCancel,
+    NopunchCancel,
+    CoffCancel,
+    getCeoPending,
+    getHRpending,
+    CeoHalfdayPending,
+    HRHalfdayPending,
+    CeoNopunchReq,
+    HrNopunchReq,
+    CeoCoffReq,
+    HrCoffReq,
+    CoffCancelUser,
+    NopunchCancelUser,
+    HalfdayCancelUser,
+    leaveReqCancelUser,
+    AllList,
+    AllListHOD,
+    AllListCeo,
+    AllListHr,
+    updateCasualLeaveDetlTable,
+    updateNationalHolidayDetlTable,
+    updateEarnLeaveDetlTable,
+    updateCoffDetlTable,
+    updatePunchMasterEsi,
+    updatePunchMasterlwf,
+    updatePunchMasterLeave,
+    leaveReqRejectHr,
+    HalfDayReqRejectHr,
+    NoPunchReqRejectHr,
+    CoffReqRejectHr,
+    CoffReqCancelHr,
+    NoPunchReqCancelHr,
+    HalfDayReqCancelHr,
     lveReqCanclHr,
-    CancelHolidayLeave, CancelCasualyLeave, CancelEarnLeave, CancelCoffLeave, CancelCommonLeave,
+    CancelHolidayLeave,
+    CancelCasualyLeave,
+    CancelEarnLeave,
+    CancelCoffLeave,
+    CancelCommonLeave,
     CancelpunchMastEsiLeave,
-    CancelpunchMastLwfLeave, CancelpunchMastLeave
+    CancelpunchMastLwfLeave,
+    CancelpunchMastLeave,
+    HodRejectHalfday,
+    inchargeRejectHalfday
 } = require('../LeaveRequestApproval/LeaveRequestApproval.controller');
 
 router.post("/getleaverequestdep", checkToken, getleaverequestdep)
 router.post("/nopunchreq", checkToken, nopunchreq)
 router.post("/halfrequst", checkToken, halfrequst)
 router.post("/getcompenoff", checkToken, getcompenoff)
-
-
 router.get("/:id", checkToken, getlevereqmast)
 router.get("/getlevereqdetl/:id", checkToken, getlevereqdetl)
 router.get("/half/gethalfdaydetl/:id", checkToken, gethalfdaydetl)
@@ -123,4 +178,8 @@ router.post("/CancelCommonLeave", checkToken, CancelCommonLeave)
 router.post("/CancelpunchMastEsiLeave", checkToken, CancelpunchMastEsiLeave)
 router.post("/CancelpunchMastLwfLeave", checkToken, CancelpunchMastLwfLeave)
 router.post("/CancelpunchMastLeave", checkToken, CancelpunchMastLeave)
+
+
+router.patch("/HodRejectHalfday", checkToken, HodRejectHalfday)
+router.patch("/inchargeRejectHalfday", checkToken, inchargeRejectHalfday)
 module.exports = router;

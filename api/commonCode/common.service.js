@@ -1645,9 +1645,11 @@ module.exports = {
     getEmpCoff: (data, callBack) => {
         pool.query(
             `SELECT 
-                hrm_calc_holiday,
-                calculated_date,
-                credited,specail_remark 
+            hrm_calc_holiday,
+            emp_id,hl_lv_tkn_status,
+            calculated_date,taken,
+            credited_date,lvetype_slno,
+            credited,specail_remark 
             FROM hrm_leave_calculated
             WHERE emp_id = ?
             AND sysdate() <  DATE_ADD(credited_date , interval ? day)

@@ -158,7 +158,8 @@ module.exports = {
                 probation_status=?,
                 contract_status=?,
                 em_doj=?,
-                actual_doj=?
+                actual_doj=?,
+                em_designation=?
             where em_id=?`,
             [
                 data.em_no,
@@ -169,6 +170,7 @@ module.exports = {
                 data.contract_status,
                 data.em_doj,
                 data.actual_doj,
+                data.em_designation,
                 data.em_id
             ],
             (error, results, feilds) => {

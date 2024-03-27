@@ -221,7 +221,9 @@ module.exports = {
             cf_reason,
             cf_inc_apprv_req,
             cf_incapprv_status,
-            reqestdate
+            reqestdate,
+            punchindata,
+            punchoutdata
              FROM comp_off_request 
              inner join hrm_emp_master on comp_off_request.em_id=hrm_emp_master.em_id 
              where cmp_off_reqid=?`,
@@ -949,14 +951,11 @@ module.exports = {
                 ceo_req_status,
                 ceo_apprv_status,
                 request_date,
-                hrm_leave_request.dept_id,
-                leavetype_name,
-                leave_name
+                hrm_leave_request.dept_id
                 FROM hrm_leave_request 
                 inner join hrm_emp_master on  hrm_leave_request.em_no =hrm_emp_master.em_no
                 inner join hrm_department on  hrm_leave_request.dept_id =hrm_department.dept_id
                 inner join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
-                inner join hrm_leave_request_detl ON hrm_leave_request.lve_uniq_no = hrm_leave_request_detl.lve_uniq_no
                 where  lv_cancel_status=0  and lv_cancel_status_user=0;`,
             [],
             (error, results, feilds) => {
@@ -1069,7 +1068,8 @@ module.exports = {
             ROW_NUMBER() OVER () as rslno,
             nopunch_slno,
             plan_slno,
-            shift_id,
+            nopunchrequest.shift_id,
+            hrm_shift_mast.shft_desc,
             nopunchrequest.em_no,
             punslno,dept_name,
             np_incapprv_status, 
@@ -1096,7 +1096,8 @@ module.exports = {
             left join hrm_emp_master on  nopunchrequest.em_no =hrm_emp_master.em_no
             left join hrm_department on  nopunchrequest.em_department =hrm_department.dept_id
             inner join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
-            where lv_cancel_req_status_user=0 and lv_cancel_status_user=0;`,
+             LEFT JOIN hrm_shift_mast ON hrm_shift_mast.shft_slno=nopunchrequest.shift_id
+            where lv_cancel_req_status_user=0 and lv_cancel_status_user=0`,
             [],
             (error, results, feilds) => {
                 if (error) {
@@ -1136,7 +1137,7 @@ module.exports = {
 			dept_name,
             leave_date,
             sect_name,
-             durationpunch,
+            durationpunch,
             reqtype_name,
             cf_reason,
             reqestdate,
@@ -1151,6 +1152,8 @@ module.exports = {
             cf_inc_apprv_cmnt,
             cf_hod_apprv_cmnt,
             cf_hr_apprv_cmnt,
+            punchindata,
+            punchoutdata,
             comp_off_request.em_department
             FROM comp_off_request 
             left join hrm_emp_master on  comp_off_request.em_no =hrm_emp_master.em_no
@@ -2295,8 +2298,8 @@ module.exports = {
         pool.query(
             `UPDATE 
             hrm_leave_cl
-        SET cl_lv_taken = 0.5,
-            cl_bal_leave = 0,
+        SET cl_lv_taken = cl_lv_taken+0.5,
+            cl_bal_leave = abs(cl_bal_leave- 0.5),
             hl_lv_tkn_status = 0
         WHERE hrm_cl_slno = ?`,
             [
@@ -2307,6 +2310,20 @@ module.exports = {
                     return callBack(error);
                 }
                 return callBack(null, results);
+            }
+        )
+    },
+    updateCompFlag: (data, callBack) => {
+        pool.query(
+            `UPDATE punch_master SET ot_request_flag = 0  WHERE punch_slno = ?`,
+            [
+                data.punchSlno,
+            ],
+            (error, result, feild) => {
+                if (error) {
+                    callBack(error)
+                }
+                return callBack(null, result);
             }
         )
     },

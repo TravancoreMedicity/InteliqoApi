@@ -704,13 +704,14 @@ module.exports = {
     getEmpNoDeptWise: (data, callBack) => {
         pool.query(
             `select hrm_emp_master.em_no,em_name,gross_salary,hrm_emp_master.em_id ,dept_name ,sect_name,
-            em_account_no           
+            em_account_no,nps,npsamount,lwf_status,lwfamount           
                FROM hrm_emp_master 
                inner join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
                inner join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
-               inner join hrm_emp_personal on hrm_emp_personal.em_id=hrm_emp_master.em_id
+               left join hrm_emp_personal on hrm_emp_personal.em_id=hrm_emp_master.em_id
+               left join hrm_emp_pfesi on hrm_emp_pfesi.em_id=hrm_emp_master.em_id
                where hrm_emp_master.em_department=?
-               and hrm_emp_master.em_dept_section=?  and em_status=1  and hrm_emp_master.em_no!=1;
+               and hrm_emp_master.em_dept_section=?  and em_status=1  and hrm_emp_master.em_no!=1 and doctor_status=0;
                 `,
             [
                 data.em_department,
@@ -1044,13 +1045,14 @@ module.exports = {
     getAllEmployee: (data, callBack) => {
         pool.query(
             `select hrm_emp_master.em_no,em_name,gross_salary,hrm_emp_master.em_id ,dept_name ,sect_name,
-            em_account_no           
+            em_account_no,nps,npsamount,lwf_status,lwfamount               
                FROM hrm_emp_master 
                inner join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
                inner join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
-               inner join hrm_emp_personal on hrm_emp_personal.em_id=hrm_emp_master.em_id
+               left join hrm_emp_personal on hrm_emp_personal.em_id=hrm_emp_master.em_id
+               left join hrm_emp_pfesi on hrm_emp_pfesi.em_id=hrm_emp_master.em_id
                where hrm_emp_master.em_department IN (?)
-               and hrm_emp_master.em_dept_section IN (?)  and em_status=1  and hrm_emp_master.em_no!=1;
+               and hrm_emp_master.em_dept_section IN (?)  and em_status=1  and hrm_emp_master.em_no!=1 and doctor_status=0;
                 `,
             [
                 data.em_department,

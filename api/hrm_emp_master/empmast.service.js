@@ -731,9 +731,17 @@ module.exports = {
 
     updateDeptSec: (data, callBack) => {
         pool.query(
-            `UPDATE hrm_emp_master SET em_dept_section=? WHERE em_id= ?`,
+            `UPDATE hrm_emp_master 
+            SET em_department=?, 
+            em_dept_section=? ,
+            em_designation=?,
+            saturday_weekoff=?
+            WHERE em_id= ?`,
             [
+                data.em_department,
                 data.em_dept_section,
+                data.em_designation,
+                data.saturday_weekoff,
                 data.em_id,
             ],
             (error, results, feilds) => {
@@ -982,4 +990,68 @@ module.exports = {
             }
         )
     },
+    insertActivateEmp: (data, callBack) => {
+        pool.query(
+            `INSERT INTO hrm_active_employee_details (
+                em_id,
+                em_no,
+                remark,
+                em_status,
+                create_user
+                )
+                VALUES (?,?,?,?,?)`,
+            [
+                data.em_id,
+                data.em_no,
+                data.remark,
+                1,
+                data.create_user
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    createCompany: (data, callBack) => {
+        pool.query(
+            `INSERT INTO hrm_emp_company_log(
+                com_branch,
+                com_dept,
+                com_deptsec,
+                create_user,
+                edit_user,
+                em_id,
+                em_no,
+                com_designation,
+                com_designation_new,
+                ineffective_date,
+                dept_new,
+                deptsect_new
+            )
+            VALUES(?,?,?,?,?,?,?,?,?,?,?,?)`,
+            [
+                data.em_branch,
+                data.em_department,
+                data.em_dept_section,
+                data.create_user,
+                data.edit_user,
+                data.em_id,
+                data.em_no,
+                data.com_designation,
+                data.com_designation_new,
+                data.ineffective_date,
+                data.dept_new,
+                data.deptsect_new
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    }
 }

@@ -40,10 +40,11 @@ module.exports = {
                 noff,
                 group_slno,
                 eoff,
-                comp_day_count
+                comp_day_count,
+                comp_hour_count
                 )
 
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
 
 
             [
@@ -83,7 +84,8 @@ module.exports = {
                 data.noff,
                 JSON.stringify(data.group_slno),
                 data.eoff,
-                data.comp_day_count
+                data.comp_day_count,
+                data.comp_hour_count
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -144,7 +146,8 @@ module.exports = {
                 noff=?,
                 group_slno=?,
                 eoff=?,
-                comp_day_count=?
+                comp_day_count=?,
+                comp_hour_count=?
                 WHERE setting_slno =?`,
             [
                 data.cmmn_grace_period,
@@ -184,6 +187,7 @@ module.exports = {
                 JSON.stringify(data.group_slno),
                 data.eoff,
                 data.comp_day_count,
+                data.comp_hour_count,
                 data.setting_slno
             ],
             (error, results, feilds) => {
