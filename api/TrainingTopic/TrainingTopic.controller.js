@@ -1,5 +1,5 @@
 
-const { TrainingTopicInsert, TrainingTopicGet, TrainingTopicUpdate, checkInsertVal, checkUpdateVal, TrainingTypeWiseTopic } = require('./TrainingTopic.service');
+const { TrainingTopicInsert, TrainingTopicGet, TrainingTopicUpdate, TrainingTypeWiseTopic, TrainingTopicByTypeGet } = require('./TrainingTopic.service');
 const { logger } = require('../../logger/logger');
 const { validationTrainingTopic } = require('../../validation/validation_schema');
 module.exports = {
@@ -28,6 +28,19 @@ module.exports = {
     TrainingTypeWiseTopic: (req, res) => {
         const id = req.params.id;
         TrainingTypeWiseTopic(id, (err, results) => {
+            const datas = results.map((val) => {
+                const obj = {
+                    topic_slno: val.topic_slno,
+                    training_topic_name: val.training_topic_name,
+                    training_name: val.training_name,
+                    name_slno: val.name_slno,
+                    type_slno: val.type_slno,
+                    trainers: JSON.parse(val.trainers),
+                    trainers_name: val.trainers_name
+
+                }
+                return obj
+            })
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
@@ -43,7 +56,7 @@ module.exports = {
             }
             return res.status(200).json({
                 success: 2,
-                data: results,
+                data: datas,
             });
         });
     },
@@ -87,132 +100,27 @@ module.exports = {
                 data: results
             })
         })
-    }
-
-    // TrainingTopicInsert: (req, res) => {
-    //     const body = req.body;
-    //     const body_result = validationTrainingTopic.validate(body);
-    //     if (body_result.error) {
-    //         return res.status(200).json({
-    //             success: 0,
-    //             message: body_result?.error?.details[0]?.message
-    //         });
-    //     }
-    //     body.dept_status = body_result.value.dept_status;
-    //     body.training_dept = body_result.value.training_dept;
-    //     body.training_topic_name = body_result.value.training_topic_name;
-    //     body.training_name = body_result.value.training_name;
-    //     body.hours = body_result.value.hours;
-    //     body.training_status = body_result.value.training_status;
-    //     body.tutorial_status = body_result.value.tutorial_status;
-    //     body.medical_status = body_result.value.medical_status;
-    //     body.non_medical_status = body_result.value.non_medical_status;
-    //     body.pretest_status = body_result.value.pretest_status;
-    //     body.post_test_status = body_result.value.post_test_status;
-    //     checkInsertVal(body, (err, result) => {
-    //         const value = JSON.parse(JSON.stringify(result))
-    //         if (Object.keys(value).length === 0) {
-    //             TrainingTopicInsert(body, (err, result) => {
-    //                 if (err) {
-    //                     logger.errorLogger(err)
-    //                     return res.status(200).json({
-    //                         success: 0,
-    //                         message: err
-    //                     });
-    //                 }
-    //                 else {
-    //                     return res.status(200).json({
-    //                         success: 1,
-    //                         message: "Training Topic Added Successfully"
-    //                     });
-    //                 }
-    //             });
-    //         }
-    //         else {
-    //             return res.status(200).json({
-    //                 success: 10,
-    //                 message: "Training Topic is already exist"
-    //             });
-    //         }
-    //     });
-    // },
-    // TrainingTopicUpdate: (req, res) => {
-    //     const body = req.body;
-    //     const body_result = validationTrainingTopic.validate(body);
-    //     if (body_result.error) {
-    //         return res.status(200).JSON({
-    //             success: 0,
-    //             error: body_result?.details[0]?.error?.message
-    //         });
-    //     }
-    //     body.dept_status = body_result.value.dept_status;
-    //     body.training_dept = body_result.value.training_dept;
-    //     body.training_topic_name = body_result.value.training_topic_name;
-    //     body.training_name = body_result.value.training_name;
-    //     body.hours = body_result.value.hours;
-    //     body.training_status = body_result.value.training_status;
-    //     body.tutorial_status = body_result.value.tutorial_status;
-    //     body.medical_status = body_result.value.medical_status;
-    //     body.non_medical_status = body_result.value.non_medical_status;
-    //     body.pretest_status = body_result.value.pretest_status;
-    //     body.post_test_status = body_result.value.post_test_status;
-
-    //     checkUpdateVal(body, (err, results) => {
-    //         const value = JSON.parse(JSON.stringify(results))
-    //         if (Object.keys(value).length === 0) {
-    //             TrainingTopicUpdate(body, (err, results) => {
-
-    //                 if (err) {
-    //                     logger.errorLogger(err)
-    //                     return res.status(200).json({
-    //                         success: 0,
-    //                         message: err
-    //                     });
-    //                 }
-
-    //                 if (!results) {
-    //                     return res.status(200).json({
-    //                         success: 1,
-    //                         message: "Record Not Found"
-    //                     });
-    //                 }
-
-    //                 return res.status(200).json({
-    //                     success: 2,
-    //                     message: "Training Topic Updated Successfully"
-    //                 });
-
-    //             });
-    //         }
-    //         else {
-    //             return res.status(200).json({
-    //                 success: 7,
-    //                 message: "Training Topic Already Exist"
-    //             })
-    //         }
-    //     })
-    // },
-
-    // TrainingTopicGet: (req, res) => {
-
-    //     TrainingTopicGet((err, results) => {
-
-    //         if (err) {
-    //             return res.status(400).json({
-    //                 success: 0,
-    //                 message: "Error"
-    //             })
-    //         }
-    //         if (results === 0) {
-    //             return res.status(400).json({
-    //                 success: 1,
-    //                 message: "No Record Found"
-    //             })
-    //         }
-    //         return res.status(200).json({
-    //             success: 2,
-    //             data: results
-    //         })
-    //     })
-    // }
+    },
+    TrainingTopicByTypeGet: (req, res) => {
+        const id = req.params.id;
+        TrainingTopicByTypeGet(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "no Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 2,
+                data: results,
+            });
+        });
+    },
 }

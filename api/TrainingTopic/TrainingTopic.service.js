@@ -190,4 +190,22 @@ module.exports = {
             }
         )
     },
+    TrainingTopicByTypeGet: (id, callback) => {
+        pool.query(
+            `SELECT topic_slno,training_dept,training_topic.dept_status,training_topic_name,training_topic.training_name,training_status,
+            tutorial_status, medical_status, non_medical_status,pretest_status, post_test_status,online_status, offline_status,
+            both_status,video_link,video_time,name_slno,training_name.training_name,hours,upload_status,trainers,type_slno
+            FROM medi_hrm.training_topic
+            LEFT JOIN training_name ON training_topic.training_name=training_name.name_slno
+            where type_slno=?`, [id],
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+
+            }
+        )
+    },
 }

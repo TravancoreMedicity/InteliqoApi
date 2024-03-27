@@ -1,5 +1,5 @@
 
-const { TrainingNameInsert, TrainingNameGet, TrainingNameUpdate, TrainingNameDelete, checkInsertVal, checkUpdateVal } = require('./TrainingName.Service');
+const { TrainingNameInsert, TrainingNameGet, TrainingNameUpdate, TrainingNameDelete, checkInsertVal, checkUpdateVal, TrainingNameDetailsGet } = require('./TrainingName.Service');
 const { logger } = require('../../logger/logger');
 const { validateTrainingName } = require('../../validation/validation_schema');
 module.exports = {
@@ -131,6 +131,6 @@ module.exports = {
                 message: "Data Deleted Successfully"
             })
         })
-    }
+    },
 
 }

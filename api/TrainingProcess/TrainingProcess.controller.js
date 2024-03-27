@@ -3,7 +3,7 @@ const { GetTrainingProcess, AttendanceMarking, EmpVerification, GetDepartmentalT
     InsertpostTest, UpdatePosttestStatus, GetTopicAssignToEmp, GetQuestionDetails, UpdateQuestionCount,
     GetDataBasedOnCount, InsertPretest, UpdateTrainingDate, GetTrainingCompletedList, GetTodaysTrainingList,
     GetAttendanceList, GetTrainingEmpDetailsAll, GetTrainingEmp, checkTopicExistORNot, InsertScheduleTable, AllotToPostTest,
-    GetpreTestEmpListAll, GetpostTestEmpListAll, checkPreeTestEntryExistORNot, checkPostTestEntryExistORNot, UpdateOnlineMode, UpdateOfflineMode } = require('./TrainingProcess.service')
+    GetpreTestEmpListAll, GetpostTestEmpListAll, checkPreeTestEntryExistORNot, checkPostTestEntryExistORNot, UpdateOnlineMode, UpdateOfflineMode, InsertReScheduleTable } = require('./TrainingProcess.service')
 module.exports = {
     GetTrainingProcess: (req, res) => {
         GetTrainingProcess((err, results) => {
@@ -229,13 +229,66 @@ module.exports = {
             }
         })
     },
+    //orginal code
 
+    // UpdateTrainingDate: (req, res) => {
+    //     const body = req.body;
+    //     checkTopicExistORNot(body, (err, result) => {
+    //         const value = JSON.parse(JSON.stringify(result))
+    //         if (Object.keys(value).length === 0) {
+    //             InsertScheduleTable(body, (err, results) => {
+    //                 if (err) {
+    //                     return res.status(200).json({
+    //                         success: 0,
+    //                         message: err
+    //                     });
+    //                 }
+    //                 else {
+    //                     UpdateTrainingDate(body, (err, results) => {
+    //                         if (err) {
+    //                             return res.status(200).json({
+    //                                 success: 0,
+    //                                 message: err
+    //                             });
+    //                         }
+    //                         else {
+    //                             return res.status(200).json({
+    //                                 success: 1,
+    //                                 message: "Updated successfully"
+    //                             });
+    //                         }
+    //                     });
+    //                 }
+    //             });
+    //         }
+    //         else {
+    //             UpdateTrainingDate(body, (err, results) => {
+    //                 if (err) {
+    //                     return res.status(200).json({
+    //                         success: 0,
+    //                         message: err
+    //                     });
+    //                 }
+    //                 else {
+    //                     return res.status(200).json({
+    //                         success: 1,
+    //                         message: "Updated successfully"
+    //                     });
+    //                 }
+    //             });
+
+    //         }
+    //     })
+
+    // },
+
+    //try code
     UpdateTrainingDate: (req, res) => {
         const body = req.body;
         checkTopicExistORNot(body, (err, result) => {
             const value = JSON.parse(JSON.stringify(result))
             if (Object.keys(value).length === 0) {
-                InsertScheduleTable(body, (err, results) => {
+                InsertReScheduleTable(body, (err, results) => {
                     if (err) {
                         return res.status(200).json({
                             success: 0,
@@ -306,7 +359,8 @@ module.exports = {
     },
     ////New
     GetTrainingCompletedList: (req, res) => {
-        GetTrainingCompletedList((err, results) => {
+        const id = req.params.id;
+        GetTrainingCompletedList(id, (err, results) => {
             if (err) {
                 return res.status(400).json({
                     success: 0,
@@ -326,7 +380,8 @@ module.exports = {
         })
     },
     GetTodaysTrainingList: (req, res) => {
-        GetTodaysTrainingList((err, results) => {
+        const id = req.params.id;
+        GetTodaysTrainingList(id, (err, results) => {
             if (err) {
                 return res.status(400).json({
                     success: 0,
@@ -370,8 +425,10 @@ module.exports = {
         });
     },
 
+
     GetTrainingEmpDetailsAll: (req, res) => {
-        GetTrainingEmpDetailsAll((err, results) => {
+        const id = req.params.id;
+        GetTrainingEmpDetailsAll(id, (err, results) => {
             if (err) {
                 return res.status(400).json({
                     success: 0,
@@ -391,7 +448,8 @@ module.exports = {
         })
     },
     GetTrainingEmp: (req, res) => {
-        GetTrainingEmp((err, results) => {
+        const id = req.params.id;
+        GetTrainingEmp(id, (err, results) => {
             if (err) {
                 return res.status(400).json({
                     success: 0,

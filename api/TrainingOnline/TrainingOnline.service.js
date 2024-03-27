@@ -11,7 +11,7 @@ module.exports = {
             online_status
             FROM training_employee_details
             LEFT JOIN training_topic ON training_topic.topic_slno=training_employee_details.topic
-            LEFT JOIN training_pretest ON training_pretest.emp_topic=training_employee_details.topic
+            LEFT JOIN training_pretest ON training_pretest.emp_id=training_employee_details.emp_name
             LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_employee_details.emp_name
             WHERE emp_name=?
             and training_employee_details.pretest_status=1 and training_employee_details.online_mode=1   `, [id],
@@ -64,6 +64,30 @@ module.exports = {
                         LEFT JOIN training_topic on training_topic.topic_slno=training_employee_details.topic
                         LEFT JOIN designation on designation.desg_slno=training_employee_details.emp_desig
             WHERE slno=? and training_employee_details.training_status=1 `, [id],
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+
+            }
+        )
+    },
+
+    GetInductOnlineTraining: (id, callback) => {
+        pool.query(
+            `             
+            SELECT ROW_NUMBER() OVER () as sno,training_induction_emp_details.induction_slno,indct_emp_no,training_induction_schedule.schedule_topic,
+            training_induction_emp_details.training_status,training_induction_emp_details.pretest_status,
+            training_induction_emp_details.posttest_status,topic_slno,training_topic_name,online_status,both_status,video_link,
+            upload_status,video_time,pdf_time,training_induction_pretest.create_date as exact_date, question_count,em_id,em_name,online_status
+            FROM training_induction_emp_details
+            LEFT JOIN training_induction_schedule ON training_induction_schedule.schedule_slno=training_induction_emp_details.schedule_no
+            LEFT JOIN training_topic ON training_topic.topic_slno=training_induction_schedule.schedule_topic
+            LEFT JOIN training_induction_pretest ON training_induction_pretest.emp_id=training_induction_emp_details.indct_emp_no
+            LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_induction_emp_details.indct_emp_no
+            WHERE indct_emp_no=? and training_induction_emp_details.pretest_status=1 and training_induction_emp_details.offline_mode=1   `, [id],
             (err, results, feilds) => {
                 if (err) {
                     return callback(err)

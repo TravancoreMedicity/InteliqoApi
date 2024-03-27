@@ -8,4 +8,5 @@ router.get('/select', checkToken, TrainingNameGet);
 router.patch('/update', checkToken, TrainingNameUpdate);
 router.patch('/delete', checkToken, TrainingNameDelete);
 
+
 module.exports = router;

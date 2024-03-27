@@ -2,7 +2,7 @@
 const { TrainingAfterJoiningGet, TrainingNewJoineeInsert, JoineeDetailsInsert,
     JoineeDetailsUpdate, ScheduleDetailsGet, ScheduleUpdate, ScheduleDateUpdate, GetTopic, GetTrainers, ScheduleInsert,
     GetScheduleDetails, DepartmentalScheduleInsert, DepartmentalScheduleGet, getDeptTopic, getEmpNameBydepID, InsertEmpDetails,
-    GetDeptEmpNameDetails, InsertTrainingMaster, ScheduleDateDetailUpdate, UpdateTrainers } = require('./TrainingAfterJoining.service');
+    GetDeptEmpNameDetails, InsertTrainingMaster, ScheduleDateDetailUpdate, UpdateTrainers, getTrainerByTopic } = require('./TrainingAfterJoining.service');
 
 module.exports = {
 
@@ -432,5 +432,36 @@ module.exports = {
 
         });
     },
+    getTrainerByTopic: (req, res) => {
+        const id = req.params.id;
+        getTrainerByTopic(id, (err, results) => {
 
+            const datas = results.map((val) => {
+                const obj = {
+                    topic_slno: val.topic_slno,
+                    trainers: JSON.parse(val.trainers),
+                    trainer_name: val.trainer_name
+                }
+                return obj
+            })
+
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "no Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: datas,
+            });
+        });
+    },
 }

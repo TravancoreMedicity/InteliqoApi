@@ -324,6 +324,13 @@ module.exports = {
         pool.query(
             `UPDATE training_employee_details set 
              schedule_date=?,
+             training_status=0,
+             question_count=0,
+             pretest_status=0,
+             posttest_status=0,
+             posttest_permission=0,
+             online_mode=0,
+             offline_mode=0,
              edit_user=?
              where slno=?`,
             [
@@ -356,9 +363,9 @@ module.exports = {
             }
         )
     },
-    GetTrainingCompletedList: (callback) => {
+    GetTrainingCompletedList: (id, callback) => {
         pool.query(
-            `SELECT ROW_NUMBER() OVER () as sn, training_employee_details.slno,scheduled_slno, em_id,hrm_emp_master.em_name, emp_dept,emp_dept_sectn,topic,
+            `SELECT ROW_NUMBER() OVER () as sn, training_employee_details.slno,scheduled_slno, em_id,em_no,hrm_emp_master.em_name, emp_dept,emp_dept_sectn,topic,
             training_employee_details.schedule_date, training_employee_details.training_status, question_count,
             training_employee_details.pretest_status, posttest_status, posttest_permission,topic_slno,training_topic_name,
             hrm_dept_section.sect_id,hrm_dept_section.sect_name
@@ -366,8 +373,9 @@ module.exports = {
             LEFT JOIN training_topic ON training_topic.topic_slno=training_employee_details.topic
             LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_employee_details.emp_name
             LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=training_employee_details.emp_dept_sectn
-            where training_employee_details.training_status = 1 and training_employee_details.posttest_status = 1 and training_employee_details.pretest_status = 1
-            `, [],
+            where training_employee_details.training_status = 1 and training_employee_details.posttest_status = 1 
+            and training_employee_details.pretest_status = 1  and emp_dept=?
+            `, [id],
 
             (err, results, feilds) => {
                 if (err) {
@@ -378,15 +386,15 @@ module.exports = {
             }
         )
     },
-    GetTodaysTrainingList: (callback) => {
+    GetTodaysTrainingList: (id, callback) => {
         pool.query(
             `     
             SELECT training_departmental_schedule.slno, department, deparment_sect, schedule_year, training_departmental_schedule.schedule_date, schedule_topics
             topic_slno,training_topic_name
             FROM medi_hrm.training_departmental_schedule
             LEFT JOIN training_topic ON training_topic.topic_slno=training_departmental_schedule.schedule_topics
-            where schedule_date=current_date()
-            `, [],
+            where schedule_date=current_date() and department=?
+            `, [id],
 
             (err, results, feilds) => {
                 if (err) {
@@ -401,11 +409,11 @@ module.exports = {
     GetAttendanceList: (id, callback) => {
         pool.query(
             `  SELECT slno, em_id,hrm_emp_master.em_name, topic, schedule_date, training_employee_details.training_status, question_count,
-               training_employee_details.pretest_status, posttest_status, posttest_permission,topic_slno,training_topic_name
-               FROM training_employee_details
-               LEFT JOIN training_topic ON training_topic.topic_slno=training_employee_details.topic
-               LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_employee_details.emp_name
-               where topic_slno=? and schedule_date=current_date()`, [id],
+            training_employee_details.pretest_status, posttest_status, posttest_permission,topic_slno,training_topic_name,em_no
+            FROM training_employee_details
+            LEFT JOIN training_topic ON training_topic.topic_slno=training_employee_details.topic
+            LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_employee_details.emp_name
+            where topic_slno=? and schedule_date=current_date()`, [id],
             (err, results, feilds) => {
                 if (err) {
                     return callback(err)
@@ -416,12 +424,12 @@ module.exports = {
             }
         )
     },
-    GetTrainingEmpDetailsAll: (callback) => {
+    GetTrainingEmpDetailsAll: (id, callback) => {
         pool.query(
             `     
-  SELECT schedule_topics,schedule_date,topic_slno,training_topic_name FROM medi_hrm.training_departmental_schedule        
-  LEFT JOIN training_topic ON training_topic.topic_slno=training_departmental_schedule.schedule_topics 
-            `, [],
+            SELECT schedule_topics,schedule_date,topic_slno,training_topic_name FROM medi_hrm.training_departmental_schedule        
+            LEFT JOIN training_topic ON training_topic.topic_slno=training_departmental_schedule.schedule_topics  where department=?
+            `, [id],
 
             (err, results, feilds) => {
                 if (err) {
@@ -432,20 +440,21 @@ module.exports = {
             }
         )
     },
-    GetTrainingEmp: (callback) => {
+    GetTrainingEmp: (id, callback) => {
         pool.query(
             `     
             SELECT ROW_NUMBER() OVER () as sn, training_employee_details.slno,scheduled_slno, emp_name,hrm_emp_master.em_id,hrm_emp_master.em_name, emp_desig, emp_dept, emp_dept_sectn, topic,
             training_topic.topic_slno,training_topic.training_topic_name,training_employee_details.schedule_date, 
             training_employee_details.training_status, training_employee_details.question_count, training_employee_details.pretest_status,
             training_employee_details.posttest_status, training_employee_details.posttest_permission,training_departmental_schedule.slno as shSlno,
-            training_departmental_schedule.schedule_year,training_departmental_schedule.schedule_trainers,training_departmental_schedule.schedule_remark
+            training_departmental_schedule.schedule_year,training_departmental_schedule.schedule_trainers,training_departmental_schedule.schedule_remark,
+            hrm_emp_master.em_no
             FROM training_employee_details
             left join hrm_emp_master on hrm_emp_master.em_id=training_employee_details.emp_name
             left join training_topic on training_topic.topic_slno=training_employee_details.topic
             left join training_departmental_schedule on training_departmental_schedule.slno=training_employee_details.scheduled_slno
-            where training_employee_details.pretest_status = 0 and  training_employee_details.posttest_status = 0
-            `, [],
+            where training_employee_details.pretest_status = 0 and  training_employee_details.posttest_status = 0 and emp_dept=?
+            `, [id],
 
             (err, results, feilds) => {
                 if (err) {
@@ -457,12 +466,17 @@ module.exports = {
         )
     },
 
+    //     SELECT * FROM training_dept_emp_reschedule;
+    // dept_reschedule_slno, dept_schedule_tbl_slno, dept_reschdl_em_id, dept_reschdl_depart, dept_reshdl_dept_sec, dept_reshdl_topic, 
+    // dept_reschdl_status, dept_reschdl_date, create_user, edit_user, create_date, update_date;
+
+
     checkTopicExistORNot: (data, callback) => {
         pool.query(
             `     
-            SELECT department,deparment_sect 
-            FROM training_departmental_schedule 
-            WHERE schedule_topics=? and schedule_date=?
+            SELECT dept_reschdl_depart,dept_reshdl_dept_sec 
+            FROM training_dept_emp_reschedule 
+            WHERE dept_reshdl_topic=? and dept_reschdl_date=?
             `, [
             data.topic_slno,
             data.schedule_date
@@ -478,19 +492,18 @@ module.exports = {
         )
     },
 
-    InsertScheduleTable: (data, callBack) => {
+    InsertReScheduleTable: (data, callBack) => {
         pool.query(
-            `INSERT INTO medi_hrm.training_departmental_schedule (
-             department, deparment_sect, schedule_year, schedule_date, schedule_topics, schedule_trainers, schedule_remark, create_user  )
+            `INSERT INTO medi_hrm.training_dept_emp_reschedule ( dept_schedule_tbl_slno, dept_reschdl_em_id, dept_reschdl_depart, dept_reshdl_dept_sec, dept_reshdl_topic,dept_reschdl_status, dept_reschdl_date, create_user )
              VALUES (?,?,?,?,?,?,?,?)`,
             [
+                data.slno,
+                data.employeeno,
                 data.emp_dept,
                 data.emp_dept_sectn,
-                data.schedule_year,
-                data.schedule_date,
                 data.topic_slno,
-                data.schedule_trainers,
-                data.schedule_remark,
+                data.status,
+                data.schedule_date,
                 data.create_user
             ],
             (error, results, feilds) => {
@@ -501,6 +514,54 @@ module.exports = {
             }
         )
     },
+
+
+
+
+    // checkTopicExistORNot: (data, callback) => {
+    //     pool.query(
+    //         `     
+    //         SELECT department,deparment_sect 
+    //         FROM training_departmental_schedule 
+    //         WHERE schedule_topics=? and schedule_date=?
+    //         `, [
+    //         data.topic_slno,
+    //         data.schedule_date
+    //     ],
+
+    //         (err, results, feilds) => {
+    //             if (err) {
+    //                 return callback(err)
+
+    //             }
+    //             return callback(null, results)
+    //         }
+    //     )
+    // },
+
+    // InsertScheduleTable: (data, callBack) => {
+    //     pool.query(
+    //         `INSERT INTO medi_hrm.training_departmental_schedule (
+    //          department, deparment_sect, schedule_year, schedule_date, schedule_topics, schedule_trainers, schedule_remark, create_user  )
+    //          VALUES (?,?,?,?,?,?,?,?)`,
+    //         [
+    //             data.emp_dept,
+    //             data.emp_dept_sectn,
+    //             data.schedule_year,
+    //             data.schedule_date,
+    //             data.topic_slno,
+    //             data.schedule_trainers,
+    //             data.schedule_remark,
+    //             data.create_user
+    //         ],
+    //         (error, results, feilds) => {
+    //             if (error) {
+    //                 return callBack(error);
+    //             }
+    //             return callBack(null, results);
+    //         }
+    //     )
+    // },
     AllotToPostTest: (callback) => {
         pool.query(
             `     
