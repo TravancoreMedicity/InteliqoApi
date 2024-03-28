@@ -532,6 +532,7 @@ module.exports = {
                 duty_status,
                 holiday_status,
                 leave_status,
+                lvereq_desc,
                 lve_tble_updation_flag
             FROM punch_master 
             WHERE duty_day 
@@ -1062,6 +1063,24 @@ module.exports = {
                 WHERE plan_slno IN (?)`,
             [
                 data
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    checkPunchMarkingHR: (data, callBack) => {
+        pool.query(
+            `SELECT 
+                    last_update_date
+                FROM punchmarking_hr 
+                WHERE marking_month = ? AND deptsec_slno = ?`,
+            [
+                data.month,
+                data.section
             ],
             (error, results, feilds) => {
                 if (error) {
