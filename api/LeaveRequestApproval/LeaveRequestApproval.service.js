@@ -956,7 +956,7 @@ module.exports = {
                 inner join hrm_emp_master on  hrm_leave_request.em_no =hrm_emp_master.em_no
                 inner join hrm_department on  hrm_leave_request.dept_id =hrm_department.dept_id
                 inner join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
-                where  lv_cancel_status=0  and lv_cancel_status_user=0;`,
+                where  lv_cancel_status=0  and lv_cancel_status_user=0 `,
             [],
             (error, results, feilds) => {
                 if (error) {
@@ -2296,12 +2296,7 @@ module.exports = {
     },
     UpdateHalfdayCasual: (data, callBack) => {
         pool.query(
-            `UPDATE 
-            hrm_leave_cl
-        SET cl_lv_taken = cl_lv_taken+0.5,
-            cl_bal_leave = abs(cl_bal_leave- 0.5),
-            hl_lv_tkn_status = 0
-        WHERE hrm_cl_slno = ?`,
+            `UPDATE hrm_leave_cl SET hl_lv_tkn_status = 0 WHERE hrm_cl_slno = ?`,
             [
                 data.planSlno
             ],
