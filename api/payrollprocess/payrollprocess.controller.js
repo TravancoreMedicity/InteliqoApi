@@ -10,7 +10,8 @@ const { empDeptdata, empDeptSecdata, empNameBasedata, getFixedByEmid,
     getattendancemark, getEmpNoDeptWise, getPaySlipData, getIndvidualPayslipDetl,
     checkPayslipDataExist, deptWisePaySlipData, empWisePaySlipDetl, checkInsertVal,
     InsertPunchInOutHr, updatePunchInOutHr, getPunchInOutHr, CancelPunchInOutHr, getPunchByEmid,
-    InsertArrearSalary, getArearData, getAllEmployee, getPunchMarkingHr, getPunchMarkingHrFull
+    InsertArrearSalary, getArearData, getAllEmployee, getPunchMarkingHr, getPunchMarkingHrFull,
+    getTotalGrosssalaryByno
 } = require('../payrollprocess/payrollprocess.service');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -1101,6 +1102,28 @@ module.exports = {
             }
             return res.status(200).json({
                 succ: 1,
+                data: results
+            });
+        });
+    },
+    getTotalGrosssalaryByno: (req, res) => {
+        const id = req.params.id;
+        getTotalGrosssalaryByno(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
                 data: results
             });
         });

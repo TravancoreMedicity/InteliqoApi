@@ -6,7 +6,7 @@ const { create, checkInsertVal, createGenralRq, createOndutyRequest, createEnabl
     addHrComment, checkingAttendanceMarking, HRNopunchMasterIn, HRNopunchMasterOut,
     checkMispunchRequest, checksEnableRq, punchdataEntry, HROnDutyPunchMaster,
     checkAttendanceProcess, generalHRapproval, cancelEnable, enableOnduty, cancelOnehour,
-    cancelgeneral
+    cancelgeneral, checkPunchMarkingHR
 } = require('../CommonRequest/CommonReqst.service')
 const { validateOneHourReqst } = require('../../validation/validation_schema')
 
@@ -15,12 +15,13 @@ module.exports = {
         const body = req.body;
         const body_result = validateOneHourReqst.validate(body);
         body.reason = body_result.value.reason;
+
         let dataSecond = {
-            fromDate: body.one_hour_duty_day,
-            empNo: body.em_no
+            month: body.attendance_marking_month,
+            section: body.dept_sect_id
         }
 
-        checkingAttendanceMarking(dataSecond, (err, results) => {
+        checkPunchMarkingHR(dataSecond, (err, results) => {
 
             if (err) {
                 logger.errorLogger(err)
@@ -58,7 +59,7 @@ module.exports = {
             else {
                 return res.status(200).json({
                     success: 2,
-                    message: "Attendance Marking Is Done, Contact HRD!!"
+                    message: "Attendance Marking Is Done, Can't Apply One Hour request"
                 });
             }
         })

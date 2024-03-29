@@ -559,5 +559,23 @@ module.exports = {
             }
         )
     },
+    checkPunchMarkingHR: (data, callBack) => {
+        pool.query(
+            `SELECT 
+                    last_update_date
+                FROM punchmarking_hr 
+                WHERE marking_month = ? AND deptsec_slno = ?`,
+            [
+                data.month,
+                data.section
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, JSON.stringify(results));
+            }
+        )
+    },
 
 }

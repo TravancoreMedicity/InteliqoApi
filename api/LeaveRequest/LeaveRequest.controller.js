@@ -2,7 +2,7 @@ const { createmastleave, createdetlleave, updateserialnum, gethafdayshift, getfi
     getsecondhalf, inserthalfdayreque, insertnopunchrequest, insertcompensatyoff,
     getLeaveCancelEmpdetl, getPunchMasterSlno, checkMispunchRequest, updatePunchSlno, getLeaveCount,
     updateCommonLeave, updateCasualLeave, updateCompansatoryOff, updateEarnLeave, updateNationalHoliday, halfDayRequestCheck,
-    updateHaldayValueInTable, getHolidayStatus } = require('../LeaveRequest/LeaveRequest.service');
+    updateHaldayValueInTable, getHolidayStatus, checkPunchMarkingHR } = require('../LeaveRequest/LeaveRequest.service');
 // const { validateleavetype } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger');
 const { attMarkingExcistFrLveReq } = require('../attendance_marking_save/attendance_marking_save.service');
@@ -18,11 +18,11 @@ module.exports = {
         }
 
         let dataSecond = {
-            fromDate: body.leavefrom_date,
-            empNo: body.em_no
+            month: body.attendance_marking_month,
+            section: body.em_dept_section
         }
 
-        attMarkingExcistFrLveReq(dataSecond, (err, results) => {
+        checkPunchMarkingHR(dataSecond, (err, results) => {
 
             if (err) {
                 logger.errorLogger(err)
@@ -76,7 +76,7 @@ module.exports = {
             } else {
                 return res.status(200).json({
                     success: 2,
-                    message: "Attendance Marking Is Done, Contact HRD!!"
+                    message: "Attendance Marking Is Done, Can't Apply Leave Request"
                 });
             }
 
@@ -87,11 +87,10 @@ module.exports = {
         const body = req.body;
 
         let dataSecond = {
-            fromDate: body.leavedate,
-            empNo: body.em_no
+            month: body.attendance_marking_month,
+            section: body.em_dept_section
         }
-
-        attMarkingExcistFrLveReq(dataSecond, (err, results) => {
+        checkPunchMarkingHR(dataSecond, (err, results) => {
 
             if (err) {
                 logger.errorLogger(err)
@@ -156,7 +155,7 @@ module.exports = {
             } else {
                 return res.status(200).json({
                     success: 2,
-                    message: "Attendance Marking Is Done, Contact HRD!!"
+                    message: "Attendance Marking Is Done, Can,t Apply halfday Request"
                 });
             }
         })
@@ -202,11 +201,11 @@ module.exports = {
         //CHECKING FOR ATTENDANCE MARKED
 
         let dataSecond = {
-            fromDate: body.nopunchdate,
-            empNo: body.em_no
+            month: body.attendance_marking_month,
+            section: body.em_dept_section
         }
 
-        attMarkingExcistFrLveReq(dataSecond, (err, results) => {
+        checkPunchMarkingHR(dataSecond, (err, results) => {
 
             if (err) {
                 logger.errorLogger(err)
@@ -266,7 +265,7 @@ module.exports = {
             } else {
                 return res.status(200).json({
                     success: 2,
-                    message: "Attendance Marking Is Done, Contact HRD!!"
+                    message: "Attendance Marking Is Done, Can't Apply No punch Request"
                 });
             }
         })

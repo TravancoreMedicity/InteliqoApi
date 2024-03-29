@@ -13,7 +13,8 @@ const { empDeptdata, empDeptSecdata, empNameBasedata, getFixedByEmid, getEarning
     getIndvidualPayslipDetl, checkPayslipDataExist, deptWisePaySlipData,
     empWisePaySlipDetl, punchMastLock, InsertPunchInOutHr, getPunchInOutHr,
     CancelPunchInOutHr, getPunchByEmid, InsertArrearSalary, getArearData, getAllEmployee,
-    getPunchMarkingHr, getPunchMarkingHrFull
+    getPunchMarkingHr, getPunchMarkingHrFull,
+    getTotalGrosssalaryByno
 
 } = require('../payrollprocess/payrollprocess.controller');
 
@@ -83,6 +84,7 @@ router.post("/getAllEmployee", checkToken, getAllEmployee)
 router.post("/getPunchMarkingHrInfo", checkToken, getPunchMarkingHr)
 router.post("/getPunchMarkingHrFull", checkToken, getPunchMarkingHrFull)
 
+router.get("/getTotalGrosssalaryByno/:id", checkToken, getTotalGrosssalaryByno)
 
 
 module.exports = router; 
