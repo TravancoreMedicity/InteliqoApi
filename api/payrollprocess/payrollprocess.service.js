@@ -1103,4 +1103,22 @@ module.exports = {
             }
         )
     },
+    getTotalGrosssalaryByno: (id, callBack) => {
+        pool.query(
+            `SELECT 
+            ernded_slno,em_id,
+            em_amount
+             FROM hrm_emp_earn_deduction
+			WHERE em_no =?  and em_earning_type IN(1,2)`,
+            [
+                id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }
