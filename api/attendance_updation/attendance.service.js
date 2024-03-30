@@ -1090,4 +1090,45 @@ module.exports = {
             }
         )
     },
+    updatePunchMasterSingleRow: (data, callBack) => {
+        pool.query(
+            `UPDATE punch_master
+            SET punch_in = ?,
+                punch_out = ?,
+                hrs_worked =?,
+                late_in = ?,
+                early_out = ?,
+                duty_status=?,
+                duty_desc=?,
+                lvereq_desc=?,
+                lve_tble_updation_flag = 1
+            WHERE punch_slno = ? and lve_tble_updation_flag!=1`,
+            [
+                data.punch_in,
+                data.punch_out,
+                data.hrs_worked,
+                data.late_in,
+                data.early_out,
+                data.duty_status,
+                data.duty_desc,
+                data.lvereq_desc,
+                data.punch_slno,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+
+
+
+
+
+
+
+
+
 }

@@ -15,7 +15,8 @@ const { getEmployeeDetl, getEmployeeShiftDetl, getDepartmentShiftMast,
     checkAttendanceProcessDept, getEmpList, getEmployeeRights, sectionwiseEmppunchMast,
     sectionwiseEmpDutyplan, checkAttendanceProcessSectionWise, getHolidayListDateWise,
     getPunchDataEmCodeWiseDateWise, getDutyPlanBySection, getPunchMasterDataSectionWise,
-    updatePunchMaster, updatePunchMarkingHR, updateDutyPlanTable, updateDelStatDutyPlanTable, checkPunchMarkingHR
+    updatePunchMaster, updatePunchMarkingHR, updateDutyPlanTable, updateDelStatDutyPlanTable, checkPunchMarkingHR,
+    updatePunchMasterSingleRow
 } = require("../attendance_updation/attendance.service")
 //SHIFT DETAILS
 //get the shift details 
@@ -1513,6 +1514,29 @@ module.exports = {
             return res.status(200).json({
                 success: 1,
                 data: results
+            });
+        });
+    },
+    updatePunchMasterSingleRow: (req, res) => {
+        const body = req.body
+        updatePunchMasterSingleRow(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+            if (results.length === 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found",
+                    data: []
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                message: "Successfully Updated",
             });
         });
     },
