@@ -16,55 +16,30 @@ module.exports = {
         const body_result = validateOneHourReqst.validate(body);
         body.reason = body_result.value.reason;
 
-        let dataSecond = {
-            month: body.attendance_marking_month,
-            section: body.dept_sect_id
-        }
+        checkInsertVal(body, (err, results) => {
+            const value = JSON.parse(JSON.stringify(results))
+            if (Object.keys(value).length === 0) {
+                create(body, (err, results) => {
 
-        checkPunchMarkingHR(dataSecond, (err, results) => {
-
-            if (err) {
-                logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 0,
-                    message: err
-                });
-            }
-            if (JSON.parse(results).length === 0) {
-                checkInsertVal(body, (err, results) => {
-                    const value = JSON.parse(JSON.stringify(results))
-                    if (Object.keys(value).length === 0) {
-                        create(body, (err, results) => {
-
-                            if (err) {
-                                logger.errorLogger(err)
-                                return res.status(200).json({
-                                    success: 0,
-                                    message: err
-                                });
-                            }
-                            return res.status(200).json({
-                                success: 1,
-                                message: "One Hour Request Submitted Successfully"
-                            });
-                        });
-                    } else {
+                    if (err) {
+                        logger.errorLogger(err)
                         return res.status(200).json({
-                            success: 2,
-                            message: "Based On Policy Only 1 One Hour Request is Allowed"
-                        })
+                            success: 0,
+                            message: err
+                        });
                     }
-                })
-            }
-            else {
+                    return res.status(200).json({
+                        success: 1,
+                        message: "One Hour Request Submitted Successfully"
+                    });
+                });
+            } else {
                 return res.status(200).json({
                     success: 2,
-                    message: "Attendance Marking Is Done, Can't Apply One Hour request"
-                });
+                    message: "Based On Policy Only 1 One Hour Request is Allowed"
+                })
             }
         })
-
-
     },
     createGenralRq: (req, res) => {
         const body = req.body;
@@ -115,50 +90,28 @@ module.exports = {
     },
     createEnableMispunchRqst: (req, res) => {
         const body = req.body;
-        let dataSecond = {
-            fromDate: body.miss_punch_day,
-            empNo: body.em_no
-        }
-        checkingAttendanceMarking(dataSecond, (err, results) => {
-            if (err) {
-                logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 0,
-                    message: err
-                });
-            }
+        checksEnableRq(body, (err, results) => {
+            const value = JSON.parse(JSON.stringify(results))
+            if (Object.keys(value).length === 0) {
+                createEnableMispunchRqst(body, (err, results) => {
 
-            if (JSON.parse(results).length === 0) {
-                checksEnableRq(body, (err, results) => {
-                    const value = JSON.parse(JSON.stringify(results))
-                    if (Object.keys(value).length === 0) {
-                        createEnableMispunchRqst(body, (err, results) => {
-
-                            if (err) {
-                                logger.errorLogger(err)
-                                return res.status(200).json({
-                                    success: 0,
-                                    message: err
-                                });
-                            }
-                            return res.status(200).json({
-                                success: 1,
-                                message: "Enable Miss Punch Request Submitted Successfully"
-                            });
-                        });
-                    } else {
+                    if (err) {
+                        logger.errorLogger(err)
                         return res.status(200).json({
-                            success: 2,
-                            message: "Request Already Submitted"
-                        })
+                            success: 0,
+                            message: err
+                        });
                     }
-                })
-            }
-            else {
+                    return res.status(200).json({
+                        success: 1,
+                        message: "Enable Miss Punch Request Submitted Successfully"
+                    });
+                });
+            } else {
                 return res.status(200).json({
                     success: 2,
-                    message: "Attendance Marking Is Done, Contact HRD!!"
-                });
+                    message: "Request Already Submitted"
+                })
             }
         })
         // createEnableMispunchRqst(body, (err, results) => {
