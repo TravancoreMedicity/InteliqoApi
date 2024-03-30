@@ -2,7 +2,7 @@ const { createmastleave, createdetlleave, updateserialnum, gethafdayshift, getfi
     getsecondhalf, inserthalfdayreque, insertnopunchrequest, insertcompensatyoff,
     getLeaveCancelEmpdetl, getPunchMasterSlno, checkMispunchRequest, updatePunchSlno, getLeaveCount,
     updateCommonLeave, updateCasualLeave, updateCompansatoryOff, updateEarnLeave, updateNationalHoliday, halfDayRequestCheck,
-    updateHaldayValueInTable, getHolidayStatus } = require('../LeaveRequest/LeaveRequest.service');
+    updateHaldayValueInTable, getHolidayStatus, checkPunchMarkingHR } = require('../LeaveRequest/LeaveRequest.service');
 // const { validateleavetype } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger');
 const { attMarkingExcistFrLveReq } = require('../attendance_marking_save/attendance_marking_save.service');
@@ -16,14 +16,7 @@ module.exports = {
             toDate: `${body.leavetodate} 23:59:59`,
             em_no: body.em_no
         }
-
-        let dataSecond = {
-            fromDate: body.leavefrom_date,
-            empNo: body.em_no
-        }
-
-        attMarkingExcistFrLveReq(dataSecond, (err, results) => {
-
+        getLeaveCount(dateCheck, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
@@ -32,67 +25,43 @@ module.exports = {
                 });
             }
 
-            if (JSON.parse(results).length === 0) {
-                getLeaveCount(dateCheck, (err, results) => {
-                    if (err) {
-                        logger.errorLogger(err)
-                        return res.status(200).json({
-                            success: 0,
-                            message: err
-                        });
-                    }
+            if (results) {
 
-                    if (results) {
-
-                        let sinbgleLeaveCount = JSON.parse(JSON.stringify(results));
-                        let count = sinbgleLeaveCount[0]?.CNT;
-                        if (count === 0) {
-                            //insert function
-                            createmastleave(body, (err, results) => {
-                                if (err) {
-                                    logger.errorLogger(err)
-                                    return res.status(200).json({
-                                        success: 0,
-                                        message: err
-                                    });
-                                }
-
-                                return res.status(200).json({
-                                    success: 1,
-                                    message: "Leave Request Created Successfully"
-                                });
-
-                            });
-
-                        } else {
-                            // duplicate no insert
+                let sinbgleLeaveCount = JSON.parse(JSON.stringify(results));
+                let count = sinbgleLeaveCount[0]?.CNT;
+                if (count === 0) {
+                    //insert function
+                    createmastleave(body, (err, results) => {
+                        if (err) {
+                            logger.errorLogger(err)
                             return res.status(200).json({
-                                success: 3,
-                                message: "Selected Date, Already Have a Leave Request"
+                                success: 0,
+                                message: err
                             });
                         }
-                    }
-                })
-            } else {
-                return res.status(200).json({
-                    success: 2,
-                    message: "Attendance Marking Is Done, Contact HRD!!"
-                });
+
+                        return res.status(200).json({
+                            success: 1,
+                            message: "Leave Request Created Successfully"
+                        });
+
+                    });
+
+                } else {
+                    // duplicate no insert
+                    return res.status(200).json({
+                        success: 3,
+                        message: "Selected Date, Already Have a Leave Request"
+                    });
+                }
             }
-
         })
-
     },
     inserthalfdayreque: (req, res) => {
         const body = req.body;
 
-        let dataSecond = {
-            fromDate: body.leavedate,
-            empNo: body.em_no
-        }
-
-        attMarkingExcistFrLveReq(dataSecond, (err, results) => {
-
+        //FOR CHECKING ALREADY A HALF LEAVE REQUEST
+        halfDayRequestCheck(body, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
@@ -101,10 +70,14 @@ module.exports = {
                 });
             }
 
-            if (JSON.parse(results).length === 0) {
-
-                //FOR CHECKING ALREADY A HALF LEAVE REQUEST
-                halfDayRequestCheck(body, (err, results) => {
+            const rowData = JSON.parse(JSON.stringify(results));
+            if (rowData.length > 0) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Selected Date, Already Have a Leave Request"
+                });
+            } else {
+                inserthalfdayreque(body, (err, results) => {
                     if (err) {
                         logger.errorLogger(err)
                         return res.status(200).json({
@@ -113,14 +86,11 @@ module.exports = {
                         });
                     }
 
-                    const rowData = JSON.parse(JSON.stringify(results));
-                    if (rowData.length > 0) {
-                        return res.status(200).json({
-                            success: 2,
-                            message: "Selected Date, Already Have a Leave Request"
-                        });
-                    } else {
-                        inserthalfdayreque(body, (err, results) => {
+                    //UPDATE CASUAL LEAVE TABLE FOR HALF DAY 
+                    if (results) {
+
+                        updateHaldayValueInTable(body, (err, results) => {
+
                             if (err) {
                                 logger.errorLogger(err)
                                 return res.status(200).json({
@@ -129,40 +99,16 @@ module.exports = {
                                 });
                             }
 
-                            //UPDATE CASUAL LEAVE TABLE FOR HALF DAY 
-                            if (results) {
+                            return res.status(200).json({
+                                success: 1,
+                                message: "Half Day Leave Requested Created Successfully"
+                            });
 
-                                updateHaldayValueInTable(body, (err, results) => {
-
-                                    if (err) {
-                                        logger.errorLogger(err)
-                                        return res.status(200).json({
-                                            success: 0,
-                                            message: err
-                                        });
-                                    }
-
-                                    return res.status(200).json({
-                                        success: 1,
-                                        message: "Half Day Leave Requested Created Successfully"
-                                    });
-
-                                })
-                            }
-                        });
+                        })
                     }
-
-                })
-            } else {
-                return res.status(200).json({
-                    success: 2,
-                    message: "Attendance Marking Is Done, Contact HRD!!"
                 });
             }
         })
-
-
-
     },
     insertcompensatyoff: (req, res) => {
         const body = req.body;
@@ -199,28 +145,30 @@ module.exports = {
     insertnopunchrequest: (req, res) => {
         const body = req.body;
         const data = { em_id: body.em_id, date: body.nopunchdate }
+
         //CHECKING FOR ATTENDANCE MARKED
+        checkMispunchRequest(data, (err, results) => {
+            if (Object.keys(results)?.length === 0) {
+                getPunchMasterSlno(data, (err, results) => {
+                    if (err) {
+                        logger.errorLogger(err)
+                        return res.status(200).json({
+                            success: 0,
+                            message: err
+                        });
+                    }
 
-        let dataSecond = {
-            fromDate: body.nopunchdate,
-            empNo: body.em_no
-        }
-
-        attMarkingExcistFrLveReq(dataSecond, (err, results) => {
-
-            if (err) {
-                logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 0,
-                    message: err
-                });
-            }
-
-            if (JSON.parse(results).length === 0) {
-
-                checkMispunchRequest(data, (err, results) => {
                     if (Object.keys(results)?.length === 0) {
-                        getPunchMasterSlno(data, (err, results) => {
+                        return res.status(200).json({
+                            success: 2,
+                            message: "Contact EDP"
+                        });
+                    }
+
+                    if (results) {
+                        const punchSlno = JSON.parse(JSON.stringify(results));
+                        const postData = { ...body, punch_slno: punchSlno?.[0]?.punch_slno }
+                        insertnopunchrequest(postData, (err, results) => {
                             if (err) {
                                 logger.errorLogger(err)
                                 return res.status(200).json({
@@ -228,50 +176,22 @@ module.exports = {
                                     message: err
                                 });
                             }
+                            return res.status(200).json({
+                                success: 1,
+                                message: "MissPunch Requested Created Successfully"
+                            });
 
-                            if (Object.keys(results)?.length === 0) {
-                                return res.status(200).json({
-                                    success: 2,
-                                    message: "Contact EDP"
-                                });
-                            }
-
-                            if (results) {
-                                const punchSlno = JSON.parse(JSON.stringify(results));
-                                const postData = { ...body, punch_slno: punchSlno?.[0]?.punch_slno }
-                                insertnopunchrequest(postData, (err, results) => {
-                                    if (err) {
-                                        logger.errorLogger(err)
-                                        return res.status(200).json({
-                                            success: 0,
-                                            message: err
-                                        });
-                                    }
-                                    return res.status(200).json({
-                                        success: 1,
-                                        message: "MissPunch Requested Created Successfully"
-                                    });
-
-                                });
-                            }
-
-                        })
-                    } else {
-                        return res.status(200).json({
-                            success: 2,
-                            message: "Based On Policy Only One MissPunchRequest Allowed"
                         });
                     }
+
                 })
             } else {
                 return res.status(200).json({
                     success: 2,
-                    message: "Attendance Marking Is Done, Contact HRD!!"
+                    message: "Based On Policy Only One MissPunchRequest Allowed"
                 });
             }
         })
-
-
     },
     createdetlleave: (req, res) => {
         const body = req.body;
