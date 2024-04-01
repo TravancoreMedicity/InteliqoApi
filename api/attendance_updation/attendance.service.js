@@ -1102,7 +1102,7 @@ module.exports = {
                 duty_desc=?,
                 lvereq_desc=?,
                 lve_tble_updation_flag = 1
-            WHERE punch_slno = ? and lve_tble_updation_flag!=1`,
+            WHERE punch_slno = ? `,
             [
                 data.punch_in,
                 data.punch_out,
