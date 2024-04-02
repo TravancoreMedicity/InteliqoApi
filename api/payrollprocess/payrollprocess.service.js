@@ -1121,4 +1121,55 @@ module.exports = {
             }
         )
     },
+    getPunchMasterSalaryAllEmployee: (data, callBack) => {
+        pool.query(
+            `SELECT
+                punch_master.duty_day,
+                punch_master.em_no,
+                COALESCE(punch_master.duty_desc,'A') duty_desc,
+                hrm_emp_master.em_name,
+                hrm_department.dept_name,
+                hrm_dept_section.sect_name,
+                hrm_emp_category.ecat_name,
+                institution_type.inst_emp_type,
+                hrm_emp_personal.em_account_no,
+                hrm_emp_pfesi.nps,
+                hrm_emp_pfesi.npsamount,
+                hrm_emp_pfesi.lwf_status,
+                hrm_emp_pfesi.lwfamount
+            FROM punch_master
+            LEFT JOIN hrm_emp_master ON hrm_emp_master.em_no = punch_master.em_no
+            LEFT JOIN hrm_department ON hrm_department.dept_id = hrm_emp_master.em_department
+            LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
+            LEFT JOIN hrm_emp_category ON hrm_emp_category.category_slno = hrm_emp_master.em_category
+            LEFT JOIN institution_type ON institution_type.inst_slno = hrm_emp_master.em_institution_type
+            LEFT JOIN hrm_emp_personal ON hrm_emp_personal.em_no = hrm_emp_master.em_no
+            LEFT JOIN hrm_emp_pfesi ON hrm_emp_pfesi.em_no = hrm_emp_master.em_no
+            WHERE punch_master.duty_day >= ? AND punch_master.duty_day <= ?
+            AND hrm_emp_master.em_status = 1
+            GROUP BY punch_master.duty_day,
+                punch_master.em_no,
+                COALESCE(punch_master.duty_desc,'A') ,
+                hrm_emp_master.em_name,
+                hrm_department.dept_name,
+                hrm_dept_section.sect_name,
+                hrm_emp_category.ecat_name,
+                institution_type.inst_emp_type,
+                hrm_emp_personal.em_account_no,
+                hrm_emp_pfesi.nps,
+                hrm_emp_pfesi.npsamount,
+                hrm_emp_pfesi.lwf_status,
+                hrm_emp_pfesi.lwfamount`,
+            [
+                data.fromDate,
+                data.toDate
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }
