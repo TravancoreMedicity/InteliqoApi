@@ -1093,7 +1093,7 @@ module.exports = {
             left join hrm_emp_personal on hrm_emp_personal.em_id=hrm_emp_master.em_id
             left join hrm_emp_pfesi on hrm_emp_pfesi.em_id=hrm_emp_master.em_id
             where hrm_emp_master.em_department IN (?)
-            and hrm_emp_master.em_dept_section IN (?)  and em_status=1  and hrm_emp_master.em_no!=1 and doctor_status=0;
+            and hrm_emp_master.em_dept_section IN (?)  and em_status=1  and hrm_emp_master.em_no!=1 and doctor_status=0
             group by hrm_emp_master.em_no,
             em_name,
             gross_salary,
