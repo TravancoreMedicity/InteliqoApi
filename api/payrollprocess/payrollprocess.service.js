@@ -703,16 +703,42 @@ module.exports = {
     },
     getEmpNoDeptWise: (data, callBack) => {
         pool.query(
-            `select hrm_emp_master.em_no,em_name,gross_salary,hrm_emp_master.em_id ,dept_name ,sect_name,
-            em_account_no,nps,npsamount,lwf_status,lwfamount           
-               FROM hrm_emp_master 
-               inner join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
-               inner join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
-               left join hrm_emp_personal on hrm_emp_personal.em_id=hrm_emp_master.em_id
-               left join hrm_emp_pfesi on hrm_emp_pfesi.em_id=hrm_emp_master.em_id
-               where hrm_emp_master.em_department=?
-               and hrm_emp_master.em_dept_section=?  and em_status=1  and hrm_emp_master.em_no!=1 and doctor_status=0;
-                `,
+            `select hrm_emp_master.em_no,
+            em_name,
+            gross_salary,
+            hrm_emp_master.em_id ,
+            branch_name,
+            dept_name ,
+            sect_name,
+            ecat_name,
+            inst_emp_type,
+            COALESCE(em_account_no,0) em_account_no,
+            COALESCE(nps,0) nps,
+            COALESCE(npsamount,0)npsamount,
+            COALESCE(lwf_status,0)lwf_status,
+            COALESCE(lwfamount,0)lwfamount          
+            FROM hrm_emp_master 
+            left join hrm_branch on hrm_branch.branch_slno=hrm_emp_master.em_branch
+            left join hrm_emp_category on hrm_emp_category.category_slno=hrm_emp_master.em_category
+            left join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
+            left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
+            left join institution_type on institution_type.inst_slno=hrm_emp_master.em_institution_type
+            left join hrm_emp_personal on hrm_emp_personal.em_id=hrm_emp_master.em_id
+            left join hrm_emp_pfesi on hrm_emp_pfesi.em_id=hrm_emp_master.em_id
+            where hrm_emp_master.em_department=?
+            and hrm_emp_master.em_dept_section=?  and em_status=1  and hrm_emp_master.em_no!=1 and doctor_status=0
+            group by hrm_emp_master.em_no,
+            em_name,
+            gross_salary,
+            hrm_emp_master.em_id ,
+            branch_name,
+            dept_name ,
+            sect_name,
+            ecat_name,
+            inst_emp_type,
+            em_account_no,
+            nps,
+            npsamount`,
             [
                 data.em_department,
                 data.em_dept_section
@@ -1044,16 +1070,42 @@ module.exports = {
     },
     getAllEmployee: (data, callBack) => {
         pool.query(
-            `select hrm_emp_master.em_no,em_name,gross_salary,hrm_emp_master.em_id ,dept_name ,sect_name,
-            em_account_no,nps,npsamount,lwf_status,lwfamount               
-               FROM hrm_emp_master 
-               inner join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
-               inner join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
-               left join hrm_emp_personal on hrm_emp_personal.em_id=hrm_emp_master.em_id
-               left join hrm_emp_pfesi on hrm_emp_pfesi.em_id=hrm_emp_master.em_id
-               where hrm_emp_master.em_department IN (?)
-               and hrm_emp_master.em_dept_section IN (?)  and em_status=1  and hrm_emp_master.em_no!=1 and doctor_status=0;
-                `,
+            `select hrm_emp_master.em_no,
+            em_name,
+            gross_salary,
+            hrm_emp_master.em_id ,
+            branch_name,
+            dept_name ,
+            sect_name,
+            ecat_name,
+            inst_emp_type,
+            COALESCE(em_account_no,0) em_account_no,
+            COALESCE(nps,0) nps,
+            COALESCE(npsamount,0)npsamount,
+            COALESCE(lwf_status,0)lwf_status,
+            COALESCE(lwfamount,0)lwfamount             
+            FROM hrm_emp_master 
+            left join hrm_branch on hrm_branch.branch_slno=hrm_emp_master.em_branch
+            left join hrm_emp_category on hrm_emp_category.category_slno=hrm_emp_master.em_category
+            left join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
+            left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
+            left join institution_type on institution_type.inst_slno=hrm_emp_master.em_institution_type
+            left join hrm_emp_personal on hrm_emp_personal.em_id=hrm_emp_master.em_id
+            left join hrm_emp_pfesi on hrm_emp_pfesi.em_id=hrm_emp_master.em_id
+            where hrm_emp_master.em_department IN (?)
+            and hrm_emp_master.em_dept_section IN (?)  and em_status=1  and hrm_emp_master.em_no!=1 and doctor_status=0
+            group by hrm_emp_master.em_no,
+            em_name,
+            gross_salary,
+            hrm_emp_master.em_id ,
+            branch_name,
+            dept_name ,
+            sect_name,
+            ecat_name,
+            inst_emp_type,
+            em_account_no,
+            nps,
+            npsamount`,
             [
                 data.em_department,
                 data.em_dept_section
