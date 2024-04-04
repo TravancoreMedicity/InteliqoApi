@@ -1224,4 +1224,25 @@ module.exports = {
             }
         )
     },
+    getAcriveDepartmentSection: (callBack) => {
+        pool.query(
+            `SELECT 
+                hrm_dept_section.sect_id,
+                hrm_dept_section.sect_name,
+                hrm_department.dept_id,
+                hrm_department.dept_name
+            FROM hrm_dept_section 
+            LEFT JOIN hrm_department ON hrm_dept_section.dept_id = hrm_department.dept_id
+            RIGHT JOIN (SELECT distinct(em_dept_section) section  
+            FROM hrm_emp_master WHERE em_status = 1 AND doctor_status = 0 AND em_institution_type != 9) SECT ON SECT.section = hrm_dept_section.sect_id
+            WHERE sect_status=1 order by sect_name asc`,
+            [],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }
