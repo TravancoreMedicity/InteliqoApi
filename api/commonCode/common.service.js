@@ -1291,7 +1291,8 @@ module.exports = {
                C.des_type,
                C.ecat_prob,
                C.ecat_training,
-               E.probation_status
+               E.probation_status,
+               U.user_grp_slno as groupmenu
         FROM hrm_emp_master E
             LEFT JOIN hrm_branch B ON B.branch_slno = E.em_branch
             LEFT JOIN hrm_department D ON D.dept_id = E.em_department
@@ -1307,6 +1308,7 @@ module.exports = {
             LEFT JOIN hrm_co_assign Z ON Z.emp_id = E.em_id
             LEFT JOIN hrm_emp_pfesi T ON T.em_id= E.em_id
             LEFT JOIN hrm_emp_verification V ON V.em_id=E.em_id
+            LEFT JOIN module_group_user_rights U on U.emp_slno = E.em_id 
             LEFT JOIN hrm_emp_contract_detl Q ON Q.em_id = E.em_id and Q.status = 0
         WHERE E.em_status = 1 AND E.em_id = ?`,
             [
@@ -1588,8 +1590,11 @@ module.exports = {
                 C.category_slno,
                 C.emp_type,
                 C.des_type,
-                E.probation_status
-            FROM hrm_emp_master E LEFT JOIN hrm_emp_category C ON C.category_slno = E.em_category
+                E.probation_status,
+                R.user_grp_slno as groupmenu
+            FROM hrm_emp_master E 
+            LEFT JOIN hrm_emp_category C ON C.category_slno = E.em_category
+            LEFT JOIN module_group_user_rights R on R.emp_slno = E.em_id 
             WHERE E.em_status = 1 AND E.em_id = ?`,
             [
                 id
