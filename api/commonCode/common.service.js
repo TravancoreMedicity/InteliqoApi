@@ -1687,5 +1687,41 @@ module.exports = {
             }
         )
     },
+    getAutharisedDepartmentSection: (id, callBack) => {
+        pool.query(
+            `select 
+                dept_section
+            from hrm_authorization_assign
+            where emp_id =?`,
+            [id],
+            (error, results, fields) => {
+                if (error) {
+                    callBack(error)
+                }
+                return callBack(null, results)
+            }
+        );
+    },
+    getEmployeeArraySectionArray: (data, callBack) => {
+        pool.query(
+            `SELECT 
+                em_name,
+                em_no,
+                em_id,
+                em_dept_section
+            FROM hrm_emp_master
+            WHERE em_dept_section IN (?)
+            and em_status=1 and em_id!=1 and em_no!=2 `,
+            [
+                data
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }
 
