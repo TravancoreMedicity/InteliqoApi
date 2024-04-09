@@ -440,7 +440,7 @@ module.exports = {
                 cl_bal_leave,
                 hl_lv_tkn_status
             From hrm_leave_cl
-            where cl_lv_credit=1 and em_id=? and cl_lv_taken < 1
+            where cl_lv_credit=1 and em_no = ? and cl_lv_taken < 1
             and year(cl_lv_year) = year(curdate())`,
             [
                 data
@@ -466,7 +466,7 @@ module.exports = {
                 hl_lv_tkn_status
             FROM hrm_leave_holiday
             left join hrm_yearly_holiday_list on hrm_yearly_holiday_list.hld_slno=hrm_leave_holiday.hd_slno
-            where  em_id=? and  hl_lv_active = 0 and hl_lv_taken < 1
+            where  em_no= ? and  hl_lv_active = 0 and hl_lv_taken < 1
             and year( hl_lv_year ) = year(curdate())`,
             [
                 data
@@ -514,7 +514,7 @@ module.exports = {
                 hl_lv_tkn_status
             FROM hrm_leave_earnlv
             WHERE ernlv_credit=1 
-            AND em_id=? 
+            AND em_no = ?
             AND ernlv_taken < 1
             AND earn_lv_active=0
             AND credit_year = year(curdate())`,
@@ -534,14 +534,17 @@ module.exports = {
             `SELECT 
                 hrm_lv_cmn,
                 llvetype_slno, 
+                hrm_leave_type.lvetype_desc,
                 cmn_lv_allowed, 
                 cmn_lv_taken, 
-                cmn_lv_balance 
+                cmn_lv_balance,
+                em_no
             FROM hrm_leave_common 
-            WHERE em_id='?'
+            LEFT JOIN hrm_leave_type ON hrm_leave_type.lvetype_slno = hrm_leave_common.llvetype_slno
+            WHERE em_no  = ?
             AND year(cmn_lv_year) = year(curdate())`,
             [
-                data.em_id
+                data
             ],
             (error, results, feilds) => {
                 if (error) {

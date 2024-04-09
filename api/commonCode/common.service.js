@@ -1327,11 +1327,15 @@ module.exports = {
             `SELECT 
                 hrm_calc_holiday,
                 calculated_date,
-                credited,specail_remark 
+                credited,
+                taken,
+                credited_date,
+                specail_remark,
+                hl_lv_tkn_status
             FROM hrm_leave_calculated
             WHERE emp_id = ?
-            AND sysdate() <  DATE_ADD(credited_date , interval 30 day)
-            AND taken=0`,
+            AND year( credited_date ) = year(curdate())
+            AND taken < 1`,
             [
                 id
             ],
