@@ -438,7 +438,8 @@ module.exports = {
                 em_id,
                 MONTHNAME(cl_lv_mnth)cl_lv_mnth,
                 cl_bal_leave,
-                hl_lv_tkn_status
+                hl_lv_tkn_status,
+                cl_lv_taken
             From hrm_leave_cl
             where cl_lv_credit=1 and em_no = ? and cl_lv_taken < 1
             and year(cl_lv_year) = year(curdate())`,

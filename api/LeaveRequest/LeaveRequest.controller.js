@@ -2,7 +2,10 @@ const { createmastleave, createdetlleave, updateserialnum, gethafdayshift, getfi
     getsecondhalf, inserthalfdayreque, insertnopunchrequest, insertcompensatyoff,
     getLeaveCancelEmpdetl, getPunchMasterSlno, checkMispunchRequest, updatePunchSlno, getLeaveCount,
     updateCommonLeave, updateCasualLeave, updateCompansatoryOff, updateEarnLeave, updateNationalHoliday, halfDayRequestCheck,
-    updateHaldayValueInTable, getHolidayStatus, checkPunchMarkingHR } = require('../LeaveRequest/LeaveRequest.service');
+    updateHaldayValueInTable, checkPunchMarkingHR, leaveRequestUniquNumer, saveLeaveRequestMasterTable,
+    saveDetailedTableFun,
+    cancelLeaveReqMasterTable
+} = require('../LeaveRequest/LeaveRequest.service');
 // const { validateleavetype } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger');
 const { attMarkingExcistFrLveReq } = require('../attendance_marking_save/attendance_marking_save.service');
@@ -397,4 +400,105 @@ module.exports = {
         });
 
     },
+    modifiedLeaveRequest: async (req, res) => {
+        const requestBodyData = req.body;
+
+        //GET THE UNIQUE NUMBER FOR THE LEAVE REQUIEST
+        const getUniqueSerilNumber = await leaveRequestUniquNumer();
+        const { status, data } = getUniqueSerilNumber;
+        if (status === 1) {
+            const uniqNo = data;
+            const { masterPostData, detlPostSata } = requestBodyData;
+            //LEAVE REQUEST MASTER TABLE
+            const leaveRequestMasterData = {
+                ...masterPostData,
+                leaveid: uniqNo
+            }
+            //LEAVE REQUEST DETAILS TABLE
+            const leaveRequestDetlData = detlPostSata?.map((e) => {
+                return {
+                    ...e,
+                    leaveid: uniqNo
+                }
+            })
+
+
+            const detlPostData = leaveRequestDetlData?.map((e) => [e.leaveid, e.lveDate, e.leave_processid, e.leave_typeid, e.status, e.leavetype_name, e.leave_name, e.leaveCount, e.singleleave])
+            //SAVE MASTER TABLE ==> hrm_leave_request
+            const saveResult = await saveLeaveRequestMasterTable(leaveRequestMasterData)
+            const { status, message } = await saveResult;
+            if (status === 1) {
+                //DETAILED TABLE ENTRY  ==> hrm_leave_request_detl
+                const saveDetailedTable = await saveDetailedTableFun(detlPostData)
+                const { status, message } = saveDetailedTable;
+                if (status === 1) {
+                    //if ==> success 
+                    //COMMON LEAVE TYPE
+
+                    //common leave ( ML -> 2 ,LOP -> 5 , ESI -> 6 , SL -> 7 )
+                    //CL -> 1 EL -> 8 //C-OFF -> 11
+
+                    const commonLeave = [6, 5, 2]
+                    const nonCommonLeave = [1, 8, 11]
+                    //POST DATA FOR COMMON LEAVE NOT INCLUDED THE SICK LEAVE IS SICK LEAVE HAVE HALF DAY 
+                    const commonPostData = commonLeave?.map((el) => {
+                        return {
+                            typeID: el,
+                            tableSLNO: leaveRequestDetlData?.find(e => e.leave_typeid === el)?.leave_processid ?? 0,
+                            leaveCOUNT: leaveRequestDetlData?.filter(e => e.leave_typeid === el).length,
+                            empNumber: leaveRequestDetlData?.find(e => e.leave_typeid === el)?.empNo ?? 0
+                        }
+                    })?.filter((e) => e.empNumber !== 0)
+
+                    //POST DATA FOR SICK LEAVES
+                    const sickLeavePostData = [7]?.map((el) => {
+                        return {
+                            typeID: el,
+                            tableSLNO: leaveRequestDetlData?.find(e => e.leave_typeid === el)?.leave_processid ?? 0,
+                            leaveCOUNT: leaveRequestDetlData?.filter(e => e.leave_typeid === el)?.map(e => e.leaveCount)?.reduce((acc, curr) => acc + curr, 0),
+                            empNumber: leaveRequestDetlData?.find(e => e.leave_typeid === el)?.empNo ?? 0
+                        }
+                    })?.filter((e) => e.empNumber !== 0)
+                    //POST DATA FOR NON COMMON LEAVES
+                    const nonCommonPostData = leaveRequestDetlData?.filter((e) => !commonLeave?.includes(e.leave_typeid))
+                        ?.map((e) => {
+                            return {
+                                leaveTypeID: e.leave_typeid,
+                                tableSLNO: e.leave_typeid,
+                                leaveCount: e.leaveCount,
+                                empNumber: e.empNo
+                            }
+                        })
+
+                    // console.log(sickLeavePostData)
+                    // console.log(commonPostData)
+                    // console.log(nonCommonPostData)
+
+                    //UPDATING THE CREDITED LEAVES TABLES
+                    const updateCreditedLeavesTble = async (commonPostData, sickLeavePostData, nonCommonPostData) => {
+
+                    }
+
+                } else {
+                    await cancelLeaveReqMasterTable(leaveRequestMasterData) //cancel leave request master table
+                    return res.status(200).json({
+                        success: 0,
+                        message: "Error Saving Leave request"
+                    });
+                }
+            } else {
+                return res.status(200).json({
+                    success: 0,
+                    message: message
+                });
+            }
+
+        } else {
+            return res.status(200).json({
+                success: 0,
+                message: "Error !! - Get UNIQUE IDENTIFIER LEAVE REQUESR=T"
+            });
+        }
+
+    }
 }

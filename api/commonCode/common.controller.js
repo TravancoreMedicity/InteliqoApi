@@ -125,7 +125,6 @@ module.exports = {
         });
     },
     getleaverequwestslno: (req, res) => {
-
         getleaverequwestslno((err, results) => {
             if (err) {
                 logger.errorLogger(err)

@@ -209,7 +209,6 @@ module.exports = {
                 return callBack(null, results);
             }
         )
-
     },
     getSerialnoempno: (callBack) => {
         pool.query(
