@@ -1,18 +1,15 @@
 const { create, update, getDataById,
-    updatecontractclose,
-    updateContractComplete, updateEmpMaster,
-    getContractCloseDetl, getContractCloseDetlById, createContractlog,
-    InsertArrearSalaryContractRenew, updateConreactrenewAppr,
-    getContractRenewApprovalList,
-    updateQualEmpId,
-    EmpIDExpUpdate,
-    UpdateEMpIdEarnDeduction,
-    UpdateEMpIdPersonal, getContractByEmno,
-    getContractDetlId, updateEmpmastSatus, updatePunchmstEmno,
-    getEmployeeByUserName } = require('../hrm_emp_contract_detl/empcontract.service');
+    updatecontractclose, updateContractComplete, updateEmpMaster, getContractCloseDetl,
+    getContractCloseDetlById, createContractlog, InsertArrearSalaryContractRenew, updateConreactrenewAppr,
+    getContractRenewApprovalList, updateQualEmpId, EmpIDExpUpdate, UpdateEMpIdEarnDeduction,
+    UpdateEMpIdPersonal, getContractByEmno, getContractDetlId, updateEmpmastSatus,
+    getEmployeeByUserName, inactiveLoginNewPromise, activeLoginNewPromise, newLoginInsert,
+    updateQualEmpno, updateDutyPlanData, updatePunchmstEmno, newEntryContract,
+    deleteNewLoginEntry } = require('../hrm_emp_contract_detl/empcontract.service');
 
 const { validateempcontract } = require('../../validation/validation_schema');
-const logger = require('../../logger/logger')
+const logger = require('../../logger/logger');
+const { genSaltSync, hashSync } = require('bcrypt');
 module.exports = {
     creatempcontract: (req, res) => {
         const body = req.body;
@@ -216,32 +213,32 @@ module.exports = {
 
         });
     },
-    updateEmpMaster: (req, res) => {
-        const body = req.body;
-        updateEmpMaster(body, (err, results) => {
+    // updateEmpMaster: (req, res) => {
+    //     const body = req.body;
+    //     updateEmpMaster(body, (err, results) => {
 
-            if (err) {
-                logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 0,
-                    message: err
-                });
-            }
+    //         if (err) {
+    //             logger.errorLogger(err)
+    //             return res.status(200).json({
+    //                 success: 0,
+    //                 message: err
+    //             });
+    //         }
 
-            if (!results) {
-                return res.status(200).json({
-                    success: 1,
-                    message: "Record Not Found"
-                });
-            }
+    //         if (!results) {
+    //             return res.status(200).json({
+    //                 success: 1,
+    //                 message: "Record Not Found"
+    //             });
+    //         }
 
-            return res.status(200).json({
-                success: 6,
-                message: "Data Updated Successfully"
-            });
+    //         return res.status(200).json({
+    //             success: 6,
+    //             message: "Data Updated Successfully"
+    //         });
 
-        });
-    },
+    //     });
+    // },
     InsertArrearSalaryContractRenew: (req, res) => {
         const body = req.body;
         InsertArrearSalaryContractRenew(body, (err, results) => {
@@ -489,21 +486,21 @@ module.exports = {
         });
 
     },
-    updatePunchmstEmno: (req, res) => {
-        const body = req.body;
-        const result = updatePunchmstEmno(body)
-            .then((r) => {
-                return res.status(200).json({
-                    success: 1,
-                    message: r
-                });
-            }).catch((e) => {
-                return res.status(200).json({
-                    success: 0,
-                    message: e.sqlMessage
-                });
-            })
-    },
+    // updatePunchmstEmno: (req, res) => {
+    //     const body = req.body;
+    //     const result = updatePunchmstEmno(body)
+    //         .then((r) => {
+    //             return res.status(200).json({
+    //                 success: 1,
+    //                 message: r
+    //             });
+    //         }).catch((e) => {
+    //             return res.status(200).json({
+    //                 success: 0,
+    //                 message: e.sqlMessage
+    //             });
+    //         })
+    // },
     getEmployeeByUserName: (req, res) => {
         const id = req.params.id;
         getEmployeeByUserName(id, (err, results) => {
@@ -529,5 +526,226 @@ module.exports = {
         });
 
     },
+    updateContractEmployee: (req, res) => {
+        const body = req.body;
+        if (Object.keys(body).length === 0) { // Object length zero return with no effect
+            return res.status(200).json({
+                success: 0,
+                message: err
+            });
+        }
+
+        const Func = async (body) => {
+            const { emp_slno } = body;
+            const newEmpData = {
+                em_no: body.em_no,
+                em_category: body.em_category,
+                em_contract_end_date: body.em_contract_end_date,
+                em_prob_end_date: body.em_prob_end_date,
+                probation_status: body.probation_status,
+                contract_status: body.contract_status,
+                em_doj: body.em_doj,
+                actual_doj: body.actual_doj,
+                em_designation: body.em_designation,
+                em_id: body.em_id
+            }
+
+            const oldData = {
+                em_no: body.old_emno,
+                em_category: body.oldCategory,
+                em_contract_end_date: body.old_contracteEnd,
+                em_prob_end_date: body.em_prob_end_date,
+                probation_status: body.probation_status,
+                contract_status: body.oldContarctStatus,
+                em_doj: body.old_doj,
+                actual_doj: body.old_doj,
+                em_designation: body.oldDesignation,
+                em_id: body.em_id
+            }
+
+
+            const loginInsert = {
+                emp_email: body.emp_email,
+                emp_username: body.emp_username,
+                emp_password: body.emp_password,
+                emp_status: body.emp_status,
+                emp_create_user: body.create_user,
+                emp_id: body.em_id,
+                emp_no: body.emp_no
+            }
+
+            const updateEmno = {
+                em_no: body.emp_no,
+                em_id: body.em_id
+            }
+            dutyplandata = {
+                em_no: body.emp_no,
+                dutyplanData: body.dutyplanData
+            }
+            const punchmast = {
+                em_no: body.emp_no,
+                punchmast: body.punchmast
+            }
+            const resetOldEmno = {
+                em_no: body.old_emno,
+                em_id: body.em_id
+            }
+
+            const old_dutyplandata = {
+                em_no: body.old_emno,
+                dutyplanData: body.dutyplanData
+            }
+
+            const old_punchmast = {
+                em_no: body.old_emno,
+                punchmast: body.punchmast
+            }
+            //inactive old empno in hrm_employee table
+            const result = await inactiveLoginNewPromise(emp_slno)
+            const { status } = result;
+            if (status === 1) {
+                //update new emno, doj,desgnation,category in hrm_emp_master
+                const result = await updateEmpMaster(newEmpData)
+                const { status } = result;
+                if (status === 1) {
+                    //new emno login creation hrm_employee
+                    const salt = genSaltSync(10);
+                    let new_password = loginInsert.emp_password;
+                    loginInsert.emp_password = hashSync(new_password, salt);
+                    const result = await newLoginInsert(loginInsert)
+                    const { status } = result;
+                    if (status === 1) {
+                        //updating new emno in hrm_emp_exp, hrm_emp_qual, hrm_emp_personal
+                        const result = await updateQualEmpno(updateEmno)
+                        const { status } = result;
+                        if (status === 1) {
+                            if (body?.dutyplanData?.length !== 0) {
+                                //updating new emno dutyplan
+                                const result = await updateDutyPlanData(dutyplandata)
+                                const { status } = result;
+                                if (status === 1) {
+                                    //updating new emno in punchmaster
+                                    const result = await updatePunchmstEmno(punchmast)
+                                    const { status } = result;
+                                    if (status === 1) {
+                                        if (body.contract_status === 1) {
+                                            //if category is contract, new entry to hrm_emp_contract_detl
+                                            const result = await newEntryContract(body)
+                                            const { status } = result;
+                                            if (status === 1) {
+                                                return res.status(200).json({
+                                                    success: 1,
+                                                    message: 'Contract Renewal Completed Successfully!'
+                                                });
+                                            } else {
+                                                const result5 = await updatePunchmstEmno(old_punchmast)
+                                                const result4 = await updateDutyPlanData(old_dutyplandata)
+                                                const result3 = await updateQualEmpno(resetOldEmno)
+                                                const result2 = await deleteNewLoginEntry(body.emp_username)
+                                                const result1 = await updateEmpMaster(oldData)
+                                                const result = await activeLoginNewPromise(emp_slno)
+                                                console.log("Error Found, Contact IT");
+                                                return res.status(200).json({
+                                                    success: 0,
+                                                    message: 'Error Found, Contact IT'
+                                                });
+                                            }
+                                        } else {
+                                            return res.status(200).json({
+                                                success: 1,
+                                                message: 'Contract Renewal Completed Successfully!'
+                                            });
+                                        }
+                                    } else {
+                                        const result4 = await updateDutyPlanData(old_dutyplandata)
+                                        const result3 = await updateQualEmpno(resetOldEmno)
+                                        const result2 = await deleteNewLoginEntry(body.emp_username)
+                                        const result1 = await updateEmpMaster(oldData)
+                                        const result = await activeLoginNewPromise(emp_slno)
+                                        console.log("Error While Updating Employee punch");
+                                        return res.status(200).json({
+                                            success: 0,
+                                            message: 'Error While Updating Employee punch'
+                                        });
+                                    }
+                                } else {
+                                    const result3 = await updateQualEmpno(resetOldEmno)
+                                    const result2 = await deleteNewLoginEntry(body.emp_username)
+                                    const result1 = await updateEmpMaster(oldData)
+                                    const result = await activeLoginNewPromise(emp_slno)
+                                    console.log("Error While Updating Employee DutyPlan");
+                                    return res.status(200).json({
+                                        success: 0,
+                                        message: 'Error While Updating Employee DutyPlan'
+                                    });
+                                }
+                            } else {
+                                if (body.contract_status === 1) {
+                                    //if category is contract, new entry to hrm_emp_contract_detl
+                                    const result = await newEntryContract(body)
+                                    const { status } = result;
+                                    if (status === 1) {
+                                        return res.status(200).json({
+                                            success: 1,
+                                            message: 'Contract Renewal Completed Successfully!'
+                                        });
+                                    } else {
+                                        const result3 = await updateQualEmpno(resetOldEmno)
+                                        const result2 = await deleteNewLoginEntry(body.emp_username)
+                                        const result1 = await updateEmpMaster(oldData)
+                                        const result = await activeLoginNewPromise(emp_slno)
+                                        console.log("Error Found, Contact IT");
+                                        return res.status(200).json({
+                                            success: 0,
+                                            message: 'Error Found, Contact IT'
+                                        });
+                                    }
+                                } else {
+                                    return res.status(200).json({
+                                        success: 1,
+                                        message: 'Contract Renewal Completed Successfully!'
+                                    });
+                                }
+                            }
+
+                        } else {
+                            const result2 = await deleteNewLoginEntry(body.emp_username)
+                            const result1 = await updateEmpMaster(oldData)
+                            const result = await activeLoginNewPromise(emp_slno)
+                            console.log("Error While Updating Employee ID");
+                            return res.status(200).json({
+                                success: 0,
+                                message: 'Error While Updating Employee ID'
+                            });
+                        }
+                    } else {
+                        console.log("error");
+                        const result1 = await updateEmpMaster(oldData)
+                        const result = await activeLoginNewPromise(emp_slno)
+                        console.log("Error While Adding new login");
+                        return res.status(200).json({
+                            success: 0,
+                            message: 'Error While Adding new login'
+                        });
+                    }
+                } else {
+                    //error while inserting employee master, then active old emno login
+                    const result = await activeLoginNewPromise(emp_slno)
+                    console.log("Error While Updating Employee Master");
+                    return res.status(200).json({
+                        success: 0,
+                        message: 'Error While Updating Employee Master'
+                    });
+                }
+            } else {
+                console.log('Error While Inactiving Employee');
+                return res.status(200).json({
+                    success: 0,
+                    message: 'Error While Inactiving Employee'
+                });
+            }
+        }
+        Func(body)
+    }
 }
 

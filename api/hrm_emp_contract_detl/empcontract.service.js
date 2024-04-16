@@ -106,7 +106,7 @@ module.exports = {
         left join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
 		left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
         left join designation on designation.desg_slno=hrm_emp_master.em_designation
-		WHERE hrm_emp_contract_detl.em_id=? and em_cont_close is null`,
+		WHERE hrm_emp_contract_detl.em_id=?`,
             [
                 id
             ],
@@ -148,39 +148,39 @@ module.exports = {
             }
         )
     },
-    updateEmpMaster: (data, callBack) => {
-        pool.query(
-            `update hrm_emp_master
-                set em_no=?,
-                em_category=?,
-                em_contract_end_date=?,
-                em_prob_end_date=?,
-                probation_status=?,
-                contract_status=?,
-                em_doj=?,
-                actual_doj=?,
-                em_designation=?
-            where em_id=?`,
-            [
-                data.em_no,
-                data.em_category,
-                data.em_contract_end_date,
-                data.em_prob_end_date,
-                data.probation_status,
-                data.contract_status,
-                data.em_doj,
-                data.actual_doj,
-                data.em_designation,
-                data.em_id
-            ],
-            (error, results, feilds) => {
-                if (error) {
-                    return callBack(error);
-                }
-                return callBack(null, results);
-            }
-        )
-    },
+    // updateEmpMaster: (data, callBack) => {
+    //     pool.query(
+    //         `update hrm_emp_master
+    //             set em_no=?,
+    //             em_category=?,
+    //             em_contract_end_date=?,
+    //             em_prob_end_date=?,
+    //             probation_status=?,
+    //             contract_status=?,
+    //             em_doj=?,
+    //             actual_doj=?,
+    //             em_designation=?
+    //         where em_id=?`,
+    //         [
+    //             data.em_no,
+    //             data.em_category,
+    //             data.em_contract_end_date,
+    //             data.em_prob_end_date,
+    //             data.probation_status,
+    //             data.contract_status,
+    //             data.em_doj,
+    //             data.actual_doj,
+    //             data.em_designation,
+    //             data.em_id
+    //         ],
+    //         (error, results, feilds) => {
+    //             if (error) {
+    //                 return callBack(error);
+    //             }
+    //             return callBack(null, results);
+    //         }
+    //     )
+    // },
 
     getContractCloseDetl: (callBack) => {
         pool.query(
@@ -528,5 +528,297 @@ module.exports = {
                 return callBack(null, results[0]);
             }
         );
-    }
+    },
+    inactiveLoginNewPromise: (data) => {
+        return new Promise((resolve, reject) => {
+            pool.query(
+                `UPDATE hrm_employee set emp_status = 0 WHERE emp_slno = ?`,
+                [
+                    data
+                ],
+                (error, results, feilds) => {
+                    if (error) {
+                        reject({ status: 0 })
+                    }
+                    if (results) {
+                        resolve({ status: 1 })
+                    }
+                }
+            )
+        })
+    },
+
+    updateEmpMaster: (data) => {
+        return new Promise((resolve, reject) => {
+            pool.query(
+                `update hrm_emp_master
+                set em_no=?,
+                em_category=?,
+                em_contract_end_date=?,
+                em_prob_end_date=?,
+                contract_status=?,
+                em_doj=?,
+                actual_doj=?,
+                em_designation=?
+            where em_id=?`,
+                [
+                    data.em_no,
+                    data.em_category,
+                    data.em_contract_end_date,
+                    data.em_prob_end_date,
+                    data.contract_status,
+                    data.em_doj,
+                    data.actual_doj,
+                    data.em_designation,
+                    data.em_id
+                ],
+                (error, results, feilds) => {
+                    if (error) {
+                        reject({ status: 0 })
+                    }
+                    if (results) {
+                        resolve({ status: 1 })
+                    }
+                }
+            )
+        })
+    },
+    activeLoginNewPromise: async (data) => {
+        return new Promise((resolve, reject) => {
+            pool.query(
+                `UPDATE hrm_employee set emp_status = 1 WHERE emp_slno = ?`,
+                [
+                    data
+                ],
+                (error, results, feilds) => {
+                    if (error) {
+                        reject({ status: 0 })
+                    }
+                    if (results) {
+                        resolve({ status: 1 })
+                    }
+                }
+            )
+        })
+    },
+    newLoginInsert: (data) => {
+        return new Promise((resolve, reject) => {
+            pool.query(
+                `INSERT INTO hrm_employee
+            (
+                emp_email,
+                emp_username,
+                emp_password,
+                emp_status,
+                emp_create_user, 
+                emp_id, 
+                emp_no
+           )
+            VALUES(?,?,?,?,?,?,?)`,
+                [data.emp_email,
+                data.emp_no,
+                data.emp_password,
+                data.emp_status,
+                data.create_user,
+                data.emp_id,
+                data.emp_no,
+                ],
+                (error, results, feilds) => {
+                    if (error) {
+                        reject({ status: 0 })
+                    }
+                    if (results) {
+                        resolve({ status: 1 })
+                    }
+                }
+            )
+        })
+    },
+    updateQualEmpno: (data) => {
+        return new Promise((resolve, reject) => {
+            pool.query(
+                `UPDATE hrm_emp_qual
+                SET em_no=?
+                WHERE em_id =?`,
+                [
+                    data.em_no,
+                    data.em_id
+                ],
+                (error, results, feilds) => {
+                    if (error) {
+                        reject({ status: 0 })
+                    }
+                    if (results) {
+                        resolve({ status: 1 })
+                    }
+                }
+            )
+        }).then((value) => {
+            const { status } = value;
+            if (status === 1) {
+                return new Promise((resolve, reject) => {
+                    pool.query(
+                        `UPDATE hrm_emp_exp
+                        SET em_no=?
+                        WHERE em_id =?`,
+                        [
+                            data.em_no,
+                            data.em_id
+                        ],
+                        (error, results, feilds) => {
+                            if (error) {
+                                reject({ status: 0 })
+                            }
+                            if (results) {
+                                resolve({ status: 1 })
+                            }
+                        }
+                    )
+                })
+            } else {
+
+            }
+        }).then((value) => {
+            const { status } = value;
+            if (status === 1) {
+                return new Promise((resolve, reject) => {
+                    pool.query(
+                        `UPDATE hrm_emp_personal
+                        SET em_no=?
+                        WHERE em_id =?`,
+                        [
+                            data.em_no,
+                            data.em_id
+                        ],
+                        (error, results, feilds) => {
+                            if (error) {
+                                reject({ status: 0 })
+                            }
+                            if (results) {
+                                resolve({ status: 1 })
+                            }
+                        }
+                    )
+                })
+            } else {
+
+            }
+        }).then((value) => {
+            const { status } = value;
+            if (status === 1) {
+                return new Promise((resolve, reject) => {
+                    pool.query(
+                        `UPDATE hrm_emp_earn_deduction
+                        SET em_no=?
+                        WHERE em_id =?`,
+                        [
+                            data.em_no,
+                            data.em_id
+                        ],
+                        (error, results, feilds) => {
+                            if (error) {
+                                reject({ status: 0 })
+                            }
+                            if (results) {
+                                resolve({ status: 1 })
+                            }
+                        }
+                    )
+                })
+            } else {
+
+            }
+        })
+    },
+    updateDutyPlanData: (data) => {
+        return new Promise((resolve, reject) => {
+            pool.query(
+                `UPDATE hrm_duty_plan
+                SET em_no = ?
+                WHERE plan_slno IN (?)`,
+                [
+                    data.em_no,
+                    data.dutyplanData
+                ],
+                (error, results, feilds) => {
+                    if (error) {
+                        reject({ status: 0 })
+                    }
+                    if (results) {
+                        resolve({ status: 1 })
+                    }
+                }
+            )
+        })
+    },
+    updatePunchmstEmno: (data) => {
+        return new Promise((resolve, reject) => {
+            pool.query(
+                `UPDATE punch_master SET em_no=? where punch_slno IN (?)`,
+                [
+                    data.em_no,
+                    data.punchmast
+                ],
+                (error, results, feilds) => {
+                    if (error) {
+                        reject({ status: 0 })
+                    }
+                    if (results) {
+                        resolve({ status: 1 })
+                    }
+                }
+            )
+        })
+    },
+    newEntryContract: (data) => {
+        return new Promise((resolve, reject) => {
+            pool.query(
+                `INSERT INTO hrm_emp_contract_detl (
+                em_no,
+                em_id,
+                em_cont_start,
+                em_cont_end,
+                em_prob_end_date,
+                create_user
+                                                    
+            )
+            VALUES (?,?,?,?,?,?)`,
+                [
+                    data.em_no,
+                    data.em_id,
+                    data.em_cont_start,
+                    data.em_cont_end,
+                    data.em_prob_end_date,
+                    data.create_user
+
+                ],
+                (error, results, feilds) => {
+                    if (error) {
+                        reject({ status: 0 })
+                    }
+                    if (results) {
+                        resolve({ status: 1 })
+                    }
+                }
+            )
+        })
+    },
+    deleteNewLoginEntry: (data) => {
+        return new Promise((resolve, reject) => {
+            pool.query(
+                `DELETE FROM hrm_employee WHERE emp_username=?`,
+                [
+                    data,
+                ],
+                (error, results, feilds) => {
+                    if (error) {
+                        reject({ status: 0 })
+                    }
+                    if (results) {
+                        resolve({ status: 1 })
+                    }
+                }
+            )
+        })
+    },
 }
