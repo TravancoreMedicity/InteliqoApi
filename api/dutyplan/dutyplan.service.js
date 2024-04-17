@@ -326,4 +326,24 @@ module.exports = {
             }
         )
     },
+    checkDutyPlanExcistNew: (data, callBack) => {
+        pool.query(
+            `SELECT
+                count(punch_slno) plan
+            FROM punch_master
+            WHERE duty_day >= ? and duty_day <= ?
+            AND em_no = ?`,
+            [
+                data.fromDate,
+                data.toDate,
+                data.emno
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results[0]);
+            }
+        )
+    },
 }

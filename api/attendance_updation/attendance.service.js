@@ -1028,7 +1028,7 @@ module.exports = {
                 WHERE marking_month = ? AND deptsec_slno = ?`,
             [
                 data.loggedEmp,
-                data.toDate_punchMaster,
+                data.toDayeForUpdatePunchMast,
                 data.fromDate,
                 data.section
             ],

@@ -41,10 +41,13 @@ module.exports = {
                 group_slno,
                 eoff,
                 comp_day_count,
-                comp_hour_count
+                comp_hour_count,
+                holiday_policy_count,
+                weekoff_policy_max_count,
+                weekoff_policy_min_count
                 )
 
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
 
 
             [
@@ -85,7 +88,10 @@ module.exports = {
                 JSON.stringify(data.group_slno),
                 data.eoff,
                 data.comp_day_count,
-                data.comp_hour_count
+                data.comp_hour_count,
+                data.holiday_policy_count,
+                data.weekoff_policy_max_count,
+                data.weekoff_policy_min_count,
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -147,7 +153,10 @@ module.exports = {
                 group_slno=?,
                 eoff=?,
                 comp_day_count=?,
-                comp_hour_count=?
+                comp_hour_count=?,
+                holiday_policy_count=?,
+                weekoff_policy_max_count=?,
+                weekoff_policy_min_count=?
                 WHERE setting_slno =?`,
             [
                 data.cmmn_grace_period,
@@ -188,6 +197,9 @@ module.exports = {
                 data.eoff,
                 data.comp_day_count,
                 data.comp_hour_count,
+                data.holiday_policy_count,
+                data.weekoff_policy_max_count,
+                data.weekoff_policy_min_count,
                 data.setting_slno
             ],
             (error, results, feilds) => {

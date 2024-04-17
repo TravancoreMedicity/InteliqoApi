@@ -1,3 +1,4 @@
+// @ts-nocheck
 require("dotenv").config();
 require("./upload/punchTableEventCheck")
 
