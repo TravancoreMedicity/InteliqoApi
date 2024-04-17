@@ -2,7 +2,7 @@ const router = require("express").Router();
 const { checkToken } = require('../../auth/token_validation');
 const { createmastleave, createdetlleave, gethafdayshift,
     getfirsthalf, getsecondhalf, inserthalfdayreque, insertnopunchrequest, insertcompensatyoff,
-    getLeaveCancelEmpdetl, modifiedLeaveRequest,
+    getLeaveCancelEmpdetl, modifiedLeaveRequest, getLeaveExcistOrNot,
     getHolidayStatus } = require('../LeaveRequest/LeaveRequest.controller');
 
 router.post("/", checkToken, createmastleave)
@@ -19,6 +19,7 @@ router.post('/getHoliday', checkToken, getHolidayStatus)
 
 
 //new leave request api
+router.post("/getLeaveExcistOrNot", checkToken, getLeaveExcistOrNot)
 router.post("/modifiedLeaveRequest", checkToken, modifiedLeaveRequest)
 
 
