@@ -730,5 +730,39 @@ module.exports = {
             return { status: 0, data: error };
         });
     },
-
+    getLeaveExcistOrNot: (data, callBack) => {
+        pool.query(
+            `SELECT SUM(count) count
+                FROM(
+                SELECT 
+                    count(*) count 
+                FROM hrm_leave_request 
+                WHERE leavetodate >= ? AND leavetodate <= ? 
+                AND em_no = ? 
+                AND lv_cancel_status = 0 
+                AND lv_cancel_status_user = 0
+                UNION ALL
+                SELECT 
+                    count(*) count 
+                FROM hrm_leave_request 
+                WHERE leave_date >= ? AND leave_date <= ? 
+                AND em_no = ? 
+                AND lv_cancel_status = 0 
+                AND lv_cancel_status_user = 0) A`,
+            [
+                data.fromDate,
+                data.toDate,
+                data.em_no,
+                data.fromDate,
+                data.toDate,
+                data.em_no,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }

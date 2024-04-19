@@ -3,12 +3,13 @@ const { createmastleave, createdetlleave, updateserialnum, gethafdayshift, getfi
     getLeaveCancelEmpdetl, getPunchMasterSlno, checkMispunchRequest, updatePunchSlno, getLeaveCount,
     updateCommonLeave, updateCasualLeave, updateCompansatoryOff, updateEarnLeave, updateNationalHoliday, halfDayRequestCheck,
     updateHaldayValueInTable, checkPunchMarkingHR, leaveRequestUniquNumer, saveLeaveRequestMasterTable,
-    saveDetailedTableFun,
+    saveDetailedTableFun, getLeaveExcistOrNot,
     cancelLeaveReqMasterTable
 } = require('../LeaveRequest/LeaveRequest.service');
 // const { validateleavetype } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger');
 const { attMarkingExcistFrLveReq } = require('../attendance_marking_save/attendance_marking_save.service');
+const pool = require('../../config/database');
 module.exports = {
     createmastleave: (req, res) => {
         const body = req.body;
@@ -422,7 +423,6 @@ module.exports = {
                 }
             })
 
-
             const detlPostData = leaveRequestDetlData?.map((e) => [e.leaveid, e.lveDate, e.leave_processid, e.leave_typeid, e.status, e.leavetype_name, e.leave_name, e.leaveCount, e.singleleave])
             //SAVE MASTER TABLE ==> hrm_leave_request
             const saveResult = await saveLeaveRequestMasterTable(leaveRequestMasterData)
@@ -460,11 +460,11 @@ module.exports = {
                         }
                     })?.filter((e) => e.empNumber !== 0)
                     //POST DATA FOR NON COMMON LEAVES
-                    const nonCommonPostData = leaveRequestDetlData?.filter((e) => !commonLeave?.includes(e.leave_typeid))
+                    const nonCommonPostData = leaveRequestDetlData?.filter((e) => ![6, 5, 2, 7]?.includes(e.leave_typeid))
                         ?.map((e) => {
                             return {
                                 leaveTypeID: e.leave_typeid,
-                                tableSLNO: e.leave_typeid,
+                                tableSLNO: e.leave_processid,
                                 leaveCount: e.leaveCount,
                                 empNumber: e.empNo
                             }
@@ -473,11 +473,101 @@ module.exports = {
                     // console.log(sickLeavePostData)
                     // console.log(commonPostData)
                     // console.log(nonCommonPostData)
+                    const comnPostData = [...commonPostData, ...sickLeavePostData]
 
-                    //UPDATING THE CREDITED LEAVES TABLES
-                    const updateCreditedLeavesTble = async (commonPostData, sickLeavePostData, nonCommonPostData) => {
+                    //UPDATING COMMON LEAVES
+                    const promiseToUpdateCommonLeave = comnPostData?.map((commonLeves) => {
+                        return new Promise((resolve, reject) => {
+                            pool.query(
+                                `UPDATE hrm_leave_common 
+                                    SET cmn_lv_balance = cmn_lv_balance - ?,
+                                        cmn_lv_taken = cmn_lv_taken + ?
+                                    WHERE hrm_lv_cmn = ?`,
+                                [
+                                    commonLeves.leaveCOUNT,
+                                    commonLeves.leaveCOUNT,
+                                    commonLeves.tableSLNO
+                                ],
+                                (error, results, feilds) => {
+                                    if (error) {
+                                        reject({ status: 0 })
+                                    } else {
+                                        resolve({ status: 1 })
+                                    }
+                                }
+                            )
+                        })
+                    })
+                    //NON COMMON LEAVES UPDATION
+                    const promiseToUpdateCasualLeave = nonCommonPostData?.map((nonCommonLeave) => {
+                        return nonCommonLeave.leaveTypeID === 1 ? //CASUAL LEAVES
+                            new Promise((resolve, reject) => {
+                                pool.query(
+                                    `UPDATE hrm_leave_cl SET hl_lv_tkn_status = 1 WHERE hrm_cl_slno = ?`,
+                                    [nonCommonLeave.tableSLNO],
+                                    (error, results, feilds) => {
+                                        if (error) {
+                                            reject({ status: 0 })
+                                        } else {
+                                            resolve({ status: 1 })
+                                        }
+                                    }
+                                )
+                            })
+                            : nonCommonLeave.leaveTypeID === 8 ? //EARN LEAVE
+                                new Promise((resolve, reject) => {
+                                    pool.query(
+                                        `UPDATE hrm_leave_earnlv SET hl_lv_tkn_status = 1 WHERE hrm_ernlv_slno = ?`,
+                                        [nonCommonLeave.tableSLNO],
+                                        (error, results, feilds) => {
+                                            if (error) {
+                                                reject({ status: 0 })
+                                            } else {
+                                                resolve({ status: 1 })
+                                            }
+                                        }
+                                    )
+                                })
+                                : nonCommonLeave.leaveTypeID === 11 ? //COMPANSATORY OFF
+                                    new Promise((resolve, reject) => {
+                                        pool.query(
+                                            `UPDATE hrm_leave_calculated SET hl_lv_tkn_status = 1 WHERE hrm_calc_holiday = ?`,
+                                            [nonCommonLeave.tableSLNO],
+                                            (error, results, feilds) => {
+                                                if (error) {
+                                                    reject({ status: 0 })
+                                                } else {
+                                                    resolve({ status: 1 })
+                                                }
+                                            }
+                                        )
+                                    }) : null
+                    })
 
-                    }
+                    // console.log(promiseToUpdateCommonLeave)
+                    // console.log(promiseToUpdateCasualLeave)
+
+                    const LeaveUpdationPromise = [...promiseToUpdateCommonLeave, ...promiseToUpdateCasualLeave]
+
+                    //UPDATION PROMISESS
+                    await Promise.allSettled(LeaveUpdationPromise)
+                        .then((result) => {
+                            console.log(result)
+                            const successResult = result?.find((e) => e.status === 'rejected')
+                            if (successResult === undefined) {
+                                return res.status(200).json({
+                                    success: 1,
+                                    message: "Leave Request Submitted Successfully"
+                                });
+                            } else {
+                                //if successfull return the message
+                                // if no return all updation
+                            }
+                        })
+                        .catch((error) => {
+                            console.log(error) // if no return all updation
+                        })
+
 
                 } else {
                     await cancelLeaveReqMasterTable(leaveRequestMasterData) //cancel leave request master table
@@ -500,5 +590,27 @@ module.exports = {
             });
         }
 
-    }
+    },
+    getLeaveExcistOrNot: (req, res) => {
+        const body = req.body;
+        getLeaveExcistOrNot(body, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results?.length === 0) {
+                return res.status(400).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+
+    },
 }

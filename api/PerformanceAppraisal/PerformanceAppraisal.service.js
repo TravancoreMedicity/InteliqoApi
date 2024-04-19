@@ -127,24 +127,34 @@ module.exports = {
     getContractRenewList: (callBack) => {
         pool.query(
             `SELECT 
-            ROW_NUMBER() OVER () as slno,
-            hrm_emp_master.em_id,
-            hrm_emp_master.em_no,
-            hrm_emp_master.em_name,
-            dept_name,
-            sect_name,
-            desg_name,
-            sect_id,
-            em_cont_start,
-            em_cont_end,
-            hrm_department.dept_id,
-            em_doj
-             FROM hrm_emp_master
-             INNER JOIN hrm_emp_contract_detl on hrm_emp_master.em_id=hrm_emp_contract_detl.em_id
-             INNER JOIN hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
-             INNER JOIN hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
-             INNER JOIN designation on hrm_emp_master.em_designation=designation.desg_slno
-             WHERE em_cont_close='C' and em_cont_renew='R' and em_cont_compl_status='C' and em_status=1 `,
+                hrm_emp_master.em_id,
+                hrm_emp_master.em_no,
+                hrm_emp_master.em_name,
+                dept_name,
+                sect_name,
+                desg_name,
+                sect_id,
+                em_cont_start,
+                em_cont_end,
+                hrm_department.dept_id,
+                em_doj
+            FROM hrm_emp_master
+            INNER JOIN hrm_emp_contract_detl on hrm_emp_master.em_id=hrm_emp_contract_detl.em_id
+            INNER JOIN hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
+            INNER JOIN hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
+            INNER JOIN designation on hrm_emp_master.em_designation=designation.desg_slno
+            WHERE em_cont_close='C' and em_cont_renew='R' and em_cont_compl_status='C' and em_status=1 
+            GROUP BY hrm_emp_master.em_id,
+                hrm_emp_master.em_no,
+                hrm_emp_master.em_name,
+                dept_name,
+                sect_name,
+                desg_name,
+                sect_id,
+                em_cont_start,
+                em_cont_end,
+                hrm_department.dept_id,
+                em_doj`,
             [],
             (error, results, fields) => {
                 if (error) {
