@@ -650,7 +650,7 @@ module.exports = {
     },
     HRhalfDay: (req, res) => {
         const body = req.body;
-        HRhalfDay(body, (err, results) => {
+        HRhalfDayPuchMast(body, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
@@ -665,7 +665,7 @@ module.exports = {
                 });
             }
             else {
-                HRhalfDayPuchMast(body, (err, results) => {
+                UpdateHalfdayCasual(body, (err, results) => {
                     if (err) {
                         logger.errorLogger(err)
                         return res.status(200).json({
@@ -680,7 +680,7 @@ module.exports = {
                         });
                     }
                     else {
-                        UpdateHalfdayCasual(body, (err, results) => {
+                        HRhalfDay(body, (err, results) => {
                             if (err) {
                                 logger.errorLogger(err)
                                 return res.status(200).json({
@@ -703,9 +703,10 @@ module.exports = {
                         });
                     }
                 });
-
             }
         });
+
+
     },
     HRNopunch: (req, res) => {
         const body = req.body;
@@ -779,8 +780,7 @@ module.exports = {
     },
     HRCoff: (req, res) => {
         const body = req.body;
-
-        HRCoff(body, (err, results) => {
+        InsertLeaveCalc(body, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
@@ -795,8 +795,7 @@ module.exports = {
                 });
             }
             else {
-
-                InsertLeaveCalc(body, (err, results) => {
+                HRCoff(body, (err, results) => {
                     if (err) {
                         logger.errorLogger(err)
                         return res.status(200).json({
@@ -811,21 +810,12 @@ module.exports = {
                         });
                     }
                     else {
-
-
                         return res.status(200).json({
                             success: 1,
-                            message: "Lve Master table Updated"
+                            message: "Table Updated"
                         });
-
-
-
                     }
-                });
-
-
-
-
+                })
             }
         });
     },

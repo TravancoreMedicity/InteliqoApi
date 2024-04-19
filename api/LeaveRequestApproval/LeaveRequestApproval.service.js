@@ -566,6 +566,7 @@ module.exports = {
         pool.query(
             `UPDATE punch_master
              SET 
+             duty_status=1,
              leave_status=1,
              lvereq_desc='HDL',
              duty_desc = 'HDL',
