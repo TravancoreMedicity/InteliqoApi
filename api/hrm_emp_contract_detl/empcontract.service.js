@@ -101,7 +101,7 @@ module.exports = {
             dept_name,sect_name,desg_name,
             hrm_emp_contract_detl.em_prob_end_date as 'pro_end_date'
         FROM hrm_emp_contract_detl
-        left join hrm_emp_master on hrm_emp_master.em_no=hrm_emp_contract_detl.em_no
+        left join hrm_emp_master on hrm_emp_master.em_id=hrm_emp_contract_detl.em_id
         left join hrm_emp_category on hrm_emp_category.category_slno=hrm_emp_master.em_category
         left join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
 		left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
