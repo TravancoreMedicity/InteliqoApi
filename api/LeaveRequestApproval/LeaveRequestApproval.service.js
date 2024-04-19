@@ -1831,6 +1831,7 @@ module.exports = {
             duty_status = 1,
             lvereq_desc = 'P',
             duty_desc = 'P',
+            leave_status=1,
             lve_tble_updation_flag=1
         WHERE punch_slno=?`,
             [

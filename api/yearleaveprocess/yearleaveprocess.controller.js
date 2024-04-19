@@ -553,7 +553,6 @@ module.exports = {
         });
     },
     allowableCasualLeave: (req, res) => {
-
         const id = req.params.id;
         allowableCasualLeave(id, (err, results) => {
 
@@ -651,7 +650,7 @@ module.exports = {
 
             if (err) {
                 logger.errorLogger(err)
-                return res.status(400).json({
+                return res.status(200).json({
                     success: 0,
                     message: err
                 });
@@ -674,14 +673,11 @@ module.exports = {
 
     },
     allowableconleave: (req, res) => {
-
-        const body = req.body;
-        allowableconleave(body, (err, results) => {
-
-
+        const id = req.params.id;
+        allowableconleave(id, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
-                return res.status(400).json({
+                return res.status(200).json({
                     success: 0,
                     message: err
                 });

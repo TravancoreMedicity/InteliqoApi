@@ -577,5 +577,192 @@ module.exports = {
             }
         )
     },
+    leaveRequestUniquNumer: () => {
+        return new Promise((resolve, reject) => {
+            pool.query(
+                `SELECT serial_current FROM master_serialno where serial_slno=5`,
+                [],
+                (error, results, fields) => {
+                    if (error) {
+                        reject({ status: 0, data: [], error });
+                    } else {
+                        resolve({ status: 1, data: JSON.parse(JSON.stringify(results)) });
+                    }
+                }
+            );
+        }).then((result) => {
+            // console.log('Query successful:', result.data[0].serial_current);
+            return { status: 1, data: result.data[0].serial_current }; // Forward the result to the next .then() handler
+        }).catch((error) => {
+            // console.error('Error during query:', error);
+            throw error; // Rethrow the error for further handling
+        });
+    },
+    saveLeaveRequestMasterTable: (data) => {
+        return new Promise((resolve, reject) => {
+            pool.query(
+                `INSERT INTO hrm_leave_request 
+                    (
+                        lve_uniq_no,
+                        em_id,
+                        em_no,
+                        dept_id,
+                        dept_section,
+                        leave_date,
+                        leavetodate,
+                        rejoin_date,
+                        request_status,
+                        inc_apprv_req,
+                        incapprv_status,
+                        inc_apprv_cmnt,
+                        inc_apprv_time,
+                        hod_apprv_req,
+                        hod_apprv_status,
+                        hod_apprv_cmnt,
+                        hod_apprv_time,
+                        hr_aprrv_requ,
+                        ceo_req_status,
+                        leave_reason,
+                        no_of_leave,
+                        inc_us_code,
+                        hod_us_code
+                    )
+                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+                [
+                    data.leaveid,
+                    data.em_id,
+                    data.em_no,
+                    data.em_department,
+                    data.em_dept_section,
+                    data.leavefrom_date,
+                    data.leavetodate,
+                    data.rejoin_date,
+                    data.request_status,
+                    data.inc_apprv_req,
+                    data.incapprv_status,
+                    data.inc_apprv_cmnt,
+                    data.inc_apprv_time,
+                    data.hod_apprv_req,
+                    data.hod_apprv_status,
+                    data.hod_apprv_cmnt,
+                    data.hod_apprv_time,
+                    data.hr_aprrv_requ,
+                    data.ceo_req_status,
+                    data.resonforleave,
+                    data.no_of_leave,
+                    data.inc_usCode,
+                    data.hod_usCOde
+                ],
+                (error, results, feilds) => {
+                    if (error) {
+                        return reject({ status: 0, message: error });
+                    }
+                    return resolve({ status: 1, message: 'success' });
+                }
+            )
+        }).then((result) => {
+            return result;
+        }).catch((error) => {
+            console.log(error)
+            return ({ status: 0, message: error })
+        });
+    },
+    saveDetailedTableFun: async (data) => {//INSERTING DETAILED TABLE LEAVE REQUEST
+        const promises = data?.map((e) => {
+            return new Promise((resolve, reject) => {
+                pool.query(
+                    `INSERT INTO hrm_leave_request_detl (
+                        lve_uniq_no,
+                        leave_dates,
+                        leave_processid,
+                        leave_typeid,
+                        leave_status,
+                        leavetype_name,                
+                        leave_name,
+                        no_days,
+                        sl_leave
+                    )
+                    VALUES (?)`,
+                    [e],
+                    (error, results, fields) => {
+                        if (error) {
+                            reject(error);
+                        } else {
+                            resolve(results);
+                        }
+                    }
+                );
+            });
+        });
 
+        try {
+            const result = await Promise.all(promises);
+            // console.log('Inserted records:', result);
+            return { status: 1, message: 'success' };
+        } catch (error) {
+            return { status: 0, message: error };
+        }
+    },
+    cancelLeaveReqMasterTable: async (data) => {
+        return new Promise((resolve, reject) => {
+            pool.query(
+                `UPDATE hrm_leave_request
+                    SET lv_cancel_status = 1,
+                        lv_cancel_cmnt= 'error insert detl table',
+                        lv_cancel_date= NOW(),
+                        lv_cancel_us_code= ?
+                WHERE lve_uniq_no = ?`,
+                [
+                    data.em_no,
+                    data.leaveid,
+                ],
+                (error, results, fields) => {
+                    if (error) {
+                        reject({ status: 0 });
+                    } else {
+                        resolve({ status: 1 });
+                    }
+                }
+            );
+        }).then((result) => {
+            return { status: 1 };
+        }).catch((error) => {
+            return { status: 0, data: error };
+        });
+    },
+    getLeaveExcistOrNot: (data, callBack) => {
+        pool.query(
+            `SELECT SUM(count) count
+                FROM(
+                SELECT 
+                    count(*) count 
+                FROM hrm_leave_request 
+                WHERE leavetodate >= ? AND leavetodate <= ? 
+                AND em_no = ? 
+                AND lv_cancel_status = 0 
+                AND lv_cancel_status_user = 0
+                UNION ALL
+                SELECT 
+                    count(*) count 
+                FROM hrm_leave_request 
+                WHERE leave_date >= ? AND leave_date <= ? 
+                AND em_no = ? 
+                AND lv_cancel_status = 0 
+                AND lv_cancel_status_user = 0) A`,
+            [
+                data.fromDate,
+                data.toDate,
+                data.em_no,
+                data.fromDate,
+                data.toDate,
+                data.em_no,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }

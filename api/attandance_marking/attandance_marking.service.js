@@ -44,7 +44,7 @@ module.exports = {
             ifnull( sum(duty_status),0)duty_status,
             gross_salary,
             sum(if(duty_desc='A' and leave_status=0,1,0)) as duty_statuslop,
-            sum(if(duty_desc='A' and leave_status=1,1,0)) as noofleaves
+            sum(if(duty_desc='LV' and leave_status=1,1,0)) as noofleaves
             FROM punch_master
              left join hrm_emp_master on hrm_emp_master.em_id=punch_master.emp_id
             where emp_id=? and duty_day between ? and ?

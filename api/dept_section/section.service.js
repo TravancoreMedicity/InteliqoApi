@@ -135,7 +135,8 @@ module.exports = {
         pool.query(
             `SELECT 
             sect_id,
-            sect_name
+            sect_name,
+            dept_id
         FROM hrm_dept_section where sect_status=1 order by sect_name asc; `
             ,
             [],

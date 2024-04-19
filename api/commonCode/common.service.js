@@ -209,7 +209,6 @@ module.exports = {
                 return callBack(null, results);
             }
         )
-
     },
     getSerialnoempno: (callBack) => {
         pool.query(
@@ -1291,7 +1290,8 @@ module.exports = {
                C.des_type,
                C.ecat_prob,
                C.ecat_training,
-               E.probation_status
+               E.probation_status,
+               U.user_grp_slno as groupmenu
         FROM hrm_emp_master E
             LEFT JOIN hrm_branch B ON B.branch_slno = E.em_branch
             LEFT JOIN hrm_department D ON D.dept_id = E.em_department
@@ -1307,6 +1307,7 @@ module.exports = {
             LEFT JOIN hrm_co_assign Z ON Z.emp_id = E.em_id
             LEFT JOIN hrm_emp_pfesi T ON T.em_id= E.em_id
             LEFT JOIN hrm_emp_verification V ON V.em_id=E.em_id
+            LEFT JOIN module_group_user_rights U on U.emp_slno = E.em_id 
             LEFT JOIN hrm_emp_contract_detl Q ON Q.em_id = E.em_id and Q.status = 0
         WHERE E.em_status = 1 AND E.em_id = ?`,
             [
@@ -1325,11 +1326,15 @@ module.exports = {
             `SELECT 
                 hrm_calc_holiday,
                 calculated_date,
-                credited,specail_remark 
+                credited,
+                taken,
+                credited_date,
+                specail_remark,
+                hl_lv_tkn_status
             FROM hrm_leave_calculated
             WHERE emp_id = ?
-            AND sysdate() <  DATE_ADD(credited_date , interval 30 day)
-            AND taken=0`,
+            AND year( credited_date ) = year(curdate())
+            AND taken < 1`,
             [
                 id
             ],
@@ -1588,8 +1593,11 @@ module.exports = {
                 C.category_slno,
                 C.emp_type,
                 C.des_type,
-                E.probation_status
-            FROM hrm_emp_master E LEFT JOIN hrm_emp_category C ON C.category_slno = E.em_category
+                E.probation_status,
+                R.user_grp_slno as groupmenu
+            FROM hrm_emp_master E 
+            LEFT JOIN hrm_emp_category C ON C.category_slno = E.em_category
+            LEFT JOIN module_group_user_rights R on R.emp_slno = E.em_id 
             WHERE E.em_status = 1 AND E.em_id = ?`,
             [
                 id
@@ -1672,6 +1680,42 @@ module.exports = {
             [
                 data.em_id,
                 data.count
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getAutharisedDepartmentSection: (id, callBack) => {
+        pool.query(
+            `select 
+                dept_section
+            from hrm_authorization_assign
+            where emp_id =?`,
+            [id],
+            (error, results, fields) => {
+                if (error) {
+                    callBack(error)
+                }
+                return callBack(null, results)
+            }
+        );
+    },
+    getEmployeeArraySectionArray: (data, callBack) => {
+        pool.query(
+            `SELECT 
+                em_name,
+                em_no,
+                em_id,
+                em_dept_section
+            FROM hrm_emp_master
+            WHERE em_dept_section IN (?)
+            and em_status=1 and em_id!=1 and em_no!=2 `,
+            [
+                data
             ],
             (error, results, feilds) => {
                 if (error) {
