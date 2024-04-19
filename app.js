@@ -136,6 +136,7 @@ const CommonPreTestPage = require("./api/TrainingCommonTest/TrainingCommonTest.r
 
 const InductionTraining = require("./api/TrainingInduction/TrainingInduction.route")
 const LeaveReport = require("./api/LeaveReport/LeaveReport.router")
+const AttendenceReport = require("./api/AttendenceReport/AttendenceReport.router")
 
 
 app.use(express.json({ limit: '50mb' }));
@@ -311,6 +312,7 @@ app.use("/api/TrainingMonthlyReport", TrainingMonthlyReport)
 app.use("/api/CommonPreTestPage", CommonPreTestPage)
 app.use("/api/InductionTraining", InductionTraining)
 app.use("/api/LeaveReport", LeaveReport)
+app.use("/api/AttendenceReport", AttendenceReport)
 
 
 // ------ Database Connection --------
