@@ -5,7 +5,8 @@ const { create, update, getDataById,
     UpdateEMpIdPersonal, getContractByEmno, getContractDetlId, updateEmpmastSatus,
     getEmployeeByUserName, inactiveLoginNewPromise, activeLoginNewPromise, newLoginInsert,
     updateQualEmpno, updateDutyPlanData, updatePunchmstEmno, newEntryContract,
-    deleteNewLoginEntry } = require('../hrm_emp_contract_detl/empcontract.service');
+    deleteNewLoginEntry,
+    reverseUpdateQualEmpno } = require('../hrm_emp_contract_detl/empcontract.service');
 
 const { validateempcontract } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger');
@@ -602,49 +603,49 @@ module.exports = {
             }
             //inactive old empno in hrm_employee table
             const result = await inactiveLoginNewPromise(emp_slno)
-            const { status } = result;
+            const { status, message } = result;
             if (status === 1) {
-                //update new emno, doj,desgnation,category in hrm_emp_master
+                // update new emno, doj,desgnation,category in hrm_emp_master
                 const result = await updateEmpMaster(newEmpData)
-                const { status } = result;
+                const { status, message } = result;
                 if (status === 1) {
+
                     //new emno login creation hrm_employee
                     const salt = genSaltSync(10);
                     let new_password = loginInsert.emp_password;
                     loginInsert.emp_password = hashSync(new_password, salt);
                     const result = await newLoginInsert(loginInsert)
-                    const { status } = result;
+                    const { status, message } = result;
                     if (status === 1) {
                         //updating new emno in hrm_emp_exp, hrm_emp_qual, hrm_emp_personal
                         const result = await updateQualEmpno(updateEmno)
-                        const { status } = result;
+                        const { status, message } = result;
                         if (status === 1) {
                             if (body?.dutyplanData?.length !== 0) {
                                 //updating new emno dutyplan
                                 const result = await updateDutyPlanData(dutyplandata)
-                                const { status } = result;
+                                const { status, message } = result;
                                 if (status === 1) {
                                     //updating new emno in punchmaster
                                     const result = await updatePunchmstEmno(punchmast)
-                                    const { status } = result;
+                                    const { status, message } = result;
                                     if (status === 1) {
                                         if (body.contract_status === 1) {
                                             //if category is contract, new entry to hrm_emp_contract_detl
                                             const result = await newEntryContract(body)
-                                            const { status } = result;
+                                            const { status, message } = result;
                                             if (status === 1) {
                                                 return res.status(200).json({
                                                     success: 1,
-                                                    message: 'Contract Renewal Completed Successfully!'
+                                                    message: 'Contract Renewal Completed Successfully!' + message
                                                 });
                                             } else {
-                                                const result5 = await updatePunchmstEmno(old_punchmast)
-                                                const result4 = await updateDutyPlanData(old_dutyplandata)
-                                                const result3 = await updateQualEmpno(resetOldEmno)
-                                                const result2 = await deleteNewLoginEntry(body.emp_username)
-                                                const result1 = await updateEmpMaster(oldData)
-                                                const result = await activeLoginNewPromise(emp_slno)
-                                                console.log("Error Found, Contact IT");
+                                                await updatePunchmstEmno(old_punchmast)
+                                                await updateDutyPlanData(old_dutyplandata)
+                                                await updateQualEmpno(resetOldEmno)
+                                                await deleteNewLoginEntry(body.emp_username)
+                                                await updateEmpMaster(oldData)
+                                                await activeLoginNewPromise(emp_slno)
                                                 return res.status(200).json({
                                                     success: 0,
                                                     message: 'Error Found, Contact IT'
@@ -657,26 +658,24 @@ module.exports = {
                                             });
                                         }
                                     } else {
-                                        const result4 = await updateDutyPlanData(old_dutyplandata)
-                                        const result3 = await updateQualEmpno(resetOldEmno)
-                                        const result2 = await deleteNewLoginEntry(body.emp_username)
-                                        const result1 = await updateEmpMaster(oldData)
-                                        const result = await activeLoginNewPromise(emp_slno)
-                                        console.log("Error While Updating Employee punch");
+                                        await updateDutyPlanData(old_dutyplandata)
+                                        await reverseUpdateQualEmpno(resetOldEmno)
+                                        await deleteNewLoginEntry(body.emp_username)
+                                        await updateEmpMaster(oldData)
+                                        await activeLoginNewPromise(emp_slno)
                                         return res.status(200).json({
                                             success: 0,
-                                            message: 'Error While Updating Employee punch'
+                                            message: 'Error While Updating Employee punch' + message
                                         });
                                     }
                                 } else {
-                                    const result3 = await updateQualEmpno(resetOldEmno)
-                                    const result2 = await deleteNewLoginEntry(body.emp_username)
-                                    const result1 = await updateEmpMaster(oldData)
-                                    const result = await activeLoginNewPromise(emp_slno)
-                                    console.log("Error While Updating Employee DutyPlan");
+                                    await reverseUpdateQualEmpno(resetOldEmno)
+                                    await deleteNewLoginEntry(body.emp_username)
+                                    await updateEmpMaster(oldData)
+                                    await activeLoginNewPromise(emp_slno)
                                     return res.status(200).json({
                                         success: 0,
-                                        message: 'Error While Updating Employee DutyPlan'
+                                        message: 'Error While Updating Employee DutyPlan' + message
                                     });
                                 }
                             } else {
@@ -690,11 +689,10 @@ module.exports = {
                                             message: 'Contract Renewal Completed Successfully!'
                                         });
                                     } else {
-                                        const result3 = await updateQualEmpno(resetOldEmno)
-                                        const result2 = await deleteNewLoginEntry(body.emp_username)
-                                        const result1 = await updateEmpMaster(oldData)
-                                        const result = await activeLoginNewPromise(emp_slno)
-                                        console.log("Error Found, Contact IT");
+                                        await reverseUpdateQualEmpno(resetOldEmno)
+                                        await deleteNewLoginEntry(body.emp_username)
+                                        await updateEmpMaster(oldData)
+                                        await activeLoginNewPromise(emp_slno)
                                         return res.status(200).json({
                                             success: 0,
                                             message: 'Error Found, Contact IT'
@@ -709,39 +707,35 @@ module.exports = {
                             }
 
                         } else {
-                            const result2 = await deleteNewLoginEntry(body.emp_username)
-                            const result1 = await updateEmpMaster(oldData)
-                            const result = await activeLoginNewPromise(emp_slno)
-                            console.log("Error While Updating Employee ID");
+                            await deleteNewLoginEntry(body.emp_username)
+                            await updateEmpMaster(oldData)
+                            await activeLoginNewPromise(emp_slno)
+                            await reverseUpdateQualEmpno(resetOldEmno)
                             return res.status(200).json({
                                 success: 0,
-                                message: 'Error While Updating Employee ID'
+                                message: 'Error While Updating Employee ID' + message
                             });
                         }
                     } else {
-                        console.log("error");
-                        const result1 = await updateEmpMaster(oldData)
-                        const result = await activeLoginNewPromise(emp_slno)
-                        console.log("Error While Adding new login");
+                        await updateEmpMaster(oldData)
+                        await activeLoginNewPromise(emp_slno)
                         return res.status(200).json({
                             success: 0,
-                            message: 'Error While Adding new login'
+                            message: 'Error While Adding new login' + message
                         });
                     }
                 } else {
                     //error while inserting employee master, then active old emno login
-                    const result = await activeLoginNewPromise(emp_slno)
-                    console.log("Error While Updating Employee Master");
+                    await activeLoginNewPromise(emp_slno)
                     return res.status(200).json({
                         success: 0,
-                        message: 'Error While Updating Employee Master'
+                        message: 'Error While Updating Employee Master' + message
                     });
                 }
             } else {
-                console.log('Error While Inactiving Employee');
                 return res.status(200).json({
                     success: 0,
-                    message: 'Error While Inactiving Employee'
+                    message: 'Error While Inactiving Employee' + message
                 });
             }
         }
