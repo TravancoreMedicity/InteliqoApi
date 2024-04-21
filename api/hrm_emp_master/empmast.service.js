@@ -342,6 +342,7 @@ module.exports = {
                     probation_status,
                     recomend_salary,
                     clinicaltype,
+                    gross_salary,
                     doctor_status
                 FROM hrm_emp_master
                 WHERE em_no = ?

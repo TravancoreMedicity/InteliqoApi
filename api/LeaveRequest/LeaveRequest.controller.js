@@ -552,7 +552,7 @@ module.exports = {
                     //UPDATION PROMISESS
                     await Promise.allSettled(LeaveUpdationPromise)
                         .then((result) => {
-                            console.log(result)
+                            // console.log(result)
                             const successResult = result?.find((e) => e.status === 'rejected')
                             if (successResult === undefined) {
                                 return res.status(200).json({
