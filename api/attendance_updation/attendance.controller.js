@@ -1,3 +1,4 @@
+// @ts-nocheck
 const { Console } = require("console");
 const { min, addDays, subDays } = require("date-fns");
 const logger = require('../../logger/logger')
@@ -14,9 +15,9 @@ const { getEmployeeDetl, getEmployeeShiftDetl, getDepartmentShiftMast,
     getPunchMastDataCheckWoff, updatePunchMasWoff, checkAttendanceProcess, checkInOutMarked,
     checkAttendanceProcessDept, getEmpList, getEmployeeRights, sectionwiseEmppunchMast,
     sectionwiseEmpDutyplan, checkAttendanceProcessSectionWise, getHolidayListDateWise,
-    getPunchDataEmCodeWiseDateWise, getDutyPlanBySection, getPunchMasterDataSectionWise,
+    getPunchDataEmCodeWiseDateWise, getDutyPlanBySection, getPunchMastData,
     updatePunchMaster, updatePunchMarkingHR, updateDutyPlanTable, updateDelStatDutyPlanTable, checkPunchMarkingHR,
-    updatePunchMasterSingleRow
+    updatePunchMasterSingleRow, updatePunchMasterCalCulcated, getPunchReportLCCount, updateLCPunchMaster, getPData
 } = require("../attendance_updation/attendance.service")
 //SHIFT DETAILS
 //get the shift details 
@@ -987,9 +988,10 @@ module.exports = {
     },
     getPunchMasterDataSectionWise: (req, res) => {
         const body = req.body;
-        getPunchMasterDataSectionWise(body, (err, results) => {
+        getPunchMastData(body, (err, results) => {
+            // console.log(results)
             if (err) {
-                logger.errorLogger(err)
+                // logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err
@@ -997,7 +999,7 @@ module.exports = {
             }
 
             if (!results) {
-                logger.infoLogger("No Records Found")
+                // logger.infoLogger("No Records Found")
                 return res.status(200).json({
                     success: 2,
                     message: "Record Not Found"
@@ -1477,7 +1479,7 @@ module.exports = {
         updateDelStatDutyPlanTable(body, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
-                return res.status(400).json({
+                return res.status(200).json({
                     susc: 0,
                     message: err
                 });
@@ -1490,6 +1492,7 @@ module.exports = {
             }
             return res.status(200).json({
                 susc: 1,
+                message: 'success',
                 data: results
             });
         });
@@ -1538,6 +1541,106 @@ module.exports = {
                 success: 1,
                 message: "Successfully Updated",
             });
+        });
+    },
+    updatePunchMasterCalCulcated: async (req, res) => { // updated on 26/06/2024 04:24 PM (Ajith)
+        const body = req.body;
+        updatePunchMasterCalCulcated(body).then(results => {
+            if (results === 1) {
+                return res.status(200).json({
+                    success: 1,
+                    message: 'Update Successfully'
+                });
+            } else {
+                return res.status(200).json({
+                    success: 0,
+                    message: results
+                })
+            }
+        }).catch(err => {
+            return res.status(200).json({
+                success: 0,
+                message: "Error Occured , Please Contact HRD / IT"
+            });
+        })
+    }, // updated on 26/06/2024 04:24 PM (Ajith)
+    getPunchReportLCCount: (req, res) => {         // ----> added on 27/06/2024 10:00 PM (Ajith)
+        const body = req.body;
+        getPunchReportLCCount(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                logger.infoLogger("No Records Found")
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+
+        });
+    },          //added on 27/06/2024 10:00 PM (Ajith)
+    updateLCPunchMaster: (req, res) => {         // ----> added on 27/06/2024 10:00 PM (Ajith)
+        const body = req.body;
+        updateLCPunchMaster(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                logger.infoLogger("No Records Found")
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+
+        });
+    },          //added on 27/06/2024 10:00 PM (Ajith)
+    getPData: (req, res) => {
+        const body = req.body;
+        getPData(body, (err, results) => {
+            // console.log(results)
+            if (err) {
+                // logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                // logger.infoLogger("No Records Found")
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                planData: results
+            });
+
         });
     },
 }

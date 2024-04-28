@@ -513,7 +513,7 @@ module.exports = {
             }
         )
     },
-    getPunchMasterDataSectionWise: (data, callBack) => {
+    getPunchMastData: (data, callBack) => {
         pool.query(
             `SELECT 
                 punch_slno,
@@ -535,8 +535,7 @@ module.exports = {
                 lvereq_desc,
                 lve_tble_updation_flag
             FROM punch_master 
-            WHERE duty_day 
-            BETWEEN ? AND ? 
+            WHERE duty_day BETWEEN ? AND ? 
             AND em_no IN (?)`,
             [
                 data.fromDate_punchMaster,
@@ -544,6 +543,7 @@ module.exports = {
                 data.empList
             ],
             (error, results, feilds) => {
+                console.log(results)
                 if (error) {
                     return callBack(error);
                 }
@@ -1020,6 +1020,7 @@ module.exports = {
         )
     },
     updatePunchMarkingHR: (data, callBack) => {
+        console.log(data)
         pool.query(
             `UPDATE punchmarking_hr
                 SET status = 1,
@@ -1028,7 +1029,7 @@ module.exports = {
                 WHERE marking_month = ? AND deptsec_slno = ?`,
             [
                 data.loggedEmp,
-                data.toDayeForUpdatePunchMast,
+                data.toDate_punchMaster,
                 data.fromDate,
                 data.section
             ],
@@ -1122,9 +1123,98 @@ module.exports = {
             }
         )
     },
-
-
-
+    updatePunchMasterCalCulcated: (body) => { // updated on 26/06/2024 04:24 PM (Ajith)
+        return Promise.allSettled(body?.map(async (e) => {
+            return new Promise((resolve, reject) => {
+                pool.query(
+                    `UPDATE punch_master 
+                        SET lvereq_desc = ?
+                    WHERE punch_slno = ?`,
+                    [
+                        e.lvereq_desc,
+                        e.punch_slno
+                    ],
+                    async (error, results, fields) => {
+                        if (error) {
+                            return reject(error)
+                        }
+                        return resolve(results)
+                    }
+                )
+            })
+        })).then((updateResult) => {
+            // console.log(updateResult)
+            const dbUpdateResult = updateResult?.find(e => e.status === 'rejected')
+            if (dbUpdateResult === undefined) {
+                return 1
+            } else {
+                // @ts-ignore
+                return dbUpdateResult?.reason
+            }
+        })
+    }, // updated on 26/06/2024 04:24 PM (Ajith)
+    getPunchReportLCCount: (data, callBack) => { //added on 27/06/2024 10:00 PM (Ajith)
+        pool.query(
+            `SELECT 
+                punch_slno,
+                duty_day,
+                lvereq_desc,
+                duty_desc,
+                em_no
+            FROM PUNCH_MASTER 
+            WHERE em_no in (?)
+            AND duty_day >= ? and duty_day <= ? 
+            AND duty_desc = 'LC'`,
+            [
+                data.empList,
+                data.fromDate,
+                data.toDate,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },//added on 27/06/2024 10:00 PM (Ajith)
+    updateLCPunchMaster: (data, callBack) => { //added on 27/06/2024 10:00 PM (Ajith)
+        pool.query(
+            `UPDATE punch_master 
+                SET lvereq_desc = 'HD'
+            WHERE punch_slno IN (?)`,
+            [
+                data
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },//added on 27/06/2024 10:00 PM (Ajith)
+    getPData: (data, callBack) => {
+        pool.query(
+            `SELECT 
+                *
+            FROM punch_master 
+            WHERE duty_day >= ? and duty_day <= ?
+            AND em_no IN (?)`,
+            [
+                data.fromDate_punchMaster,
+                data.toDate_punchMaster,
+                data.empList
+            ],
+            (error, results, feilds) => {
+                console.log(results)
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 
 
 
