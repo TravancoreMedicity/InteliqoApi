@@ -238,7 +238,6 @@ module.exports = {
                 (error, result, feild) => {
 
                     if (error) {
-
                         callBack(error)
                     }
                     callBack(null, JSON.stringify(result))
@@ -1234,7 +1233,7 @@ module.exports = {
                 leave_status,
                 lvereq_desc,
                 lve_tble_updation_flag            
-            FROM medi_hrm_test_24042024.punch_master 
+            FROM punch_master 
             WHERE duty_day >= ? and duty_day <= ?
             AND em_no IN (?)`,
             [

@@ -1645,6 +1645,7 @@ module.exports = {
     monthlyUpdatePunchMaster: async (req, res) => {
         const body = req.body;
         const { postData_getPunchData, processedData, max_late_day_count } = body;
+        // console.log(processedData)
         monthlyUpdatePunchMaster(processedData).then(results => {
             if (results === 1) {
                 // GET PUNCH MASTER DATA 
@@ -1699,7 +1700,7 @@ module.exports = {
                             ?.filter((e) => e.lvereq_desc === 'HD')
                             ?.map((e) => e.punch_slno)
                         // UPDATE CALCULATED HD (LOP) IN PUNCH MASTER
-                        console.log(calCulatedHD)
+                        // console.log(calCulatedHD)
                         if (calCulatedHD !== null && calCulatedHD !== undefined && calCulatedHD?.length > 0) {
                             //update function for punch master table
 
