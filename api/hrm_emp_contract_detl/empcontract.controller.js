@@ -601,6 +601,18 @@ module.exports = {
                 em_no: body.old_emno,
                 punchmast: body.punchmast
             }
+
+            const newContractEntry = {
+                em_no: body.emp_no,
+                em_id: body.em_id,
+                em_cont_start: body.em_doj,
+                em_cont_end: body.em_contract_end_date,
+                em_prob_end_date: body.em_prob_end_date,
+                create_user: body.create_user
+            }
+
+
+
             //inactive old empno in hrm_employee table
             const result = await inactiveLoginNewPromise(emp_slno)
             const { status, message } = result;
@@ -632,7 +644,7 @@ module.exports = {
                                     if (status === 1) {
                                         if (body.contract_status === 1) {
                                             //if category is contract, new entry to hrm_emp_contract_detl
-                                            const result = await newEntryContract(body)
+                                            const result = await newEntryContract(newContractEntry)
                                             const { status, message } = result;
                                             if (status === 1) {
                                                 return res.status(200).json({
