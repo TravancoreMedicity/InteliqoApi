@@ -3,7 +3,7 @@ const { checkToken } = require('../../auth/token_validation');
 const { createmastleave, createdetlleave, gethafdayshift,
     getfirsthalf, getsecondhalf, inserthalfdayreque, insertnopunchrequest, insertcompensatyoff,
     getLeaveCancelEmpdetl, modifiedLeaveRequest, getLeaveExcistOrNot,
-    getHolidayStatus } = require('../LeaveRequest/LeaveRequest.controller');
+    getHolidayStatus, creditCoff } = require('../LeaveRequest/LeaveRequest.controller');
 
 router.post("/", checkToken, createmastleave)
 router.post("/inserthalfdayreque", checkToken, inserthalfdayreque)
@@ -21,6 +21,9 @@ router.post('/getHoliday', checkToken, getHolidayStatus)
 //new leave request api
 router.post("/getLeaveExcistOrNot", checkToken, getLeaveExcistOrNot)
 router.post("/modifiedLeaveRequest", checkToken, modifiedLeaveRequest)
+
+
+router.post("/creditCoff", checkToken, creditCoff)
 
 
 module.exports = router;

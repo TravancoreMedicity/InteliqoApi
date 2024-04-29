@@ -1,24 +1,21 @@
-const { getleaverequestdep, nopunchreq, halfrequst, getcompenoff,
-    getlevereqmast, getlevereqdetl, gethalfdaydetl, getnopunchreq,
-    compensatoryoffdata, inchargeapprv, inchargeapprvhalfday, inchargeapprvNopunch, inchargeapprvCoff,
-    HodApprvlLeave, HodApprvlHalfday, HodApprvlNopunch, HodApprvlCoff,
-    CEOApprvLeave, CEOHalfDay, CEONopunch, CEOCoff,
-    HRLeaveApprv, HRhalfDay, HRhalfDayPuchMast, HRNopunch, HRCoff, getlevdetl, updateLeavePunchMast,
-    getHalfdaylevdetl, updateHalfdayPunchMast, getNopunchlevdetl,
-    updateNoPunchPunchMast, getCofflevdetl, InsertCoffLeaveCalculated, updateNoPunchOUTPunchMast,
+const { getleaverequestdep, nopunchreq, halfrequst, getcompenoff, getlevereqmast, getlevereqdetl,
+    gethalfdaydetl, getnopunchreq, compensatoryoffdata, inchargeapprv, inchargeapprvhalfday,
+    inchargeapprvNopunch, inchargeapprvCoff, HodApprvlLeave, HodApprvlHalfday, HodApprvlNopunch,
+    HodApprvlCoff, CEOApprvLeave, CEOHalfDay, CEONopunch, CEOCoff, HRLeaveApprv, HRhalfDay,
+    HRhalfDayPuchMast, HRNopunch, HRCoff, updateLeavePunchMast, updateHalfdayPunchMast,
+    updateNoPunchPunchMast, InsertCoffLeaveCalculated, updateNoPunchOUTPunchMast,
     leaveReqCancel, HalfdayCancel, NopunchCancel, CoffCancel, getCeoPending, getHRpending,
     CeoHalfdayPending, HRHalfdayPending, CeoNopunchReq, HrNopunchReq, CeoCoffReq, HrCoffReq,
     CoffCancelUser, NopunchCancelUser, HalfdayCancelUser, leaveReqCancelUser,
-    AllList, AllListHOD, AllListCeo, AllListHr,
-    updateCasualLeaveDetlTable, updateNationalHolidayDetlTable, updateEarnLeaveDetlTable, updateCoffDetlTable,
-    updatePunchMasterEsi, updatePunchMasterlwf, updatePunchMasterLeave, leaveReqRejectHr,
+    AllList, AllListHOD, AllListCeo, AllListHr, updateCasualLeaveDetlTable, updateNationalHolidayDetlTable,
+    updateEarnLeaveDetlTable, updateCoffDetlTable, updatePunchMasterEsi, updatePunchMasterlwf, updatePunchMasterLeave, leaveReqRejectHr,
     leaveReqRejectHrDetl, HalfDayReqRejectHr, HalfDayHrRejectCl, HRNopunchMasterIn, HRNopunchMasterOut,
     NoPunchReqRejectHr, CoffReqRejectHr, InsertLeaveCalc, NoPunchReqCancelHr, NoPunchMasterCancel,
-    HalfDayReqCancelHr, lveReqCanclHr, HalfDayHrCancelPunchMast,
-    CoffReqCancelHr, CoffCancelHR,
+    HalfDayReqCancelHr, lveReqCanclHr, HalfDayHrCancelPunchMast, CoffReqCancelHr, CoffCancelHR,
     CancelHolidayLeave, CancelCasualyLeave, CancelEarnLeave, CancelCoffLeave, CancelCommonLeave,
-    CancelpunchMastEsiLeave,
-    CancelpunchMastLwfLeave, CancelpunchMastLeave, UpdateHalfdayCasual, updateCompFlag
+    CancelpunchMastEsiLeave, CancelpunchMastLwfLeave, CancelpunchMastLeave, UpdateHalfdayCasual,
+    updateCompFlag, empCoffData, sectionCoffData, empMisspunchData, empHalfdayData, empLeaveData,
+    sectionLeaveData, sectionMisspunchData, sectionHalfdayData
 } = require('../LeaveRequestApproval/LeaveRequestApproval.service');
 const { validationinchageapprv, validateotcancel } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
@@ -2034,6 +2031,188 @@ module.exports = {
                             message: "Leave Request Rejected Successfully"
                         });
                     }
+                });
+            }
+        });
+    },
+    empCoffData: (req, res) => {
+        const body = req.params.id;
+        empCoffData(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    sectionCoffData: (req, res) => {
+        const body = req.body;
+        sectionCoffData(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    empMisspunchData: (req, res) => {
+        const body = req.params.id;
+        empMisspunchData(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    empHalfdayData: (req, res) => {
+        const body = req.params.id;
+        empHalfdayData(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    empLeaveData: (req, res) => {
+        const body = req.params.id;
+        empLeaveData(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    sectionLeaveData: (req, res) => {
+        const body = req.body;
+        sectionLeaveData(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+            else {
+                return res.status(200).json({
+                    success: 1,
+                    data: results
+                });
+            }
+        });
+    },
+    sectionHalfdayData: (req, res) => {
+        const body = req.body;
+        sectionHalfdayData(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+            else {
+                return res.status(200).json({
+                    success: 1,
+                    data: results
+                });
+            }
+        });
+    },
+    sectionMisspunchData: (req, res) => {
+        const body = req.body;
+        sectionMisspunchData(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+            else {
+                return res.status(200).json({
+                    success: 1,
+                    data: results
                 });
             }
         });

@@ -10,6 +10,7 @@ const { createmastleave, createdetlleave, updateserialnum, gethafdayshift, getfi
 const logger = require('../../logger/logger');
 const { attMarkingExcistFrLveReq } = require('../attendance_marking_save/attendance_marking_save.service');
 const pool = require('../../config/database');
+const { InsertLeaveCalc } = require('../LeaveRequestApproval/LeaveRequestApproval.service');
 module.exports = {
     createmastleave: (req, res) => {
         const body = req.body;
@@ -124,7 +125,6 @@ module.exports = {
                     message: err
                 });
             }
-
             if (results) {
                 //update punch slno in punch master data
                 updatePunchSlno(body, (err, results) => {
@@ -149,7 +149,6 @@ module.exports = {
     insertnopunchrequest: (req, res) => {
         const body = req.body;
         const data = { em_id: body.em_id, date: body.nopunchdate }
-
         //CHECKING FOR ATTENDANCE MARKED
         checkMispunchRequest(data, (err, results) => {
             if (Object.keys(results)?.length === 0) {
@@ -612,5 +611,46 @@ module.exports = {
             });
         });
 
+    },
+    creditCoff: (req, res) => {
+        const body = req.body;
+        updatePunchSlno(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            insertcompensatyoff(body, (err, results) => {
+                if (err) {
+                    logger.errorLogger(err)
+                    return res.status(200).json({
+                        success: 0,
+                        message: err
+                    });
+                }
+                InsertLeaveCalc(body, (err, results) => {
+                    if (err) {
+                        logger.errorLogger(err)
+                        return res.status(200).json({
+                            success: 0,
+                            message: err
+                        });
+                    }
+                    else if (!results) {
+                        return res.status(200).json({
+                            success: 2,
+                            message: "Record Not Found"
+                        });
+                    }
+                    return res.status(200).json({
+                        success: 1,
+                        message: "Insert Successfully!"
+                    });
+                });
+
+            })
+        })
     },
 }
