@@ -1,5 +1,4 @@
 // @ts-nocheck
-const { Console } = require("console");
 const { min, addDays, subDays } = require("date-fns");
 const logger = require('../../logger/logger')
 const { array } = require("joi");
@@ -15,7 +14,7 @@ const { getEmployeeDetl, getEmployeeShiftDetl, getDepartmentShiftMast,
     getPunchMastDataCheckWoff, updatePunchMasWoff, checkAttendanceProcess, checkInOutMarked,
     checkAttendanceProcessDept, getEmpList, getEmployeeRights, sectionwiseEmppunchMast,
     sectionwiseEmpDutyplan, checkAttendanceProcessSectionWise, getHolidayListDateWise,
-    getPunchDataEmCodeWiseDateWise, getDutyPlanBySection, getPunchMastData,
+    getPunchDataEmCodeWiseDateWise, getDutyPlanBySection, getPunchMastData, monthlyUpdatePunchMaster,
     updatePunchMaster, updatePunchMarkingHR, updateDutyPlanTable, updateDelStatDutyPlanTable, checkPunchMarkingHR,
     updatePunchMasterSingleRow, updatePunchMasterCalCulcated, getPunchReportLCCount, updateLCPunchMaster, getPData
 } = require("../attendance_updation/attendance.service")
@@ -1642,5 +1641,122 @@ module.exports = {
             });
 
         });
+    },
+    monthlyUpdatePunchMaster: async (req, res) => {
+        const body = req.body;
+        const { postData_getPunchData, processedData, max_late_day_count } = body;
+        monthlyUpdatePunchMaster(processedData).then(results => {
+            if (results === 1) {
+                // GET PUNCH MASTER DATA 
+                getPData(postData_getPunchData, (err, punchMasterData) => {
+                    // console.log(punchMasterData)
+                    if (err) {
+                        // logger.errorLogger(err)
+                        return res.status(200).json({
+                            success: 0,
+                            message: err,
+                            data: []
+                        });
+                    }
+                    // console.log(punchMasterData)
+                    if (punchMasterData === null && punchMasterData === undefined && punchMasterData?.length === 0) {
+                        // logger.infoLogger("No Records Found")
+                        // return res.status(200).json({
+                        //     success: 2,
+                        //     message: "Record Not Found"
+                        // });
+                        return res.status(200).json({
+                            success: 1,
+                            message: 'Update Successfully',
+                            data: []
+                        });
+                    }
+
+                    // console.log(punchMasterData)
+                    // IF GET PUNCH MASTER DATA IS TRUE  // IF DATA
+                    if (punchMasterData !== null && punchMasterData !== undefined && punchMasterData?.length > 0) {
+                        //CALCULATE CALCULATED HD BASED ON LATE COMMING
+                        let lcCount = 0;
+                        const calCulatedHD = punchMasterData
+                            ?.map((e) => {
+                                return {
+                                    punch_slno: e.punch_slno,
+                                    duty_desc: e.duty_desc,
+                                    lvereq_desc: e.lvereq_desc
+                                }
+                            })
+                            ?.sort((a, b) => a.punch_slno - b.punch_slno)
+                            ?.map(item => {
+                                if (item.duty_desc === "LC" && lcCount < max_late_day_count) {
+                                    lcCount++;
+                                    return item;
+                                } else if (item.duty_desc === "LC" && lcCount >= max_late_day_count) {
+                                    return { ...item, lvereq_desc: "HD" };
+                                } else {
+                                    return item;
+                                }
+                            })
+                            ?.filter((e) => e.lvereq_desc === 'HD')
+                            ?.map((e) => e.punch_slno)
+                        // UPDATE CALCULATED HD (LOP) IN PUNCH MASTER
+                        console.log(calCulatedHD)
+                        if (calCulatedHD !== null && calCulatedHD !== undefined && calCulatedHD?.length > 0) {
+                            //update function for punch master table
+
+                            updateLCPunchMaster(calCulatedHD, (err, resl) => {
+                                if (err) {
+                                    return res.status(200).json({
+                                        success: 0,
+                                        message: err,
+                                        data: []
+                                    });
+                                }
+
+                                if (resl) {
+                                    const updatedPunchMasterData = punchMasterData?.map((e) => {
+                                        return {
+                                            ...e,
+                                            lvereq_desc: calCulatedHD?.includes(e.punch_slno) ? 'HD' : e.lvereq_desc
+                                        }
+                                    })
+                                    // console.log(updatedPunchMasterData)
+                                    return res.status(200).json({
+                                        success: 1,
+                                        message: 'Update Successfully',
+                                        data: updatedPunchMasterData
+                                    });
+
+                                }
+                            })
+                        } else {
+                            return res.status(200).json({
+                                success: 1,
+                                message: 'Update Successfully',
+                                data: punchMasterData
+                            });
+                        }
+                    } else {
+                        return res.status(200).json({
+                            success: 1,
+                            message: 'Update Successfully',
+                            data: punchMasterData
+                        });
+                    }
+                });
+
+            } else {
+                return res.status(200).json({
+                    success: 0,
+                    message: results,
+                    data: []
+                })
+            }
+        }).catch(err => {
+            return res.status(200).json({
+                success: 0,
+                message: "Error Occured , Please Contact HRD / IT",
+                data: []
+            });
+        })
     },
 }

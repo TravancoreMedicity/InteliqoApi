@@ -543,7 +543,7 @@ module.exports = {
                 data.empList
             ],
             (error, results, feilds) => {
-                console.log(results)
+                // console.log(results)
                 if (error) {
                     return callBack(error);
                 }
@@ -1020,7 +1020,7 @@ module.exports = {
         )
     },
     updatePunchMarkingHR: (data, callBack) => {
-        console.log(data)
+        // console.log(data)
         pool.query(
             `UPDATE punchmarking_hr
                 SET status = 1,
@@ -1194,31 +1194,106 @@ module.exports = {
             }
         )
     },//added on 27/06/2024 10:00 PM (Ajith)
+    // punch_slno,
+    // duty_day,
+    // shift_id,
+    // emp_id,
+    // em_no,
+    // punch_in,
+    // punch_out,
+    // shift_in,
+    // shift_out,
+    // hrs_worked,
+    // late_in,
+    // early_out,
+    // duty_desc,
+    // duty_status,
+    // holiday_status,
+    // leave_status,
+    // lvereq_desc,
+    // lve_tble_updation_flag
     getPData: (data, callBack) => {
+        // console.log(data)
         pool.query(
             `SELECT 
-                *
-            FROM punch_master 
+                punch_slno,
+                duty_day,
+                shift_id,
+                emp_id,
+                em_no,
+                punch_in,
+                punch_out,
+                shift_in,
+                shift_out,
+                hrs_worked,
+                late_in,
+                early_out,
+                duty_desc,
+                duty_status,
+                holiday_status,
+                leave_status,
+                lvereq_desc,
+                lve_tble_updation_flag            
+            FROM medi_hrm_test_24042024.punch_master 
             WHERE duty_day >= ? and duty_day <= ?
             AND em_no IN (?)`,
             [
-                data.fromDate_punchMaster,
-                data.toDate_punchMaster,
+                data.frDate,
+                data.trDate,
                 data.empList
             ],
-            (error, results, feilds) => {
-                console.log(results)
+            (error, datas, feilds) => {
+                // console.log(datas)
                 if (error) {
                     return callBack(error);
                 }
-                return callBack(null, results);
+                return callBack(null, datas);
             }
         )
     },
-
-
-
-
+    monthlyUpdatePunchMaster: (body) => {
+        return Promise.allSettled(body?.map(async (e) => {
+            return new Promise((resolve, reject) => {
+                pool.query(
+                    `UPDATE punch_master
+                        SET punch_in = ?,
+                            punch_out = ?,
+                            hrs_worked =?,
+                            late_in = ?,
+                            early_out = ?,
+                            duty_status=?,
+                            duty_desc=?,
+                            lvereq_desc=?
+                        WHERE punch_slno = ?`,
+                    [
+                        e.punch_in,
+                        e.punch_out,
+                        e.hrs_worked,
+                        e.late_in,
+                        e.early_out,
+                        e.duty_status,
+                        e.duty_desc,
+                        e.lvereq_desc,
+                        e.punch_slno,
+                    ],
+                    async (error, results, fields) => {
+                        if (error) {
+                            return reject(error)
+                        }
+                        return resolve(results)
+                    }
+                )
+            })
+        })).then((updateResult) => {
+            const dbUpdateResult = updateResult?.find(e => e.status === 'rejected')
+            if (dbUpdateResult === undefined) {
+                return 1
+            } else {
+                // @ts-ignore
+                return dbUpdateResult?.reason
+            }
+        })
+    },
 
 
 }

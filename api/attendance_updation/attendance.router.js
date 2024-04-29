@@ -10,7 +10,7 @@ const { validateAttendance, processAttendData, getpunchmastcalcu,
     sectionwiseEmpDutyplan, checkAttendanceProcessSectionWise, getHolidayListDateWise,
     getPunchDataEmCodeWiseDateWise, getDutyPlanBySection, getPunchMasterDataSectionWise,
     updatePunchMaster, updatePunchMarkingHR, updateDutyPlanTable, updateDelStatDutyPlanTable, checkPunchMarkingHR,
-    getPunchReportLCCount, updateLCPunchMaster, getPData,
+    getPunchReportLCCount, updateLCPunchMaster, getPData, monthlyUpdatePunchMaster,
     updatePunchMasterSingleRow, updatePunchMasterCalCulcated
 } = require("../attendance_updation/attendance.controller")
 
@@ -59,5 +59,7 @@ router.post("/updatePunchMasterCalculated", checkToken, updatePunchMasterCalCulc
 router.post("/getPunchReportLCCount", checkToken, getPunchReportLCCount); // added on 27/06/2024 10:00 PM (Ajith)
 router.post("/updateLCPunchMaster", checkToken, updateLCPunchMaster); // added on 27/06/2024 15:16 PM (Ajith)
 router.post("/getPData", checkToken, getPData);
+
+router.post("/monthlyUpdatePunchMaster", checkToken, monthlyUpdatePunchMaster);
 
 module.exports = router;
