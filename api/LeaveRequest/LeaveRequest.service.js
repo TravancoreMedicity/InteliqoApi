@@ -301,10 +301,14 @@ module.exports = {
                 cf_hod_apprv_cmnt,
                 cf_hod_apprv_time,
                 cf_hr_aprrv_requ,
+                cf_hr_apprv_status,
+                cf_hr_apprv_cmnt,
+                cf_hr_uscode,
+                cf_hr_apprv_time,
                 cf_ceo_req_status,
                 cf_reason
                 )
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
                 data.punchindata,
                 data.punchoutdata,
@@ -329,6 +333,10 @@ module.exports = {
                 data.hod_apprv_cmnt,
                 data.hod_apprv_time,
                 data.hr_aprrv_requ,
+                data.hr_apprv_status,
+                data.hr_apprv_cmnt,
+                data.hr_user,
+                data.hr_apprv_time,
                 data.ceo_req_status,
                 data.resonforleave
             ],
