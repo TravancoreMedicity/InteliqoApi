@@ -2452,7 +2452,7 @@ module.exports = {
             left join hrm_department on  nopunchrequest.em_department =hrm_department.dept_id
             inner join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
              LEFT JOIN hrm_shift_mast ON hrm_shift_mast.shft_slno=nopunchrequest.shift_id
-            where nopunchrequest.em_id=? order by nopunchdate DESC`,
+            where lv_cancel_status_user=0 and lv_cancel_status=0 and nopunchrequest.em_id=? order by nopunchdate DESC`,
             [
                 data
             ],
@@ -2494,7 +2494,7 @@ module.exports = {
             inner join hrm_emp_master on  hrm_halfdayrequest.em_no =hrm_emp_master.em_no
             inner join hrm_department on  hrm_halfdayrequest.dept_id =hrm_department.dept_id
             inner join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
-            where  hrm_halfdayrequest.emp_id=? order by leavedate DESC`,
+            where lv_cancel_status=0 and lv_cancel_status_user=0 and hrm_halfdayrequest.emp_id=? order by leavedate DESC`,
             [
                 data
             ],
@@ -2586,7 +2586,7 @@ module.exports = {
             inner join hrm_emp_master on  hrm_leave_request.em_no =hrm_emp_master.em_no
             inner join hrm_department on  hrm_leave_request.dept_id =hrm_department.dept_id
             inner join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
-            where  lv_cancel_status=0  and lv_cancel_status_user=0 and hrm_leave_request.dept_section IN (?)
+            where  (lv_cancel_status=0  or lv_cancel_status_user=0) and hrm_leave_request.dept_section IN (?)
             order by leave_date DESC`,
             [
                 data.sectIds

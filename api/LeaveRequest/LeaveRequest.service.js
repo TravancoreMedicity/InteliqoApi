@@ -749,6 +749,8 @@ module.exports = {
                 AND em_no = ? 
                 AND lv_cancel_status = 0 
                 AND lv_cancel_status_user = 0
+                AND incapprv_status=0
+                AND hod_apprv_status=0
                 UNION ALL
                 SELECT 
                     count(*) count 
@@ -756,7 +758,9 @@ module.exports = {
                 WHERE leave_date >= ? AND leave_date <= ? 
                 AND em_no = ? 
                 AND lv_cancel_status = 0 
-                AND lv_cancel_status_user = 0) A`,
+                AND lv_cancel_status_user = 0
+                AND incapprv_status=0
+                AND hod_apprv_status=0) A`,
             [
                 data.fromDate,
                 data.toDate,
