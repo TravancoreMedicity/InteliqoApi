@@ -753,19 +753,27 @@ module.exports = {
     },
     getPunchmastData: (data, callBack) => {
         pool.query(
-            `select punch_slno, duty_day,shift_id,punch_master.emp_id,punch_master.em_no,
-            hrm_emp_master.em_name,punch_in,
-            punch_out,shift_in,shift_out,hrs_worked,over_time,late_in,
-            early_out,duty_status,holiday_status,leave_status,holiday_slno,
-            lvereq_desc,duty_desc,lve_tble_updation_flag,hrm_emp_master.em_name
+            `select 
+                duty_day,
+                punch_master.emp_id,
+                punch_master.em_no,
+                hrm_emp_master.em_name,
+                duty_status,
+                holiday_status,
+                leave_status,
+                holiday_slno,
+                lvereq_desc,
+                duty_desc,
+                hrm_yearly_holiday_list.hld_desc
             from  punch_master
             left join hrm_emp_master on hrm_emp_master.em_no=punch_master.em_no
-            where punch_master.em_no IN (?)
-                 and date(duty_day) between ? and ?`,
+            left join hrm_yearly_holiday_list on punch_master.holiday_slno = hrm_yearly_holiday_list.hld_slno
+            where duty_day >= ? and duty_day <= ?
+            and punch_master.em_no IN (?)`,
             [
-                data.em_no,
                 data.from,
-                data.to
+                data.to,
+                data.em_no
             ],
             (error, results, feilds) => {
                 if (error) {
