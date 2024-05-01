@@ -11,6 +11,7 @@ const logger = require('../../logger/logger');
 const { attMarkingExcistFrLveReq } = require('../attendance_marking_save/attendance_marking_save.service');
 const pool = require('../../config/database');
 const { InsertLeaveCalc } = require('../LeaveRequestApproval/LeaveRequestApproval.service');
+const { format } = require('date-fns');
 module.exports = {
     createmastleave: (req, res) => {
         const body = req.body;
@@ -66,7 +67,13 @@ module.exports = {
         const body = req.body;
 
         //FOR CHECKING ALREADY A HALF LEAVE REQUEST
-        halfDayRequestCheck(body, (err, results) => {
+
+        const updateData = {
+            leavedate: format(new Date(body.leavedate), 'yyyy-MM-dd'),
+            em_no: body.em_no
+        }
+
+        halfDayRequestCheck(updateData, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({

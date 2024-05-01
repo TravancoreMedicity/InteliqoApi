@@ -531,7 +531,7 @@ module.exports = {
             `SELECT half_slno FROM hrm_halfdayrequest 
             WHERE leavedate = ? AND em_no = ? and (hf_incapprv_status!=2 and hf_hod_apprv_status!=2 and hf_hr_apprv_status!=2 and lv_cancel_status!=1 and lv_cancel_status_user!=1)`,
             [
-                moment(data.leavedate).format('YYYY-MM-DD'),
+                data.leavedate,
                 data.em_no
             ],
             (error, results, feilds) => {
