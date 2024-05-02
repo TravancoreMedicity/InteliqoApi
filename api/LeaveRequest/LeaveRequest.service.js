@@ -531,7 +531,7 @@ module.exports = {
             `SELECT half_slno FROM hrm_halfdayrequest 
             WHERE leavedate = ? AND em_no = ? and (hf_incapprv_status!=2 and hf_hod_apprv_status!=2 and hf_hr_apprv_status!=2 and lv_cancel_status!=1 and lv_cancel_status_user!=1)`,
             [
-                moment(data.leavedate).format('YYYY-MM-DD'),
+                data.leavedate,
                 data.em_no
             ],
             (error, results, feilds) => {
@@ -749,6 +749,8 @@ module.exports = {
                 AND em_no = ? 
                 AND lv_cancel_status = 0 
                 AND lv_cancel_status_user = 0
+                AND incapprv_status=0
+                AND hod_apprv_status=0
                 UNION ALL
                 SELECT 
                     count(*) count 
@@ -756,7 +758,9 @@ module.exports = {
                 WHERE leave_date >= ? AND leave_date <= ? 
                 AND em_no = ? 
                 AND lv_cancel_status = 0 
-                AND lv_cancel_status_user = 0) A`,
+                AND lv_cancel_status_user = 0
+                AND incapprv_status=0
+                AND hod_apprv_status=0) A`,
             [
                 data.fromDate,
                 data.toDate,

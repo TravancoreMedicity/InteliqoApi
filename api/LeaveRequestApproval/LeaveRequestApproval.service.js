@@ -1,3 +1,4 @@
+// @ts-nocheck
 const pool = require('../../config/database');
 const moment = require('moment');
 module.exports = {
@@ -696,12 +697,12 @@ module.exports = {
             data.map((val) => {
                 pool.query(
                     `UPDATE punch_master
-            SET lvreq_type =?,
-            leave_type=?,
-            sublvreq_type=?,
-            duty_status=?,
-            duty_worked=?
-            WHERE duty_day=? AND em_no=?`,
+                        SET lvreq_type =?,
+                            leave_type=?,
+                            sublvreq_type=?,
+                            duty_status=?,
+                            duty_worked=?
+                        WHERE duty_day=? AND em_no=?`,
                     [
                         val.req_type,
                         val.leave,
