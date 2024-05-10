@@ -1,5 +1,5 @@
 const { logger } = require('../../logger/logger');
-const { GetDatewiseEmps, ScheduleInductionTrainings, InsertInductionEmps, GetTypeWiseTraining, UpdateTrainers, UpdateDate, GetTraineers, GetInductionCanderDetails, GetIncutCalenderEmpDetails, GetIncutCalenderTrainers } = require('./TrainingInduction.service');
+const { GetDatewiseEmps, ScheduleInductionTrainings, InsertInductionEmps, GetTypeWiseTraining, UpdateTrainers, UpdateDate, GetTraineers, GetInductionCanderDetails, GetIncutCalenderEmpDetails, GetIncutCalenderTrainers, UpdateDateOnScheduleTbl, UpdateAssignStatus } = require('./TrainingInduction.service');
 module.exports = {
 
     GetDatewiseEmps: (req, res) => {
@@ -60,13 +60,22 @@ module.exports = {
                 });
             }
             else {
-                return res.status(200).json({
-                    succes: 1,
-                    message: "Successfully Inserted"
-                });
+                const result = UpdateAssignStatus(body)
+                    .then((r) => {
+                        return res.status(200).json({
+                            success: 1,
+                            message: r
+                        });
+                    }).catch((e) => {
+                        return res.status(200).json({
+                            success: 0,
+                            message: e.sqlMessage
+                        });
+                    })
             }
 
         });
+
     },
     GetTypeWiseTraining: (req, res) => {
         const id = req.params.id;
@@ -121,13 +130,30 @@ module.exports = {
                 });
             }
             else {
-                return res.status(200).json({
-                    success: 1,
-                    message: "Date Updated successfully"
+                // return res.status(200).json({
+                //     success: 1,
+                //     message: "Date Updated successfully"
+                // });
+                UpdateDateOnScheduleTbl(body, (err, results) => {
+                    if (err) {
+
+                        return res.status(200).json({
+                            success: 0,
+                            message: err
+                        });
+                    }
+                    else {
+                        return res.status(200).json({
+                            success: 1,
+                            message: "Date Updated successfully"
+                        });
+                    }
+
                 });
             }
 
         });
+
     },
 
     GetTraineers: (req, res) => {

@@ -12,7 +12,7 @@ module.exports = {
             training_induction_retest.retest_status,training_induction_retest.retest_mark,
             induct_retest_exam_details.induct_retest_mark,training_topic.training_name,training_name.type_slno,
             hrm_department.dept_id,hrm_department.dept_name,hrm_dept_section.sect_id,hrm_dept_section.sect_name
-            FROM medi_hrm.training_induction_emp_details
+            FROM training_induction_emp_details
             LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_induction_emp_details.indct_emp_no
             LEFT JOIN training_induction_schedule ON training_induction_schedule.schedule_slno=training_induction_emp_details.schedule_no
             LEFT JOIN training_topic ON training_topic.topic_slno=training_induction_schedule.schedule_topic

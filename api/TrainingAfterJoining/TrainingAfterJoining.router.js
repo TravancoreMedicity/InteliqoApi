@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const { checkToken } = require("../../auth/token_validation");
-const { TrainingAfterJoiningGet, ScheduleUpdate, InsertTrainingMaster, TrainingNewJoineeInsert, ScheduleInsert, GetTopic, ScheduleDateUpdate, GetTrainers, JoineeDetailsInsert, JoineeDetailsUpdate, ScheduleDetailsGet, GetScheduleDetails, DepartmentalScheduleInsert, DepartmentalScheduleGet, getDeptTopic, getEmpNameBydepID, InsertEmpDetails, GetDeptEmpNameDetails, UpdateTrainers, getTrainerByTopic } = require('./TrainingAfterJoining.controller');
+const { TrainingAfterJoiningGet, ScheduleUpdate, InsertTrainingMaster, TrainingNewJoineeInsert, ScheduleInsert, GetTopic, ScheduleDateUpdate, GetTrainers, JoineeDetailsInsert, JoineeDetailsUpdate, ScheduleDetailsGet, GetScheduleDetails, DepartmentalScheduleInsert, DepartmentalScheduleGet, getDeptTopic, getEmpNameBydepID, InsertEmpDetails, GetDeptEmpNameDetails, UpdateTrainers, getTrainerByTopic, getScheduleDatas } = require('./TrainingAfterJoining.controller');
 
 
 router.get('/select', checkToken, TrainingAfterJoiningGet);
@@ -24,6 +24,8 @@ router.get('/selectemp/:id', checkToken, GetDeptEmpNameDetails)
 router.post('/insertTrainingMaster', checkToken, InsertTrainingMaster)
 router.patch('/UpdateTrainers', checkToken, UpdateTrainers);
 router.get('/getTrainerByTopic/:id', checkToken, getTrainerByTopic)
+router.post('/scheduledatas', checkToken, getScheduleDatas)
+
 module.exports = router;
 
 

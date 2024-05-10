@@ -41,10 +41,11 @@ module.exports = {
                 group_slno,
                 eoff,
                 comp_day_count,
-                comp_hour_count
+                comp_hour_count,
+                training_mastergroup
                 )
 
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
 
 
             [
@@ -85,7 +86,8 @@ module.exports = {
                 JSON.stringify(data.group_slno),
                 data.eoff,
                 data.comp_day_count,
-                data.comp_hour_count
+                data.comp_hour_count,
+                JSON.stringify(data.training_mastergroup),
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -110,45 +112,39 @@ module.exports = {
     updateCommonSettings: (data, callBack) => {
         pool.query(
             `UPDATE setting_mast
-                SET cmmn_grace_period =?,
-                cmmn_late_in =?,
-                cmmn_early_out =?,
-                cmmn_early_out_grace=?,
-                cmmn_late_in_grace=?,
-                carry_hl=?,
-                carry_cl=?,
-                carry_el=?,
-                carry_sl=?,
-                min_salary=?,
-                max_salary=?,
-                pf_age=?,
-                pf_employee=?,
-                pf_employer=?,
-                esi_limit=?,
-                esi_employee=?,
-                esi_employer=?,
-                noofadvanceinyear=?,
-                verification_level=?,
-                update_user=?,
-                default_shift=?,
-                notapplicable_shift=?,
-                week_off_day=?,
-                salary_above=?,
-                noff_count=?,
-                leavetype_multiple=?,
-                pf_employee_amount=?,
-                pf_employer_amount=?,
-                onehour_rqst_count=?,
-                areartype=?,
-                max_late_day_count=?,
-                leave_count=?,
-                noff_selct_day_count=?,
-                noff=?,
-                group_slno=?,
-                eoff=?,
-                comp_day_count=?,
-                comp_hour_count=?
-                WHERE setting_slno =?`,
+            SET cmmn_grace_period =?,
+            cmmn_late_in =?,
+            cmmn_early_out =?,
+            cmmn_early_out_grace=?,
+            cmmn_late_in_grace=?,
+            carry_hl=?,
+            carry_cl=?,
+            carry_el=?,
+            carry_sl=?,
+            min_salary=?,
+            max_salary=?,
+            pf_age=?,
+            pf_employee=?,
+            pf_employer=?,
+            esi_limit=?,
+            esi_employee=?,
+            esi_employer=?,
+            noofadvanceinyear=?,
+            verification_level=?,
+            update_user=?,
+            default_shift=?,
+            notapplicable_shift=?,
+            week_off_day=?,
+            salary_above=?,
+            noff_count=?,
+            leavetype_multiple=?,
+            pf_employee_amount=?,
+            pf_employer_amount=?,
+            onehour_rqst_count=?,
+            areartype=?,
+            max_late_day_count=?,
+            training_mastergroup=?
+            WHERE setting_slno =?`,
             [
                 data.cmmn_grace_period,
                 data.cmmn_late_in,
@@ -181,13 +177,7 @@ module.exports = {
                 data.onehour_rqst_count,
                 data.areartype,
                 data.max_late_day_count,
-                data.leave_count,
-                data.noff_selct_day_count,
-                data.noff,
-                JSON.stringify(data.group_slno),
-                data.eoff,
-                data.comp_day_count,
-                data.comp_hour_count,
+                JSON.stringify(data.training_mastergroup),
                 data.setting_slno
             ],
             (error, results, feilds) => {
@@ -199,3 +189,4 @@ module.exports = {
         )
     },
 }
+

@@ -26,7 +26,7 @@ module.exports = {
     },
     InsertRetestEmp: (data, callBack) => {
         pool.query(
-            `INSERT INTO  medi_hrm.training_retest_emp_details
+            `INSERT INTO training_retest_emp_details
             (
                 candidate_em_no,
                 candidate_dept,
@@ -97,7 +97,8 @@ module.exports = {
             LEFT JOIN training_posttest ON training_posttest.emp_id=training_retest_emp_details.candidate_em_no
             LEFT JOIN training_employee_details ON training_employee_details.emp_name=training_retest_emp_details.candidate_em_no
             LEFT JOIN designation ON designation.desg_slno=training_employee_details.emp_desig
-            WHERE candidate_em_no=? `, [id],
+            WHERE candidate_em_no=?
+            group by  hrm_emp_master.em_id `, [id],
             (err, results, feilds) => {
                 if (err) {
                     return callback(err)
@@ -142,7 +143,7 @@ module.exports = {
 
     InsertRetestDetails: (data, callBack) => {
         pool.query(
-            `INSERT INTO  medi_hrm.training_retest_exam_details
+            `INSERT INTO training_retest_exam_details
             (
                 candid_id,
                 candid_dept,
@@ -310,7 +311,7 @@ module.exports = {
 
     InsertInductRetestDetails: (data, callBack) => {
         pool.query(
-            `INSERT INTO  medi_hrm.induct_retest_exam_details
+            `INSERT INTO induct_retest_exam_details
             (
                 induct_emp_id,
                 induct_dept,

@@ -3,7 +3,7 @@ const pool = require('../../config/database');
 module.exports = {
     TrainingTypeInsert: (data, callBack) => {
         pool.query(
-            `INSERT INTO medi_hrm.training_type (
+            `INSERT INTO training_type (
                 trainingtype_slno, type_name,count_day, type_status,create_user
             )
             VALUES (?,?,?,?,?)`,
@@ -25,7 +25,7 @@ module.exports = {
 
     TrainingTypeGet: (callback) => {
         pool.query(`
-        SELECT trainingtype_slno, type_name,count_day, type_status FROM medi_hrm.training_type WHERE type_status=1`, [],
+        SELECT trainingtype_slno, type_name,count_day, type_status FROM training_type WHERE type_status=1`, [],
             (err, results, feilds) => {
                 if (err) {
                     return callback(err)
@@ -38,7 +38,7 @@ module.exports = {
         )
     },
     TrainingTypeUpdate: (data, callback) => {
-        pool.query(`UPDATE medi_hrm.training_type SET 
+        pool.query(`UPDATE training_type SET 
          type_name=?,
          count_day=?,
           type_status=?,
@@ -62,7 +62,7 @@ module.exports = {
     },
     TrainingTypeDelete: (data, callback) => {
         pool.query(
-            `UPDATE medi_hrm.training_type 
+            `UPDATE training_type 
             SET type_status=0
              WHERE trainingtype_slno=?`,
             [
@@ -81,7 +81,7 @@ module.exports = {
     checkInsertVal: (data, callBack) => {
         pool.query(
             `SELECT type_name
-                FROM medi_hrm.training_type
+                FROM training_type
                 WHERE type_name = ?`,
             [
                 data.type_name,
@@ -100,7 +100,7 @@ module.exports = {
         pool.query(
             `SELECT type_name,               
             trainingtype_slno
-            FROM medi_hrm.training_type
+            FROM training_type
             WHERE type_name =?  AND trainingtype_slno != ?`,
             [
                 data.type_name,

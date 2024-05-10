@@ -1214,7 +1214,8 @@ const validatecommonsettings = Joi.object({
         group_slno: Joi.optional(),
         eoff: Joi.number().optional(),
         comp_day_count: Joi.number().optional(),
-        comp_hour_count:Joi.number().optional(),
+        comp_hour_count: Joi.number().optional(),
+        training_mastergroup: Joi.optional()
 
 })
 //validate carryforward

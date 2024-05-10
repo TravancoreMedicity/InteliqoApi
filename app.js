@@ -140,6 +140,7 @@ const InductionProcess = require("./api/TrainingInductionProcess/InductionProces
 const TrainingInductionReport = require("./api/TrainingInductionReport/TrainingInductionReport.router")
 const TrainingDetails = require("./api/TrainingDetails/TrainingDetails.route")
 const LeaveReport = require("./api/LeaveReport/LeaveReport.router")
+const TrainingDashboard = require("./api/TrainingDashboard/TrainingDashboard.router")
 
 app.use(express.json({ limit: '50mb' }));
 app.use((req, res, next) => {
@@ -318,7 +319,7 @@ app.use("/api/InductionProcess", InductionProcess)
 app.use("/api/TrainingInductionReport", TrainingInductionReport)
 app.use("/api/TrainingDetails", TrainingDetails)
 app.use("/api/LeaveReport", LeaveReport)
-
+app.use("/api/TrainingDashboard", TrainingDashboard)
 
 // ------ Database Connection --------
 

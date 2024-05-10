@@ -33,7 +33,7 @@ module.exports = {
             question_count, training_employee_details.pretest_status, training_employee_details.posttest_status, posttest_permission,
             hrm_department.dept_id,desg_slno,hrm_emp_master.em_id,hrm_dept_section.sect_id,training_topic.topic_slno,
              training_topic_name,em_name
-            FROM medi_hrm.training_employee_details
+            FROM training_employee_details
                         LEFT JOIN hrm_department on hrm_department.dept_id=training_employee_details.emp_dept
                         LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_employee_details.emp_name
                         LEFT JOIN hrm_dept_section on hrm_dept_section.sect_id=training_employee_details.emp_dept_sectn
@@ -57,7 +57,7 @@ module.exports = {
             question_count, training_employee_details.pretest_status, training_employee_details.posttest_status, posttest_permission,
             hrm_department.dept_id,desg_slno,hrm_emp_master.em_id,hrm_dept_section.sect_id,training_topic.topic_slno,
              training_topic_name,em_name
-            FROM medi_hrm.training_employee_details
+            FROM training_employee_details
                         LEFT JOIN hrm_department on hrm_department.dept_id=training_employee_details.emp_dept
                         LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_employee_details.emp_name
                         LEFT JOIN hrm_dept_section on hrm_dept_section.sect_id=training_employee_details.emp_dept_sectn

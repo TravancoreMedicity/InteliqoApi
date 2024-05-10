@@ -4,7 +4,7 @@ module.exports = {
 
     updateUploadStatus: (data, callBack) => {
         pool.query(
-            `UPDATE medi_hrm.training_questions SET 
+            `UPDATE training_questions SET 
             upload_status=1
             WHERE q_slno=?`,
             [

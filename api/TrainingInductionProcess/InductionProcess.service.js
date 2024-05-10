@@ -7,10 +7,10 @@ module.exports = {
             `
             SELECT schedule_slno, schedule_type, schedule_topic, training_induction_schedule.trainers, training_induction_emp_details.induct_detail_date,
             topic_slno,training_topic_name
-            FROM medi_hrm.training_induction_schedule
+            FROM training_induction_schedule
             LEFT JOIN training_topic ON training_topic.topic_slno=training_induction_schedule.schedule_topic
              LEFT JOIN training_induction_emp_details ON training_induction_emp_details.schedule_no=training_induction_schedule.schedule_slno
-            where DATE(training_induction_emp_details.induct_detail_date)=current_date() group by schedule_topic
+            where DATE(training_induction_emp_details.induct_detail_date)=current_date() group by schedule_slno,induct_detail_date
             `, [],
 
 
@@ -28,7 +28,7 @@ module.exports = {
     GetAttendanceList: (id, callback) => {
         pool.query(
 
-            `   SELECT induction_slno, schedule_no, indct_emp_no, induct_emp_dept, induct_emp_sec,
+            ` SELECT induction_slno, schedule_no, indct_emp_no, induct_emp_dept, induct_emp_sec,
             training_induction_schedule.schedule_topic,training_induction_schedule.induction_date,
             training_induction_emp_details.training_status,question_count,training_induction_emp_details.pretest_status,
             training_induction_emp_details.posttest_status,training_induction_emp_details.online_mode,training_induction_emp_details.offline_mode,
@@ -37,11 +37,12 @@ module.exports = {
             training_topic.training_status as topic_training,
             training_topic.pretest_status as topic_pretest,training_topic.post_test_status as topic_posttest,training_topic.online_status as topic_online,
             training_topic.offline_status as topic_offline,training_topic.both_status as topic_bothmode
-            FROM medi_hrm.training_induction_emp_details
+            FROM training_induction_emp_details
             LEFT JOIN training_induction_schedule ON training_induction_schedule.schedule_slno=training_induction_emp_details.schedule_no
             LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_induction_emp_details.indct_emp_no
              LEFT JOIN training_topic ON training_topic.topic_slno=training_induction_schedule.schedule_topic
-            where schedule_no=(SELECT schedule_slno FROM medi_hrm.training_induction_schedule where schedule_topic=? and date(training_induction_emp_details.induct_detail_date)=current_date())`, [id],
+             where schedule_topic=? and date(training_induction_emp_details.induct_detail_date)=current_date()
+             `, [id],
             (err, results, feilds) => {
                 if (err) {
                     return callback(err)
@@ -200,13 +201,10 @@ module.exports = {
             }
         )
     },
-    //select * from training_induct_reschedule;
 
-    //induct_reschdl_slno, induct_schedule_slno, induct_reschdl_em_id, induct_reschdl_dept, induct_reschdl_dept_sec,
-    // induct_reschdl_topic, induct_reschdl_status, induct_reschdl_date, create_user, edit_user, create_date, update_date
     InsertScheduleTable: (data, callBack) => {
         pool.query(
-            `INSERT INTO medi_hrm.training_induct_reschedule (
+            `INSERT INTO training_induct_reschedule (
                 induct_schedule_slno, induct_reschdl_em_id, induct_reschdl_dept, induct_reschdl_dept_sec,
     induct_reschdl_topic, induct_reschdl_status, induct_reschdl_date, create_user )
              VALUES (?,?,?,?,?,?,?,?)`,
@@ -237,7 +235,7 @@ module.exports = {
              training_induction_emp_details.posttest_status, online_mode, offline_mode, retest,
             em_id,em_name,em_no,training_induction_schedule.schedule_topic,topic_slno,training_topic_name,training_induct_posttest.mark as postmark,
             training_induction_schedule.induction_date
-            FROM medi_hrm.training_induction_emp_details
+            FROM training_induction_emp_details
             LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_induction_emp_details.indct_emp_no
              LEFT JOIN training_induction_schedule ON training_induction_schedule.schedule_slno=training_induction_emp_details.schedule_no
             LEFT JOIN training_topic ON training_topic.topic_slno=training_induction_schedule.schedule_topic
@@ -257,7 +255,7 @@ module.exports = {
 
     InsertRetestEmps: (data, callBack) => {
         pool.query(
-            `INSERT INTO  medi_hrm.training_induction_retest
+            `INSERT INTO training_induction_retest
             (
                 retest_em_no,
                 re_emp_dept,
@@ -314,7 +312,7 @@ module.exports = {
     GetInductCalenderDetails: (callback) => {
         pool.query(
             ` SELECT schedule_topic,induction_date,topic_slno,training_topic_name
-            FROM medi_hrm.training_induction_schedule        
+            FROM training_induction_schedule        
             LEFT JOIN training_topic ON training_topic.topic_slno=training_induction_schedule.schedule_topic
             `, [],
 

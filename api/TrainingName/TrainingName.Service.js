@@ -4,7 +4,7 @@ module.exports = {
 
     TrainingNameInsert: (data, callBack) => {
         pool.query(
-            `INSERT INTO medi_hrm.training_name 
+            `INSERT INTO training_name 
             (
                 training_name, 
                 type_slno,
@@ -49,7 +49,7 @@ module.exports = {
     },
 
     TrainingNameUpdate: (data, callback) => {
-        pool.query(`UPDATE medi_hrm.training_name
+        pool.query(`UPDATE training_name
          SET
           training_name=?,
            type_slno=?,
@@ -75,7 +75,7 @@ module.exports = {
     },
     TrainingNameDelete: (data, callback) => {
         pool.query(
-            `UPDATE medi_hrm.training_name SET name_status=0 WHERE name_slno=?`,
+            `UPDATE training_name SET name_status=0 WHERE name_slno=?`,
             [
                 data.name_slno
             ],
@@ -91,7 +91,7 @@ module.exports = {
     checkInsertVal: (data, callBack) => {
         pool.query(
             `SELECT training_name
-                FROM medi_hrm.training_name
+                FROM training_name
                 WHERE training_name = ?`,
             [
                 data.training_name
@@ -110,7 +110,7 @@ module.exports = {
         pool.query(
             `SELECT training_name,
             name_slno
-            FROM medi_hrm.training_name
+            FROM training_name
             WHERE training_name =? AND name_slno = ?`,
             [
                 data.training_name,

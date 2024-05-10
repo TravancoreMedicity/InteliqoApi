@@ -16,7 +16,7 @@ module.exports = {
              left join hrm_authorization_assign on hrm_authorization_assign.dept_section=training_employee_details.emp_dept_sectn
              LEFT JOIN hrm_emp_master HO ON HO.em_id=hrm_authorization_assign.emp_id
             WHERE department=? and deparment_sect=? and hrm_authorization_assign.auth_post=1
-		   group by emp_name`,
+		  `,
             [
                 data.dept,
                 data.deptSec
@@ -34,16 +34,19 @@ module.exports = {
             `SELECT ROW_NUMBER() OVER () as Induct_slno, indct_emp_no, induct_emp_dept, induct_emp_sec,
             hrm_emp_master.em_name,hrm_emp_master.em_no,hrm_emp_master.em_id,hrm_emp_master.em_designation,
             hrm_department.dept_id,hrm_department.dept_name,hrm_dept_section.sect_id,hrm_dept_section.sect_name,
-            designation.desg_slno,designation.desg_name,HO.em_name as hod
-            FROM medi_hrm.training_induction_emp_details
+            designation.desg_slno,designation.desg_name,HO.em_name as hod,hrm_authorization_assign.auth_post
+            FROM training_induction_emp_details
             LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_induction_emp_details.indct_emp_no
             LEFT JOIN hrm_department ON hrm_department.dept_id=training_induction_emp_details.induct_emp_dept
             LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=training_induction_emp_details.induct_emp_sec
             LEFT JOIN designation ON designation.desg_slno=hrm_emp_master.em_designation
             left join hrm_authorization_assign on hrm_authorization_assign.dept_section=training_induction_emp_details.induct_emp_sec
             LEFT JOIN hrm_emp_master HO ON HO.em_id=hrm_authorization_assign.emp_id
-            WHERE induct_emp_dept=? AND induct_emp_sec=?
-            group by indct_emp_no,indct_emp_no, induct_emp_dept, induct_emp_sec`,
+            WHERE induct_emp_dept=? AND induct_emp_sec=? AND  hrm_authorization_assign.auth_post=1
+            group by  indct_emp_no, induct_emp_dept, induct_emp_sec,
+            hrm_emp_master.em_name,hrm_emp_master.em_no,hrm_emp_master.em_id,hrm_emp_master.em_designation,
+            hrm_department.dept_id,hrm_department.dept_name,hrm_dept_section.sect_id,hrm_dept_section.sect_name,
+            designation.desg_slno,designation.desg_name,HO.em_name,hrm_authorization_assign.auth_post`,
             [
                 data.dept,
                 data.deptSec
@@ -58,19 +61,22 @@ module.exports = {
     },
     GetInductionTrainingEMPDetails: (data, callBack) => {
         pool.query(
-            `SELECT ROW_NUMBER() OVER () as Induct_slno, indct_emp_no, induct_emp_dept, induct_emp_sec,
+            `  SELECT ROW_NUMBER() OVER () as Induct_slno, indct_emp_no, induct_emp_dept, induct_emp_sec,
             hrm_emp_master.em_name,hrm_emp_master.em_no,hrm_emp_master.em_id,hrm_emp_master.em_designation,
             hrm_department.dept_id,hrm_department.dept_name,hrm_dept_section.sect_id,hrm_dept_section.sect_name,
-            designation.desg_slno,designation.desg_name,HO.em_name as hod,HO.em_id,HO.em_no
-            FROM medi_hrm.training_induction_emp_details
+            designation.desg_slno,designation.desg_name,HO.em_name as hod,hrm_authorization_assign.auth_post
+            FROM training_induction_emp_details
             LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_induction_emp_details.indct_emp_no
             LEFT JOIN hrm_department ON hrm_department.dept_id=training_induction_emp_details.induct_emp_dept
             LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=training_induction_emp_details.induct_emp_sec
             LEFT JOIN designation ON designation.desg_slno=hrm_emp_master.em_designation
-              left join hrm_authorization_assign on hrm_authorization_assign.dept_section=training_induction_emp_details.induct_emp_sec
-             LEFT JOIN hrm_emp_master HO ON HO.em_id=hrm_authorization_assign.emp_id
-            WHERE induct_emp_dept=? AND induct_emp_sec=? AND hrm_emp_master.em_no=?
-            group by indct_emp_no,indct_emp_no, induct_emp_dept, induct_emp_sec`,
+            left join hrm_authorization_assign on hrm_authorization_assign.dept_section=training_induction_emp_details.induct_emp_sec
+            LEFT JOIN hrm_emp_master HO ON HO.em_id=hrm_authorization_assign.emp_id
+            WHERE induct_emp_dept=? AND induct_emp_sec=? AND hrm_emp_master.em_no=? and hrm_authorization_assign.auth_post=1
+            group by indct_emp_no, induct_emp_dept, induct_emp_sec,
+            hrm_emp_master.em_name,hrm_emp_master.em_no,hrm_emp_master.em_id,hrm_emp_master.em_designation,
+            hrm_department.dept_id,hrm_department.dept_name,hrm_dept_section.sect_id,hrm_dept_section.sect_name,
+            designation.desg_slno,designation.desg_name,HO.em_name,hrm_authorization_assign.auth_post`,
             [
                 data.dept,
                 data.deptSec,
@@ -92,15 +98,16 @@ module.exports = {
             SELECT ROW_NUMBER() OVER () as slnum,training_employee_details.slno, scheduled_slno, emp_name, emp_desig, emp_dept, emp_dept_sectn, training_departmental_schedule.schedule_date,
             hrm_emp_master.em_id,hrm_emp_master.em_no,hrm_emp_master.em_name,training_departmental_schedule.schedule_year,
             hrm_department.dept_id,hrm_department.dept_name,hrm_dept_section.sect_id,hrm_dept_section.sect_name,
-            designation.desg_slno,designation.desg_name
+            designation.desg_slno,designation.desg_name,HO.em_name as hod,hrm_authorization_assign.auth_post
             FROM training_employee_details
             LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_employee_details.emp_name
             LEFT JOIN training_departmental_schedule ON training_departmental_schedule.slno=training_employee_details.scheduled_slno
             LEFT JOIN hrm_department ON hrm_department.dept_id=training_employee_details.emp_dept
             LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=training_employee_details.emp_dept_sectn
             LEFT JOIN designation ON designation.desg_slno=training_employee_details.emp_desig
-            WHERE department=? and deparment_sect=? and hrm_emp_master.em_no=?
-            group by training_employee_details.emp_name`,
+             left join hrm_authorization_assign on hrm_authorization_assign.dept_section=training_employee_details.emp_dept_sectn
+             LEFT JOIN hrm_emp_master HO ON HO.em_id=hrm_authorization_assign.emp_id
+            WHERE department=? and deparment_sect=? and hrm_emp_master.em_no=? and hrm_authorization_assign.auth_post=1`,
             [
                 data.dept,
                 data.deptSec,
@@ -120,7 +127,7 @@ module.exports = {
             `SELECT ROW_NUMBER() OVER () as slnum,training_employee_details.slno, scheduled_slno, emp_name, emp_desig, emp_dept, emp_dept_sectn, training_departmental_schedule.schedule_date,
             E.em_id,E.em_no,E.em_name,training_departmental_schedule.schedule_year,
             hrm_department.dept_id,hrm_department.dept_name,hrm_dept_section.sect_id,hrm_dept_section.sect_name,
-            designation.desg_slno,designation.desg_name,HO.em_name as hod
+            designation.desg_slno,designation.desg_name,HO.em_name as hod,hrm_authorization_assign.auth_post
             FROM training_employee_details
             LEFT JOIN hrm_emp_master E ON E.em_id=training_employee_details.emp_name
 			LEFT JOIN training_departmental_schedule ON training_departmental_schedule.slno=training_employee_details.scheduled_slno
@@ -129,8 +136,7 @@ module.exports = {
             LEFT JOIN designation ON designation.desg_slno=training_employee_details.emp_desig
             left join hrm_authorization_assign on hrm_authorization_assign.dept_section=training_employee_details.emp_dept_sectn
              LEFT JOIN hrm_emp_master HO ON HO.em_id=hrm_authorization_assign.emp_id
-            WHERE E.em_no=?
-            group by E.em_no `, [id],
+            WHERE E.em_no=? and hrm_authorization_assign.auth_post=1 `, [id],
             (err, results, feilds) => {
                 if (err) {
                     return callback(err)
@@ -143,19 +149,21 @@ module.exports = {
     },
     GetInductEmp: (id, callback) => {
         pool.query(
-            `   SELECT ROW_NUMBER() OVER () as Induct_slno, indct_emp_no, induct_emp_dept, induct_emp_sec,
+            `SELECT ROW_NUMBER() OVER () as Induct_slno, indct_emp_no, induct_emp_dept, induct_emp_sec,
             hrm_emp_master.em_name,hrm_emp_master.em_no,hrm_emp_master.em_id,HO.em_name as hod,
             hrm_department.dept_id,hrm_department.dept_name,hrm_dept_section.sect_id,hrm_dept_section.sect_name,
-            designation.desg_slno,designation.desg_name
-            FROM medi_hrm.training_induction_emp_details
+            designation.desg_slno,designation.desg_name,hrm_authorization_assign.auth_post
+            FROM training_induction_emp_details
             LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_induction_emp_details.indct_emp_no
             LEFT JOIN hrm_department ON hrm_department.dept_id=training_induction_emp_details.induct_emp_dept
             LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=training_induction_emp_details.induct_emp_sec
             LEFT JOIN designation ON designation.desg_slno=hrm_emp_master.em_designation
-              left join hrm_authorization_assign on hrm_authorization_assign.dept_section=training_induction_emp_details.induct_emp_sec
-             LEFT JOIN hrm_emp_master HO ON HO.em_id=hrm_authorization_assign.emp_id
-            WHERE hrm_emp_master.em_no=?
-            group by indct_emp_no,indct_emp_no, induct_emp_dept, induct_emp_sec`, [id],
+            left join hrm_authorization_assign on hrm_authorization_assign.dept_section=training_induction_emp_details.induct_emp_sec
+            LEFT JOIN hrm_emp_master HO ON HO.em_id=hrm_authorization_assign.emp_id
+            WHERE hrm_emp_master.em_no=? and hrm_authorization_assign.auth_post=1
+            group by indct_emp_no,indct_emp_no, induct_emp_dept, induct_emp_sec, hrm_emp_master.em_name,hrm_emp_master.em_no,hrm_emp_master.em_id,HO.em_name ,
+            hrm_department.dept_id,hrm_department.dept_name,hrm_dept_section.sect_id,hrm_dept_section.sect_name,
+            designation.desg_slno,designation.desg_name`, [id],
             (err, results, feilds) => {
                 if (err) {
                     return callback(err)
@@ -170,24 +178,58 @@ module.exports = {
     ///check
     GetAllInductEmpData: (id, callback) => {
         pool.query(
+            // ` SELECT ROW_NUMBER() OVER () as int_slno, indct_emp_no, schedule_no,hrm_emp_master.em_id,hrm_emp_master.em_no,
+            // training_induction_schedule.schedule_type,training_induction_schedule.schedule_topic,training_induction_schedule.trainers,
+            // training_induction_schedule.induction_date,
+            // training_topic.topic_slno,training_topic.training_topic_name,
+            // training_induction_pretest.mark as induct_pre_mark,training_induct_posttest.mark as induct_post_mark,
+            // training_induction_retest.retest_mark as induct_retest_mark,
+            // training_induction_emp_details.question_count as induct_quest_count,training_induction_emp_details.training_status,
+            // training_induction_emp_details.online_mode,training_induction_emp_details.offline_mode,training_induction_emp_details.retest,
+            // training_induction_emp_details.pretest_status,training_induction_emp_details.posttest_status
+            // FROM training_induction_emp_details
+            // LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_induction_emp_details.indct_emp_no
+            // LEFT JOIN training_induction_schedule ON training_induction_schedule.schedule_slno=training_induction_emp_details.schedule_no
+            // LEFT JOIN training_topic ON training_topic.topic_slno=training_induction_schedule.schedule_topic
+            // LEFT JOIN training_induction_pretest ON training_induction_pretest.emp_id=training_induction_emp_details.indct_emp_no
+            // LEFT JOIN training_induct_posttest ON training_induct_posttest.emp_id=training_induction_emp_details.indct_emp_no
+            // LEFT JOIN training_induction_retest ON training_induction_retest.retest_em_no=training_induction_emp_details.indct_emp_no
+            // WHERE hrm_emp_master.em_no=?
+            // `, [id],
+
+
+
             ` SELECT ROW_NUMBER() OVER () as int_slno, indct_emp_no, schedule_no,hrm_emp_master.em_id,hrm_emp_master.em_no,
-            training_induction_schedule.schedule_type,training_induction_schedule.schedule_topic,training_induction_schedule.trainers,
-            training_induction_schedule.induction_date,
-            training_topic.topic_slno,training_topic.training_topic_name,
-            training_induction_pretest.mark as induct_pre_mark,training_induct_posttest.mark as induct_post_mark,
-            training_induction_retest.retest_mark as induct_retest_mark,
-            training_induction_emp_details.question_count as induct_quest_count,training_induction_emp_details.training_status,
-            training_induction_emp_details.online_mode,training_induction_emp_details.offline_mode,training_induction_emp_details.retest,
-            training_induction_emp_details.pretest_status,training_induction_emp_details.posttest_status
-            FROM medi_hrm.training_induction_emp_details
-            LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_induction_emp_details.indct_emp_no
-            LEFT JOIN training_induction_schedule ON training_induction_schedule.schedule_slno=training_induction_emp_details.schedule_no
-            LEFT JOIN training_topic ON training_topic.topic_slno=training_induction_schedule.schedule_topic
-            LEFT JOIN training_induction_pretest ON training_induction_pretest.emp_id=training_induction_emp_details.indct_emp_no
-            LEFT JOIN training_induct_posttest ON training_induct_posttest.emp_id=training_induction_emp_details.indct_emp_no
-            LEFT JOIN training_induction_retest ON training_induction_retest.retest_em_no=training_induction_emp_details.indct_emp_no
-            WHERE training_induction_emp_details.indct_emp_no=?
+             training_induction_schedule.schedule_type,training_induction_schedule.schedule_topic,training_induction_schedule.trainers,
+             training_induction_schedule.induction_date,
+             training_topic.topic_slno,training_topic.training_topic_name,
+             training_induction_pretest.mark as induct_pre_mark,training_induct_posttest.mark as induct_post_mark,
+             training_induction_retest.retest_mark as induct_retest_mark,
+             training_induction_emp_details.question_count as induct_quest_count,training_induction_emp_details.training_status,
+             training_induction_emp_details.online_mode,training_induction_emp_details.offline_mode,training_induction_emp_details.retest,
+             training_induction_emp_details.pretest_status,training_induction_emp_details.posttest_status,
+             
+               hrm_department.dept_id,hrm_department.dept_name,hrm_dept_section.sect_id,hrm_dept_section.sect_name,
+             designation.desg_slno,designation.desg_name,hrm_authorization_assign.auth_post
+             
+             FROM training_induction_emp_details
+             LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_induction_emp_details.indct_emp_no
+             LEFT JOIN training_induction_schedule ON training_induction_schedule.schedule_slno=training_induction_emp_details.schedule_no
+             LEFT JOIN training_topic ON training_topic.topic_slno=training_induction_schedule.schedule_topic
+             LEFT JOIN training_induction_pretest ON training_induction_pretest.emp_id=training_induction_emp_details.indct_emp_no
+             LEFT JOIN training_induct_posttest ON training_induct_posttest.emp_id=training_induction_emp_details.indct_emp_no
+             LEFT JOIN training_induction_retest ON training_induction_retest.retest_em_no=training_induction_emp_details.indct_emp_no
+             
+              LEFT JOIN hrm_department ON hrm_department.dept_id=training_induction_emp_details.induct_emp_dept
+             LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=training_induction_emp_details.induct_emp_sec
+             LEFT JOIN designation ON designation.desg_slno=hrm_emp_master.em_designation
+             left join hrm_authorization_assign on hrm_authorization_assign.dept_section=training_induction_emp_details.induct_emp_sec
+             LEFT JOIN hrm_emp_master HO ON HO.em_id=hrm_authorization_assign.emp_id
+             
+             WHERE hrm_emp_master.em_id=? and hrm_authorization_assign.auth_post=1
             `, [id],
+
+
             (err, results, feilds) => {
                 if (err) {
                     return callback(err)
@@ -215,7 +257,7 @@ module.exports = {
                        LEFT JOIN training_posttest ON training_posttest.emp_id=training_employee_details.emp_name
                        LEFT JOIN training_retest_emp_details ON training_retest_emp_details.candidate_em_no=training_employee_details.emp_name
                        WHERE training_employee_details.emp_name=?
-                       group by topic_slno`, [id],
+                      `, [id],
             (err, results, feilds) => {
                 if (err) {
                     return callback(err)
@@ -273,12 +315,12 @@ module.exports = {
                        hrm_emp_master.em_id as employeeId, hrm_emp_master.em_no, hrm_emp_master.em_name,training_employee_details.schedule_date,
                        training_employee_details.training_apprvl_status,training_departmental_schedule.schedule_trainers,
                        training_employee_details.training_apprvl_user,training_employee_details.training_apprvl_date
-                       FROM medi_hrm.training_topic
+                       FROM training_topic
                        LEFT JOIN training_departmental_schedule ON training_departmental_schedule.schedule_topics=training_topic.topic_slno
                        LEFT JOIN training_employee_details ON training_employee_details.scheduled_slno=training_departmental_schedule.slno
                        LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_employee_details.emp_name
                        WHERE JSON_CONTAINS(training_departmental_schedule.schedule_trainers,?,'$') AND  training_employee_details.pretest_status=1 AND training_employee_details.posttest_status=1 
-                       GROUP BY topic_slno`, [EmID],
+                      `, [EmID],
             (err, results, feilds) => {
                 if (err) {
                     return callback(err)
@@ -321,12 +363,12 @@ module.exports = {
             hrm_emp_master.em_id as employeeId, hrm_emp_master.em_no as emno, hrm_emp_master.em_name,training_induction_schedule.induction_date,
             training_induction_emp_details.trainer_induct_apprvl_status,training_induction_emp_details.trainer_induct_apprvl_user,training_induction_emp_details.trainer_induct_apprvl_date,
             training_induction_schedule.trainers
-            FROM medi_hrm.training_topic
+            FROM training_topic
             LEFT JOIN training_induction_schedule ON training_induction_schedule.schedule_topic=training_topic.topic_slno
             LEFT JOIN training_induction_emp_details ON training_induction_emp_details.schedule_no=training_induction_schedule.schedule_slno
             LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_induction_emp_details.indct_emp_no
             WHERE JSON_CONTAINS(training_induction_schedule.trainers,?,'$') AND  training_induction_emp_details.pretest_status=1 AND training_induction_emp_details.posttest_status=1 
-            GROUP BY topic_slno`, [EmID],
+          `, [EmID],
             (err, results, feilds) => {
                 if (err) {
                     return callback(err)
@@ -370,7 +412,7 @@ module.exports = {
             training_apprvl_status,training_hod_apprvls_status,training_hod_apprvls_user,training_hod_apprvls_date,
             E.em_name,training_topic.topic_slno, E.em_no,E.em_id as EmployeeId,
             training_topic.training_topic_name
-            FROM medi_hrm.training_employee_details
+            FROM training_employee_details
             LEFT JOIN hrm_emp_master E ON E.em_id=training_employee_details.emp_name
                    LEFT JOIN training_departmental_schedule ON training_departmental_schedule.slno=training_employee_details.scheduled_slno
                    LEFT JOIN hrm_department ON hrm_department.dept_id=training_employee_details.emp_dept
@@ -381,7 +423,7 @@ module.exports = {
                     LEFT JOIN training_topic ON training_topic.topic_slno=training_employee_details.topic
                     where HO.em_id=? AND  training_employee_details.pretest_status=1 AND training_employee_details.posttest_status=1 
                    AND training_employee_details.training_apprvl_status=1
-                    group by topic`, [EmID],
+                   `, [EmID],
             (err, results, feilds) => {
                 if (err) {
                     return callback(err)
@@ -424,7 +466,7 @@ module.exports = {
             training_induction_emp_details.posttest_status,training_induction_schedule.schedule_topic,EM.em_id as EmployeeID ,EM.em_name,EM.em_no,
             trainer_induct_apprvl_status,training_induct_hod_aprvl_status,training_induct_hod_apprvls_user,training_induct_hod_apprvls_date,
             training_topic.topic_slno,training_topic.training_topic_name,training_induction_schedule.induction_date
-            FROM medi_hrm.training_induction_emp_details
+            FROM training_induction_emp_details
             LEFT JOIN training_induction_schedule ON training_induction_schedule.schedule_slno=training_induction_emp_details.schedule_no
             LEFT JOIN hrm_department ON hrm_department.dept_id=training_induction_emp_details.induct_emp_dept
             LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=training_induction_emp_details.induct_emp_sec
@@ -434,7 +476,7 @@ module.exports = {
             LEFT JOIN training_topic ON training_topic.topic_slno=training_induction_schedule.schedule_topic
             where HO.em_id=? AND  training_induction_emp_details.pretest_status=1 AND training_induction_emp_details.posttest_status=1 
             AND training_induction_emp_details.trainer_induct_apprvl_status=1 
-            group by training_induction_schedule.schedule_topic 
+             
             `, [EmID],
             (err, results, feilds) => {
                 if (err) {
@@ -474,7 +516,7 @@ module.exports = {
             `
             SELECT schedule_topics,GROUP_CONCAT(em_name)  as trainer_name,training_departmental_schedule.schedule_date,
             training_employee_details.emp_name
-                     FROM medi_hrm.training_departmental_schedule
+                     FROM training_departmental_schedule
                      Left join training_employee_details on training_employee_details.scheduled_slno=training_departmental_schedule.slno
                      LEFT JOIN hrm_emp_master on JSON_CONTAINS(training_departmental_schedule.schedule_trainers,cast(hrm_emp_master.em_id as json),'$')
                      where   training_employee_details.emp_name= ?
@@ -510,7 +552,7 @@ module.exports = {
         pool.query(
             `
             SELECT schedule_topic,induction_date,training_induction_emp_details.indct_emp_no,GROUP_CONCAT(em_name)  as trainer_name
-            FROM medi_hrm.training_induction_schedule
+            FROM training_induction_schedule
             Left join training_induction_emp_details on training_induction_emp_details.schedule_no=training_induction_schedule.schedule_slno             
             LEFT JOIN hrm_emp_master on JSON_CONTAINS(training_induction_schedule.trainers,cast(hrm_emp_master.em_id as json),'$')
             where training_induction_emp_details.indct_emp_no= ?

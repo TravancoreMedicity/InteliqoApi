@@ -5,7 +5,7 @@ module.exports = {
 
     TrainingQuestionGetTopic: (callback) => {
         pool.query(
-            `SELECT topic_slno,training_topic_name FROM medi_hrm.training_topic`, [],
+            `SELECT topic_slno,training_topic_name FROM training_topic`, [],
             (err, results, feilds) => {
                 if (err) {
                     return callback(err)
@@ -19,7 +19,7 @@ module.exports = {
 
     TrainingQuestionInsert: (data, callBack) => {
         pool.query(
-            `INSERT INTO  medi_hrm.training_questions
+            `INSERT INTO training_questions
             (
                 training_topics,
                 questions,
@@ -71,7 +71,7 @@ module.exports = {
                 writtenStatus,
                 handwrite_answer,
                 marks
-            FROM medi_hrm.training_questions
+            FROM training_questions
              LEFT JOIN training_topic ON
              training_questions.training_topics=training_topic.topic_slno`
             , [],
@@ -87,7 +87,7 @@ module.exports = {
 
     TrainingQuestionUpdate: (data, callback) => {
         pool.query(
-            `UPDATE medi_hrm.training_questions
+            `UPDATE training_questions
             SET
                 questions=?,
                 answer_a=?,
@@ -123,7 +123,7 @@ module.exports = {
 
     GetlastEntryDatas: (data, callBack) => {
         pool.query(
-            `SELECT  training_topics, questions, answer_a, answer_b, answer_c, answer_d, right_answer, upload_status, writtenStatus, handwrite_answer, marks FROM medi_hrm.training_questions where q_slno=?
+            `SELECT  training_topics, questions, answer_a, answer_b, answer_c, answer_d, right_answer, upload_status, writtenStatus, handwrite_answer, marks FROM training_questions where q_slno=?
             `,
             [
                 data.q_slno
