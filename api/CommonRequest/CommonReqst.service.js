@@ -61,6 +61,7 @@ module.exports = {
         )
     },
     checkInsertVal: (data, callBack) => {
+
         pool.query(
             `SELECT * FROM one_hour_request WHERE 
             month(one_hour_duty_day) = month(?) AND em_id=? and cancel_status!=1 `,
@@ -723,8 +724,8 @@ module.exports = {
             `UPDATE punch_master
             SET punch_in =?,
             duty_status = 1,
-            lvereq_desc = 'P',
-            duty_desc = 'P',
+            lvereq_desc = 'OHP',
+            duty_desc = 'OHP',
             leave_status=1,
             lve_tble_updation_flag=1
          WHERE em_no=? and duty_day=?`,
@@ -746,8 +747,8 @@ module.exports = {
             `UPDATE punch_master
             SET punch_out =?,
             duty_status = 1,
-            lvereq_desc = 'P',
-            duty_desc = 'P',
+            lvereq_desc = 'OHP',
+            duty_desc = 'OHP',
             leave_status=1,
             lve_tble_updation_flag=1
             WHERE em_no=? and duty_day=?`,
@@ -835,8 +836,8 @@ module.exports = {
             punch_out=?,
             leave_status = 1,
             duty_status=1,
-            lvereq_desc = 'LV',
-            duty_desc = 'LV',
+            lvereq_desc = 'ODP',
+            duty_desc = 'ODP',
             lve_tble_updation_flag = 1
             WHERE em_no = ? and duty_day=?`,
             [

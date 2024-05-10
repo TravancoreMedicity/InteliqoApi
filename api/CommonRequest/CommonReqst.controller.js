@@ -529,24 +529,39 @@ module.exports = {
     },
     addHrComment: (req, res) => {
         const body = req.body;
-        addHrComment(body, (err, results) => {
-            if (err) {
-                logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 0,
-                    message: err
-                });
-            }
-            else if (!results) {
-                return res.status(200).json({
-                    success: 2,
-                    message: "Record Not Found"
-                });
-            }
-            else {
+        // addHrComment(body, (err, results) => {
+        //     if (err) {
+        //         logger.errorLogger(err)
+        //         return res.status(200).json({
+        //             success: 0,
+        //             message: err
+        //         });
+        //     }
+        //     else if (!results) {
+        //         return res.status(200).json({
+        //             success: 2,
+        //             message: "Record Not Found"
+        //         });
+        //     }
+        //     else {
 
-                if (body.checkinflag === 1) {
-                    HRNopunchMasterIn(body, (err, results) => {
+        if (body.checkinflag === 1) {
+            HRNopunchMasterIn(body, (err, results) => {
+                if (err) {
+                    logger.errorLogger(err)
+                    return res.status(200).json({
+                        success: 0,
+                        message: err
+                    });
+                }
+                else if (!results) {
+                    return res.status(200).json({
+                        success: 2,
+                        message: "Record Not Found"
+                    });
+                }
+                else {
+                    addHrComment(body, (err, results) => {
                         if (err) {
                             logger.errorLogger(err)
                             return res.status(200).json({
@@ -560,18 +575,33 @@ module.exports = {
                                 message: "Record Not Found"
                             });
                         }
-                        else {
-                            return res.status(200).json({
-                                success: 1,
-                                message: "Lve Master table Updated"
-                            });
-                        }
-                    });
-
+                        return res.status(200).json({
+                            success: 1,
+                            message: "Lve Master table Updated"
+                        });
+                    })
                 }
-                else if (body.checkoutflag === 1) {
+            });
 
-                    HRNopunchMasterOut(body, (err, results) => {
+        }
+        else if (body.checkoutflag === 1) {
+
+            HRNopunchMasterOut(body, (err, results) => {
+                if (err) {
+                    logger.errorLogger(err)
+                    return res.status(200).json({
+                        success: 0,
+                        message: err
+                    });
+                }
+                else if (!results) {
+                    return res.status(200).json({
+                        success: 2,
+                        message: "Record Not Found"
+                    });
+                }
+                else {
+                    addHrComment(body, (err, results) => {
                         if (err) {
                             logger.errorLogger(err)
                             return res.status(200).json({
@@ -585,19 +615,17 @@ module.exports = {
                                 message: "Record Not Found"
                             });
                         }
-                        else {
-                            return res.status(200).json({
-                                success: 1,
-                                message: "Lve Master table Updated"
-                            });
-                        }
-                    });
+                        return res.status(200).json({
+                            success: 1,
+                            message: "Lve Master table Updated"
+                        });
+                    })
                 }
-
-            }
-        });
+            });
+        }
     },
     checkMispunchRequest: (req, res) => {
+
         const body = req.body;
         checkMispunchRequest(body, (err, results) => {
             if (err) {
@@ -661,39 +689,51 @@ module.exports = {
     },
     hrOndutyComment: (req, res) => {
         const body = req.body;
-        hrOnduty(body, (err, results) => {
+        HROnDutyPunchMaster(body, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
-                    success: 0,
+                    success: 2,
                     message: err
                 });
             }
+            if (!results) {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Record Not Found"
+                });
+            }
             else {
-                HROnDutyPunchMaster(body, (err, results) => {
-
+                hrOnduty(body, (err, results) => {
                     if (err) {
                         logger.errorLogger(err)
                         return res.status(200).json({
-                            success: 2,
+                            success: 0,
                             message: err
                         });
                     }
-                    if (!results) {
+                    else {
                         return res.status(200).json({
                             success: 1,
-                            message: "Record Not Found"
+                            message: "Data Updated Successfully"
                         });
                     }
-                    return res.status(200).json({
-                        success: 1,
-                        message: "Data Updated Successfully"
-                    });
-
                 });
-
             }
         });
+        // hrOnduty(body, (err, results) => {
+        //     if (err) {
+        //         logger.errorLogger(err)
+        //         return res.status(200).json({
+        //             success: 0,
+        //             message: err
+        //         });
+        //     }
+        //     else {
+
+
+        //     }
+        // });
     },
     checkAttendanceProcess: (req, res) => {
         const body = req.body;

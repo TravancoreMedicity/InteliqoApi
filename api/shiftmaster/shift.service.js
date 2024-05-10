@@ -176,11 +176,14 @@ module.exports = {
         )
     },
     getData: (callBack) => {
+
         pool.query(
             `SELECT 
                 shft_slno,
                 shft_desc,
                 shft_code,
+                shft_chkin_time as checkInTime,
+                shft_chkout_time as checkOutTime,
                 DATE_FORMAT(shft_chkin_time,"%H %i")shft_chkin_time,
                 DATE_FORMAT(shft_chkout_time,"%H %i")shft_chkout_time,
                 if(shft_status = 1 ,'Active','In Active') shft_status,
