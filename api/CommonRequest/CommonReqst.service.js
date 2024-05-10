@@ -204,7 +204,7 @@ module.exports = {
     getOneHourReqst: (callBack) => {
         pool.query(
             `
-            SELECT  ROW_NUMBER() OVER () as serialno,
+            SELECT  
             request_slno,
             one_hour_request.em_id,
             one_hour_request.em_no,
@@ -238,7 +238,7 @@ module.exports = {
             inner join hrm_department on one_hour_request.dept_id=hrm_department.dept_id
             inner join hrm_dept_section on one_hour_request.dept_sect_id=hrm_dept_section.sect_id
             inner join hrm_shift_mast on one_hour_request.shift_id=hrm_shift_mast.shft_slno
-            where cancel_status=0
+            where cancel_status=0 order by one_hour_duty_day desc
            `,
             [],
             (error, results) => {
@@ -725,6 +725,7 @@ module.exports = {
             duty_status = 1,
             lvereq_desc = 'P',
             duty_desc = 'P',
+            leave_status=1,
             lve_tble_updation_flag=1
          WHERE em_no=? and duty_day=?`,
             [
@@ -747,6 +748,7 @@ module.exports = {
             duty_status = 1,
             lvereq_desc = 'P',
             duty_desc = 'P',
+            leave_status=1,
             lve_tble_updation_flag=1
             WHERE em_no=? and duty_day=?`,
             [
@@ -958,6 +960,24 @@ module.exports = {
                     return callBack(error);
                 }
                 return callBack(null, results);
+            }
+        )
+    },
+    checkPunchMarkingHR: (data, callBack) => {
+        pool.query(
+            `SELECT 
+                    last_update_date
+                FROM punchmarking_hr 
+                WHERE marking_month = ? AND deptsec_slno = ?`,
+            [
+                data.month,
+                data.section
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, JSON.stringify(results));
             }
         )
     },

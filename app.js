@@ -1,3 +1,4 @@
+// @ts-nocheck
 require("dotenv").config();
 require("./upload/punchTableEventCheck")
 
@@ -141,6 +142,9 @@ const TrainingInductionReport = require("./api/TrainingInductionReport/TrainingI
 const TrainingDetails = require("./api/TrainingDetails/TrainingDetails.route")
 const LeaveReport = require("./api/LeaveReport/LeaveReport.router")
 const TrainingDashboard = require("./api/TrainingDashboard/TrainingDashboard.router")
+const AttendenceReport = require("./api/AttendenceReport/AttendenceReport.router")
+
+
 
 app.use(express.json({ limit: '50mb' }));
 app.use((req, res, next) => {
@@ -150,7 +154,7 @@ app.use((req, res, next) => {
         "Access-Control-Allow-Headers",
         "Origin, X-Requested-Width, Content-Type, Accept, Authorization"
     );
-
+    res.set('Cache-Control', 'no-store'); // Set Cache-Control: no-store for specific routes
     if (req.method === "OPTIONS") {
         res.header("Access-Control-Allow-Methods", "PUT, POST, PATCH, DELETE, GET");
         return res.status(200).json({});
@@ -320,7 +324,7 @@ app.use("/api/TrainingInductionReport", TrainingInductionReport)
 app.use("/api/TrainingDetails", TrainingDetails)
 app.use("/api/LeaveReport", LeaveReport)
 app.use("/api/TrainingDashboard", TrainingDashboard)
-
+app.use("/api/AttendenceReport", AttendenceReport)
 // ------ Database Connection --------
 
 app.listen(process.env.APP_PORT, () =>

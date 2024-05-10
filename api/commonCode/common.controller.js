@@ -67,7 +67,10 @@ const {
     getEmployeeInformation,
     insertErrorLog,
     getgrossSalary,
-    getEmpCoff
+    getEmpCoff,
+    getgrossSalaryByEmployeeNo,
+    getAutharisedDepartmentSection,
+    getEmployeeArraySectionArray
 } = require('../commonCode/common.service');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -122,7 +125,6 @@ module.exports = {
         });
     },
     getleaverequwestslno: (req, res) => {
-
         getleaverequwestslno((err, results) => {
             if (err) {
                 logger.errorLogger(err)
@@ -1912,6 +1914,30 @@ module.exports = {
             });
         });
     },
+    getgrossSalaryByEmployeeNo: (req, res) => {
+        const id = req.params.id;
+        getgrossSalaryByEmployeeNo(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    su: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(400).json({
+                    su: 0,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                su: 1,
+                dataa: results
+            });
+        });
+    },
     getEmpCoff: (req, res) => {
         const body = req.body
         getEmpCoff(body, (err, results) => {
@@ -1928,6 +1954,54 @@ module.exports = {
                     message: "No Record Found"
                 });
             }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    getAutharisedDepartmentSection: (req, res) => {
+        const id = req.params.id;
+        getAutharisedDepartmentSection(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    su: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(400).json({
+                    su: 0,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                su: 1,
+                data: results
+            });
+        });
+    },
+    getEmployeeArraySectionArray: (req, res) => {
+        const body = req.body
+        getEmployeeArraySectionArray(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+
             return res.status(200).json({
                 success: 1,
                 data: results

@@ -369,6 +369,7 @@ module.exports = {
             designation.desg_name,
             em_department,
             em_dept_section,
+            contract_status,
             IF(em_status = 1, 'Yes', 'No') emp_status,
             recomend_salary
             FROM hrm_emp_master 

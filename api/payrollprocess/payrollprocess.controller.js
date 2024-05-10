@@ -10,7 +10,8 @@ const { empDeptdata, empDeptSecdata, empNameBasedata, getFixedByEmid,
     getattendancemark, getEmpNoDeptWise, getPaySlipData, getIndvidualPayslipDetl,
     checkPayslipDataExist, deptWisePaySlipData, empWisePaySlipDetl, checkInsertVal,
     InsertPunchInOutHr, updatePunchInOutHr, getPunchInOutHr, CancelPunchInOutHr, getPunchByEmid,
-    InsertArrearSalary, getArearData, getAllEmployee
+    InsertArrearSalary, getArearData, getAllEmployee, getPunchMarkingHr, getPunchMarkingHrFull,
+    getTotalGrosssalaryByno, getPunchMasterSalaryAllEmployee, getAcriveDepartmentSection
 } = require('../payrollprocess/payrollprocess.service');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -878,53 +879,56 @@ module.exports = {
 
     InsertPunchInOutHr: (req, res) => {
         const body = req.body;
+        // checkInsertVal(body, (err, results) => {
 
-        checkInsertVal(body, (err, results) => {
-            const value = JSON.parse(JSON.stringify(results))
-            if (Object.keys(value).length === 0) {
+        // const value = JSON.parse(JSON.stringify(results))
+        // if (Object.keys(value).length === 0) {
 
-                InsertPunchInOutHr(body, (err, results) => {
-                    if (err) {
-                        logger.errorLogger(err)
-                        return res.status(200).json({
-                            success: 0,
-                            message: err
-                        });
-                    }
+        InsertPunchInOutHr(body, (err, results) => {
 
-                    return res.status(200).json({
-                        success: 1,
-                        message: "Data Created Successfully"
-                    });
-
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
                 });
-            } else {
-                updatePunchInOutHr(body, (err, results) => {
-
-                    if (err) {
-                        logger.errorLogger(err)
-                        return res.status(200).json({
-                            success: 0,
-                            message: err
-                        });
-                    }
-
-                    if (!results) {
-                        return res.status(200).json({
-                            success: 2,
-                            message: "Record Not Found"
-                        });
-                    }
-
-                    return res.status(200).json({
-                        success: 1,
-                        message: "Data Updated Successfully"
-                    });
-
-                });
-
             }
-        })
+
+            return res.status(200).json({
+                success: 1,
+                message: "Data Created Successfully"
+            });
+
+        });
+
+        // } else {
+
+        // updatePunchInOutHr(body, (err, results) => {
+
+        //     if (err) {
+        //         logger.errorLogger(err)
+        //         return res.status(200).json({
+        //             success: 0,
+        //             message: err
+        //         });
+        //     }
+
+        //     if (!results) {
+        //         return res.status(200).json({
+        //             success: 2,
+        //             message: "Record Not Found"
+        //         });
+        //     }
+
+        //     return res.status(200).json({
+        //         success: 1,
+        //         message: "Data Updated Successfully"
+        //     });
+
+        // });
+
+        // }
+        // })
     },
     getPunchInOutHr: (req, res) => {
         const body = req.body
@@ -1058,4 +1062,114 @@ module.exports = {
             });
         });
     },
+    getPunchMarkingHr: (req, res) => {
+        const body = req.body
+        getPunchMarkingHr(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    getPunchMarkingHrFull: (req, res) => {
+        const body = req.body
+        getPunchMarkingHrFull(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    succ: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    succ: 2,
+                    message: "No Record Found"
+                });
+            }
+            return res.status(200).json({
+                succ: 1,
+                data: results
+            });
+        });
+    },
+    getTotalGrosssalaryByno: (req, res) => {
+        const id = req.params.id;
+        getTotalGrosssalaryByno(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    getPunchMasterSalaryAllEmployee: (req, res) => {
+        const body = req.body
+        getPunchMasterSalaryAllEmployee(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    getAcriveDepartmentSection: (req, res) => {
+        getAcriveDepartmentSection((err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+
 }
