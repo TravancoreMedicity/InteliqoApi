@@ -148,7 +148,7 @@ app.use((req, res, next) => {
         "Access-Control-Allow-Headers",
         "Origin, X-Requested-Width, Content-Type, Accept, Authorization"
     );
-
+    res.set('Cache-Control', 'no-store'); // Set Cache-Control: no-store for specific routes
     if (req.method === "OPTIONS") {
         res.header("Access-Control-Allow-Methods", "PUT, POST, PATCH, DELETE, GET");
         return res.status(200).json({});

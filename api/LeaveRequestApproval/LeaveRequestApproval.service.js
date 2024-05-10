@@ -2392,7 +2392,7 @@ module.exports = {
             left join hrm_emp_master on  comp_off_request.em_no =hrm_emp_master.em_no
             left join hrm_department on  comp_off_request.em_department =hrm_department.dept_id
             inner join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
-            where comp_off_request.em_id=? order by leave_date DESC`,
+            where  lv_cancel_status=0 and lv_cancel_status_user=0 and comp_off_request.em_id=? order by leave_date DESC`,
             [
                 data
             ],
@@ -2439,7 +2439,7 @@ module.exports = {
             left join hrm_emp_master on  comp_off_request.em_no =hrm_emp_master.em_no
             left join hrm_department on  comp_off_request.em_department =hrm_department.dept_id
             inner join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
-            where  hrm_emp_master.em_dept_section IN (?)`,
+            where lv_cancel_status=0 and lv_cancel_status_user=0 and hrm_emp_master.em_dept_section IN (?) order by leave_date DESC`,
             [
                 data.data
             ],
