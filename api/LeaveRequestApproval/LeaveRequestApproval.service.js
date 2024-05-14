@@ -196,7 +196,10 @@ module.exports = {
             np_reason,punslno,
             np_inc_apprv_req,
             np_incapprv_status,
-            hrm_shift_mast.shft_desc
+            nopunchrequest.shift_id,
+            hrm_shift_mast.shft_desc,
+            shft_chkin_time,
+            shft_chkout_time
              FROM nopunchrequest 
              LEFT JOIN hrm_shift_mast ON hrm_shift_mast.shft_slno=nopunchrequest.shift_id
              where nopunch_slno=?`,
@@ -357,9 +360,9 @@ module.exports = {
         pool.query(
             `UPDATE hrm_halfdayrequest
              SET hf_hod_apprv_status =?,
-            hf_hod_apprv_cmnt=?,
-            hf_hod_apprv_time=? ,
-            hf_hod_us_code=?
+             hf_hod_apprv_cmnt=?,
+             hf_hod_apprv_time=? ,
+             hf_hod_us_code=?
             WHERE half_slno=?`,
             [
                 data.status,
@@ -567,13 +570,26 @@ module.exports = {
         pool.query(
             `UPDATE punch_master
              SET 
-             duty_status=1,
+             punch_in=?,
+             punch_out=?,
+             hrs_worked=?,
+             late_in=?,
+             early_out=?,
+             duty_status=?,
              leave_status=1,
-             lvereq_desc='HDL',
-             duty_desc = 'HDL',
+             lvereq_desc=?,
+             duty_desc = ?,
              lve_tble_updation_flag=1
             WHERE duty_day=? and em_no=?`,
             [
+                data.punch_in,
+                data.punch_out,
+                data.hrs_worked,
+                data.late_in,
+                data.early_out,
+                data.duty_status,
+                data.lvereq_desc,
+                data.duty_desc,
                 data.duty_day,
                 data.em_no
             ],
@@ -586,6 +602,7 @@ module.exports = {
         )
     },
     HRNopunch: (data, callBack) => {
+
         pool.query(
             `UPDATE nopunchrequest
              SET np_hr_apprv_status =?,
@@ -1025,6 +1042,8 @@ module.exports = {
             checkIn,
             checkOut,
             hf_reason,
+            shift_id,
+            halfday_status,
             hrm_halfdayrequest.dept_id
             FROM hrm_halfdayrequest
             inner join hrm_emp_master on  hrm_halfdayrequest.em_no =hrm_emp_master.em_no
@@ -1714,7 +1733,6 @@ module.exports = {
         )
     },
     updatePunchMasterLeave: (body) => {
-
         //FOR LEAVE
         return Promise.all(body.map((data) => {
             return new Promise((resolve, reject) => {
@@ -1722,14 +1740,16 @@ module.exports = {
                     `UPDATE 
                             punch_master
                         SET leave_status = 1,
-                            lvereq_desc = 'LV',
-                            duty_desc = 'LV',
+                            lvereq_desc = ?,
+                            duty_desc = ?,
                             lve_tble_updation_flag = 1
                         WHERE em_no = ? 
                         AND duty_day = ?`,
                     [
+                        data.lvereq_desc,
+                        data.duty_desc,
                         data.emno,
-                        moment(data.leave_dates).format('YYYY-MM-DD')
+                        data.leave_dates
                     ],
                     (error, results, fields) => {
                         if (error) {
@@ -1829,15 +1849,27 @@ module.exports = {
     HRNopunchMasterIn: (data, callBack) => {
         pool.query(
             `UPDATE punch_master
-            SET punch_in =?,
-            duty_status = 1,
-            lvereq_desc = 'P',
-            duty_desc = 'P',
+            SET 
+            punch_in=?,
+             punch_out=?,
+             hrs_worked=?,
+             late_in=?,
+             early_out=?,
+            duty_status = ?,
+            lvereq_desc = ?,
+            duty_desc = ?,
             leave_status=1,
             lve_tble_updation_flag=1
         WHERE punch_slno=?`,
             [
-                data.checkintime,
+                data.punch_in,
+                data.punch_out,
+                data.hrs_worked,
+                data.late_in,
+                data.early_out,
+                data.duty_status,
+                data.lvereq_desc,
+                data.duty_desc,
                 data.punch_slno
             ],
             (error, results, feilds) => {
@@ -1853,8 +1885,8 @@ module.exports = {
             `UPDATE punch_master
             SET punch_out =?,
             duty_status = 1,
-            lvereq_desc = 'P',
-            duty_desc = 'P',
+            lvereq_desc = 'MPP',
+            duty_desc = 'MPP',
             lve_tble_updation_flag=1
         WHERE punch_slno=?`,
             [
@@ -2587,7 +2619,7 @@ module.exports = {
             inner join hrm_emp_master on  hrm_leave_request.em_no =hrm_emp_master.em_no
             inner join hrm_department on  hrm_leave_request.dept_id =hrm_department.dept_id
             inner join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
-            where  (lv_cancel_status=0  or lv_cancel_status_user=0) and hrm_leave_request.dept_section IN (?)
+            where  lv_cancel_status=0  and lv_cancel_status_user=0 and hrm_leave_request.dept_section IN (?)
             order by leave_date DESC`,
             [
                 data.sectIds
@@ -2644,6 +2676,7 @@ module.exports = {
         )
     },
     sectionMisspunchData: (data, callBack) => {
+
         pool.query(
             `SELECT 
             nopunchrequest.em_id,

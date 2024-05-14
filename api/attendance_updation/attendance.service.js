@@ -303,9 +303,26 @@ module.exports = {
     },
     GetEmployeeShiftDetails: (data, callBack) => {
         pool.query(
-            `select shift_id,shift_in,shift_out,shft_cross_day,punch_in,punch_out from punch_master
-            left join hrm_shift_mast on hrm_shift_mast.shft_slno=punch_master.shift_id
-            where em_no=? and date(duty_day)=?`,
+            `select punch_slno,
+            duty_day,
+            shift_id,
+            emp_id,
+            em_no,
+            punch_in,
+            punch_out,
+            shift_in,
+            shift_out,
+            hrs_worked,
+            late_in,
+            early_out,
+            duty_desc,
+            duty_status,
+            holiday_status,
+            leave_status,
+            lvereq_desc,
+            lve_tble_updation_flag from punch_master
+        left join hrm_shift_mast on hrm_shift_mast.shft_slno=punch_master.shift_id
+        where em_no=? and date(duty_day)=?`,
             [
                 data.empno,
                 data.dutyday
