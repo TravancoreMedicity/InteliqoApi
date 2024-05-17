@@ -389,6 +389,7 @@ module.exports = {
                 hrm_department.dept_name,
                 hrm_dept_section.sect_name,
                 designation.desg_name,
+                gross_salary,
                 IF(em_status = 1, 'Yes', 'No') emp_status
             FROM
                 hrm_emp_master

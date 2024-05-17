@@ -754,7 +754,7 @@ module.exports = {
     getPunchmastData: (data, callBack) => {
         pool.query(
             `select punch_slno, duty_day,shift_id,punch_master.emp_id,punch_master.em_no,
-            hrm_emp_master.em_name,punch_in,
+            hrm_emp_master.em_name,punch_in, gross_salary,
             punch_out,shift_in,shift_out,hrs_worked,over_time,late_in,
             early_out,duty_status,holiday_status,leave_status,holiday_slno,
             lvereq_desc,duty_desc,lve_tble_updation_flag,hrm_emp_master.em_name
@@ -924,9 +924,6 @@ module.exports = {
                 data
             ],
             (error, results, feilds) => {
-
-                console.log(error)
-                console.log(results)
 
                 if (error) {
                     return callBack(error);
