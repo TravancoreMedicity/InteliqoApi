@@ -1733,6 +1733,7 @@ module.exports = {
         )
     },
     updatePunchMasterLeave: (body) => {
+
         //FOR LEAVE
         return Promise.all(body.map((data) => {
             return new Promise((resolve, reject) => {
@@ -1740,12 +1741,14 @@ module.exports = {
                     `UPDATE 
                             punch_master
                         SET leave_status = 1,
-                            lvereq_desc = ?,
-                            duty_desc = ?,
-                            lve_tble_updation_flag = 1
+                        duty_status=?,
+                        lvereq_desc = ?,
+                        duty_desc = ?,
+                        lve_tble_updation_flag = 1
                         WHERE em_no = ? 
                         AND duty_day = ?`,
                     [
+                        data.duty_status,
                         data.lvereq_desc,
                         data.duty_desc,
                         data.emno,

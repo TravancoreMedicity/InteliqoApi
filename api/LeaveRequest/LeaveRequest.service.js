@@ -674,7 +674,6 @@ module.exports = {
         }).then((result) => {
             return result;
         }).catch((error) => {
-            console.log(error)
             return ({ status: 0, message: error })
         });
     },
@@ -691,7 +690,8 @@ module.exports = {
                         leavetype_name,                
                         leave_name,
                         no_days,
-                        sl_leave
+                        sl_leave,
+                        leaveCount
                     )
                     VALUES (?)`,
                     [e],

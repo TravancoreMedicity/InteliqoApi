@@ -429,7 +429,8 @@ module.exports = {
                 }
             })
 
-            const detlPostData = leaveRequestDetlData?.map((e) => [e.leaveid, e.lveDate, e.leave_processid, e.leave_typeid, e.status, e.leavetype_name, e.leave_name, e.leaveCount, e.singleleave])
+            const detlPostData = leaveRequestDetlData?.map((e) => [e.leaveid, e.lveDate, e.leave_processid, e.leave_typeid, e.status, e.leavetype_name, e.leave_name, e.leaveCount, e.singleleave, e.leaveCount])
+
             //SAVE MASTER TABLE ==> hrm_leave_request
             const saveResult = await saveLeaveRequestMasterTable(leaveRequestMasterData)
             const { status, message } = await saveResult;
