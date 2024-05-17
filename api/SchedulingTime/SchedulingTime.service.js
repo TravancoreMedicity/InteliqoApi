@@ -3,7 +3,7 @@ const pool = require('../../config/database');
 module.exports = {
     SchedulingTimeInsert: (data, callBack) => {
         pool.query(
-            `INSERT INTO medi_hrm.scheduling_time (
+            `INSERT INTO scheduling_time (
                 schedule_name, schedule_status, create_user
             )
             VALUES (?,?,?)`,
@@ -24,7 +24,7 @@ module.exports = {
     checkInsertVal: (data, callBack) => {
         pool.query(
             `SELECT schedule_name
-                FROM medi_hrm.scheduling_time
+                FROM scheduling_time
                 WHERE schedule_name = ?`,
             [
                 data.schedule_name,
@@ -40,7 +40,7 @@ module.exports = {
 
     SchedulingTimeGet: (callback) => {
         pool.query(`
-        SELECT slno, schedule_name, schedule_status FROM medi_hrm.scheduling_time WHERE schedule_status=1`, [],
+        SELECT slno, schedule_name, schedule_status FROM scheduling_time WHERE schedule_status=1`, [],
             (err, results, feilds) => {
                 if (err) {
                     return callback(err)
@@ -53,7 +53,7 @@ module.exports = {
         )
     },
     SchedulingTimeUpdate: (data, callback) => {
-        pool.query(`UPDATE medi_hrm.scheduling_time SET 
+        pool.query(`UPDATE scheduling_time SET 
         schedule_name=?,
         schedule_status=?,
         edit_user=?
@@ -79,7 +79,7 @@ module.exports = {
         pool.query(
             `SELECT schedule_name,               
             slno
-            FROM medi_hrm.scheduling_time
+            FROM scheduling_time
             WHERE schedule_name =?  AND slno != ?`,
             [
                 data.schedule_name,
@@ -97,7 +97,7 @@ module.exports = {
     SchedulingTimeDelete: (data, callback) => {
         console.log(data);
         pool.query(
-            `UPDATE medi_hrm.scheduling_time 
+            `UPDATE scheduling_time 
             SET schedule_status=0
              WHERE slno=?`,
             [
