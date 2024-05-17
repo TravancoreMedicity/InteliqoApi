@@ -1050,7 +1050,7 @@ module.exports = {
     },
     getArearData: (data, callBack) => {
         pool.query(
-            `SELECT em_id,em_no,department,department_sect,arrear_amount,arrear_month,arear_remark FROM medi_hrm.hrm_emp_arrear 
+            `SELECT em_id,em_no,department,department_sect,arrear_amount,arrear_month,arear_remark FROM hrm_emp_arrear 
             where department=? and department_sect=? and arrear_month=?`,
             [
                 data.department,
