@@ -4,15 +4,17 @@ module.exports = {
     TrainingAfterJoiningGet: (callback) => {
         pool.query(
             `
-            SELECT training_master.slno, emp_no, emp_id, joining_date,
-            em_id,em_no,em_name,em_department,em_dept_section,
+            SELECT training_master.slno as master_slno, emp_no, emp_id, joining_date,
+            em_id,em_no,em_name,em_department,em_dept_section,hrm_emp_master.em_designation,
             hrm_department.dept_id,dept_name,
             sect_id,sect_name,
+            desg_slno,desg_name,
             assign_status
             FROM training_master
             LEFT JOIN hrm_emp_master ON training_master.emp_id=hrm_emp_master.em_id
             INNER JOIN hrm_department ON hrm_emp_master.em_department=hrm_department.dept_id
             INNER JOIN hrm_dept_section ON hrm_emp_master.em_dept_section= hrm_dept_section.sect_id 
+            INNER JOIN designation ON designation.desg_slno= hrm_emp_master.em_designation 
             WHERE assign_status=0 and emp_no!=1 order by slno
            `, [],
 
@@ -95,7 +97,7 @@ module.exports = {
             SELECT tnd_slno,tnd_emp_id,tns_emp_id,tns_dept,tns_dept_sec,trainingtype_slno,
             GROUP_CONCAT(type_name) as type_name,em_no,em_id,em_name,hrm_department.dept_id,
             dept_name,sect_id,sect_name,tnd_cat,cat_slno,trin_cat_name,tnd_name,name_slno,training_name,tnd_date
-            FROM medi_hrm.training_newjoinee_schedule
+            FROM training_newjoinee_schedule
             LEFT JOIN training_newjoinee_details ON training_newjoinee_details.tnd_emp_id = training_newjoinee_schedule.tns_emp_id
             LEFT JOIN training_type ON training_type.trainingtype_slno = training_newjoinee_details.tnd_type
             LEFT JOIN training_category ON training_category.cat_slno = training_newjoinee_details.tnd_cat
@@ -141,7 +143,7 @@ module.exports = {
     GetTopic: (callback) => {
         pool.query(
             `
-            SELECT topic_slno,training_topic_name FROM medi_hrm.training_topic
+            SELECT topic_slno,training_topic_name FROM training_topic
            `, [],
 
             (err, results, feilds) => {
@@ -157,7 +159,7 @@ module.exports = {
         pool.query(
             `
             SELECT trainer_slno,trainer_name,em_id,em_name
-            FROM medi_hrm.training_trainername
+            FROM training_trainername
             INNER JOIN hrm_emp_master ON hrm_emp_master.em_id =training_trainername.trainer_name
            `, [],
 
@@ -216,7 +218,7 @@ module.exports = {
 
     DepartmentalScheduleInsert: (data, callBack) => {
         pool.query(
-            `INSERT INTO medi_hrm.training_departmental_schedule (
+            `INSERT INTO training_departmental_schedule (
              department, deparment_sect, schedule_year, schedule_date, schedule_topics, schedule_trainers, schedule_remark, create_user  )
             VALUES (?,?,?,?,?,?,?,?)`,
             [
@@ -244,7 +246,7 @@ module.exports = {
             `SELECT slno, department, deparment_sect, schedule_year, schedule_date, schedule_topics, schedule_trainers, 
             schedule_remark,hrm_department.dept_id,dept_name, topic_slno,training_topic_name,sect_id,
             GROUP_CONCAT(em_name)  as traineer_name
-            FROM medi_hrm.training_departmental_schedule
+            FROM training_departmental_schedule
             LEFT JOIN hrm_department ON hrm_department.dept_id=training_departmental_schedule.department
             LEFT JOIN training_topic ON training_topic.topic_slno=training_departmental_schedule.schedule_topics
             LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id =training_departmental_schedule.deparment_sect
@@ -351,10 +353,10 @@ module.exports = {
     },
     GetDeptEmpNameDetails: (id, callback) => {
         pool.query(
-            `SELECT em_id,em_name,desg_slno,desg_name,em_designation
+            `SELECT em_id,em_no,em_name,desg_slno,desg_name,em_designation
             FROM hrm_emp_master 
             LEFT JOIN designation ON designation.desg_slno=hrm_emp_master.em_designation
-            WHERE em_department=? and em_status=1`, [id],
+            WHERE em_department=? and em_status=1 and em_id!=1`, [id],
             (err, results, feilds) => {
                 if (err) {
                     return callback(err)
@@ -404,6 +406,45 @@ module.exports = {
                     return callBack(error);
                 }
                 return callBack(null, results);
+            }
+        )
+    },
+    //show trainer names when selecting the trainings
+    getTrainerByTopic: (id, callback) => {
+        pool.query(
+            `select topic_slno ,trainers ,GROUP_CONCAT(em_name)  as trainer_name
+            from training_topic
+            LEFT JOIN hrm_emp_master on JSON_CONTAINS(training_topic.trainers,cast(hrm_emp_master.em_id as json),'$')
+            Where topic_slno=?
+            group by topic_slno`, [id],
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+
+            }
+        )
+    },
+    getScheduleDatas: (data, callback) => {
+        pool.query(
+            `SELECT em_id,em_no,em_name,topic,schedule_date
+            FROM hrm_emp_master 
+            LEFT JOIN training_employee_details ON training_employee_details.emp_name=hrm_emp_master.em_id
+            WHERE em_department=? and topic=? and date(schedule_date)=?`,
+            [
+                data.dept,
+                data.topic,
+                data.date
+            ],
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+
             }
         )
     },

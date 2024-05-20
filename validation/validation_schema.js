@@ -1215,10 +1215,12 @@ const validatecommonsettings = Joi.object({
         eoff: Joi.number().optional(),
         comp_day_count: Joi.number().optional(),
         comp_hour_count: Joi.number().optional(),
+        training_mastergroup: Joi.optional(),
         holiday_policy_count: Joi.number().optional(),
         weekoff_policy_max_count: Joi.number().optional(),
         weekoff_policy_min_count: Joi.number().optional(),
-        coff_min_working_hour: Joi.number().optional(),
+        coff_min_working_hour: Joi.number().optional()
+
 
 })
 //validate carryforward
@@ -1364,10 +1366,10 @@ const validateTrainingName = Joi.object({
 
 const validateTrainerName = Joi.object({
         trainer_slno: Joi.number().optional(),
-        trainer_name: Joi.number().required(),
-        trainer_dept: Joi.number().required(),
-        trainer_desig: Joi.number().required(),
-        trainer_status: Joi.number().min(0).max(1).required(),
+        trainer_name: Joi.optional(),
+        trainer_dept: Joi.optional(),
+        trainer_desig: Joi.optional(),
+        trainer_status: Joi.optional(),
         create_user: Joi.number().optional(),
         edit_user: Joi.number().optional()
 })

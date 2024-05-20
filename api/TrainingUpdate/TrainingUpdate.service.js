@@ -13,7 +13,7 @@ module.exports = {
             designation.desg_slno,designation.desg_name, training_name.name_slno,training_name.training_name,
             training_topic.topic_slno,training_topic.training_topic_name,
             scheduling_time.slno,scheduling_time.schedule_name
-            FROM medi_hrm.departmental_training_schedule
+            FROM departmental_training_schedule
             LEFT JOIN  hrm_department ON departmental_training_schedule.department=hrm_department.dept_id
             LEFT JOIN designation ON departmental_training_schedule.designation=designation.desg_slno
             LEFT JOIN training_name ON departmental_training_schedule.training_name=training_name.name_slno

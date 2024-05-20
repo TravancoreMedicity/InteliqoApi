@@ -4,7 +4,7 @@ module.exports = {
 
     TrainingCategoryInsert: (data, callBack) => {
         pool.query(
-            `INSERT INTO medi_hrm.training_category (trning_typeslno, trin_cat_name, cat_status,create_user)
+            `INSERT INTO training_category (trning_typeslno, trin_cat_name, cat_status,create_user)
             VALUES (?,?,?,?)`,
             [
                 data.trning_typeslno,
@@ -41,7 +41,7 @@ module.exports = {
 
 
     TrainingCategoryUpdate: (data, callback) => {
-        pool.query(`UPDATE medi_hrm.training_category
+        pool.query(`UPDATE training_category
          SET
          trning_typeslno=?,
         trin_cat_name=?,
@@ -65,7 +65,7 @@ module.exports = {
     },
     TrainingCategoryDelete: (data, callback) => {
         pool.query(
-            `UPDATE medi_hrm.training_category SET cat_status=0 WHERE cat_slno=? `,
+            `UPDATE training_category SET cat_status=0 WHERE cat_slno=? `,
             [
                 data.cat_slno
             ],
@@ -81,7 +81,7 @@ module.exports = {
     checkInsertVal: (data, callBack) => {
         pool.query(
             `SELECT trning_typeslno,trin_cat_name
-                FROM medi_hrm.training_category
+                FROM training_category
                 WHERE trin_cat_name = ?`,
             [
                 data.trning_typeslno,
@@ -99,7 +99,7 @@ module.exports = {
     checkUpdateVal: (data, callBack) => {
         pool.query(
             `SELECT trning_typeslno,trin_cat_name
-            FROM medi_hrm.training_category
+            FROM training_category
             WHERE trin_cat_name =?  AND cat_slno != ?`,
             [
                 data.type_name,

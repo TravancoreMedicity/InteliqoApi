@@ -4,7 +4,7 @@ module.exports = {
 
     TrainingNameGet: (callback) => {
         pool.query(
-            `SELECT name_slno,training_name FROM medi_hrm.training_name`,
+            `SELECT name_slno,training_name FROM training_name`,
             [],
             (err, results, feilds) => {
                 if (err) {
@@ -18,7 +18,7 @@ module.exports = {
 
     TrainingScheduleInsert: (data, callBack) => {
         pool.query(
-            `INSERT INTO medi_hrm.training_schedule (schedule_department, schedule_designation, schedule_category, training_name, create_user)
+            `INSERT INTO training_schedule (schedule_department, schedule_designation, schedule_category, training_name, create_user)
             VALUES (?,?,?,?,?)`,
             [
                 data.schedule_department,
@@ -60,7 +60,7 @@ module.exports = {
     },
 
     TrainingScheduleUpdate: (data, callback) => {
-        pool.query(`UPDATE medi_hrm.training_schedule
+        pool.query(`UPDATE training_schedule
          SET
          schedule_department=?,
          schedule_designation=?,
