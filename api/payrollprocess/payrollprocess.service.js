@@ -1185,7 +1185,8 @@ module.exports = {
                 hrm_emp_pfesi.nps,
                 hrm_emp_pfesi.npsamount,
                 hrm_emp_pfesi.lwf_status,
-                hrm_emp_pfesi.lwfamount
+                hrm_emp_pfesi.lwfamount,
+                hrm_emp_master.gross_salary
             FROM punch_master
             LEFT JOIN hrm_emp_master ON hrm_emp_master.em_no = punch_master.em_no
             LEFT JOIN hrm_department ON hrm_department.dept_id = hrm_emp_master.em_department
