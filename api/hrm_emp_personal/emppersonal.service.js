@@ -31,9 +31,10 @@ module.exports = {
                 em_region,
                 hrm_region2,
                 emp_yeargae,
-                salarytype
+                salarytype,
+                em_bank_branch
             )
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
                 data.em_id,
                 data.em_no,
@@ -62,7 +63,8 @@ module.exports = {
                 data.em_region,
                 data.hrm_region2,
                 data.emp_yeargae,
-                data.salarytype
+                data.salarytype,
+                data.em_bank_branch
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -96,7 +98,8 @@ module.exports = {
                 em_account_no =?,
                 em_ifsc =?,
                 edit_user =?,
-                salarytype=?
+                salarytype=?,
+                em_bank_branch=?
                 WHERE em_no = ?`,
             [
 
@@ -121,6 +124,7 @@ module.exports = {
                 data.em_ifsc,
                 data.create_user,
                 data.salarytype,
+                data.em_bank_branch,
                 data.em_no
             ],
             (error, results, feilds) => {
@@ -160,7 +164,8 @@ module.exports = {
               emp_email,
               em_region,
               hrm_region2,
-              emp_yeargae
+              emp_yeargae,
+              em_bank_branch
           FROM hrm_emp_personal
           WHERE em_no = ?`,
             [
@@ -204,7 +209,8 @@ module.exports = {
                 em_account_no,
                 em_ifsc,
                 create_user,
-                edit_user
+                edit_user,
+                em_bank_branch
             FROM hrm_emp_personal
             WHERE emper_slno =? `,
             [

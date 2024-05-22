@@ -727,7 +727,8 @@ const validateeemployeepersonal = Joi.object({
         emp_yeargae: Joi.number().optional(),
         em_region: Joi.number().min(1).required(),
         hrm_region2: Joi.number().min(1).required(),
-        salarytype: Joi.number().min(1).required()
+        salarytype: Joi.number().min(1).required(),
+        em_bank_branch: Joi.number().min(1).required(),
 })
 
 // VALIDATE EMPLOYEE ESI AND PF
