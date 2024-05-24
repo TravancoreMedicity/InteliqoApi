@@ -61,9 +61,10 @@ module.exports = {
         )
     },
     checkInsertVal: (data, callBack) => {
+
         pool.query(
             `SELECT * FROM one_hour_request WHERE 
-            month(one_hour_duty_day) = month(?) AND em_id=? `,
+            month(one_hour_duty_day) = month(?) AND em_id=? and cancel_status!=1 `,
             [
                 data.one_hour_duty_day,
                 data.em_id
@@ -204,7 +205,7 @@ module.exports = {
     getOneHourReqst: (callBack) => {
         pool.query(
             `
-            SELECT  ROW_NUMBER() OVER () as serialno,
+            SELECT  
             request_slno,
             one_hour_request.em_id,
             one_hour_request.em_no,
@@ -238,7 +239,7 @@ module.exports = {
             inner join hrm_department on one_hour_request.dept_id=hrm_department.dept_id
             inner join hrm_dept_section on one_hour_request.dept_sect_id=hrm_dept_section.sect_id
             inner join hrm_shift_mast on one_hour_request.shift_id=hrm_shift_mast.shft_slno
-            where cancel_status=0
+            where cancel_status=0 order by one_hour_duty_day desc
            `,
             [],
             (error, results) => {
@@ -722,6 +723,10 @@ module.exports = {
         pool.query(
             `UPDATE punch_master
             SET punch_in =?,
+            duty_status = 1,
+            lvereq_desc = 'OHP',
+            duty_desc = 'OHP',
+            leave_status=1,
             lve_tble_updation_flag=1
          WHERE em_no=? and duty_day=?`,
             [
@@ -741,6 +746,10 @@ module.exports = {
         pool.query(
             `UPDATE punch_master
             SET punch_out =?,
+            duty_status = 1,
+            lvereq_desc = 'OHP',
+            duty_desc = 'OHP',
+            leave_status=1,
             lve_tble_updation_flag=1
             WHERE em_no=? and duty_day=?`,
             [
@@ -827,8 +836,8 @@ module.exports = {
             punch_out=?,
             leave_status = 1,
             duty_status=1,
-            lvereq_desc = 'LV',
-            duty_desc = 'LV',
+            lvereq_desc = 'ODP',
+            duty_desc = 'ODP',
             lve_tble_updation_flag = 1
             WHERE em_no = ? and duty_day=?`,
             [
@@ -952,6 +961,24 @@ module.exports = {
                     return callBack(error);
                 }
                 return callBack(null, results);
+            }
+        )
+    },
+    checkPunchMarkingHR: (data, callBack) => {
+        pool.query(
+            `SELECT 
+                    last_update_date
+                FROM punchmarking_hr 
+                WHERE marking_month = ? AND deptsec_slno = ?`,
+            [
+                data.month,
+                data.section
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, JSON.stringify(results));
             }
         )
     },

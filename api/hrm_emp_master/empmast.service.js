@@ -43,10 +43,11 @@ module.exports = {
                 probation_status,
                 recomend_salary,
                 clinicaltype,
-                doctor_status
+                doctor_status,
+                gross_salary
 
             )
-            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
                 data.em_no,
                 data.em_salutation,
@@ -87,7 +88,8 @@ module.exports = {
                 data.probation_status,
                 data.recomend_salary,
                 data.clinicaltype,
-                data.doctor_status
+                data.doctor_status,
+                data.recomend_salary,
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -139,7 +141,8 @@ module.exports = {
                 probation_status=?,
                 recomend_salary=?,
                 clinicaltype=?,
-                doctor_status=?
+                doctor_status=?,
+                gross_salary=?
                 WHERE em_no = ?`,
             [
                 data.em_salutation,
@@ -181,6 +184,7 @@ module.exports = {
                 data.recomend_salary,
                 data.clinicaltype,
                 data.doctor_status,
+                data.recomend_salary,
                 data.em_no
             ],
             (error, results, feilds) => {
@@ -338,6 +342,7 @@ module.exports = {
                     probation_status,
                     recomend_salary,
                     clinicaltype,
+                    gross_salary,
                     doctor_status
                 FROM hrm_emp_master
                 WHERE em_no = ?
@@ -384,6 +389,7 @@ module.exports = {
                 hrm_department.dept_name,
                 hrm_dept_section.sect_name,
                 designation.desg_name,
+                gross_salary,
                 IF(em_status = 1, 'Yes', 'No') emp_status
             FROM
                 hrm_emp_master
@@ -679,7 +685,6 @@ module.exports = {
             from hrm_emp_master
                 where em_dept_section=?
                 and em_department=?
-                and em_branch=1
                 and em_status=1 and em_id!=1 and em_no!=2;`,
             [
                 data.em_dept_section,
@@ -728,9 +733,17 @@ module.exports = {
 
     updateDeptSec: (data, callBack) => {
         pool.query(
-            `UPDATE hrm_emp_master SET em_dept_section=? WHERE em_id= ?`,
+            `UPDATE hrm_emp_master 
+            SET em_department=?, 
+            em_dept_section=? ,
+            em_designation=?,
+            saturday_weekoff=?
+            WHERE em_id= ?`,
             [
+                data.em_department,
                 data.em_dept_section,
+                data.em_designation,
+                data.saturday_weekoff,
                 data.em_id,
             ],
             (error, results, feilds) => {
@@ -840,17 +853,18 @@ module.exports = {
                 em_cont_start,
                 em_cont_end,
                 em_prob_end_date,
-                em_conf_end_date
+                em_conf_end_date,
+                status
                 )
-                VALUES (?,?,?,?,?,?);`,
+                VALUES (?,?,?,?,?,?,?);`,
             [
                 data.em_id,
                 data.em_no,
                 data.em_cont_start,
                 data.em_cont_end,
                 data.em_prob_end_date,
-                data.em_age_year,
                 data.em_conf_end_date,
+                data.status
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -941,4 +955,105 @@ module.exports = {
             }
         )
     },
+    getEmpList: (data, callBack) => {
+        pool.query(
+            `select hrm_emp_master.em_no,
+            hrm_emp_master.em_name,
+            hrm_emp_master.em_id,
+            hrm_emp_master.em_doj,
+            hrm_emp_master.contract_status,
+            hrm_emp_master.gross_salary,
+            hrm_department.dept_id,
+            hrm_dept_section.sect_id,
+            em_department,
+            em_dept_section,
+            dept_name, 
+            sect_name,
+            desg_name
+            FROM hrm_emp_master
+            inner join hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
+            inner join hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
+            inner join designation on hrm_emp_master.em_designation=designation.desg_slno
+            where hrm_emp_master.em_department=?
+                and hrm_emp_master.em_dept_section=?
+                and hrm_emp_master.em_branch=?
+                and hrm_emp_master.em_status=1
+                and hrm_emp_master.em_no not in (1 ,2)`,
+            [
+                data.em_department,
+                data.em_dept_section,
+                data.em_branch
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    insertActivateEmp: (data, callBack) => {
+        pool.query(
+            `INSERT INTO hrm_active_employee_details (
+                em_id,
+                em_no,
+                remark,
+                em_status,
+                create_user
+                )
+                VALUES (?,?,?,?,?)`,
+            [
+                data.em_id,
+                data.em_no,
+                data.remark,
+                1,
+                data.create_user
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    createCompany: (data, callBack) => {
+        pool.query(
+            `INSERT INTO hrm_emp_company_log(
+                com_branch,
+                com_dept,
+                com_deptsec,
+                create_user,
+                edit_user,
+                em_id,
+                em_no,
+                com_designation,
+                com_designation_new,
+                ineffective_date,
+                dept_new,
+                deptsect_new
+            )
+            VALUES(?,?,?,?,?,?,?,?,?,?,?,?)`,
+            [
+                data.em_branch,
+                data.em_department,
+                data.em_dept_section,
+                data.create_user,
+                data.edit_user,
+                data.em_id,
+                data.em_no,
+                data.com_designation,
+                data.com_designation_new,
+                data.ineffective_date,
+                data.dept_new,
+                data.deptsect_new
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    }
 }

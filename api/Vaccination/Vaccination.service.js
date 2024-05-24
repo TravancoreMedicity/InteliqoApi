@@ -39,7 +39,7 @@ module.exports = {
             hic_emid_booster_verified,
             pending_status,
             annual_dose
-             FROM medi_hrm.vaccination_master
+             FROM vaccination_master
              inner join hrm_emp_master on vaccination_master.em_id=hrm_emp_master.em_id
              inner join hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
              inner join hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
@@ -129,7 +129,7 @@ module.exports = {
              hic_second_dose_status,
              hic_third_dose_status,
              hic_booster_dose_status
-             FROM medi_hrm.vaccination_master
+             FROM vaccination_master
              INNER JOIN hrm_emp_master ON vaccination_master.em_id = hrm_emp_master.em_id
              INNER JOIN hrm_department ON hrm_emp_master.em_department = hrm_department.dept_id
              INNER JOIN hrm_dept_section ON hrm_emp_master.em_dept_section = hrm_dept_section.sect_id
@@ -155,7 +155,7 @@ module.exports = {
             [
                 data.fromDate,
                 data.remarkssecond,
-                 data.em_id,
+                data.em_id,
                 data.em_no,
 
 
@@ -175,9 +175,9 @@ module.exports = {
             [
                 data.fromDate,
                 data.remarksthird,
-                  data.em_id,
+                data.em_id,
                 data.em_no,
-                
+
 
 
             ],
@@ -224,7 +224,7 @@ module.exports = {
                     hic_third_dose_status,
                     hic_booster_dose_status
         
-                    FROM medi_hrm.vaccination_master
+                    FROM vaccination_master
                     INNER JOIN hrm_emp_master ON vaccination_master.em_id = hrm_emp_master.em_id
                     INNER JOIN hrm_department ON hrm_emp_master.em_department = hrm_department.dept_id
                     INNER JOIN hrm_dept_section ON hrm_emp_master.em_dept_section = hrm_dept_section.sect_id
@@ -268,7 +268,7 @@ module.exports = {
                 data.em_id,
                 data.annual_dose,
                 data.em_no,
-              
+
                 // data.vaccin_slno
 
             ],
@@ -307,7 +307,7 @@ module.exports = {
     },
 
     // hic  api
-     hicinsertfirstdose: (data, callBack) => {
+    hicinsertfirstdose: (data, callBack) => {
 
         pool.query(
             `UPDATE vaccination_master SET hic_first_dose_date=?,hic_emid_first_verified=?,hic_remark_first=?,hic_frst_dose_status=1 WHERE em_no = ?;`,
@@ -316,7 +316,7 @@ module.exports = {
                 data.em_id,
                 data.remarks,
                 data.em_no,
-                
+
 
 
             ],
@@ -328,16 +328,16 @@ module.exports = {
             }
         )
     },
-      hicinsertseconddose: (data, callBack) => {
+    hicinsertseconddose: (data, callBack) => {
 
         pool.query(
             `UPDATE vaccination_master SET hic_second_dose_date=?,hic_emid_second_verified=?,hic_remark_second=?,hic_second_dose_status=1 WHERE em_no = ?;`,
             [
                 data.fromDate,
-                  data.em_id,
-                  data.remarks,
+                data.em_id,
+                data.remarks,
                 data.em_no,
-                
+
 
 
             ],
@@ -349,16 +349,16 @@ module.exports = {
             }
         )
     },
-     hicinsertthirddose: (data, callBack) => {
+    hicinsertthirddose: (data, callBack) => {
 
         pool.query(
             `UPDATE vaccination_master SET hic_thirdt_dose_date=?,hic_emid_third_verified=?,hic_remark_third=?,hic_third_dose_status=1 WHERE em_no = ?;`,
             [
                 data.fromDate,
-                  data.em_id,
-                  data.remarks,
+                data.em_id,
+                data.remarks,
                 data.em_no,
-                
+
 
 
             ],
@@ -370,16 +370,16 @@ module.exports = {
             }
         )
     },
-      hicinsertboosterdose: (data, callBack) => {
+    hicinsertboosterdose: (data, callBack) => {
 
         pool.query(
             `UPDATE vaccination_master SET hic_boostert_dose_date=?,hic_emid_booster_verified=?,hic_remark_booster=?,hic_booster_dose_status=1 WHERE em_no = ?;`,
             [
                 data.fromDate,
-                  data.em_id,
-                  data.remarks,
+                data.em_id,
+                data.remarks,
                 data.em_no,
-                
+
 
 
             ],
@@ -392,7 +392,7 @@ module.exports = {
         )
     },
     // annual insert api
-      annualvaccinationInsert: (data, callBack) => {
+    annualvaccinationInsert: (data, callBack) => {
         pool.query(
             `INSERT INTO  vaccination_master_details SET 
             em_id=?,
@@ -424,7 +424,7 @@ module.exports = {
                 data.first_vacc_emid,
                 data.second_vacc_emid,
                 data.third_vacc_emid,
-            
+
                 // data.vaccin_slno
             ],
             (error, results, feilds) => {
@@ -435,7 +435,7 @@ module.exports = {
             }
         )
     },
-     updateannualinsert: (data, callBack) => {
+    updateannualinsert: (data, callBack) => {
         pool.query(
             `UPDATE vaccination_master 
             SET  first_dose_given_date=null,
@@ -481,7 +481,7 @@ module.exports = {
             annual_dose=null
             WHERE em_id = ?`,
             [
-            
+
                 data.em_id
             ],
             (error, results, feilds) => {
@@ -492,7 +492,7 @@ module.exports = {
             }
         )
     },
-      annualvaccinationbooster: (data, callBack) => {
+    annualvaccinationbooster: (data, callBack) => {
         pool.query(
             `INSERT INTO  vaccination_master_details SET 
             em_id=?,
@@ -533,7 +533,7 @@ module.exports = {
                 data.hic_boostert_dose_date,
                 data.hic_emid_booster_verified,
                 data.booster_vacc_emid,
-            
+
                 // data.vaccin_slno
             ],
             (error, results, feilds) => {
@@ -543,9 +543,9 @@ module.exports = {
                 return callBack(null, results);
             }
         )
-      },
-       getannualvac: (data, callBack) => {
-      
+    },
+    getannualvac: (data, callBack) => {
+
         pool.query(
             ` 
         SELECT * FROM vaccination_master_details where em_id=?;
@@ -554,7 +554,7 @@ module.exports = {
                 data,
             ],
             (error, results, feilds) => {
-  
+
                 if (error) {
                     return callBack(error);
                 }
@@ -563,7 +563,7 @@ module.exports = {
             }
         )
     },
-     vaccinationentry: (data, callBack) => {
+    vaccinationentry: (data, callBack) => {
 
         pool.query(
             `INSERT INTO vaccination_master SET   
@@ -572,7 +572,7 @@ module.exports = {
             [
                 data.emp_id,
                 data.emp_no,
-             
+
 
 
             ],
@@ -585,7 +585,7 @@ module.exports = {
         )
     },
     // hic vaccination list
-     getEmpdetl: (data, callBack) => {
+    getEmpdetl: (data, callBack) => {
         pool.query(
             `select a.em_no,
             CONCAT(UPPER(SUBSTRING(a.em_name,1,1)),LOWER(SUBSTRING(a.em_name,2)))  as 'em_name',
@@ -672,7 +672,7 @@ module.exports = {
             }
         )
     },
-     getEmpDataByEmno: (id, callBack) => {
+    getEmpDataByEmno: (id, callBack) => {
         pool.query(
             `  SELECT 
                    vaccination_master.em_id,
@@ -722,7 +722,7 @@ module.exports = {
                     CONCAT(UPPER(SUBSTRING(b3.desg_name,1,1)),LOWER(SUBSTRING(b3.desg_name,2)))  as 'thirddesg',
                     CONCAT(UPPER(SUBSTRING(b4.desg_name,1,1)),LOWER(SUBSTRING(b4.desg_name,2)))  as 'boosterdesg'
 
-                    FROM medi_hrm.vaccination_master
+                    FROM vaccination_master
                     INNER JOIN hrm_emp_master a ON vaccination_master.em_id =a.em_id
                     LEFT JOIN hrm_emp_master a1 ON a1.em_id = vaccination_master.hic_emid_first_verified AND vaccination_master.hic_emid_first_verified <> 0
                     LEFT JOIN hrm_emp_master a2 ON a2.em_id = vaccination_master.hic_emid_second_verified AND vaccination_master.hic_emid_second_verified <> 0

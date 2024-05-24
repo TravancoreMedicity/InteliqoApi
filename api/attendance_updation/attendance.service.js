@@ -238,7 +238,6 @@ module.exports = {
                 (error, result, feild) => {
 
                     if (error) {
-
                         callBack(error)
                     }
                     callBack(null, JSON.stringify(result))
@@ -304,9 +303,26 @@ module.exports = {
     },
     GetEmployeeShiftDetails: (data, callBack) => {
         pool.query(
-            `select shift_id,shift_in,shift_out,shft_cross_day,punch_in,punch_out from punch_master
-            left join hrm_shift_mast on hrm_shift_mast.shft_slno=punch_master.shift_id
-            where em_no=? and date(duty_day)=?`,
+            `select punch_slno,
+            duty_day,
+            shift_id,
+            emp_id,
+            em_no,
+            punch_in,
+            punch_out,
+            shift_in,
+            shift_out,
+            hrs_worked,
+            late_in,
+            early_out,
+            duty_desc,
+            duty_status,
+            holiday_status,
+            leave_status,
+            lvereq_desc,
+            lve_tble_updation_flag from punch_master
+        left join hrm_shift_mast on hrm_shift_mast.shft_slno=punch_master.shift_id
+        where em_no=? and date(duty_day)=?`,
             [
                 data.empno,
                 data.dutyday
@@ -339,7 +355,8 @@ module.exports = {
     updatePunchInandPunchOut: (data, callBack) => {
         pool.query(
             `update punch_master
-                set punch_in=?,
+                set lve_tble_updation_flag=1,
+                punch_in=?,
                     punch_out=?,
                     hrs_worked = ?,
                     late_in=?,
@@ -456,6 +473,28 @@ module.exports = {
             }
         )
     },
+    getPunchDataEmCodeWiseDateWise: (data, callBack) => {
+        pool.query(
+            `SELECT 
+                emp_code,
+                punch_time,
+                punch_state
+            FROM punch_data
+            WHERE punch_time 
+            BETWEEN ? AND ? AND emp_code IN (?)`,
+            [
+                data.preFromDate,
+                data.preToDate,
+                data.empList
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
     getPunchMasterData: (data, callBack) => {
         pool.query(
             `SELECT 
@@ -483,6 +522,44 @@ module.exports = {
                 data.empId.em_no
             ],
             (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getPunchMastData: (data, callBack) => {
+        pool.query(
+            `SELECT 
+                punch_slno,
+                duty_day,
+                shift_id,
+                emp_id,
+                em_no,
+                punch_in,
+                punch_out,
+                shift_in,
+                shift_out,
+                hrs_worked,
+                late_in,
+                early_out,
+                duty_desc,
+                duty_status,
+                holiday_status,
+                leave_status,
+                lvereq_desc,
+                lve_tble_updation_flag
+            FROM punch_master 
+            WHERE duty_day BETWEEN ? AND ? 
+            AND em_no IN (?)`,
+            [
+                data.fromDate_punchMaster,
+                data.toDate_punchMaster,
+                data.empList
+            ],
+            (error, results, feilds) => {
+                // console.log(results)
                 if (error) {
                     return callBack(error);
                 }
@@ -557,6 +634,49 @@ module.exports = {
         })
         )
     },
+    updatePunchMaster: (body) => {
+        return Promise.allSettled(body?.map(async (e) => {
+            return new Promise((resolve, reject) => {
+                pool.query(
+                    `UPDATE punch_master
+                        SET punch_in = ?,
+                            punch_out = ?,
+                            hrs_worked =?,
+                            late_in = ?,
+                            early_out = ?,
+                            duty_status=?,
+                            duty_desc=?,
+                            lvereq_desc=?
+                        WHERE punch_slno = ?`,
+                    [
+                        e.punch_in,
+                        e.punch_out,
+                        e.hrs_worked,
+                        e.late_in,
+                        e.early_out,
+                        e.duty_status,
+                        e.duty_desc,
+                        e.lvereq_desc,
+                        e.punch_slno,
+                    ],
+                    async (error, results, fields) => {
+                        if (error) {
+                            return reject(error)
+                        }
+                        return resolve(results)
+                    }
+                )
+            })
+        })).then((updateResult) => {
+            const dbUpdateResult = updateResult?.find(e => e.status === 'rejected')
+            if (dbUpdateResult === undefined) {
+                return 1
+            } else {
+                // @ts-ignore
+                return dbUpdateResult?.reason
+            }
+        })
+    },
     updatePunchMastDuty: (body) => {
         return Promise.all(body.map((data) => {
             return new Promise((resolve, reject) => {
@@ -600,7 +720,9 @@ module.exports = {
     },
     getHolidayDate: (data, callBack) => {
         pool.query(
-            `select hld_slno,hld_desc,hld_date from hrm_yearly_holiday_list
+            `select 
+                hld_slno,hld_desc,hld_date 
+            from hrm_yearly_holiday_list
             where month(hld_date)=? and year(hld_date)=?`,
             [
                 data.month,
@@ -630,6 +752,32 @@ module.exports = {
                 data.fromDate,
                 data.toDate,
                 data.empId.em_no
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getDutyPlanBySection: (data, callBack) => {
+        pool.query(
+            `SELECT 
+                plan_slno,
+                em_no,
+                date(duty_day)  as duty_day,
+                shift_id,
+                holiday,
+                holiday_name,
+                holiday_slno
+            FROM hrm_duty_plan  
+            WHERE date(duty_day) BETWEEN ? AND ? 
+            AND em_no IN (?)`,
+            [
+                data.fromDate_dutyPlan,
+                data.toDate_dutyPlan,
+                data.empList
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -715,9 +863,11 @@ module.exports = {
     checkInOutMarked: (data, callBack) => {
         pool.query(
             `
-            SELECT attendance_update_flag FROM hrm_duty_plan
-             where duty_day between ? and ?
-            and em_no=? and attendance_update_flag=0;
+            SELECT 
+                attendance_update_flag 
+            FROM hrm_duty_plan
+            WHERE duty_day between ? and ?
+            AND em_no=? and attendance_update_flag=0;
             `,
             [
                 data.fromDate,
@@ -749,4 +899,417 @@ module.exports = {
             }
         )
     },
+    getEmpList: (data, callBack) => {
+        pool.query(
+            `select hrm_emp_master.em_no,
+            hrm_emp_master.em_name,
+            hrm_emp_master.em_id,
+            hrm_emp_master.em_doj,
+            hrm_emp_contract_detl.em_cont_start,
+            hrm_emp_master.contract_status,
+            hrm_emp_master.gross_salary,
+            hrm_department.dept_id,
+            hrm_dept_section.sect_id,
+            em_department,
+            em_dept_section,
+            dept_name, 
+            sect_name,
+            desg_name
+            FROM hrm_emp_master
+            left join hrm_emp_contract_detl on hrm_emp_contract_detl.em_no = hrm_emp_master.em_no and hrm_emp_contract_detl.status = 0
+            inner join hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
+            inner join hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
+            inner join designation on hrm_emp_master.em_designation=designation.desg_slno
+            where  hrm_emp_master.em_dept_section=?
+                and hrm_emp_master.em_status=1
+                and hrm_emp_master.em_no not in (1 ,2) ;`,
+            [
+                data.em_dept_section
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getEmployeeRights: (data, callBack) => {
+        pool.query(
+            `  SELECT * FROM module_group_user_rights where emp_slno=?`,
+            [
+                data.emid
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    sectionwiseEmppunchMast: (data, callBack) => {
+        pool.query(
+            `select punch_slno, duty_day,shift_id,punch_master.emp_id,punch_master.em_no,
+            hrm_emp_master.em_name,punch_in,
+            punch_out,shift_in,shift_out,hrs_worked,over_time,late_in,
+            early_out,duty_status,holiday_status,leave_status,holiday_slno,
+            lvereq_desc,duty_desc,lve_tble_updation_flag
+            from  punch_master
+            left join hrm_emp_master on hrm_emp_master.em_no=punch_master.em_no
+            left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
+            where  date(duty_day) between ? and ? and em_dept_section=?
+            `,
+            [
+                data.fromDate,
+                data.toDate,
+                data.sect_id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    sectionwiseEmpDutyplan: (data, callBack) => {
+        pool.query(
+            `SELECT plan_slno,emp_id,hrm_emp_master.em_no,hrm_emp_master.em_name,shift_id,duty_day,
+            attendance_update_flag,holiday,offday_flag,holiday_name,holiday_slno
+            FROM hrm_duty_plan
+            left join hrm_emp_master on hrm_emp_master.em_no=hrm_duty_plan.em_no
+            left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
+            where  duty_day between ? and ? and em_dept_section=?
+            `,
+            [
+                data.fromDate,
+                data.toDate,
+                data.sect_id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    // 
+    checkAttendanceProcessSectionWise: (data, callBack) => {
+        pool.query(
+            `SELECT 
+                marking_month
+            FROM punchmarking_hr
+            WHERE marking_month = ? 
+            AND deptsec_slno = ?  
+            AND last_update_date >= ?`,
+            [
+                data.markingMonth,
+                data.sect_id,
+                data.last_Date,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getHolidayListDateWise: (data, callBack) => {
+        pool.query(
+            `select 
+                hld_slno,hld_desc,hld_date 
+            from hrm_yearly_holiday_list
+            where month(hld_date)=? and year(hld_date)=?`,
+            [
+                data.month,
+                data.year
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    updatePunchMarkingHR: (data, callBack) => {
+        // console.log(data)
+        pool.query(
+            `UPDATE punchmarking_hr
+                SET status = 1,
+                    edit_user = ?,
+                    last_update_date = ?
+                WHERE marking_month = ? AND deptsec_slno = ?`,
+            [
+                data.loggedEmp,
+                data.toDate_punchMaster,
+                data.fromDate,
+                data.section
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    updateDutyPlanTable: (data, callBack) => {
+        pool.query(
+            `UPDATE hrm_duty_plan
+                SET attendance_update_flag = 1
+                WHERE plan_slno IN (?)`,
+            [
+                data
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    updateDelStatDutyPlanTable: (data, callBack) => {
+        pool.query(
+            `UPDATE hrm_duty_plan
+                SET attendance_update_flag = 0
+                WHERE plan_slno IN (?)`,
+            [
+                data
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    checkPunchMarkingHR: (data, callBack) => {
+        pool.query(
+            `SELECT 
+                    last_update_date
+                FROM punchmarking_hr 
+                WHERE marking_month = ? AND deptsec_slno = ?`,
+            [
+                data.month,
+                data.section
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    updatePunchMasterSingleRow: (data, callBack) => {
+        pool.query(
+            `UPDATE punch_master
+            SET punch_in = ?,
+                punch_out = ?,
+                hrs_worked =?,
+                late_in = ?,
+                early_out = ?,
+                duty_status=?,
+                duty_desc=?,
+                lvereq_desc=?,
+                lve_tble_updation_flag = 1
+            WHERE punch_slno = ? `,
+            [
+                data.punch_in,
+                data.punch_out,
+                data.hrs_worked,
+                data.late_in,
+                data.early_out,
+                data.duty_status,
+                data.duty_desc,
+                data.lvereq_desc,
+                data.punch_slno,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    updatePunchMasterCalCulcated: (body) => { // updated on 26/06/2024 04:24 PM (Ajith)
+        return Promise.allSettled(body?.map(async (e) => {
+            return new Promise((resolve, reject) => {
+                pool.query(
+                    `UPDATE punch_master 
+                        SET lvereq_desc = ?
+                    WHERE punch_slno = ?`,
+                    [
+                        e.lvereq_desc,
+                        e.punch_slno
+                    ],
+                    async (error, results, fields) => {
+                        if (error) {
+                            return reject(error)
+                        }
+                        return resolve(results)
+                    }
+                )
+            })
+        })).then((updateResult) => {
+            // console.log(updateResult)
+            const dbUpdateResult = updateResult?.find(e => e.status === 'rejected')
+            if (dbUpdateResult === undefined) {
+                return 1
+            } else {
+                // @ts-ignore
+                return dbUpdateResult?.reason
+            }
+        })
+    }, // updated on 26/06/2024 04:24 PM (Ajith)
+    getPunchReportLCCount: (data, callBack) => { //added on 27/06/2024 10:00 PM (Ajith)
+        pool.query(
+            `SELECT 
+                punch_slno,
+                duty_day,
+                lvereq_desc,
+                duty_desc,
+                em_no
+            FROM PUNCH_MASTER 
+            WHERE em_no in (?)
+            AND duty_day >= ? and duty_day <= ? 
+            AND duty_desc = 'LC'`,
+            [
+                data.empList,
+                data.fromDate,
+                data.toDate,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },//added on 27/06/2024 10:00 PM (Ajith)
+    updateLCPunchMaster: (data, callBack) => { //added on 27/06/2024 10:00 PM (Ajith)
+        pool.query(
+            `UPDATE punch_master 
+                SET lvereq_desc = 'HD'
+            WHERE punch_slno IN (?)`,
+            [
+                data
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },//added on 27/06/2024 10:00 PM (Ajith)
+    // punch_slno,
+    // duty_day,
+    // shift_id,
+    // emp_id,
+    // em_no,
+    // punch_in,
+    // punch_out,
+    // shift_in,
+    // shift_out,
+    // hrs_worked,
+    // late_in,
+    // early_out,
+    // duty_desc,
+    // duty_status,
+    // holiday_status,
+    // leave_status,
+    // lvereq_desc,
+    // lve_tble_updation_flag
+    getPData: (data, callBack) => {
+        // console.log(data)
+        pool.query(
+            `SELECT 
+                punch_slno,
+                duty_day,
+                shift_id,
+                emp_id,
+                em_no,
+                punch_in,
+                punch_out,
+                shift_in,
+                shift_out,
+                hrs_worked,
+                late_in,
+                early_out,
+                duty_desc,
+                duty_status,
+                holiday_status,
+                leave_status,
+                lvereq_desc,
+                lve_tble_updation_flag            
+            FROM punch_master 
+            WHERE duty_day >= ? and duty_day <= ?
+            AND em_no IN (?)`,
+            [
+                data.frDate,
+                data.trDate,
+                data.empList
+            ],
+            (error, datas, feilds) => {
+                // console.log(datas)
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, datas);
+            }
+        )
+    },
+    monthlyUpdatePunchMaster: (body) => {
+        return Promise.allSettled(body?.map(async (e) => {
+            return new Promise((resolve, reject) => {
+                pool.query(
+                    `UPDATE punch_master
+                        SET punch_in = ?,
+                            punch_out = ?,
+                            hrs_worked =?,
+                            late_in = ?,
+                            early_out = ?,
+                            duty_status=?,
+                            duty_desc=?,
+                            lvereq_desc=?
+                        WHERE punch_slno = ?`,
+                    [
+                        e.punch_in,
+                        e.punch_out,
+                        e.hrs_worked,
+                        e.late_in,
+                        e.early_out,
+                        e.duty_status,
+                        e.duty_desc,
+                        e.lvereq_desc,
+                        e.punch_slno,
+                    ],
+                    async (error, results, fields) => {
+                        if (error) {
+                            return reject(error)
+                        }
+                        return resolve(results)
+                    }
+                )
+            })
+        })).then((updateResult) => {
+            const dbUpdateResult = updateResult?.find(e => e.status === 'rejected')
+            if (dbUpdateResult === undefined) {
+                return 1
+            } else {
+                // @ts-ignore
+                return dbUpdateResult?.reason
+            }
+        })
+    },
+
+
 }

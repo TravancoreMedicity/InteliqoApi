@@ -1,3 +1,4 @@
+// @ts-nocheck
 require("dotenv").config();
 require("./upload/punchTableEventCheck")
 
@@ -112,11 +113,45 @@ const punchTrasfer = require("./api/PunchTransfer/punchtransfer.router")
 const CommonReqst = require("./api/CommonRequest/CommonReqst.router")
 const Vaccination = require("./api/Vaccination/Vaccination.router")
 const CommonRequestMast = require("./api/CommonRequestMaster/master.router")
+<<<<<<< HEAD
 const PersonalChecklist = require("./api/PersonalChecklist/personalchecklist.router")
 const Manpower = require("./api/Manpower/Manpower.router")
 const Applicationform = require("./api/Applicationform/applicationform.router")
 const Interview = require("./api/InterviewMaster/Interview.router")
 const EmailandPdf = require("./api/EmailAndPdf/EmailandPdf.router")
+=======
+//Training
+const TrainingType = require("./api/TrainingType/TrainingType.router")
+const TrainingCategory = require("./api/TrainingCategory/TrainingCategory.router")
+const TrainingName = require("./api/TrainingName/TrainingName.router")
+const TrainerName = require("./api/TrainerName/TrainerName.router")
+const TrainingTopic = require("./api/TrainingTopic/TrainingTopic.route")
+const TriningQuestions = require("./api/TrainingQuestions/TrainingQuestions.router")
+const SchedulingTime = require("./api/SchedulingTime/SchedulingTime.router")
+const TrainingSchedule = require("./api/TrainingSchedule/TrainingSchedule.router")
+const DepartmentalTrainingSchedule = require("./api/Departmental_Training_Schedule/DepartmentalTrainingSchedule.router")
+const TrainingUpdate = require("./api/TrainingUpdate/TrainingUpdate.router")
+const TrainingEmployeeSchedule = require("./api/TrainingEmployeeSchedule/TrainingEmployeeSchedule.router")
+const TrainingAfterJoining = require("./api/TrainingAfterJoining/TrainingAfterJoining.router")
+const trainUploadCheck = require("./api/training_upload/training_upload.router")
+const TrainingProcess = require("./api/TrainingProcess/TrainingProcess.router")
+const TrainingOnline = require("./api/TrainingOnline/TrainingOnline.router")
+const Training_topic_uploads = require("./api/Training_topic_uploads/Training_topic_uploads.router")
+const TrainingEmployee_Dashboard = require("./api/TrainingEmployee_Dashboard/TrainingEmployee_Dashboard.router")
+const TrainingMonthlyReport = require("./api/TrainingMonthlyReport/MonthlyReport.router")
+// const LeaveReports = require("./api/LeaveReports/Leavereports.router")
+const CommonPreTestPage = require("./api/TrainingCommonTest/TrainingCommonTest.router")
+
+const InductionTraining = require("./api/TrainingInduction/TrainingInduction.route")
+const InductionTest = require("./api/TrainingInductionTest/InductionTest.router")
+const InductionProcess = require("./api/TrainingInductionProcess/InductionProcess.router")
+const TrainingInductionReport = require("./api/TrainingInductionReport/TrainingInductionReport.router")
+const TrainingDetails = require("./api/TrainingDetails/TrainingDetails.route")
+const LeaveReport = require("./api/LeaveReport/LeaveReport.router")
+const TrainingDashboard = require("./api/TrainingDashboard/TrainingDashboard.router")
+const AttendenceReport = require("./api/AttendenceReport/AttendenceReport.router")
+
+>>>>>>> ddc2098620d2548a7271512128ca6c027d47471e
 
 
 app.use(express.json({ limit: '50mb' }));
@@ -127,7 +162,7 @@ app.use((req, res, next) => {
         "Access-Control-Allow-Headers",
         "Origin, X-Requested-Width, Content-Type, Accept, Authorization"
     );
-
+    res.set('Cache-Control', 'no-store'); // Set Cache-Control: no-store for specific routes
     if (req.method === "OPTIONS") {
         res.header("Access-Control-Allow-Methods", "PUT, POST, PATCH, DELETE, GET");
         return res.status(200).json({});
@@ -267,12 +302,46 @@ app.use("/api/punchTrasfer", punchTrasfer)
 app.use("/api/CommonReqst", CommonReqst)
 app.use("/api/CommonRequestMast", CommonRequestMast)
 app.use('/api/Vaccination', Vaccination)
+<<<<<<< HEAD
 app.use('/api/PersonalChecklist', PersonalChecklist)
 app.use('/api/Manpower', Manpower)
 app.use('/api/Applicationform', Applicationform)
 app.use('/api/Interview', Interview)
 app.use('/api/EmailandPdf', EmailandPdf)
 
+=======
+// app.use("/api/LeaveReports", LeaveReports)
+
+
+//Training
+app.use("/api/TrainingType", TrainingType)
+app.use("/api/TrainingCategory", TrainingCategory)
+app.use("/api/TrainingName", TrainingName)
+app.use("/api/TrainerName", TrainerName)
+app.use("/api/TrainingTopic", TrainingTopic)
+app.use("/api/TriningQuestions", TriningQuestions)
+app.use("/api/SchedulingTime", SchedulingTime)
+app.use("/api/TrainingSchedule", TrainingSchedule)
+app.use("/api/DepartmentalTrainingSchedule", DepartmentalTrainingSchedule)
+app.use("/api/TrainingUpdate", TrainingUpdate)
+app.use("/api/TrainingEmployeeSchedule", TrainingEmployeeSchedule)
+app.use("/api/TrainingAfterJoining", TrainingAfterJoining)
+app.use("/api/trainUploadCheck", trainUploadCheck)
+app.use("/api/TrainingProcess", TrainingProcess)
+app.use("/api/TrainingOnline", TrainingOnline)
+app.use("/api/Training_topic_uploads", Training_topic_uploads)
+app.use("/api/TrainingEmployee_Dashboard", TrainingEmployee_Dashboard)
+app.use("/api/TrainingMonthlyReport", TrainingMonthlyReport)
+app.use("/api/CommonPreTestPage", CommonPreTestPage)
+app.use("/api/InductionTraining", InductionTraining)
+app.use("/api/InductionTest", InductionTest)
+app.use("/api/InductionProcess", InductionProcess)
+app.use("/api/TrainingInductionReport", TrainingInductionReport)
+app.use("/api/TrainingDetails", TrainingDetails)
+app.use("/api/LeaveReport", LeaveReport)
+app.use("/api/TrainingDashboard", TrainingDashboard)
+app.use("/api/AttendenceReport", AttendenceReport)
+>>>>>>> ddc2098620d2548a7271512128ca6c027d47471e
 // ------ Database Connection --------
 
 app.listen(process.env.APP_PORT, () =>

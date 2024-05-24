@@ -735,7 +735,7 @@ module.exports = {
             });
         });
     },
-     RegistrationNumberWiseReport: (req, res) => {
+    RegistrationNumberWiseReport: (req, res) => {
         const body = req.body;
         RegistrationNumberWiseReport(body, (err, results) => {
             if (err) {
@@ -781,7 +781,7 @@ module.exports = {
             });
         })
     },
-        getSectionTypeDetl: (req, res) => {
+    getSectionTypeDetl: (req, res) => {
         const body = req.body;
         getSectionTypeDetl(body, (err, results) => {
             if (err) {
@@ -805,7 +805,7 @@ module.exports = {
             });
         })
     },
-        getdeptSection: (req, res) => {
+    getdeptSection: (req, res) => {
         const body = req.body
         getdeptSection(body, (err, results) => {
             if (err) {
@@ -829,7 +829,7 @@ module.exports = {
             });
         });
     },
-        getDesignationExp: (req, res) => {
+    getDesignationExp: (req, res) => {
         const body = req.body
         getDesignationExp(body, (err, results) => {
             if (err) {

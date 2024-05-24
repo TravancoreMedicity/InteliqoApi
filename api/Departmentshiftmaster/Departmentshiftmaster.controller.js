@@ -1,4 +1,5 @@
-const { create, update, getSelect, getdepartmentshiftMasterByID, getDepartmentShiftbyshiftid, checkshiftforDept, getShiftTiming } = require('../Departmentshiftmaster/Departmentshiftmaster.service');
+const { create, update, getSelect, getdepartmentshiftMasterByID, getDepartmentShiftbyshiftid,
+    checkshiftforDept, getShiftTiming, checkshiftforSection, getSectionShiftbyshiftid } = require('../Departmentshiftmaster/Departmentshiftmaster.service');
 const { validatedepartmentshiftmaster } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -188,5 +189,52 @@ module.exports = {
             });
         })
     },
+    checkshiftforSection: (req, res) => {
+        const body = req.body;
+        checkshiftforSection(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    successs: 0,
+                    message: err
+                });
+            }
 
+            if (results.length == 0) {
+                return res.status(200).json({
+                    successs: 0,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                successs: 1,
+                data: results
+            });
+        })
+    },
+    getSectionShiftbyshiftid: (req, res) => {
+        const body = req.body;
+        getSectionShiftbyshiftid(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
 }

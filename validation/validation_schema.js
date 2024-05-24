@@ -533,6 +533,7 @@ const validateempmaster = Joi.object({
         perPincode: Joi.number().max(999999).required(),
         blood_slno: Joi.number().min(1).required(),
         probation_status: Joi.number().required(),
+        gross_salary: Joi.number().optional(),
         recomend_salary: Joi.number().optional(),
         clinicaltype: Joi.number().min(1).required(),
         doctor_status: Joi.number().optional()
@@ -579,6 +580,7 @@ const validateempmasterEdit = Joi.object({
         perPincode: Joi.number().max(999999).required(),
         blood_slno: Joi.number().min(1).required(),
         probation_status: Joi.number().required(),
+        gross_salary: Joi.number().optional(),
         recomend_salary: Joi.number().optional(),
         clinicaltype: Joi.number().optional(),
         doctor_status: Joi.number().optional()
@@ -727,7 +729,8 @@ const validateeemployeepersonal = Joi.object({
         emp_yeargae: Joi.number().optional(),
         em_region: Joi.number().min(1).required(),
         hrm_region2: Joi.number().min(1).required(),
-        salarytype: Joi.number().min(1).required()
+        salarytype: Joi.number().min(1).required(),
+        em_bank_branch: Joi.number().min(1).required(),
 })
 
 // VALIDATE EMPLOYEE ESI AND PF
@@ -1208,6 +1211,19 @@ const validatecommonsettings = Joi.object({
         onehour_rqst_count: Joi.number().optional(),
         areartype: Joi.number().optional(),
         max_late_day_count: Joi.number().optional(),
+        leave_count: Joi.number().optional(),
+        noff_selct_day_count: Joi.number().optional(),
+        noff: Joi.number().optional(),
+        group_slno: Joi.optional(),
+        eoff: Joi.number().optional(),
+        comp_day_count: Joi.number().optional(),
+        comp_hour_count: Joi.number().optional(),
+        training_mastergroup: Joi.optional(),
+        holiday_policy_count: Joi.number().optional(),
+        weekoff_policy_max_count: Joi.number().optional(),
+        weekoff_policy_min_count: Joi.number().optional(),
+        coff_min_working_hour: Joi.number().optional()
+
 
 })
 //validate carryforward
@@ -1301,6 +1317,146 @@ const validateKRA = Joi.object({
         kra_status: Joi.number().min(0).max(1),
         kra_slno: Joi.number().required(),
 });
+//Training 
+const ValidateTrainingType = Joi.object({
+        type_name: Joi.string().trim().uppercase().min(3).max(45).required()
+                .messages({
+                        'string.empty': 'Training Type Name is Required',
+                        'string.min': 'Training Type length must be at least 3 characters long',
+                        'string.max': 'Training Type length must be less than or equal to 45 characters long'
+                }),
+
+        count_day: Joi.number().required(),
+        type_status: Joi.number().min(0).max(1),
+        create_user: Joi.number().optional(),
+        edit_user: Joi.number().optional(),
+        trainingtype_slno: Joi.optional()
+})
+
+const validateTraningCategory = Joi.object({
+        cat_slno: Joi.optional(),
+        trning_typeslno: Joi.number().required(),
+        trin_cat_name: Joi.string().trim().uppercase().min(3).max(45).required()
+                .messages({
+                        'string.empty': 'Traning Category is required',
+                        'string.min': "Traning Category length must be at least 3 characters lonng",
+                        'string.max': 'Training Category length must be less than or equal to 45 characters long'
+                }),
+        cat_status: Joi.number().min(0).max(1).required(),
+        create_user: Joi.number().optional(),
+        edit_user: Joi.number().optional()
+})
+const validateTrainingName = Joi.object({
+        name_slno: Joi.number().optional(),
+        training_name: Joi.string().trim().uppercase().min(3).max(45).required()
+                .messages({
+                        'string.empty': 'Traning Name is required',
+                        'string.min': "Traning Name length must be at least 3 characters lonng",
+                        'string.max': 'Training Name length must be less than or equal to 45 characters long'
+                }),
+        type_slno: Joi.number().required().min(1)
+                .message({
+                        'number.min': 'Traning Type is required'
+                }),
+        cate_slno: Joi.number().required().min(1)
+                .message({
+                        'number.min': 'Traning Category is required'
+                }),
+        name_status: Joi.number().min(0).max(1).required(),
+        create_user: Joi.number().optional(),
+        edit_user: Joi.number().optional()
+})
+
+const validateTrainerName = Joi.object({
+        trainer_slno: Joi.number().optional(),
+        trainer_name: Joi.optional(),
+        trainer_dept: Joi.optional(),
+        trainer_desig: Joi.optional(),
+        trainer_status: Joi.optional(),
+        create_user: Joi.number().optional(),
+        edit_user: Joi.number().optional()
+})
+
+const validationTrainingTopic = Joi.object({
+        topic_slno: Joi.number().optional(),
+        dept_status: Joi.number().min(0).max(1).optional(),
+        training_dept: Joi.number().optional(),
+        training_topic_name: Joi.string().trim().uppercase().min(3).max(45).required()
+                .messages({
+                        'string.empty': 'Traning Topic is required',
+                        'string.min': "Traning Topic length must be at least 3 characters lonng",
+                        'string.max': 'Training Topic length must be less than or equal to 45 characters long'
+                }),
+        training_name: Joi.number().min(1).optional(),
+        hours: Joi.number().optional(),
+        training_status: Joi.number().min(0).max(1).optional(),
+        tutorial_status: Joi.number().min(0).max(1).optional(),
+        medical_status: Joi.number().min(0).max(1).optional(),
+        non_medical_status: Joi.number().min(0).max(1).optional(),
+        pretest_status: Joi.number().min(0).max(1).optional(),
+        post_test_status: Joi.number().min(0).max(1).optional(),
+        create_user: Joi.number().optional(),
+        edit_user: Joi.number().optional()
+})
+//q_slno, training_topics, questions, answer_a, answer_b, answer_c, answer_d, right_answer, upload_status, handwrite_answer, marks, create_user, edit_user
+const validateTrainingQuestions = Joi.object({
+        q_slno: Joi.number().optional(),
+        training_topics: Joi.number().optional().min(1),
+        questions: Joi.string().trim().uppercase().min(3).max(45).required()
+                .messages({
+                        'string.empty': 'Traning Question field is required',
+                        'string.min': "Traning Question length must be at least 3 characters lonng",
+                        // 'string.max': 'Training Question length must be less than or equal to 45 characters long'
+                }),
+        // answer_a: Joi.string().optional(),
+        // answer_b: Joi.string().optional(),
+        // answer_c: Joi.string().optional(),
+        // answer_d: Joi.string().optional(),
+        // answer_a: Joi.string().optional().trim().uppercase().min(3).max(45)
+        //         .messages({
+        //                 'string.min': "Traning Answer length must be at least 3 characters lonng",
+        //                 'string.max': 'Training Answer length must be less than or equal to 45 characters long'
+        //         }),
+        // answer_b: Joi.string().trim().uppercase().min(3).max(45).optional()
+        //         .messages({
+        //                 'string.min': "Traning Answer length must be at least 3 characters lonng",
+        //                 'string.max': 'Training Answer length must be less than or equal to 45 characters long'
+        //         }),
+        // answer_c: Joi.string().trim().uppercase().min(3).max(45).optional()
+        //         .messages({
+        //                 'string.min': "Traning Answer length must be at least 3 characters lonng",
+        //                 'string.max': 'Training Answer length must be less than or equal to 45 characters long'
+        //         }),
+        // answer_d: Joi.string().trim().uppercase().min(3).max(45).optional()
+        //         .messages({
+        //                 'string.min': "Traning Answer length must be at least 3 characters lonng",
+        //                 'string.max': 'Training Answer length must be less than or equal to 45 characters long'
+        //         }),
+        // right_answer: Joi.number().optional(),
+        //handwrite_answer: Joi.string().uppercase().optional(),
+        // handwrite_answer: Joi.string().trim().uppercase().min(3).max(45).optional()
+        //         .messages({
+        //                 'string.min': "Traning Answer length must be at least 3 characters lonng",
+        //                 'string.max': 'Training Answer length must be less than or equal to 45 characters long'
+        //         }),
+        // upload_status: Joi.number().min(0).max(1).required(),
+        marks: Joi.number().min(1).required(),
+        create_user: Joi.number().optional(),
+        edit_user: Joi.number().optional()
+})
+
+const validateSchedulingTime = Joi.object({
+        slno: Joi.number().optional(),
+        schedule_name: Joi.string().trim().uppercase().min(3).max(45).required()
+                .messages({
+                        'string.empty': ' Scheduling Time field is required',
+                        'string.min': "Scheduling Time length must be at least 3 characters lonng",
+                        'string.max': 'SchedulingT ime length must be less than or equal to 45 characters long'
+                }),
+        schedule_status: Joi.number().min(0).max(1).required(),
+        create_user: Joi.number().optional(),
+        edit_user: Joi.number().optional()
+})
 
 const validateOneHourReqst = Joi.object({
         em_id: Joi.number().required(),
@@ -1552,6 +1708,14 @@ module.exports = {
         validationPerformanceGrade,
         validatePerformanceAppraisalRights,
         validateKRA,
+        //Training
+        ValidateTrainingType,
+        validateTraningCategory,
+        validateTrainingName,
+        validateTrainerName,
+        validationTrainingTopic,
+        validateTrainingQuestions,
+        validateSchedulingTime,
         validateOneHourReqst,
         validateCommonreqstMast,
         ManpowerRequest,

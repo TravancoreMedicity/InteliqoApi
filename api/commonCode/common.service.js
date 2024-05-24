@@ -209,7 +209,6 @@ module.exports = {
                 return callBack(null, results);
             }
         )
-
     },
     getSerialnoempno: (callBack) => {
         pool.query(
@@ -409,7 +408,8 @@ module.exports = {
 			ifnull(em_adhar_no,'')em_adhar_no,
 			ifnull(em_pan_no,'')em_pan_no,
 			ifnull(em_passport_no,'')em_passport_no,
-            ifnull(salarytype,'')salarytype
+            ifnull(salarytype,'')salarytype,
+            em_bank_branch
                 FROM hrm_emp_master
                 left join  hrm_emp_personal on  hrm_emp_master.em_no= hrm_emp_personal.em_no
                 WHERE hrm_emp_master.em_no = ?` ,
@@ -834,7 +834,10 @@ module.exports = {
                 hrm_shift_mast.shft_chkout_time, 
                 punch_in,
                 punch_out,
-                ot_amount
+                ot_amount,
+                holiday_status,
+                holiday_slno,
+                ot_request_flag
             FROM punch_master
             LEFT JOIN hrm_shift_mast ON hrm_shift_mast.shft_slno=punch_master.shift_id
             LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id = punch_master.emp_id
@@ -1288,7 +1291,8 @@ module.exports = {
                C.des_type,
                C.ecat_prob,
                C.ecat_training,
-               E.probation_status
+               E.probation_status,
+               U.user_grp_slno as groupmenu
         FROM hrm_emp_master E
             LEFT JOIN hrm_branch B ON B.branch_slno = E.em_branch
             LEFT JOIN hrm_department D ON D.dept_id = E.em_department
@@ -1304,6 +1308,7 @@ module.exports = {
             LEFT JOIN hrm_co_assign Z ON Z.emp_id = E.em_id
             LEFT JOIN hrm_emp_pfesi T ON T.em_id= E.em_id
             LEFT JOIN hrm_emp_verification V ON V.em_id=E.em_id
+            LEFT JOIN module_group_user_rights U on U.emp_slno = E.em_id 
             LEFT JOIN hrm_emp_contract_detl Q ON Q.em_id = E.em_id and Q.status = 0
         WHERE E.em_status = 1 AND E.em_id = ?`,
             [
@@ -1322,11 +1327,15 @@ module.exports = {
             `SELECT 
                 hrm_calc_holiday,
                 calculated_date,
-                credited 
+                credited,
+                taken,
+                credited_date,
+                specail_remark,
+                hl_lv_tkn_status
             FROM hrm_leave_calculated
             WHERE emp_id = ?
-            AND sysdate() <  DATE_ADD(credited_date , interval 30 day)
-            AND taken=0`,
+            AND year( credited_date ) = year(curdate())
+            AND taken < 1`,
             [
                 id
             ],
@@ -1585,8 +1594,11 @@ module.exports = {
                 C.category_slno,
                 C.emp_type,
                 C.des_type,
-                E.probation_status
-            FROM hrm_emp_master E LEFT JOIN hrm_emp_category C ON C.category_slno = E.em_category
+                E.probation_status,
+                R.user_grp_slno as groupmenu
+            FROM hrm_emp_master E 
+            LEFT JOIN hrm_emp_category C ON C.category_slno = E.em_category
+            LEFT JOIN module_group_user_rights R on R.emp_slno = E.em_id 
             WHERE E.em_status = 1 AND E.em_id = ?`,
             [
                 id
@@ -1650,6 +1662,45 @@ module.exports = {
             [
                 id
             ],
+            (error, results, fields) => {
+                if (error) {
+                    callBack(error)
+                }
+                return callBack(null, results)
+            }
+        );
+    },
+    getgrossSalaryByEmployeeNo: (id, callBack) => {
+        pool.query(
+            `SELECT
+                em_no,
+                gross_salary
+            FROM hrm_emp_master
+            WHERE em_dept_section = ? AND em_status = 1`,
+            [id],
+            (error, results, fields) => {
+                if (error) {
+                    callBack(error)
+                }
+                return callBack(null, results)
+            }
+        );
+    },
+    getEmpCoff: (data, callBack) => {
+        pool.query(
+            `SELECT 
+            hrm_calc_holiday,
+            emp_id,hl_lv_tkn_status,
+            calculated_date,taken,
+            credited_date,lvetype_slno,
+            credited,specail_remark 
+            FROM hrm_leave_calculated
+            WHERE emp_id = ?                    
+            and (specail_remark is null and curdate() <  DATE_ADD(credited_date , interval ? day) or specail_remark is not null )`,
+            [
+                data.em_id,
+                data.count
+            ],
             (error, results, feilds) => {
                 if (error) {
                     return callBack(error);
@@ -1662,6 +1713,42 @@ module.exports = {
         pool.query(
             `SELECT * FROM master_serialno where serial_slno=8`,
             [],
+            (error, results, fields) => {
+                if (error) {
+                    callBack(error)
+                }
+                return callBack(null, results)
+            }
+        );
+    },
+    getAutharisedDepartmentSection: (id, callBack) => {
+        pool.query(
+            `select
+                dept_section
+            from hrm_authorization_assign
+            where emp_id =?`,
+            [id],
+            (error, results, fields) => {
+                if (error) {
+                    callBack(error)
+                }
+                return callBack(null, results)
+            }
+        );
+    },
+    getEmployeeArraySectionArray: (data, callBack) => {
+        pool.query(
+            `SELECT
+                em_name,
+                em_no,
+                em_id,
+                em_dept_section
+            FROM hrm_emp_master
+            WHERE em_dept_section IN (?)
+            and em_status=1 and em_id!=1 and em_no!=2 `,
+            [
+                data
+            ],
             (error, results, feilds) => {
                 if (error) {
                     return callBack(error);
@@ -1669,7 +1756,6 @@ module.exports = {
                 return callBack(null, results);
             }
         )
-
     },
 }
 

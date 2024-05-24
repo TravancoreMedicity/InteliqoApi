@@ -1,4 +1,4 @@
-const { Console } = require("console");
+// @ts-nocheck
 const { min, addDays, subDays } = require("date-fns");
 const logger = require('../../logger/logger')
 const { array } = require("joi");
@@ -12,7 +12,11 @@ const { getEmployeeDetl, getEmployeeShiftDetl, getDepartmentShiftMast,
     getPunchDataEmCodeWise, getPunchMasterData, getShiftfromPunchMaster,
     updatePunchMasterData, updatePunchMastDuty, getHolidayDate, getDutyPlan,
     getPunchMastDataCheckWoff, updatePunchMasWoff, checkAttendanceProcess, checkInOutMarked,
-    checkAttendanceProcessDept
+    checkAttendanceProcessDept, getEmpList, getEmployeeRights, sectionwiseEmppunchMast,
+    sectionwiseEmpDutyplan, checkAttendanceProcessSectionWise, getHolidayListDateWise,
+    getPunchDataEmCodeWiseDateWise, getDutyPlanBySection, getPunchMastData, monthlyUpdatePunchMaster,
+    updatePunchMaster, updatePunchMarkingHR, updateDutyPlanTable, updateDelStatDutyPlanTable, checkPunchMarkingHR,
+    updatePunchMasterSingleRow, updatePunchMasterCalCulcated, getPunchReportLCCount, updateLCPunchMaster, getPData
 } = require("../attendance_updation/attendance.service")
 //SHIFT DETAILS
 //get the shift details 
@@ -930,6 +934,31 @@ module.exports = {
 
         });
     },
+    getPunchDataEmCodeWiseDateWise: (req, res) => {
+        const body = req.body;
+        getPunchDataEmCodeWiseDateWise(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    su: 0,
+                    mesge: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    su: 2,
+                    mesge: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                su: 1,
+                result_data: results
+            });
+
+        });
+    },
     getPunchMasterData: (req, res) => {
         const body = req.body;
         getPunchMasterData(body, (err, results) => {
@@ -943,6 +972,33 @@ module.exports = {
 
             if (!results) {
                 logger.infoLogger("No Records Found")
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                planData: results
+            });
+
+        });
+    },
+    getPunchMasterDataSectionWise: (req, res) => {
+        const body = req.body;
+        getPunchMastData(body, (err, results) => {
+            // console.log(results)
+            if (err) {
+                // logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                // logger.infoLogger("No Records Found")
                 return res.status(200).json({
                     success: 2,
                     message: "Record Not Found"
@@ -996,6 +1052,27 @@ module.exports = {
             });
         })
     },
+    updatePunchMaster: async (req, res) => {
+        const body = req.body;
+        updatePunchMaster(body).then(results => {
+            if (results === 1) {
+                return res.status(200).json({
+                    success: 1,
+                    message: 'Update Successfully'
+                });
+            } else {
+                return res.status(200).json({
+                    success: 0,
+                    message: results
+                })
+            }
+        }).catch(err => {
+            return res.status(200).json({
+                success: 0,
+                message: "Error Occured , Please Contact HRD / IT"
+            });
+        })
+    },
     updatePunchMastDuty: async (req, res) => {
         const body = req.body;
         updatePunchMastDuty(body).then(results => {
@@ -1036,10 +1113,62 @@ module.exports = {
 
         });
     },
+    getHolidayListDateWise: (req, res) => {
+        const body = req.body;
+        getHolidayListDateWise(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    suc: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                logger.infoLogger("No Records Found")
+                return res.status(200).json({
+                    suc: 2,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                suc: 1,
+                holidaydata: results
+            });
+
+        });
+    },
 
     getDutyPlan: (req, res) => {
         const body = req.body;
         getDutyPlan(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                logger.infoLogger("No Records Found")
+                return res.status(200).json({
+                    succes: 2,
+                    messagee: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                succes: 1,
+                shiftdetail: results
+            });
+
+        });
+    },
+    getDutyPlanBySection: (req, res) => {
+        const body = req.body;
+        getDutyPlanBySection(body, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
@@ -1183,6 +1312,451 @@ module.exports = {
             return res.status(200).json({
                 success: 1,
                 data: results
+            });
+        })
+    },
+    getEmpList: (req, res) => {
+        const body = req.body;
+        getEmpList(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    getEmployeeRights: (req, res) => {
+        const body = req.body;
+        getEmployeeRights(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    sectionwiseEmppunchMast: (req, res) => {
+        const body = req.body
+        sectionwiseEmppunchMast(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length === 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    sectionwiseEmpDutyplan: (req, res) => {
+        const body = req.body
+        sectionwiseEmpDutyplan(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length === 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    checkAttendanceProcessSectionWise: (req, res) => {
+        const body = req.body
+        checkAttendanceProcessSectionWise(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length === 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    updatePunchMarkingHR: (req, res) => {
+        const body = req.body
+        updatePunchMarkingHR(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    sus: 0,
+                    message: err
+                });
+            }
+            if (results.length === 0) {
+                return res.status(200).json({
+                    sus: 0,
+                    message: "Error Updating PunchMarking HR"
+                });
+            }
+            return res.status(200).json({
+                sus: 1,
+                data: results
+            });
+        });
+    },
+    updateDutyPlanTable: (req, res) => {
+        const body = req.body
+        updateDutyPlanTable(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    susc: 0,
+                    message: err
+                });
+            }
+            if (results.length === 0) {
+                return res.status(200).json({
+                    susc: 0,
+                    message: "Error Updating PunchMarking HR"
+                });
+            }
+            return res.status(200).json({
+                susc: 1,
+                data: results
+            });
+        });
+    },
+    updateDelStatDutyPlanTable: (req, res) => {
+        const body = req.body
+        updateDelStatDutyPlanTable(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    susc: 0,
+                    message: err
+                });
+            }
+            if (results.length === 0) {
+                return res.status(200).json({
+                    susc: 0,
+                    message: "Error Updating PunchMarking HR"
+                });
+            }
+            return res.status(200).json({
+                susc: 1,
+                message: 'success',
+                data: results
+            });
+        });
+    },
+    checkPunchMarkingHR: (req, res) => {
+        const body = req.body
+        checkPunchMarkingHR(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+            if (results.length === 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found",
+                    data: []
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    updatePunchMasterSingleRow: (req, res) => {
+        const body = req.body
+        updatePunchMasterSingleRow(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+            if (results.length === 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found",
+                    data: []
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                message: "Successfully Updated",
+            });
+        });
+    },
+    updatePunchMasterCalCulcated: async (req, res) => { // updated on 26/06/2024 04:24 PM (Ajith)
+        const body = req.body;
+        updatePunchMasterCalCulcated(body).then(results => {
+            if (results === 1) {
+                return res.status(200).json({
+                    success: 1,
+                    message: 'Update Successfully'
+                });
+            } else {
+                return res.status(200).json({
+                    success: 0,
+                    message: results
+                })
+            }
+        }).catch(err => {
+            return res.status(200).json({
+                success: 0,
+                message: "Error Occured , Please Contact HRD / IT"
+            });
+        })
+    }, // updated on 26/06/2024 04:24 PM (Ajith)
+    getPunchReportLCCount: (req, res) => {         // ----> added on 27/06/2024 10:00 PM (Ajith)
+        const body = req.body;
+        getPunchReportLCCount(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                logger.infoLogger("No Records Found")
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+
+        });
+    },          //added on 27/06/2024 10:00 PM (Ajith)
+    updateLCPunchMaster: (req, res) => {         // ----> added on 27/06/2024 10:00 PM (Ajith)
+        const body = req.body;
+        updateLCPunchMaster(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                logger.infoLogger("No Records Found")
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+
+        });
+    },          //added on 27/06/2024 10:00 PM (Ajith)
+    getPData: (req, res) => {
+        const body = req.body;
+        getPData(body, (err, results) => {
+            // console.log(results)
+            if (err) {
+                // logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                // logger.infoLogger("No Records Found")
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                planData: results
+            });
+
+        });
+    },
+    monthlyUpdatePunchMaster: async (req, res) => {
+        const body = req.body;
+        const { postData_getPunchData, processedData, max_late_day_count } = body;
+        // console.log(processedData)
+        monthlyUpdatePunchMaster(processedData).then(results => {
+            if (results === 1) {
+                // GET PUNCH MASTER DATA 
+                getPData(postData_getPunchData, (err, punchMasterData) => {
+                    // console.log(punchMasterData)
+                    if (err) {
+                        // logger.errorLogger(err)
+                        return res.status(200).json({
+                            success: 0,
+                            message: err,
+                            data: []
+                        });
+                    }
+                    // console.log(punchMasterData)
+                    if (punchMasterData === null && punchMasterData === undefined && punchMasterData?.length === 0) {
+                        // logger.infoLogger("No Records Found")
+                        // return res.status(200).json({
+                        //     success: 2,
+                        //     message: "Record Not Found"
+                        // });
+                        return res.status(200).json({
+                            success: 1,
+                            message: 'Update Successfully',
+                            data: []
+                        });
+                    }
+
+                    // console.log(punchMasterData)
+                    // IF GET PUNCH MASTER DATA IS TRUE  // IF DATA
+                    if (punchMasterData !== null && punchMasterData !== undefined && punchMasterData?.length > 0) {
+                        //CALCULATE CALCULATED HD BASED ON LATE COMMING
+                        let lcCount = 0;
+                        const calCulatedHD = punchMasterData
+                            ?.map((e) => {
+                                return {
+                                    punch_slno: e.punch_slno,
+                                    duty_desc: e.duty_desc,
+                                    lvereq_desc: e.lvereq_desc
+                                }
+                            })
+                            ?.sort((a, b) => a.punch_slno - b.punch_slno)
+                            ?.map(item => {
+                                if (item.duty_desc === "LC" && lcCount < max_late_day_count) {
+                                    lcCount++;
+                                    return item;
+                                } else if (item.duty_desc === "LC" && lcCount >= max_late_day_count) {
+                                    return { ...item, lvereq_desc: "HD" };
+                                } else {
+                                    return item;
+                                }
+                            })
+                            ?.filter((e) => e.lvereq_desc === 'HD')
+                            ?.map((e) => e.punch_slno)
+                        // UPDATE CALCULATED HD (LOP) IN PUNCH MASTER
+                        // console.log(calCulatedHD)
+                        if (calCulatedHD !== null && calCulatedHD !== undefined && calCulatedHD?.length > 0) {
+                            //update function for punch master table
+
+                            updateLCPunchMaster(calCulatedHD, (err, resl) => {
+                                if (err) {
+                                    return res.status(200).json({
+                                        success: 0,
+                                        message: err,
+                                        data: []
+                                    });
+                                }
+
+                                if (resl) {
+                                    const updatedPunchMasterData = punchMasterData?.map((e) => {
+                                        return {
+                                            ...e,
+                                            lvereq_desc: calCulatedHD?.includes(e.punch_slno) ? 'HD' : e.lvereq_desc
+                                        }
+                                    })
+                                    // console.log(updatedPunchMasterData)
+                                    return res.status(200).json({
+                                        success: 1,
+                                        message: 'Update Successfully',
+                                        data: updatedPunchMasterData
+                                    });
+
+                                }
+                            })
+                        } else {
+                            return res.status(200).json({
+                                success: 1,
+                                message: 'Update Successfully',
+                                data: punchMasterData
+                            });
+                        }
+                    } else {
+                        return res.status(200).json({
+                            success: 1,
+                            message: 'Update Successfully',
+                            data: punchMasterData
+                        });
+                    }
+                });
+
+            } else {
+                return res.status(200).json({
+                    success: 0,
+                    message: results,
+                    data: []
+                })
+            }
+        }).catch(err => {
+            return res.status(200).json({
+                success: 0,
+                message: "Error Occured , Please Contact HRD / IT",
+                data: []
             });
         })
     },

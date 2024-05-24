@@ -210,7 +210,7 @@ module.exports = {
             ernded_slno,em_id,
             em_amount
              FROM hrm_emp_earn_deduction
-			WHERE em_id =2350  and em_earning_type IN(1,2)`,
+			WHERE em_id =?  and em_earning_type IN(1,2)`,
             [
                 id
             ],
@@ -703,11 +703,42 @@ module.exports = {
     },
     getEmpNoDeptWise: (data, callBack) => {
         pool.query(
-            `select hrm_emp_master.em_no,em_name,gross_salary,em_id          
-                FROM hrm_emp_master          
-                where hrm_emp_master.em_department=?
-                 and hrm_emp_master.em_dept_section=?  and em_status=1  and em_no!=1
-                `,
+            `select hrm_emp_master.em_no,
+            em_name,
+            gross_salary,
+            hrm_emp_master.em_id ,
+            branch_name,
+            dept_name ,
+            sect_name,
+            ecat_name,
+            inst_emp_type,
+            COALESCE(em_account_no,0) em_account_no,
+            COALESCE(nps,0) nps,
+            COALESCE(npsamount,0)npsamount,
+            COALESCE(lwf_status,0)lwf_status,
+            COALESCE(lwfamount,0)lwfamount          
+            FROM hrm_emp_master 
+            left join hrm_branch on hrm_branch.branch_slno=hrm_emp_master.em_branch
+            left join hrm_emp_category on hrm_emp_category.category_slno=hrm_emp_master.em_category
+            left join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
+            left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
+            left join institution_type on institution_type.inst_slno=hrm_emp_master.em_institution_type
+            left join hrm_emp_personal on hrm_emp_personal.em_id=hrm_emp_master.em_id
+            left join hrm_emp_pfesi on hrm_emp_pfesi.em_id=hrm_emp_master.em_id
+            where hrm_emp_master.em_department=?
+            and hrm_emp_master.em_dept_section=?  and em_status=1  and hrm_emp_master.em_no!=1 and doctor_status=0
+            group by hrm_emp_master.em_no,
+            em_name,
+            gross_salary,
+            hrm_emp_master.em_id ,
+            branch_name,
+            dept_name ,
+            sect_name,
+            ecat_name,
+            inst_emp_type,
+            em_account_no,
+            nps,
+            npsamount`,
             [
                 data.em_department,
                 data.em_dept_section
@@ -723,7 +754,7 @@ module.exports = {
     getPunchmastData: (data, callBack) => {
         pool.query(
             `select punch_slno, duty_day,shift_id,punch_master.emp_id,punch_master.em_no,
-            hrm_emp_master.em_name,punch_in,
+            hrm_emp_master.em_name,punch_in, gross_salary,
             punch_out,shift_in,shift_out,hrs_worked,over_time,late_in,
             early_out,duty_status,holiday_status,leave_status,holiday_slno,
             lvereq_desc,duty_desc,lve_tble_updation_flag,hrm_emp_master.em_name
@@ -887,16 +918,13 @@ module.exports = {
     },
     InsertPunchInOutHr: (data, callBack) => {
         pool.query(
-            `INSERT INTO punchmarking_hr (marking_month,dept_slno,deptsec_slno,status,create_user)
-                VALUES (?,?,?,?,?)`,
+            `INSERT INTO punchmarking_hr (marking_month,dept_slno,deptsec_slno,status,create_date,edit_date,create_user,edit_user,last_update_date)
+            VALUES ?`,
             [
-                data.marking_month,
-                data.dept_slno,
-                data.deptsec_slno,
-                data.status,
-                data.create_user
+                data
             ],
             (error, results, feilds) => {
+
                 if (error) {
                     return callBack(error);
                 }
@@ -1022,13 +1050,191 @@ module.exports = {
     },
     getArearData: (data, callBack) => {
         pool.query(
-            `SELECT em_id,em_no,department,department_sect,arrear_amount,arrear_month,arear_remark FROM medi_hrm.hrm_emp_arrear 
+            `SELECT em_id,em_no,department,department_sect,arrear_amount,arrear_month,arear_remark FROM hrm_emp_arrear 
             where department=? and department_sect=? and arrear_month=?`,
             [
                 data.department,
                 data.department_sect,
                 data.arrear_month
             ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getAllEmployee: (data, callBack) => {
+        pool.query(
+            `select hrm_emp_master.em_no,
+            em_name,
+            gross_salary,
+            hrm_emp_master.em_id ,
+            branch_name,
+            dept_name ,
+            sect_name,
+            ecat_name,
+            inst_emp_type,
+            COALESCE(em_account_no,0) em_account_no,
+            COALESCE(nps,0) nps,
+            COALESCE(npsamount,0)npsamount,
+            COALESCE(lwf_status,0)lwf_status,
+            COALESCE(lwfamount,0)lwfamount             
+            FROM hrm_emp_master 
+            left join hrm_branch on hrm_branch.branch_slno=hrm_emp_master.em_branch
+            left join hrm_emp_category on hrm_emp_category.category_slno=hrm_emp_master.em_category
+            left join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
+            left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
+            left join institution_type on institution_type.inst_slno=hrm_emp_master.em_institution_type
+            left join hrm_emp_personal on hrm_emp_personal.em_id=hrm_emp_master.em_id
+            left join hrm_emp_pfesi on hrm_emp_pfesi.em_id=hrm_emp_master.em_id
+            where hrm_emp_master.em_department IN (?)
+            and hrm_emp_master.em_dept_section IN (?)  and em_status=1  and hrm_emp_master.em_no!=1 and doctor_status=0
+            group by hrm_emp_master.em_no,
+            em_name,
+            gross_salary,
+            hrm_emp_master.em_id ,
+            branch_name,
+            dept_name ,
+            sect_name,
+            ecat_name,
+            inst_emp_type,
+            em_account_no,
+            nps,
+            npsamount`,
+            [
+                data.em_department,
+                data.em_dept_section
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getPunchMarkingHr: (data, callBack) => {
+        pool.query(
+            `SELECT 
+                *
+            FROM punchmarking_hr 
+            WHERE deptsec_slno = ? AND marking_month = ? `,
+            [
+                data.section,
+                data.month
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getPunchMarkingHrFull: (data, callBack) => {
+        pool.query(
+            `SELECT
+                deptsec_slno,
+                marking_month,
+                last_update_date
+            FROM punchmarking_hr 
+            WHERE marking_month = ? `,
+            [
+                data.month
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getTotalGrosssalaryByno: (id, callBack) => {
+        pool.query(
+            `SELECT 
+            ernded_slno,em_id,
+            em_amount
+             FROM hrm_emp_earn_deduction
+			WHERE em_no =?  and em_earning_type IN(1,2)`,
+            [
+                id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getPunchMasterSalaryAllEmployee: (data, callBack) => {
+        pool.query(
+            `SELECT
+                punch_master.duty_day,
+                punch_master.em_no,
+                COALESCE(punch_master.duty_desc,'A') duty_desc,
+                hrm_emp_master.em_name,
+                hrm_department.dept_name,
+                hrm_dept_section.sect_name,
+                hrm_emp_category.ecat_name,
+                institution_type.inst_emp_type,
+                hrm_emp_personal.em_account_no,
+                hrm_emp_pfesi.nps,
+                hrm_emp_pfesi.npsamount,
+                hrm_emp_pfesi.lwf_status,
+                hrm_emp_pfesi.lwfamount,
+                hrm_emp_master.gross_salary
+            FROM punch_master
+            LEFT JOIN hrm_emp_master ON hrm_emp_master.em_no = punch_master.em_no
+            LEFT JOIN hrm_department ON hrm_department.dept_id = hrm_emp_master.em_department
+            LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
+            LEFT JOIN hrm_emp_category ON hrm_emp_category.category_slno = hrm_emp_master.em_category
+            LEFT JOIN institution_type ON institution_type.inst_slno = hrm_emp_master.em_institution_type
+            LEFT JOIN hrm_emp_personal ON hrm_emp_personal.em_no = hrm_emp_master.em_no
+            LEFT JOIN hrm_emp_pfesi ON hrm_emp_pfesi.em_no = hrm_emp_master.em_no
+            WHERE punch_master.duty_day >= ? AND punch_master.duty_day <= ?
+            AND hrm_emp_master.em_status = 1
+            GROUP BY punch_master.duty_day,
+                punch_master.em_no,
+                COALESCE(punch_master.duty_desc,'A') ,
+                hrm_emp_master.em_name,
+                hrm_department.dept_name,
+                hrm_dept_section.sect_name,
+                hrm_emp_category.ecat_name,
+                institution_type.inst_emp_type,
+                hrm_emp_personal.em_account_no,
+                hrm_emp_pfesi.nps,
+                hrm_emp_pfesi.npsamount,
+                hrm_emp_pfesi.lwf_status,
+                hrm_emp_pfesi.lwfamount`,
+            [
+                data.fromDate,
+                data.toDate
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getAcriveDepartmentSection: (callBack) => {
+        pool.query(
+            `SELECT 
+                hrm_dept_section.sect_id,
+                hrm_dept_section.sect_name,
+                hrm_department.dept_id,
+                hrm_department.dept_name
+            FROM hrm_dept_section 
+            LEFT JOIN hrm_department ON hrm_dept_section.dept_id = hrm_department.dept_id
+            RIGHT JOIN (SELECT distinct(em_dept_section) section  
+            FROM hrm_emp_master WHERE em_status = 1 AND doctor_status = 0 AND em_institution_type != 9) SECT ON SECT.section = hrm_dept_section.sect_id
+            WHERE sect_status=1 order by sect_name asc`,
+            [],
             (error, results, feilds) => {
                 if (error) {
                     return callBack(error);

@@ -17,10 +17,10 @@ router.get("/OtReqHodCount", checkToken, OtReqHodCount);
 router.get("/OtReqCEOCount", checkToken, OtReqCEOCount);
 router.get("/OtReqHRCount", checkToken, OtReqHRCount);
 router.get("/OtRequest/CountUser/:id", checkToken, OtRequestCountUser)
-router.get("/LeaveReqInchargeCount", checkToken, LeaveReqInchargeCount);
+router.get("/LeaveReqInchargeCount/all", checkToken, LeaveReqInchargeCount);
 router.get("/LeaveReqHodCount", checkToken, LeaveReqHodCount);
 router.get("/LeaveReqCeoCount", checkToken, LeaveReqCeoCount);
-router.get("/LeaveReqHrCount", checkToken, LeaveReqHrCount);
+router.get("/LeaveReqHrCount/all", checkToken, LeaveReqHrCount);
 router.get("/LeaveReqCount/User/:id", checkToken, LeaveReqCountUser)
 router.get("/ResignReqInchargeCount/count", checkToken, ResignReqInchargeCount);
 router.get("/ResignReqHodCount", checkToken, ResignReqHodCount);

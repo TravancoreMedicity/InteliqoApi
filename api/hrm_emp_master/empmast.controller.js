@@ -21,7 +21,10 @@ const {
     UpdateContractDetlStatus,
     UpdateContractDetl,
     ActiveEmploye,
-    insertInactiveEmp
+    insertInactiveEmp,
+    getEmpList,
+    insertActivateEmp,
+    createCompany
 } = require('../hrm_emp_master/empmast.service');
 const { validateempmaster, validateempmasterupdate, validateempmasterEdit } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
@@ -321,7 +324,6 @@ module.exports = {
     },
     getEmpByDeptartment: (req, res) => {
         const body = req.body
-
         getEmpByDeptartment(body, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
@@ -737,6 +739,80 @@ module.exports = {
                 success: 1,
                 message: "Data Created Successfully"
             });
+        });
+    },
+    getEmpList: (req, res) => {
+        const body = req.body;
+        getEmpList(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    insertActivateEmp: (req, res) => {
+        const body = req.body;
+        insertActivateEmp(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+            if (!results) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Results Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                message: "Data Created Successfully"
+            });
+        });
+    },
+    createCompany: (req, res) => {
+
+        const body = req.body;
+
+        createCompany(body, (err, results) => {
+
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                message: "Data Updated Successfully"
+            });
+
         });
     },
 }

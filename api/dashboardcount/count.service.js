@@ -159,8 +159,21 @@ module.exports = {
     },
     LeaveReqHrCount: (callBack) => {
         pool.query(
-            ` SELECT count(*) 'leavehrcount' from hrm_leave_request
-            WHERE date(request_date)<=CURDATE() AND hr_aprrv_requ=1 AND  hr_apprv_status=0`,
+            `SELECT COUNT(*) 'leavehrcount'
+            FROM
+            (
+               SELECT cmp_off_reqid from comp_off_request
+                        WHERE date(reqestdate)<=CURDATE() AND cf_hr_aprrv_requ=1 AND  cf_hr_apprv_status=0
+                union all
+             SELECT half_slno from hrm_halfdayrequest
+                        WHERE date(requestdate)<=CURDATE() AND hf_hr_aprrv_requ=1 AND  hf_hr_apprv_status=0
+                   union all
+                    SELECT nopunch_slno from nopunchrequest
+                        WHERE date(creteddate)<=CURDATE() AND np_hr_aprrv_requ=1 AND  np_hr_apprv_status=0
+                        union all
+                         SELECT leave_slno from hrm_leave_request
+                        WHERE date(request_date)<=CURDATE() AND hr_aprrv_requ=1 AND  hr_apprv_status=0
+            )    x  `,
             [],
             (error, results, feilds) => {
                 if (error) {

@@ -2,7 +2,9 @@ const multer = require('multer');
 const path = require('path');
 const fs = require("fs")
 const { insertProfile, getProfilePic, insertPersonalRecord, checklistfiles } = require('../uploadFile/upload.service')
+const { insertProfile, getProfilePic, updateUploadStatus } = require('../uploadFile/upload.service')
 const logger = require('../../logger/logger');
+const { log } = require('winston');
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     //  console.log(file);
@@ -60,6 +62,34 @@ const storagemul = multer.diskStorage({
 });
 
 
+
+// // for multiple file upload
+const storagemultraining = multer.diskStorage({
+  destination: (req, file, cb) => {
+
+    const id = 1
+    const filepath = path.join('D:/DocMeliora/Inteliqo/', "Training", `${id}`);
+
+    if (!fs.existsSync(filepath)) {
+      fs.mkdirSync(filepath, { recursive: true });
+    }
+
+    cb(null, filepath);
+  },
+  filename: function (req, file, cb) {
+    // Generate a unique filename using a timestamp
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    const extension = path.extname(file.originalname);
+    const filename = '3' + uniqueSuffix + extension;
+    cb(null, filename);
+
+  },
+
+});
+
+
+
+
 const maxSize = 2 * 1024 * 1024
 
 const upload = multer({
@@ -80,8 +110,6 @@ const upload = multer({
   limits: { fileSize: maxSize }
 }).single('file');
 
-
-
 // for multiple file upload
 const uploadmul = multer({
   storage: storagemul,
@@ -101,14 +129,13 @@ const uploadmul = multer({
   limits: { fileSize: maxSize }
 }).array('files', 10);
 
-
-
 module.exports = {
 
   uploadfile: (req, res) => {
     upload(req, res, (err) => {
       const body = req.body;
       // console.log(res)
+      // console.log(body)
       // FILE SIZE ERROR
       if (err instanceof multer.MulterError) {
         // return res.end("Max file size 2MB allowed!");
@@ -159,7 +186,6 @@ module.exports = {
     })
   },
   // for multiple file upload
-
 
   uploadfilemultiple: (req, res) => {
     uploadmul(req, res, async (err) => {
@@ -229,6 +255,46 @@ module.exports = {
     });
   },
 
+
+
+  // for getting the file
+  selectUploads: (req, res) => {
+    const { topic_slno, checklistid } = req.body;
+    const folderPath = `D:/DocMeliora/Inteliqo/Training/${topic_slno}/Images/${checklistid}`;
+    fs.readdir(folderPath, (err, files) => {
+      if (err) {
+        logger.errorLogger(err)
+        return res.status(200).json({
+          success: 0,
+          message: err
+        });
+      }
+      return res.status(200).json({
+        success: 1,
+        data: files
+      });
+    });
+
+  },
+
+  getEmployeeProfilePic: (req, res) => {
+    const body = req.body;
+
+    getProfilePic(body, (err, results) => {
+      if (err) {
+        logger.errorLogger(err)
+        return res.status(200).json({
+          success: 0,
+          message: err
+        });
+      }
+
+      return res.status(200).json({
+        success: 1,
+        data: results
+      });
+    })
+  },
   //  checklist upload
   uploadchecklist: (req, res) => {
     uploadmul(req, res, async (err) => {

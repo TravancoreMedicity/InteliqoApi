@@ -1,26 +1,93 @@
 const router = require("express").Router();
 const { checkToken } = require('../../auth/token_validation');
-const { getleaverequestdep, nopunchreq, halfrequst, getcompenoff,
-    getlevereqmast, getlevereqdetl, gethalfdaydetl, getnopunchreq,
-    compensatoryoffdata, inchargeapprv, inchargeapprvhalfday, inchargeapprvNopunch,
-    inchargeapprvCoff, HodApprvlLeave, HodApprvlHalfday, HodApprvlNopunch, HodApprvlCoff,
-    CEOApprvLeave, CEOHalfDay, CEONopunch, CEOCoff,
-    HRLeaveApprv, HRhalfDay, HRNopunch, HRCoff,
-    updateLeavePunchMast, updateHalfdayPunchMast, updateNoPunchPunchMast, InsertCoffLeaveCalculated,
-    updateNoPunchOUTPunchMast, leaveReqCancel, HalfdayCancel, NopunchCancel, CoffCancel,
-    getCeoPending, getHRpending, CeoHalfdayPending, HRHalfdayPending, CeoNopunchReq, HrNopunchReq,
-    CeoCoffReq, HrCoffReq,
-    CoffCancelUser, NopunchCancelUser, HalfdayCancelUser, leaveReqCancelUser,
-    AllList, AllListHOD, AllListCeo, AllListHr,
-    updateCasualLeaveDetlTable, updateNationalHolidayDetlTable, updateEarnLeaveDetlTable, updateCoffDetlTable,
-    updatePunchMasterEsi, updatePunchMasterlwf, updatePunchMasterLeave, leaveReqRejectHr, HalfDayReqRejectHr,
-    NoPunchReqRejectHr, CoffReqRejectHr, CoffReqCancelHr, NoPunchReqCancelHr, HalfDayReqCancelHr,
+const {
+    getleaverequestdep,
+    nopunchreq,
+    halfrequst,
+    getcompenoff,
+    getlevereqmast,
+    getlevereqdetl,
+    gethalfdaydetl,
+    getnopunchreq,
+    compensatoryoffdata,
+    inchargeapprv,
+    inchargeapprvhalfday,
+    inchargeapprvNopunch,
+    inchargeapprvCoff,
+    HodApprvlLeave,
+    HodApprvlHalfday,
+    HodApprvlNopunch,
+    HodApprvlCoff,
+    CEOApprvLeave,
+    CEOHalfDay,
+    CEONopunch,
+    CEOCoff,
+    HRLeaveApprv,
+    HRhalfDay,
+    HRNopunch,
+    HRCoff,
+    updateLeavePunchMast,
+    updateHalfdayPunchMast,
+    updateNoPunchPunchMast,
+    InsertCoffLeaveCalculated,
+    updateNoPunchOUTPunchMast,
+    leaveReqCancel,
+    HalfdayCancel,
+    NopunchCancel,
+    CoffCancel,
+    getCeoPending,
+    getHRpending,
+    CeoHalfdayPending,
+    HRHalfdayPending,
+    CeoNopunchReq,
+    HrNopunchReq,
+    CeoCoffReq,
+    HrCoffReq,
+    CoffCancelUser,
+    NopunchCancelUser,
+    HalfdayCancelUser,
+    leaveReqCancelUser,
+    AllList,
+    AllListHOD,
+    AllListCeo,
+    AllListHr,
+    updateCasualLeaveDetlTable,
+    updateNationalHolidayDetlTable,
+    updateEarnLeaveDetlTable,
+    updateCoffDetlTable,
+    updatePunchMasterEsi,
+    updatePunchMasterlwf,
+    updatePunchMasterLeave,
+    leaveReqRejectHr,
+    HalfDayReqRejectHr,
+    NoPunchReqRejectHr,
+    CoffReqRejectHr,
+    CoffReqCancelHr,
+    NoPunchReqCancelHr,
+    HalfDayReqCancelHr,
     lveReqCanclHr,
-    CancelHolidayLeave, CancelCasualyLeave, CancelEarnLeave, CancelCoffLeave, CancelCommonLeave,
+    CancelHolidayLeave,
+    CancelCasualyLeave,
+    CancelEarnLeave,
+    CancelCoffLeave,
+    CancelCommonLeave,
     CancelpunchMastEsiLeave,
-    CancelpunchMastLwfLeave, CancelpunchMastLeave
+    CancelpunchMastLwfLeave,
+    CancelpunchMastLeave,
+    HodRejectHalfday,
+    inchargeRejectHalfday,
+    empCoffData,
+    sectionCoffData,
+    empMisspunchData,
+    empHalfdayData,
+    empLeaveData,
+    sectionLeaveData,
+    sectionMisspunchData,
+    sectionHalfdayData
 } = require('../LeaveRequestApproval/LeaveRequestApproval.controller');
 
+
+/*department Section wise selection*/
 router.post("/getleaverequestdep", checkToken, getleaverequestdep)
 router.post("/nopunchreq", checkToken, nopunchreq)
 router.post("/halfrequst", checkToken, halfrequst)
@@ -33,13 +100,10 @@ router.get("/half/gethalfdaydetl/:id", checkToken, gethalfdaydetl)
 router.get("/leave/nopunch/getnopunchreq/:id", checkToken, getnopunchreq)
 router.get("/leave/com/compensatory/compensatoryoffdata/:id", checkToken, compensatoryoffdata)
 
-//updating halfday leave approval when incharge approved
+//incharge approval
 router.patch("/inchargeapprvhalf", checkToken, inchargeapprvhalfday)
-//updating no punch approval when incharge approved
 router.patch("/inchargeapprvnopunch", checkToken, inchargeapprvNopunch)
-//updating componsatory off approval when incharge approved
 router.patch("/inchargeapprvcoff", checkToken, inchargeapprvCoff)
-//updating when incharge approval is done
 router.patch("/inchargeapprv", checkToken, inchargeapprv)
 
 //hod approve
@@ -47,11 +111,13 @@ router.patch("/hodapprvlLeave", checkToken, HodApprvlLeave)
 router.patch("/hodapprvlhalfday", checkToken, HodApprvlHalfday)
 router.patch("/hodapprvlnopunch", checkToken, HodApprvlNopunch)
 router.patch("/HodApprvlcoff", checkToken, HodApprvlCoff)
+
 //ceo approve
 router.patch("/CeoApprvLeave", checkToken, CEOApprvLeave)
 router.patch("/Ceohalfday", checkToken, CEOHalfDay)
 router.patch("/Ceonopunch", checkToken, CEONopunch)
 router.patch("/Ceocoff", checkToken, CEOCoff)
+
 //hr approve
 router.patch("/hrLeaveapprv", checkToken, HRLeaveApprv)
 router.patch("/Hrhalfday", checkToken, HRhalfDay)
@@ -123,4 +189,22 @@ router.post("/CancelCommonLeave", checkToken, CancelCommonLeave)
 router.post("/CancelpunchMastEsiLeave", checkToken, CancelpunchMastEsiLeave)
 router.post("/CancelpunchMastLwfLeave", checkToken, CancelpunchMastLwfLeave)
 router.post("/CancelpunchMastLeave", checkToken, CancelpunchMastLeave)
+
+
+router.patch("/HodRejectHalfday", checkToken, HodRejectHalfday)
+router.patch("/inchargeRejectHalfday", checkToken, inchargeRejectHalfday)
+
+router.get("/employee/coffData/:id", checkToken, empCoffData)
+router.get("/employee/misspunchData/:id", checkToken, empMisspunchData)
+router.get("/employee/halfdayData/:id", checkToken, empHalfdayData)
+router.get("/employee/LeaveData/:id", checkToken, empLeaveData)
+
+
+router.post("/inchargeHod/coffData", checkToken, sectionCoffData)
+router.post("/inchargeHod/leaveData", checkToken, sectionLeaveData)
+router.post("/inchargeHod/misspunchData", checkToken, sectionMisspunchData)
+router.post("/inchargeHod/halfday", checkToken, sectionHalfdayData)
+
+
+
 module.exports = router;

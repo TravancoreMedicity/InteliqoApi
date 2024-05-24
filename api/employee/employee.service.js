@@ -144,7 +144,12 @@ module.exports = {
     },
     getEmployeeByUserName: (userName, callBack) => {
         pool.query(
-            `SELECT * FROM hrm_employee WHERE emp_username = ? AND emp_status = '1'`,
+            `SELECT hrm_emp_master.em_name,emp_email,emp_username,emp_id,emp_no,
+            hrm_dept_section.sect_name,emp_password
+             FROM hrm_employee 
+            left join hrm_emp_master on hrm_emp_master.em_no=hrm_employee.emp_no
+            left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
+            WHERE emp_username = ? AND emp_status = '1';`,
             [userName],
             (error, results, fields) => {
                 if (error) {

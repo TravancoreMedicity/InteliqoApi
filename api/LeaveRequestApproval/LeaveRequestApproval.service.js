@@ -1,3 +1,4 @@
+// @ts-nocheck
 const pool = require('../../config/database');
 const moment = require('moment');
 module.exports = {
@@ -195,7 +196,10 @@ module.exports = {
             np_reason,punslno,
             np_inc_apprv_req,
             np_incapprv_status,
-            hrm_shift_mast.shft_desc
+            nopunchrequest.shift_id,
+            hrm_shift_mast.shft_desc,
+            shft_chkin_time,
+            shft_chkout_time
              FROM nopunchrequest 
              LEFT JOIN hrm_shift_mast ON hrm_shift_mast.shft_slno=nopunchrequest.shift_id
              where nopunch_slno=?`,
@@ -221,7 +225,9 @@ module.exports = {
             cf_reason,
             cf_inc_apprv_req,
             cf_incapprv_status,
-            reqestdate
+            reqestdate,
+            punchindata,
+            punchoutdata
              FROM comp_off_request 
              inner join hrm_emp_master on comp_off_request.em_id=hrm_emp_master.em_id 
              where cmp_off_reqid=?`,
@@ -354,9 +360,9 @@ module.exports = {
         pool.query(
             `UPDATE hrm_halfdayrequest
              SET hf_hod_apprv_status =?,
-            hf_hod_apprv_cmnt=?,
-            hf_hod_apprv_time=? ,
-            hf_hod_us_code=?
+             hf_hod_apprv_cmnt=?,
+             hf_hod_apprv_time=? ,
+             hf_hod_us_code=?
             WHERE half_slno=?`,
             [
                 data.status,
@@ -564,11 +570,26 @@ module.exports = {
         pool.query(
             `UPDATE punch_master
              SET 
+             punch_in=?,
+             punch_out=?,
+             hrs_worked=?,
+             late_in=?,
+             early_out=?,
+             duty_status=?,
              leave_status=1,
-             lvereq_desc='HDL',
+             lvereq_desc=?,
+             duty_desc = ?,
              lve_tble_updation_flag=1
             WHERE duty_day=? and em_no=?`,
             [
+                data.punch_in,
+                data.punch_out,
+                data.hrs_worked,
+                data.late_in,
+                data.early_out,
+                data.duty_status,
+                data.lvereq_desc,
+                data.duty_desc,
                 data.duty_day,
                 data.em_no
             ],
@@ -581,6 +602,7 @@ module.exports = {
         )
     },
     HRNopunch: (data, callBack) => {
+
         pool.query(
             `UPDATE nopunchrequest
              SET np_hr_apprv_status =?,
@@ -692,12 +714,12 @@ module.exports = {
             data.map((val) => {
                 pool.query(
                     `UPDATE punch_master
-            SET lvreq_type =?,
-            leave_type=?,
-            sublvreq_type=?,
-            duty_status=?,
-            duty_worked=?
-            WHERE duty_day=? AND em_no=?`,
+                        SET lvreq_type =?,
+                            leave_type=?,
+                            sublvreq_type=?,
+                            duty_status=?,
+                            duty_worked=?
+                        WHERE duty_day=? AND em_no=?`,
                     [
                         val.req_type,
                         val.leave,
@@ -921,15 +943,16 @@ module.exports = {
 
     getCeoPending: (callBack) => {
         pool.query(
-            `SELECT 
+            `            SELECT 
             ROW_NUMBER() OVER () as rslno,
             leave_slno,
             dept_section,
-                lve_uniq_no,
+            hrm_leave_request.lve_uniq_no,
                 leave_date,
                 hrm_leave_request.em_no,
                 dept_name,
                 em_name ,
+                   sect_name,
                 inc_apprv_req,
                 incapprv_status,
                 hod_apprv_req,
@@ -946,11 +969,13 @@ module.exports = {
                 inc_apprv_cmnt,
                 ceo_req_status,
                 ceo_apprv_status,
-                request_date
+                request_date,
+                hrm_leave_request.dept_id
                 FROM hrm_leave_request 
                 inner join hrm_emp_master on  hrm_leave_request.em_no =hrm_emp_master.em_no
                 inner join hrm_department on  hrm_leave_request.dept_id =hrm_department.dept_id
-                where  lv_cancel_status=0  and lv_cancel_status_user=0`,
+                inner join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
+                where  lv_cancel_status=0  and lv_cancel_status_user=0 `,
             [],
             (error, results, feilds) => {
                 if (error) {
@@ -1000,6 +1025,7 @@ module.exports = {
             dept_name,
             hrm_halfdayrequest.em_no,
             em_name,
+            sect_name,
             hf_incapprv_status,
             dept_section, 
             hf_inc_apprv_req,
@@ -1015,10 +1041,14 @@ module.exports = {
             month,		
             checkIn,
             checkOut,
-            hf_reason
+            hf_reason,
+            shift_id,
+            halfday_status,
+            hrm_halfdayrequest.dept_id
             FROM hrm_halfdayrequest
             inner join hrm_emp_master on  hrm_halfdayrequest.em_no =hrm_emp_master.em_no
             inner join hrm_department on  hrm_halfdayrequest.dept_id =hrm_department.dept_id
+			inner join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
             where  lv_cancel_req_status_user=0 and lv_cancel_status_user=0`,
             [],
             (error, results, feilds) => {
@@ -1059,11 +1089,13 @@ module.exports = {
             ROW_NUMBER() OVER () as rslno,
             nopunch_slno,
             plan_slno,
-            shift_id,
+            nopunchrequest.shift_id,
+            hrm_shift_mast.shft_desc,
             nopunchrequest.em_no,
             punslno,dept_name,
             np_incapprv_status, 
             em_name,
+            sect_name,
             nopunchrequest.em_dept_section, 
             np_inc_apprv_req,
             np_incapprv_status,
@@ -1079,11 +1111,14 @@ module.exports = {
             checkouttime,
             checkinflag,
             checkoutflag,
-            creteddate
+            creteddate,
+            nopunchrequest.em_department
             FROM nopunchrequest
             left join hrm_emp_master on  nopunchrequest.em_no =hrm_emp_master.em_no
             left join hrm_department on  nopunchrequest.em_department =hrm_department.dept_id
-            where lv_cancel_req_status_user=0 and lv_cancel_status_user=0;`,
+            inner join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
+             LEFT JOIN hrm_shift_mast ON hrm_shift_mast.shft_slno=nopunchrequest.shift_id
+            where lv_cancel_req_status_user=0 and lv_cancel_status_user=0`,
             [],
             (error, results, feilds) => {
                 if (error) {
@@ -1119,10 +1154,12 @@ module.exports = {
             shift_id,
 			comp_off_request.em_no,
             em_name,
+            comp_off_request.em_id,
 			comp_off_request.em_dept_section,
 			dept_name,
             leave_date,
-             durationpunch,
+            sect_name,
+            durationpunch,
             reqtype_name,
             cf_reason,
             reqestdate,
@@ -1136,10 +1173,14 @@ module.exports = {
             cf_ceo_apprv_status,
             cf_inc_apprv_cmnt,
             cf_hod_apprv_cmnt,
-            cf_hr_apprv_cmnt
+            cf_hr_apprv_cmnt,
+            punchindata,
+            punchoutdata,
+            comp_off_request.em_department
             FROM comp_off_request 
             left join hrm_emp_master on  comp_off_request.em_no =hrm_emp_master.em_no
             left join hrm_department on  comp_off_request.em_department =hrm_department.dept_id
+            inner join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
             where  lv_cancel_status=0 and lv_cancel_status_user=0;`,
             [],
             (error, results, feilds) => {
@@ -1203,17 +1244,16 @@ module.exports = {
         pool.query(
             `UPDATE hrm_halfdayrequest
             SET lv_cancel_status_user=1,
-            lv_cancel_req_status_user=?,
+            lv_cancel_req_status_user=1,
             lv_cancel_cmnt_user=?,
             lv_cancel_date_user=?,
             lv_cancel_us_code_user=? 
         WHERE half_slno=?`,
             [
-                data.status,
-                data.comment,
-                data.apprvdate,
-                data.us_code,
-                data.slno,
+                data.lv_cancel_cmnt,
+                data.lv_cancel_date,
+                data.lv_cancel_us_code,
+                data.half_slno,
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -1701,14 +1741,18 @@ module.exports = {
                     `UPDATE 
                             punch_master
                         SET leave_status = 1,
-                            lvereq_desc = 'LV',
-                            duty_desc = 'LV',
-                            lve_tble_updation_flag = 1
+                        duty_status=?,
+                        lvereq_desc = ?,
+                        duty_desc = ?,
+                        lve_tble_updation_flag = 1
                         WHERE em_no = ? 
                         AND duty_day = ?`,
                     [
+                        data.duty_status,
+                        data.lvereq_desc,
+                        data.duty_desc,
                         data.emno,
-                        moment(data.leave_dates).format('YYYY-MM-DD')
+                        data.leave_dates
                     ],
                     (error, results, fields) => {
                         if (error) {
@@ -1808,11 +1852,27 @@ module.exports = {
     HRNopunchMasterIn: (data, callBack) => {
         pool.query(
             `UPDATE punch_master
-            SET punch_in =?,
+            SET 
+            punch_in=?,
+             punch_out=?,
+             hrs_worked=?,
+             late_in=?,
+             early_out=?,
+            duty_status = ?,
+            lvereq_desc = ?,
+            duty_desc = ?,
+            leave_status=1,
             lve_tble_updation_flag=1
         WHERE punch_slno=?`,
             [
-                data.checkintime,
+                data.punch_in,
+                data.punch_out,
+                data.hrs_worked,
+                data.late_in,
+                data.early_out,
+                data.duty_status,
+                data.lvereq_desc,
+                data.duty_desc,
                 data.punch_slno
             ],
             (error, results, feilds) => {
@@ -1827,6 +1887,9 @@ module.exports = {
         pool.query(
             `UPDATE punch_master
             SET punch_out =?,
+            duty_status = 1,
+            lvereq_desc = 'MPP',
+            duty_desc = 'MPP',
             lve_tble_updation_flag=1
         WHERE punch_slno=?`,
             [
@@ -2270,5 +2333,397 @@ module.exports = {
             }
         )
     },
+    UpdateHalfdayCasual: (data, callBack) => {
+        pool.query(
+            `UPDATE hrm_leave_cl SET hl_lv_tkn_status = 0 WHERE hrm_cl_slno = ?`,
+            [
+                data.planSlno
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    updateCompFlag: (data, callBack) => {
+        pool.query(
+            `UPDATE punch_master SET ot_request_flag = 0  WHERE punch_slno = ?`,
+            [
+                data.punchSlno,
+            ],
+            (error, result, feild) => {
+                if (error) {
+                    callBack(error)
+                }
+                return callBack(null, result);
+            }
+        )
+    },
+    empCoffData: (data, callBack) => {
+        pool.query(
+            `SELECT 
+            cmp_off_reqid,
+            shift_id,
+        	comp_off_request.em_no,
+            em_name,
+            comp_off_request.em_id,
+        	comp_off_request.em_dept_section,
+        	dept_name,
+            leave_date,
+            sect_name,
+            durationpunch,
+            reqtype_name,
+            cf_reason,
+            reqestdate,
+            cf_inc_apprv_req,
+            cf_incapprv_status,
+            cf_hod_apprv_req,
+            cf_hod_apprv_status,
+            cf_hr_apprv_status,
+            cf_hr_aprrv_requ,
+            cf_ceo_req_status,
+            cf_ceo_apprv_status,
+            cf_inc_apprv_cmnt,
+            cf_hod_apprv_cmnt,
+            cf_hr_apprv_cmnt,
+            punchindata,
+            punchoutdata,
+            comp_off_request.em_department
+            FROM comp_off_request 
+            left join hrm_emp_master on  comp_off_request.em_no =hrm_emp_master.em_no
+            left join hrm_department on  comp_off_request.em_department =hrm_department.dept_id
+            inner join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
+            where  lv_cancel_status=0 and lv_cancel_status_user=0 and comp_off_request.em_id=? order by leave_date DESC`,
+            [
+                data
+            ],
+            (error, result, feild) => {
+                if (error) {
+                    callBack(error)
+                }
+                return callBack(null, result);
+            }
+        )
+    },
+    sectionCoffData: (data, callBack) => {
+        pool.query(
+            `SELECT 
+            comp_off_request.em_id,
+            cmp_off_reqid,
+            shift_id,
+        	comp_off_request.em_no,
+            em_name,
+            comp_off_request.em_id,
+        	comp_off_request.em_dept_section,
+        	dept_name,
+            leave_date,
+            sect_name,
+            durationpunch,
+            reqtype_name,
+            cf_reason,
+            reqestdate,
+            cf_inc_apprv_req,
+            cf_incapprv_status,
+            cf_hod_apprv_req,
+            cf_hod_apprv_status,
+            cf_hr_apprv_status,
+            cf_hr_aprrv_requ,
+            cf_ceo_req_status,
+            cf_ceo_apprv_status,
+            cf_inc_apprv_cmnt,
+            cf_hod_apprv_cmnt,
+            cf_hr_apprv_cmnt,
+            punchindata,
+            punchoutdata,
+            comp_off_request.em_department
+            FROM comp_off_request 
+            left join hrm_emp_master on  comp_off_request.em_no =hrm_emp_master.em_no
+            left join hrm_department on  comp_off_request.em_department =hrm_department.dept_id
+            inner join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
+            where lv_cancel_status=0 and lv_cancel_status_user=0 and hrm_emp_master.em_dept_section IN (?) order by leave_date DESC`,
+            [
+                data.data
+            ],
+            (error, result, feild) => {
+                if (error) {
+                    callBack(error)
+                }
+                return callBack(null, result);
+            }
+        )
+    },
+    empMisspunchData: (data, callBack) => {
+        pool.query(
+            `SELECT 
+            nopunch_slno,
+            plan_slno,
+            nopunchrequest.shift_id,
+            hrm_shift_mast.shft_desc,
+            nopunchrequest.em_no,
+            punslno,dept_name,
+            np_incapprv_status, 
+            em_name,
+            sect_name,
+            nopunchrequest.em_dept_section, 
+            np_inc_apprv_req,
+            np_incapprv_status,
+            np_hod_apprv_req,
+            np_hod_apprv_status,
+            np_hr_aprrv_requ,
+            np_hr_apprv_status,
+            np_ceo_apprv_status,
+            np_ceo_req_status,
+            np_reason,
+            nopunchdate,
+            checkintime,
+            checkouttime,
+            checkinflag,
+            checkoutflag,
+            creteddate,
+            nopunchrequest.em_department
+            FROM nopunchrequest
+            left join hrm_emp_master on  nopunchrequest.em_no =hrm_emp_master.em_no
+            left join hrm_department on  nopunchrequest.em_department =hrm_department.dept_id
+            inner join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
+             LEFT JOIN hrm_shift_mast ON hrm_shift_mast.shft_slno=nopunchrequest.shift_id
+            where lv_cancel_status_user=0 and lv_cancel_status=0 and nopunchrequest.em_id=? order by nopunchdate DESC`,
+            [
+                data
+            ],
+            (error, result, feild) => {
+                if (error) {
+                    callBack(error)
+                }
+                return callBack(null, result);
+            }
+        )
+    },
+    empHalfdayData: (data, callBack) => {
+        pool.query(
+            `SELECT 
+            half_slno,
+            planslno,
+            dept_name,
+            hrm_halfdayrequest.em_no,
+            em_name,
+            sect_name,
+            hf_incapprv_status,
+            dept_section, 
+            hf_inc_apprv_req,
+            hf_incapprv_status,
+            hf_hod_apprv_req,
+            hf_hod_apprv_status,
+            hf_hr_aprrv_requ,
+            hf_hr_apprv_status,
+            hf_ceo_apprv_status,
+            hf_ceo_req_status,
+            requestdate,
+            leavedate,
+            month,		
+            checkIn,
+            checkOut,
+            hf_reason,
+            hrm_halfdayrequest.dept_id
+            FROM hrm_halfdayrequest
+            inner join hrm_emp_master on  hrm_halfdayrequest.em_no =hrm_emp_master.em_no
+            inner join hrm_department on  hrm_halfdayrequest.dept_id =hrm_department.dept_id
+            inner join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
+            where lv_cancel_status=0 and lv_cancel_status_user=0 and hrm_halfdayrequest.emp_id=? order by leavedate DESC`,
+            [
+                data
+            ],
+            (error, result, feild) => {
+                if (error) {
+                    callBack(error)
+                }
+                return callBack(null, result);
+            }
+        )
+    },
+    empLeaveData: (data, callBack) => {
+        pool.query(
+            `SELECT 
+            leave_slno,
+            dept_section,
+            hrm_leave_request.lve_uniq_no,
+                leave_date,
+                hrm_leave_request.em_no,
+                dept_name,
+                em_name ,
+                   sect_name,
+                inc_apprv_req,
+                incapprv_status,
+                hod_apprv_req,
+                hr_aprrv_requ,
+                hr_apprv_status,
+                hr_apprv_cmnt,
+                longleave_spclleave,
+                leavetodate,
+                leave_reason,
+                no_of_leave,
+                hod_apprv_status,
+                hod_apprv_cmnt,
+                hod_apprv_time,
+                inc_apprv_cmnt,
+                ceo_req_status,
+                ceo_apprv_status,
+                request_date,
+                hrm_leave_request.dept_id
+                FROM hrm_leave_request 
+                inner join hrm_emp_master on  hrm_leave_request.em_no =hrm_emp_master.em_no
+                inner join hrm_department on  hrm_leave_request.dept_id =hrm_department.dept_id
+                inner join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
+                where  lv_cancel_status=0  and lv_cancel_status_user=0 and hrm_leave_request.em_id=?
+                order by leave_date DESC`,
+            [
+                data
+            ],
+            (error, result, feild) => {
+                if (error) {
+                    callBack(error)
+                }
+                return callBack(null, result);
+            }
+        )
+    },
+    sectionLeaveData: (data, callBack) => {
+        pool.query(
+            `SELECT 
+            hrm_leave_request.em_id,
+            leave_slno,
+            dept_section,
+            hrm_leave_request.lve_uniq_no,
+            leave_date,
+            hrm_leave_request.em_no,
+            dept_name,
+            em_name ,
+            sect_name,
+            inc_apprv_req,
+            incapprv_status,
+            hod_apprv_req,
+            hr_aprrv_requ,
+            hr_apprv_status,
+            hr_apprv_cmnt,
+            longleave_spclleave,
+            leavetodate,
+            leave_reason,
+            no_of_leave,
+            hod_apprv_status,
+            hod_apprv_cmnt,
+            hod_apprv_time,
+            inc_apprv_cmnt,
+            ceo_req_status,
+            ceo_apprv_status,
+            request_date,
+            hrm_leave_request.dept_id
+            FROM hrm_leave_request 
+            inner join hrm_emp_master on  hrm_leave_request.em_no =hrm_emp_master.em_no
+            inner join hrm_department on  hrm_leave_request.dept_id =hrm_department.dept_id
+            inner join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
+            where  lv_cancel_status=0  and lv_cancel_status_user=0 and hrm_leave_request.dept_section IN (?)
+            order by leave_date DESC`,
+            [
+                data.sectIds
+            ],
+            (error, result, feild) => {
+                if (error) {
+                    callBack(error)
+                }
+                return callBack(null, result);
+            }
+        )
+    },
+    sectionHalfdayData: (data, callBack) => {
+        pool.query(
+            `SELECT 
+            hrm_halfdayrequest.emp_id,
+            half_slno,
+            planslno,
+            dept_name,
+            hrm_halfdayrequest.em_no,
+            em_name,
+            sect_name,
+            hf_incapprv_status,
+            dept_section, 
+            hf_inc_apprv_req,
+            hf_incapprv_status,
+            hf_hod_apprv_req,
+            hf_hod_apprv_status,
+            hf_hr_aprrv_requ,
+            hf_hr_apprv_status,
+            hf_ceo_apprv_status,
+            hf_ceo_req_status,
+            requestdate,
+            leavedate,
+            month,		
+            checkIn,
+            checkOut,
+            hf_reason,
+            hrm_halfdayrequest.dept_id
+            FROM hrm_halfdayrequest
+            inner join hrm_emp_master on  hrm_halfdayrequest.em_no =hrm_emp_master.em_no
+            inner join hrm_department on  hrm_halfdayrequest.dept_id =hrm_department.dept_id
+            inner join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
+            where lv_cancel_req_status_user=0 and lv_cancel_status_user=0 and hrm_halfdayrequest.dept_section IN (?)`,
+            [
+                data.sectIds
+            ],
+            (error, result, feild) => {
+                if (error) {
+                    callBack(error)
+                }
+                return callBack(null, result);
+            }
+        )
+    },
+    sectionMisspunchData: (data, callBack) => {
 
+        pool.query(
+            `SELECT 
+            nopunchrequest.em_id,
+            nopunch_slno,
+            plan_slno,
+            nopunchrequest.shift_id,
+            hrm_shift_mast.shft_desc,
+            nopunchrequest.em_no,
+            punslno,dept_name,
+            np_incapprv_status, 
+            em_name,
+            sect_name,
+            nopunchrequest.em_dept_section, 
+            np_inc_apprv_req,
+            np_incapprv_status,
+            np_hod_apprv_req,
+            np_hod_apprv_status,
+            np_hr_aprrv_requ,
+            np_hr_apprv_status,
+            np_ceo_apprv_status,
+            np_ceo_req_status,
+            np_reason,
+            nopunchdate,
+            checkintime,
+            checkouttime,
+            checkinflag,
+            checkoutflag,
+            creteddate,
+            nopunchrequest.em_department
+            FROM nopunchrequest
+            left join hrm_emp_master on  nopunchrequest.em_no =hrm_emp_master.em_no
+            left join hrm_department on  nopunchrequest.em_department =hrm_department.dept_id
+            inner join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
+             LEFT JOIN hrm_shift_mast ON hrm_shift_mast.shft_slno=nopunchrequest.shift_id
+            where lv_cancel_req_status_user=0 and lv_cancel_status_user=0 and nopunchrequest.em_dept_section IN (?)`,
+            [
+                data.sectIds
+            ],
+            (error, result, feild) => {
+                if (error) {
+                    callBack(error)
+                }
+                return callBack(null, result);
+            }
+        )
+    },
 }

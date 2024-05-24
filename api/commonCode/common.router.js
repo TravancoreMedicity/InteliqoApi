@@ -29,22 +29,28 @@ const {
     GetDeductionSalry,
     getFineSlno,
     GetLastChangedSalary,
-    getannprocess, getcasual,
+    getannprocess,
+    getcasual,
     getleaveholiday,
     getleavecommon,
     getCompanyById,
     getcompanylogId,
-    GetEmployeeAllowanceDetails, getprocess, getearnleave,
+    GetEmployeeAllowanceDetails,
+    getprocess,
+    getearnleave,
     getEmployeeID,
     getEmployeeDetailsByEmpID,
     getShiftdetails,
-    getCasualLeave, getCasualeavearry,
+    getCasualLeave,
+    getCasualeavearry,
     getBoardById,
     getEmpName,
     getUserDetl,
     getDeptsectIncharge,
     getCEOlevel,
-    getDeptsectHOD, getleaverequwestslno, getShiftdata,
+    getDeptsectHOD,
+    getleaverequwestslno,
+    getShiftdata,
     getActiveEmployees,
     getInActiveEmployees,
     getResignedEmployess,
@@ -54,7 +60,8 @@ const {
     getLeaveCount,
     getENameLeaveCarry,
     getEmployeeProfileInform,
-    getCoffDetails, getfrndenddata,
+    getCoffDetails,
+    getfrndenddata,
     EmpNameCategory,
     getdutydaycheck,
     getCarryDetails,
@@ -70,7 +77,11 @@ const {
     insertErrorLog,
     getgrossSalary,
     getEmployeName,
-    getapplicationid
+    getapplicationid,
+    getEmpCoff,
+    getgrossSalaryByEmployeeNo,
+    getAutharisedDepartmentSection,
+    getEmployeeArraySectionArray
 } = require('../commonCode/common.controller');
 
 router.get("/getdept", checkToken, getDepartmentName)
@@ -150,5 +161,9 @@ router.post("/errorLog", checkToken, insertErrorLog)
 router.get("/getgrossSalary/:id", checkToken, getgrossSalary)
 router.get("/getemp/:id", checkToken, getEmployeName)
 router.get("/getapplicationid", checkToken, getapplicationid)   //get application form number
+router.get("/getgrossSalaryByEmployeeNo/:id", checkToken, getgrossSalaryByEmployeeNo)
+router.post("/empCoffdata", checkToken, getEmpCoff)
+router.get("/getAutharisedDepartmentSection/:id", checkToken, getAutharisedDepartmentSection)
+router.post("/getEmployeeArraySectionArray", checkToken, getEmployeeArraySectionArray)
 
 module.exports = router;

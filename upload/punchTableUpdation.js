@@ -97,7 +97,7 @@ const updatePunchInDetails = async (data) => {
 //calculater shift in and out 
 const calculateShift = async (shiftDetl, punchTime, slno) => {
 
-    console.log(punchTime);
+    //console.log(punchTime);
     // console.log(slno)
     const {
         shft_chkin_start,

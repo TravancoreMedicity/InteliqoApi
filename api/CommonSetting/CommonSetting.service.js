@@ -34,52 +34,75 @@ module.exports = {
                 pf_employer_amount,
                 onehour_rqst_count,
                 areartype,
-                max_late_day_count
+                max_late_day_count,
+                leave_count,
+                noff_selct_day_count,
+                noff,
+                group_slno,
+                eoff,
+                comp_day_count,
+                comp_hour_count,
+                holiday_policy_count,
+                weekoff_policy_max_count,
+                weekoff_policy_min_count,
+                coff_min_working_hour,
+                training_mastergroup
                 )
+                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+        )
 
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
-
-
-            [
-                data.cmmn_grace_period,
-                data.cmmn_late_in,
-                data.cmmn_early_out,
-                data.cmmn_late_in_grace,
-                data.cmmn_early_out_grace,
-                data.carry_hl,
-                data.carry_cl,
-                data.carry_el,
-                data.carry_sl,
-                data.min_salary,
-                data.max_salary,
-                data.pf_age,
-                data.pf_employee,
-                data.pf_employer,
-                data.esi_limit,
-                data.esi_employee,
-                data.esi_employer,
-                data.noofadvanceinyear,
-                data.verification_level,
-                data.creat_user,
-                data.default_shift,
-                data.notapplicable_shift,
-                data.week_off_day,
-                data.salary_above,
-                data.noff_count,
-                JSON.stringify(data.leavetype_multiple),
-                data.pf_employee_amount,
-                data.pf_employer_amount,
-                data.onehour_rqst_count,
-                data.areartype,
-                data.max_late_day_count
-            ],
+        [
+            data.cmmn_grace_period,
+            data.cmmn_late_in,
+            data.cmmn_early_out,
+            data.cmmn_late_in_grace,
+            data.cmmn_early_out_grace,
+            data.carry_hl,
+            data.carry_cl,
+            data.carry_el,
+            data.carry_sl,
+            data.min_salary,
+            data.max_salary,
+            data.pf_age,
+            data.pf_employee,
+            data.pf_employer,
+            data.esi_limit,
+            data.esi_employee,
+            data.esi_employer,
+            data.noofadvanceinyear,
+            data.verification_level,
+            data.creat_user,
+            data.default_shift,
+            data.notapplicable_shift,
+            data.week_off_day,
+            data.salary_above,
+            data.noff_count,
+            JSON.stringify(data.leavetype_multiple),
+            data.pf_employee_amount,
+            data.pf_employer_amount,
+            data.onehour_rqst_count,
+            data.areartype,
+            data.max_late_day_count,
+            data.leave_count,
+            data.noff_selct_day_count,
+            data.noff,
+            JSON.stringify(data.group_slno),
+            data.eoff,
+            data.comp_day_count,
+            data.comp_hour_count,
+            JSON.stringify(data.training_mastergroup),
+            data.holiday_policy_count,
+            data.weekoff_policy_max_count,
+            data.weekoff_policy_min_count,
+            data.coff_min_working_hour
+        ],
             (error, results, feilds) => {
                 if (error) {
                     return callBack(error);
                 }
                 return callBack(null, results);
             }
-        )
+
     },
     getCommonSettings: (callBack) => {
         pool.query(
@@ -126,8 +149,21 @@ module.exports = {
                 pf_employer_amount=?,
                 onehour_rqst_count=?,
                 areartype=?,
-                max_late_day_count=?
+                max_late_day_count=?,
+                leave_count=?,
+                noff_selct_day_count=?,
+                noff=?,
+                group_slno=?,
+                eoff=?,
+                comp_day_count=?,
+                comp_hour_count=?,
+                holiday_policy_count=?,
+                weekoff_policy_max_count=?,
+                weekoff_policy_min_count=?,
+                coff_min_working_hour=?,
+                training_mastergroup=?
                 WHERE setting_slno =?`,
+
             [
                 data.cmmn_grace_period,
                 data.cmmn_late_in,
@@ -160,6 +196,18 @@ module.exports = {
                 data.onehour_rqst_count,
                 data.areartype,
                 data.max_late_day_count,
+                data.leave_count,
+                data.noff_selct_day_count,
+                data.noff,
+                JSON.stringify(data.group_slno),
+                data.eoff,
+                data.comp_day_count,
+                data.comp_hour_count,
+                data.holiday_policy_count,
+                data.weekoff_policy_max_count,
+                data.weekoff_policy_min_count,
+                data.coff_min_working_hour,
+                JSON.stringify(data.training_mastergroup),
                 data.setting_slno
             ],
             (error, results, feilds) => {
@@ -171,3 +219,4 @@ module.exports = {
         )
     },
 }
+
