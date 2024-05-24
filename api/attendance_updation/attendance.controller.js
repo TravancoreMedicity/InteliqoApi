@@ -1697,7 +1697,7 @@ module.exports = {
                                     return item;
                                 }
                             })
-                            ?.filter((e) => e.lvereq_desc === 'HD')
+                            ?.filter((e) => e.lvereq_desc === 'HD' && e.duty_desc === 'LC')
                             ?.map((e) => e.punch_slno)
                         // UPDATE CALCULATED HD (LOP) IN PUNCH MASTER
                         // console.log(calCulatedHD)

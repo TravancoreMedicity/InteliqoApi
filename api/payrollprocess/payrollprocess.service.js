@@ -480,6 +480,7 @@ module.exports = {
         pool.query(
             `select 
             hrm_emp_earn_deduction.em_no,
+            hrm_emp_earn_deduction.em_id,
             earning_type_name,
             earnded_name,
             em_salary_desc,
