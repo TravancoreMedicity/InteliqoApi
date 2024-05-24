@@ -1,8 +1,7 @@
 const multer = require('multer');
 const path = require('path');
 const fs = require("fs")
-const { insertProfile, getProfilePic, insertPersonalRecord, checklistfiles } = require('../uploadFile/upload.service')
-const { insertProfile, getProfilePic, updateUploadStatus } = require('../uploadFile/upload.service')
+const { insertProfile, getProfilePic, insertPersonalRecord, checklistfiles, updateUploadStatus } = require('../uploadFile/upload.service')
 const logger = require('../../logger/logger');
 const { log } = require('winston');
 const storage = multer.diskStorage({
