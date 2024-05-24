@@ -1,4 +1,6 @@
-const { getEmpByDeptAndSection, insertmanpowerplanning, getData, getname, getdesignation, updateannouncement, getapprovalhod, updateHodapproval, getapprove, getvacancy, checkInsertVal, updateHrapproval, getapproval, updateDataManpowerapproval, updatemanpowerplanning, insertmanpowerrequest } = require('../Manpower/Manpower.service');
+const { getEmpByDeptAndSection, insertmanpowerplanning, getData, getname, getdesignation,
+    updateannouncement, getapprovalhod, updateHodapproval, getapprove, getvacancy, checkInsertVal, closeannouncement, insertpersonaldata,
+    updateHrapproval, getapproval, updateDataManpowerapproval, updatemanpowerplanning, insertmanpowerrequest, insertedu, insertexp } = require('../Manpower/Manpower.service');
 const { ManpowerRequest } = require('../../validation/validation_schema')
 const logger = require('../../logger/logger')
 module.exports = {
@@ -377,5 +379,102 @@ module.exports = {
             });
 
         });
+    },
+    closeannouncement: (req, res) => {
+        const body = req.body;
+        closeannouncement(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (!results) {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Record Not Found"
+                });
+            }
+            return res.status(200).json({
+                success: 2,
+                message: "Data Submitted Successfully"
+            });
+
+        });
+    },
+    insertedu: (req, res) => {
+        const body = req.body;
+        var values = body.map((value, index) => {
+            return [value.em_id, value.em_no, value.education, value.create_user]
+        })
+        insertedu(values, (err, results) => {
+            if (err) {
+                //logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (!results) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Results Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                message: "Data Submitted Successfully"
+            });
+        });
+    },
+    insertexp: (req, res) => {
+        const body = req.body;
+        var values = body.map((value, index) => {
+            return [value.em_no, value.em_id, value.Employer, value.expstartdate, value.expenddate, value.create_user]
+        })
+        insertexp(values, (err, results) => {
+            if (err) {
+                //logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (!results) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Results Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                message: "Data Submitted Successfully"
+            });
+        });
+    },
+    insertpersonaldata: (req, res) => {
+        const body = req.body
+        insertpersonaldata(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: res.err
+                });
+            }
+            if (results.length === 0) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found",
+                    data: []
+
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                message: "Data Submitted Successfully"
+            });
+        })
     },
 }

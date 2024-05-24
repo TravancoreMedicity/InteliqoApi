@@ -29,7 +29,6 @@ module.exports = {
     createempmast: (req, res) => {
         const body = req.body;
         const body_result = validateempmaster.validate(body);
-
         if (body_result.error) {
             return res.status(200).json({
                 success: 2,

@@ -1438,8 +1438,31 @@ const Application_form = Joi.object({
         agree_marketing_status: Joi.optional(),
         applicationSlno: Joi.optional(),
         selectedVacancies: Joi.optional(),
-})
+        addressPermnt1: Joi.optional(),
+        addressPermnt2: Joi.optional(),
+        gender: Joi.number().min(1).required()
+                .messages({
+                        'number.min': '  Gender Not selected',
+                }),
+        bloodgrp: Joi.number().min(1).required()
+                .messages({
+                        'number.min': '  Blood Group Not selected',
+                }),
 
+})
+const validateInterview = Joi.object({
+        dept: Joi.number().required(),
+        designation: Joi.number().required(),
+        Question: Joi.string().required(),
+        optionA: Joi.string().required(),
+        optionB: Joi.string().required(),
+        optionC: Joi.string().required(),
+        optionD: Joi.string().required(),
+        Answer: Joi.string().required(),
+        Mark: Joi.number().required(),
+        status: Joi.number().required(),
+        slno: Joi.optional(),
+});
 
 module.exports = {
         authSchema,  //authSchema:authSchema
@@ -1532,5 +1555,6 @@ module.exports = {
         validateOneHourReqst,
         validateCommonreqstMast,
         ManpowerRequest,
-        Application_form
+        Application_form,
+        validateInterview
 }

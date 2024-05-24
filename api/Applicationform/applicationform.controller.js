@@ -1,4 +1,8 @@
-const { insertapplicationform, updateapplicationslno, vacancyList, getname, getvacancy, getapplication, insertcallletter, getempdetails, insertshortlistapprove, getstatus, getstatusdata } = require('../Applicationform/applicationform.service');
+const { insertapplicationform, updateapplicationslno, vacancyList, getname, getvacancy, insertMsinterview, getselectionedu, insertJoining, getJoinpdfdata,
+    getapplication, insertHodinterview, insertInchargeinterview, insertcallletter, insertinterview, getselectionStatus, getselectdesgstatus, insertJoinstatus,
+    getquestion, getempdetails, insertshortlistapprove, getstatus, getstatusdata, insertDmsinterview, insertCeointerview, getempselect, getpdfdata, insertAppmtstatus,
+    insertOperationinterview, insertHrinterview, getinitialstatus, getlogindata, getloginselect, insertselection, updateselection,
+    insertappointmentdata, insertAppmtcancelstatus, insertjoincancelstatus } = require('../Applicationform/applicationform.service');
 const nodemailer = require('nodemailer');
 const { Application_form } = require('../../validation/validation_schema')
 const logger = require('../../logger/logger')
@@ -92,6 +96,34 @@ module.exports = {
             });
         })
     },
+
+    getselectionedu: (req, res) => {
+        const body = req.body
+
+        getselectionedu(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: res.err
+                });
+            }
+
+            if (results.length === 0) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found",
+                    data: []
+
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
     getname: (req, res) => {
         const body = req.body
         getname(body, (err, results) => {
@@ -120,6 +152,29 @@ module.exports = {
     },
     getvacancy: (req, res) => {
         getvacancy((err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    getempselect: (req, res) => {
+        getempselect((err, results) => {
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
@@ -170,6 +225,62 @@ module.exports = {
         // const { applicationno } = body
 
         getempdetails(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: res.err
+                });
+            }
+
+            if (results.length === 0) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found",
+                    data: []
+
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    getlogindata: (req, res) => {
+        const body = req.body
+        // const { applicationno } = body
+
+        getlogindata(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: res.err
+                });
+            }
+
+            if (results.length === 0) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found",
+                    data: []
+
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    getloginselect: (req, res) => {
+        const body = req.body
+        // const { applicationno } = body
+
+        getloginselect(body, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
@@ -251,10 +362,90 @@ module.exports = {
             });
         })
     },
-    getstatusdata: (req, res) => {
+    getselectionStatus: (req, res) => {
         const body = req.body
         // const { applicationno } = body
 
+        getselectionStatus(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: res.err
+                });
+            }
+
+            if (results.length === 0) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found",
+                    data: []
+
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    getselectdesgstatus: (req, res) => {
+        const body = req.body
+        getselectdesgstatus(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: res.err
+                });
+            }
+
+            if (results.length === 0) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found",
+                    data: []
+
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    getinitialstatus: (req, res) => {
+        const body = req.body
+
+
+        getinitialstatus(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: res.err
+                });
+            }
+
+            if (results.length === 0) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found",
+                    data: []
+
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    getstatusdata: (req, res) => {
+        const body = req.body
         getstatusdata(body, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
@@ -279,15 +470,502 @@ module.exports = {
             });
         })
     },
+    getquestion: (req, res) => {
+        const id = req.params.desigid;
+        getquestion(id, (err, results) => {
 
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    questionsuccess: 0,
+                    message: res.err
+                });
+            }
+            if (results.length === 0) {
+                return res.status(200).json({
+                    questionsuccess: 2,
+                    message: "Record Not Found",
+                    questiondata: []
+                });
+            }
+            return res.status(200).json({
+                questionsuccess: 1,
+                questiondata: results
+            });
+        })
+    },
+    insertinterview: (req, res) => {
+        const body = req.body
+        insertinterview(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: res.err
+                });
+            }
 
+            if (results.length === 0) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found",
+                    data: []
+
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    insertInchargeinterview: (req, res) => {
+        const body = req.body
+        insertInchargeinterview(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: res.err
+                });
+            }
+
+            if (results.length === 0) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found",
+                    data: []
+
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    insertHodinterview: (req, res) => {
+        const body = req.body
+        insertHodinterview(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: res.err
+                });
+            }
+
+            if (results.length === 0) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found",
+                    data: []
+
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    insertMsinterview: (req, res) => {
+        const body = req.body
+        insertMsinterview(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: res.err
+                });
+            }
+
+            if (results.length === 0) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found",
+                    data: []
+
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    insertDmsinterview: (req, res) => {
+        const body = req.body
+        insertDmsinterview(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: res.err
+                });
+            }
+
+            if (results.length === 0) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found",
+                    data: []
+
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    insertOperationinterview: (req, res) => {
+        const body = req.body
+        insertOperationinterview(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: res.err
+                });
+            }
+
+            if (results.length === 0) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found",
+                    data: []
+
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    insertCeointerview: (req, res) => {
+        const body = req.body
+        insertCeointerview(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: res.err
+                });
+            }
+
+            if (results.length === 0) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found",
+                    data: []
+
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    insertselection: (req, res) => {
+        const body = req.body
+        insertselection(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: res.err
+                });
+            }
+
+            if (results.length === 0) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found",
+                    data: []
+
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    updateselection: (req, res) => {
+        const body = req.body
+        updateselection(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: res.err
+                });
+            }
+
+            if (results.length === 0) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found",
+                    data: []
+
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    insertHrinterview: (req, res) => {
+        const body = req.body
+        insertHrinterview(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: res.err
+                });
+            }
+
+            if (results.length === 0) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found",
+                    data: []
+
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    insertappointmentdata: (req, res) => {
+        const body = req.body
+        insertappointmentdata(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: res.err
+                });
+            }
+            if (results.length === 0) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found",
+                    data: []
+
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results,
+            });
+        })
+    },
+    getpdfdata: (req, res) => {
+        const body = req.body
+        getpdfdata(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: res.err
+                });
+            }
+
+            if (results.length === 0) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found",
+                    data: []
+
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                pdfdata: results
+            });
+        })
+    },
+    insertJoining: (req, res) => {
+        const body = req.body
+        insertJoining(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: res.err
+                });
+            }
+            if (results.length === 0) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found",
+                    data: []
+
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results,
+            });
+        })
+    },
+    getJoinpdfdata: (req, res) => {
+        const body = req.body
+        getJoinpdfdata(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: res.err
+                });
+            }
+
+            if (results.length === 0) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found",
+                    data: []
+
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    insertAppmtstatus: (req, res) => {
+        const body = req.body
+        insertAppmtstatus(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: res.err
+                });
+            }
+
+            if (results.length === 0) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found",
+                    data1: []
+
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data1: results
+            });
+        })
+    },
+    insertJoinstatus: (req, res) => {
+        const body = req.body
+        insertJoinstatus(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: res.err
+                });
+            }
+
+            if (results.length === 0) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found",
+                    data1: []
+
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data1: results
+            });
+        })
+    },
+    insertAppmtcancelstatus: (req, res) => {
+        const body = req.body
+        insertAppmtcancelstatus(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: res.err
+                });
+            }
+
+            if (results.length === 0) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found",
+                    data1: []
+
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data1: results
+            });
+        })
+    },
+    insertjoincancelstatus: (req, res) => {
+        const body = req.body
+        insertjoincancelstatus(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: res.err
+                });
+            }
+
+            if (results.length === 0) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found",
+                    data1: []
+
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data1: results
+            });
+        })
+    },
     insertcallletter: (req, res) => {
         const body = req.body;
         insertcallletter(body)
             .then((r) => {
                 // Extract emails
                 const emails = body.map(value => value.email);
-
+                const date = body.map(value => value.date);
+                const time = body.map(value => value.time);
                 // Send emails
                 let transporter = nodemailer.createTransport({
                     service: 'gmail',
@@ -303,14 +981,14 @@ module.exports = {
                         to: email,
                         subject: 'Application details from Travancore Medicity',
                         text: `You are selected For the First round interview ,Further details are attached to this email 
-                                Place:
-                                Time:
-                                Date:  `
+                                Place:Travancore Medical College
+                                Time: ${date}
+                                Date:  ${time} `
                     };
 
                     transporter.sendMail(mailOptions, (error, info) => {
                         if (error) {
-                            console.error(error);
+                            return res.status(500).json({ message: 'Failed to send email.' });
                         }
                     });
                 });
@@ -326,4 +1004,5 @@ module.exports = {
                 });
             });
     }
+
 };

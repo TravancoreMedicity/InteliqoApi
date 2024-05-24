@@ -44,7 +44,6 @@ module.exports = {
     },
 
     insertmanpowerplanning: (data, callBack) => {
-
         pool.query(
             `INSERT INTO hrm_manpowerplanning_master (
                 dept,
@@ -456,7 +455,6 @@ module.exports = {
         )
     },
     updateannouncement: (data, callBack) => {
-
         pool.query(
             `UPDATE hrm_manpower_request 
             SET
@@ -471,6 +469,118 @@ module.exports = {
                 data.dept_id
             ],
             (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    closeannouncement: (data, callBack) => {
+        pool.query(
+            `UPDATE hrm_manpower_request 
+            SET
+            date_of_closing=?,
+            announcement_status=?,
+            remark_closing=?
+            WHERE desg_id = ? and dept_id=?`,
+            [
+
+                data.fromDate,
+                data.Announcement_status,
+                data.remark,
+                data.desg_id,
+                data.dept_id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    insertedu: (data, callBack) => {
+        pool.query(
+            `INSERT INTO hrm_emp_qual (
+                em_id,
+                em_no,
+                em_education,
+                create_user
+                )
+            VALUES ?`,
+            [
+                data
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    insertexp: (data, callBack) => {
+        pool.query(
+            `INSERT INTO hrm_emp_exp (
+                em_no,
+                em_id,
+                em_institution,
+                em_from,
+                em_to,
+                create_user
+                )
+            VALUES ?`,
+            [
+                data
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    insertpersonaldata: (data, callBack) => {
+
+        pool.query(
+            `INSERT INTO hrm_emp_personal (
+                em_id,
+                em_no,
+                em_per_address1,
+                em_per_address2,
+                em_per_pincode,
+                em_pmnt_address1,
+                em_pmnt_address2,
+                em_pmnt_pincode,
+                em_religion,
+                em_bloodgroup,
+                em_cont_mobile,
+                create_user,
+                emp_dob,
+                emp_email,
+                em_region
+            )values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) `,
+            [
+                data.em_id,
+                data.em_no,
+                data.addressPermnt1,
+                data.addressPermnt2,
+                data.perPincode,
+                data.addressPresent1,
+                data.addressPresent2,
+                data.presPincode,
+                data.hrm_religion,
+                data.blood_slno,
+                data.em_mobile,
+                data.create_user,
+                data.em_dob,
+                data.em_email,
+                data.em_region,
+            ],
+            (error, results, feilds) => {
+
                 if (error) {
                     return callBack(error);
                 }
