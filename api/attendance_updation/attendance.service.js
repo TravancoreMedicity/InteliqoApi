@@ -1197,7 +1197,7 @@ module.exports = {
     updateLCPunchMaster: (data, callBack) => { //added on 27/06/2024 10:00 PM (Ajith)
         pool.query(
             `UPDATE punch_master 
-                SET lvereq_desc = 'HD'
+                SET lvereq_desc = 'CHD'
             WHERE punch_slno IN (?)`,
             [
                 data
