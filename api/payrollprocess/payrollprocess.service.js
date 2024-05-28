@@ -1244,4 +1244,41 @@ module.exports = {
             }
         )
     },
+    getPunchmastAboveSelectedDate: (data, callBack) => {
+        pool.query(
+            `select punch_slno, duty_day,shift_id,punch_master.emp_id,punch_master.em_no,
+            hrm_emp_master.em_name,punch_in, gross_salary, punch_out,shift_in,shift_out,
+            hrs_worked,over_time,late_in, early_out,duty_status,holiday_status,leave_status,
+            holiday_slno, lvereq_desc,duty_desc,lve_tble_updation_flag,hrm_emp_master.em_name
+            from  punch_master
+            left join hrm_emp_master on hrm_emp_master.em_no=punch_master.em_no
+            where punch_master.emp_id =?
+                 and date(duty_day) >=? ORDER BY DATE(duty_day) ASC`,
+            [
+                data.emp_id,
+                data.start_date
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getPunchAboveSelectedDate: (data, callBack) => {
+        pool.query(
+            `SELECT * FROM punch_data where emp_code=? and punch_time >= ? `,
+            [
+                data.em_no,
+                data.from
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }
