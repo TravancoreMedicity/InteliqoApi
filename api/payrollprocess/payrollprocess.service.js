@@ -489,7 +489,7 @@ module.exports = {
              inner join hrm_earning_deduction on hrm_emp_earn_deduction.em_salary_desc=hrm_earning_deduction.earnded_id
              inner join hrm_earning_type on hrm_earning_deduction.erning_type_id=hrm_earning_type.erning_type_id
              inner join hrm_emp_master on hrm_emp_earn_deduction.em_no=hrm_emp_master.em_no
-             where  hrm_earning_deduction.erning_type_id=3 and hrm_emp_master.em_department=? and hrm_emp_master.em_dept_section=?;`,
+             where  hrm_earning_deduction.erning_type_id=3 and hrm_emp_master.em_department IN (?) and hrm_emp_master.em_dept_section IN (?)`,
             [
                 data.em_department,
                 data.em_dept_section
