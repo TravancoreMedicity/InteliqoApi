@@ -2622,8 +2622,7 @@ module.exports = {
             inner join hrm_emp_master on  hrm_leave_request.em_no =hrm_emp_master.em_no
             inner join hrm_department on  hrm_leave_request.dept_id =hrm_department.dept_id
             inner join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
-            where  lv_cancel_status=0  and lv_cancel_status_user=0 and hrm_leave_request.dept_section IN (?)
-            order by leave_date DESC`,
+            where  lv_cancel_status=0  and lv_cancel_status_user=0 and hrm_leave_request.dept_section IN (?)`,
             [
                 data.sectIds
             ],
