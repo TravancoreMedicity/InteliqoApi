@@ -16,7 +16,7 @@ const program = async () => {
 
     instance.addTrigger({
         name: 'TEST',
-        expression: 'zkteco.iclock_transaction',
+        expression: 'etp.iclock_transaction',
         statement: MySQLEvents.STATEMENTS.INSERT,
         onEvent: (event) => {
             // Only get the INSERT EVENT

@@ -54,7 +54,7 @@ const punchInsert = async (id, emp_code, punch_time, punch_state) => {
 //CHECK CHECK IN UPDATED OR NOT
 const insertPunchInDetail = (id, emp_code, punch_time, punch_state, callBack) => {
     pool.query(
-        `INSERT INTO medi_hrm.punch_data (
+        `INSERT INTO punch_data (
             id,
             emp_code,
             punch_time,
@@ -247,7 +247,7 @@ const checkOutUpdation = async (slno, punch, callBack) => {
 //CHECK CHECK IN UPDATED OR NOT
 const checkinUpdated = (slno, callBack) => {
     pool.query(
-        `SELECT punch_in FROM medi_hrm.punch_master where punch_slno = ?`,
+        `SELECT punch_in FROM punch_master where punch_slno = ?`,
         [
             slno
         ],
