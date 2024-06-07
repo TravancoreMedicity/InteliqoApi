@@ -489,7 +489,7 @@ module.exports = {
              inner join hrm_earning_deduction on hrm_emp_earn_deduction.em_salary_desc=hrm_earning_deduction.earnded_id
              inner join hrm_earning_type on hrm_earning_deduction.erning_type_id=hrm_earning_type.erning_type_id
              inner join hrm_emp_master on hrm_emp_earn_deduction.em_no=hrm_emp_master.em_no
-             where  hrm_earning_deduction.erning_type_id=3 and hrm_emp_master.em_department=? and hrm_emp_master.em_dept_section=?;`,
+             where  hrm_earning_deduction.erning_type_id=3 and hrm_emp_master.em_department IN (?) and hrm_emp_master.em_dept_section IN (?)`,
             [
                 data.em_department,
                 data.em_dept_section
@@ -1236,6 +1236,43 @@ module.exports = {
             FROM hrm_emp_master WHERE em_status = 1 AND doctor_status = 0 AND em_institution_type != 9) SECT ON SECT.section = hrm_dept_section.sect_id
             WHERE sect_status=1 order by sect_name asc`,
             [],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getPunchmastAboveSelectedDate: (data, callBack) => {
+        pool.query(
+            `select punch_slno, duty_day,shift_id,punch_master.emp_id,punch_master.em_no,
+            hrm_emp_master.em_name,punch_in, gross_salary, punch_out,shift_in,shift_out,
+            hrs_worked,over_time,late_in, early_out,duty_status,holiday_status,leave_status,
+            holiday_slno, lvereq_desc,duty_desc,lve_tble_updation_flag,hrm_emp_master.em_name
+            from  punch_master
+            left join hrm_emp_master on hrm_emp_master.em_no=punch_master.em_no
+            where punch_master.emp_id =?
+                 and date(duty_day) >=? ORDER BY DATE(duty_day) ASC`,
+            [
+                data.emp_id,
+                data.start_date
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getPunchAboveSelectedDate: (data, callBack) => {
+        pool.query(
+            `SELECT * FROM punch_data where emp_code=? and punch_time >= ? `,
+            [
+                data.em_no,
+                data.from
+            ],
             (error, results, feilds) => {
                 if (error) {
                     return callBack(error);

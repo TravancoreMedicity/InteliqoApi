@@ -346,4 +346,20 @@ module.exports = {
             }
         )
     },
+    getDutyPlanAboveselectedDate: (data, callBack) => {
+        pool.query(
+            `SELECT plan_slno, emp_id, shift_id, duty_day,attendance_update_flag  FROM  hrm_duty_plan
+            WHERE emp_id =? AND DATE(duty_day) >=? ORDER BY DATE(duty_day) ASC`,
+            [
+                data.emp_id,
+                data.start_date
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results[0]);
+            }
+        )
+    },
 }

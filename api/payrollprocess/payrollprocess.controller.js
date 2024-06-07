@@ -1,17 +1,15 @@
-const { empDeptdata, empDeptSecdata, empNameBasedata, getFixedByEmid,
-    getTotalFineByEmid, getTotalFixedByEmid, getTotalEarningsByEmid,
-    getTotalDeductionByEmid, getDeductionByEmid, getEarningByEmid,
-    getLopByEmid, getTotalGrosssalaryById, GetPfStatus, getPFcalcalculatingamt,
-    GetEsiStatus, getESIcalculatingamt,
-    createAttendanceManual, DutyPlanLock, dutyPlanUnLock, punchMastLock,
-    getPaySlipTableData, getEmpEarningData, getEmpFixedWageData,
-    getEmpDeductionData, getAllEarnData, createPayrollpayslip,
-    createPayrollpayslipDetl, checkAttendanceProcess, getPunchdata, getPunchmastData,
-    getattendancemark, getEmpNoDeptWise, getPaySlipData, getIndvidualPayslipDetl,
-    checkPayslipDataExist, deptWisePaySlipData, empWisePaySlipDetl, checkInsertVal,
-    InsertPunchInOutHr, updatePunchInOutHr, getPunchInOutHr, CancelPunchInOutHr, getPunchByEmid,
-    InsertArrearSalary, getArearData, getAllEmployee, getPunchMarkingHr, getPunchMarkingHrFull,
-    getTotalGrosssalaryByno, getPunchMasterSalaryAllEmployee, getAcriveDepartmentSection
+const { empDeptdata, empDeptSecdata, empNameBasedata, getFixedByEmid, getTotalFineByEmid,
+    getTotalFixedByEmid, getTotalEarningsByEmid, getTotalDeductionByEmid, getDeductionByEmid,
+    getEarningByEmid, getLopByEmid, getTotalGrosssalaryById, GetPfStatus, getPFcalcalculatingamt,
+    GetEsiStatus, getESIcalculatingamt, createAttendanceManual, DutyPlanLock, dutyPlanUnLock,
+    punchMastLock, getPaySlipTableData, getEmpEarningData, getEmpFixedWageData, getEmpDeductionData,
+    getAllEarnData, createPayrollpayslip, createPayrollpayslipDetl, checkAttendanceProcess, getPunchdata,
+    getPunchmastData, getattendancemark, getEmpNoDeptWise, getPaySlipData, getIndvidualPayslipDetl,
+    checkPayslipDataExist, deptWisePaySlipData, empWisePaySlipDetl, checkInsertVal, InsertPunchInOutHr,
+    updatePunchInOutHr, getPunchInOutHr, CancelPunchInOutHr, getPunchByEmid, InsertArrearSalary,
+    getArearData, getAllEmployee, getPunchMarkingHr, getPunchMarkingHrFull, getTotalGrosssalaryByno,
+    getPunchMasterSalaryAllEmployee, getAcriveDepartmentSection, getPunchmastAboveSelectedDate,
+    getPunchAboveSelectedDate
 } = require('../payrollprocess/payrollprocess.service');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -1171,5 +1169,51 @@ module.exports = {
             });
         });
     },
+    getPunchmastAboveSelectedDate: (req, res) => {
+        const body = req.body;
+        getPunchmastAboveSelectedDate(body, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
 
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    getPunchAboveSelectedDate: (req, res) => {
+        const body = req.body;
+        console.log(body);
+        getPunchAboveSelectedDate(body, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
 }
