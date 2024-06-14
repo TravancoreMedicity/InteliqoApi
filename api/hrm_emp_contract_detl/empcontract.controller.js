@@ -621,6 +621,7 @@ module.exports = {
                 punchslno: body.punchslno
             }
 
+            console.log(punchData);
 
             //inactive old empno in hrm_employee table
             const result = await inactiveLoginNewPromise(emp_slno)
@@ -651,9 +652,50 @@ module.exports = {
                                     const result = await updatePunchmstEmno(punchmast)
                                     const { status, message } = result;
                                     if (status === 1) {
-                                        const result = await updatePunchEmno(punchData)
-                                        const { status, message } = result;
-                                        if (status === 1) {
+                                        if (body?.punchslno?.length !== 0) {
+                                            const result = await updatePunchEmno(punchData)
+                                            const { status, message } = result;
+                                            if (status === 1) {
+                                                if (body.contract_status === 1) {
+                                                    //if category is contract, new entry to hrm_emp_contract_detl
+                                                    const result = await newEntryContract(newContractEntry)
+                                                    const { status, message } = result;
+                                                    if (status === 1) {
+                                                        return res.status(200).json({
+                                                            success: 1,
+                                                            message: 'Contract Renewal Completed Successfully!' + message
+                                                        });
+                                                    } else {
+                                                        await updatePunchmstEmno(old_punchmast)
+                                                        await updateDutyPlanData(old_dutyplandata)
+                                                        await updateQualEmpno(resetOldEmno)
+                                                        await deleteNewLoginEntry(body.emp_username)
+                                                        await updateEmpMaster(oldData)
+                                                        await activeLoginNewPromise(emp_slno)
+                                                        return res.status(200).json({
+                                                            success: 0,
+                                                            message: 'Error Found, Contact IT'
+                                                        });
+                                                    }
+                                                } else {
+                                                    return res.status(200).json({
+                                                        success: 1,
+                                                        message: 'Contract Renewal Completed Successfully!'
+                                                    });
+                                                }
+                                            } else {
+                                                await updatePunchEmno(old_punchdata)
+                                                await updateDutyPlanData(old_dutyplandata)
+                                                await reverseUpdateQualEmpno(resetOldEmno)
+                                                await deleteNewLoginEntry(body.emp_username)
+                                                await updateEmpMaster(oldData)
+                                                await activeLoginNewPromise(emp_slno)
+                                                return res.status(200).json({
+                                                    success: 0,
+                                                    message: 'Error While Updating Employee punch' + message
+                                                });
+                                            }
+                                        } else {
                                             if (body.contract_status === 1) {
                                                 //if category is contract, new entry to hrm_emp_contract_detl
                                                 const result = await newEntryContract(newContractEntry)
@@ -681,17 +723,6 @@ module.exports = {
                                                     message: 'Contract Renewal Completed Successfully!'
                                                 });
                                             }
-                                        } else {
-                                            await updatePunchEmno(old_punchdata)
-                                            await updateDutyPlanData(old_dutyplandata)
-                                            await reverseUpdateQualEmpno(resetOldEmno)
-                                            await deleteNewLoginEntry(body.emp_username)
-                                            await updateEmpMaster(oldData)
-                                            await activeLoginNewPromise(emp_slno)
-                                            return res.status(200).json({
-                                                success: 0,
-                                                message: 'Error While Updating Employee punch' + message
-                                            });
                                         }
                                     } else {
                                         await updateDutyPlanData(old_dutyplandata)
