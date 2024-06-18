@@ -362,4 +362,24 @@ module.exports = {
             }
         )
     },
+    getEmployeeDutyplan: (data, callBack) => {
+        pool.query(
+            `SELECT  plan_slno, emp_id, shift_id, duty_day ,shft_desc,  shft_cross_day
+            FROM hrm_duty_plan 
+            left join hrm_shift_mast on hrm_shift_mast.shft_slno=hrm_duty_plan.shift_id
+            WHERE  DATE(duty_day) BETWEEN ? AND ?
+            AND emp_id IN (?) ORDER BY DATE(duty_day) ASC`,
+            [
+                data.start_date,
+                data.end_date,
+                data.empData
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }

@@ -620,7 +620,6 @@ module.exports = {
                 em_no: body.old_emno,
                 punchslno: body.punchslno
             }
-
             //inactive old empno in hrm_employee table
             const result = await inactiveLoginNewPromise(emp_slno)
             const { status, message } = result;

@@ -614,6 +614,7 @@ const validateempmasterupdate = Joi.object({
         em_ifsc: Joi.optional(),
         em_maritalstatus: Joi.number().min(1).required(),
         recomend_salary: Joi.number().optional(),
+        em_gender: Joi.number().optional()
 
 })
 
