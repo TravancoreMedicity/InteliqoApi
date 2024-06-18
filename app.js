@@ -143,6 +143,7 @@ const TrainingDetails = require("./api/TrainingDetails/TrainingDetails.route")
 const LeaveReport = require("./api/LeaveReport/LeaveReport.router")
 const TrainingDashboard = require("./api/TrainingDashboard/TrainingDashboard.router")
 const AttendenceReport = require("./api/AttendenceReport/AttendenceReport.router")
+const OnObservationRequest = require("./api/OnobservationRequest/OnobservationRouter")
 
 
 
@@ -295,8 +296,6 @@ app.use("/api/CommonReqst", CommonReqst)
 app.use("/api/CommonRequestMast", CommonRequestMast)
 app.use('/api/Vaccination', Vaccination)
 // app.use("/api/LeaveReports", LeaveReports)
-
-
 //Training
 app.use("/api/TrainingType", TrainingType)
 app.use("/api/TrainingCategory", TrainingCategory)
@@ -325,6 +324,11 @@ app.use("/api/TrainingDetails", TrainingDetails)
 app.use("/api/LeaveReport", LeaveReport)
 app.use("/api/TrainingDashboard", TrainingDashboard)
 app.use("/api/AttendenceReport", AttendenceReport)
+app.use("/api/OnObservationRequest", OnObservationRequest)
+
+
+
+
 // ------ Database Connection --------
 
 app.listen(process.env.APP_PORT, () =>
