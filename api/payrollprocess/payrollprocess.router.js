@@ -2,20 +2,15 @@
 const router = require("express").Router();
 const { checkToken } = require("../../auth/token_validation");
 const { removeListener } = require("../../config/database");
-const { empDeptdata, empDeptSecdata, empNameBasedata, getFixedByEmid, getEarningByEmid,
-    getTotalFineByEmid, getTotalFixedByEmid, getTotalEarningsByEmid, getTotalDeductionByEmid,
-    getDeductionByEmid, getLopByEmid, getTotalGrosssalaryById, GetPfStatus, getPFcalcalculatingamt,
-    GetEsiStatus, getESIcalculatingamt, createAttendanceManual, getPaySlipTableData,
-    getEmpEarningData, getEmpFixedWageData, getEmpDeductionData, getAllEarnData,
-    createPayrollpayslip, createPayrollpayslipDetl, checkAttendanceProcess, getPunchdata,
-
-    getattendancemark, getEmpNoDeptWise, getPunchmastData, DutyPlanLock, dutyPlanUnLock, getPaySlipData,
-    getIndvidualPayslipDetl, checkPayslipDataExist, deptWisePaySlipData,
-    empWisePaySlipDetl, punchMastLock, InsertPunchInOutHr, getPunchInOutHr,
-    CancelPunchInOutHr, getPunchByEmid, InsertArrearSalary, getArearData, getAllEmployee,
-    getPunchMarkingHr, getPunchMarkingHrFull,
-    getTotalGrosssalaryByno, getPunchMasterSalaryAllEmployee,
-    getAcriveDepartmentSection
+const { empDeptdata, empDeptSecdata, empNameBasedata, getFixedByEmid, getEarningByEmid, getTotalFineByEmid, getTotalFixedByEmid,
+    getTotalEarningsByEmid, getTotalDeductionByEmid, getDeductionByEmid, getLopByEmid, getTotalGrosssalaryById, GetPfStatus,
+    getPFcalcalculatingamt, GetEsiStatus, getESIcalculatingamt, createAttendanceManual, getPaySlipTableData, getEmpEarningData,
+    getEmpFixedWageData, getEmpDeductionData, getAllEarnData, createPayrollpayslip, createPayrollpayslipDetl, checkAttendanceProcess,
+    getPunchdata, getattendancemark, getEmpNoDeptWise, getPunchmastData, DutyPlanLock, dutyPlanUnLock, getPaySlipData,
+    getIndvidualPayslipDetl, checkPayslipDataExist, deptWisePaySlipData, empWisePaySlipDetl, punchMastLock, InsertPunchInOutHr,
+    getPunchInOutHr, CancelPunchInOutHr, getPunchByEmid, InsertArrearSalary, getArearData, getAllEmployee, getPunchMarkingHr,
+    getPunchMarkingHrFull, getTotalGrosssalaryByno, getPunchMasterSalaryAllEmployee, getAcriveDepartmentSection,
+    getPunchmastAboveSelectedDate, getPunchAboveSelectedDate
 
 } = require('../payrollprocess/payrollprocess.controller');
 
@@ -49,7 +44,6 @@ router.post("/empFixedDetl", checkToken, getEmpFixedWageData)
 router.post("/empDeduction", checkToken, getEmpDeductionData)
 router.post("/allData", checkToken, getAllEarnData)
 router.patch("/dutyPlanUnLock", checkToken, dutyPlanUnLock);//Hr Punch In/Out cancel
-
 //payslip calculation
 router.post("/create/payslip", checkToken, createPayrollpayslip)
 router.post("/create/detail", checkToken, createPayrollpayslipDetl)
@@ -57,12 +51,9 @@ router.post("/check/payslip", checkToken, checkPayslipDataExist)
 router.post("/check/dateexist", checkToken, checkAttendanceProcess)
 router.post("/duty/data", checkToken, getPunchdata)
 router.post("/data/all", checkToken, getattendancemark);
-
 //attendance updation automatic
 router.post("/getEmpNoDeptWise", checkToken, getEmpNoDeptWise)
 router.post("/getPunchmastData", checkToken, getPunchmastData)
-
-
 //payslip pdf
 router.post("/getPaySlipData", checkToken, getPaySlipData)
 router.post("/getIndvidualPayslipDetl", checkToken, getIndvidualPayslipDetl)
@@ -88,5 +79,9 @@ router.post("/getPunchMarkingHrFull", checkToken, getPunchMarkingHrFull)
 router.get("/getTotalGrosssalaryByno/:id", checkToken, getTotalGrosssalaryByno)
 router.post("/getPunchMasterSalaryAllEmployee", checkToken, getPunchMasterSalaryAllEmployee)
 router.get("/getAcriveDepartmentSection", checkToken, getAcriveDepartmentSection)
+
+router.post("/getPunchmastAboveSelectedDate", checkToken, getPunchmastAboveSelectedDate)//contract renwal new id updation
+router.post("/getPunchAboveSelectedDate", checkToken, getPunchAboveSelectedDate)
+
 
 module.exports = router; 

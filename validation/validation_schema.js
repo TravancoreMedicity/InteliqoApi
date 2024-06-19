@@ -614,6 +614,7 @@ const validateempmasterupdate = Joi.object({
         em_ifsc: Joi.optional(),
         em_maritalstatus: Joi.number().min(1).required(),
         recomend_salary: Joi.number().optional(),
+        em_gender: Joi.number().optional()
 
 })
 
@@ -727,7 +728,8 @@ const validateeemployeepersonal = Joi.object({
         emp_yeargae: Joi.number().optional(),
         em_region: Joi.number().min(1).required(),
         hrm_region2: Joi.number().min(1).required(),
-        salarytype: Joi.number().min(1).required()
+        salarytype: Joi.number().min(1).required(),
+        em_bank_branch: Joi.number().min(1).required(),
 })
 
 // VALIDATE EMPLOYEE ESI AND PF
@@ -1219,8 +1221,8 @@ const validatecommonsettings = Joi.object({
         holiday_policy_count: Joi.number().optional(),
         weekoff_policy_max_count: Joi.number().optional(),
         weekoff_policy_min_count: Joi.number().optional(),
-        coff_min_working_hour: Joi.number().optional()
-
+        coff_min_working_hour: Joi.number().optional(),
+        onobservation_days: Joi.number().optional()
 
 })
 //validate carryforward
