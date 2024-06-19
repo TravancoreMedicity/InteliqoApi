@@ -1,5 +1,5 @@
 const { logger } = require('../../logger/logger');
-const { GetDatewiseEmps, ScheduleInductionTrainings, InsertInductionEmps, GetTypeWiseTraining, UpdateTrainers, UpdateDate, GetTraineers, GetInductionCanderDetails, GetIncutCalenderEmpDetails, GetIncutCalenderTrainers, UpdateDateOnScheduleTbl, UpdateAssignStatus } = require('./TrainingInduction.service');
+const { GetDatewiseEmps, ScheduleInductionTrainings, InsertInductionEmps, GetTypeWiseTraining, UpdateTrainers, UpdateDate, GetTraineers, GetInductionCanderDetails, GetIncutCalenderEmpDetails, GetIncutCalenderTrainers, UpdateDateOnScheduleTbl, UpdateAssignStatus, GetDeptWiseEmps } = require('./TrainingInduction.service');
 module.exports = {
 
     GetDatewiseEmps: (req, res) => {
@@ -24,6 +24,30 @@ module.exports = {
             });
         });
     },
+
+    GetDeptWiseEmps: (req, res) => {
+        const body = req.body;
+        GetDeptWiseEmps(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "no Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 2,
+                data: results,
+            });
+        });
+    },
+
 
     ScheduleInductionTrainings: (req, res) => {
         const body = req.body;

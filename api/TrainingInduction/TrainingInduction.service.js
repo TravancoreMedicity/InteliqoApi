@@ -29,6 +29,38 @@ module.exports = {
             }
         )
     },
+
+    GetDeptWiseEmps: (data, callback) => {
+        pool.query(
+            `
+            SELECT em_id,em_no,em_name,em_department,em_dept_section,em_designation,
+            hrm_department.dept_id,hrm_department.dept_name,
+            hrm_dept_section.sect_id,hrm_dept_section.sect_name,
+            designation.desg_slno,designation.desg_name,
+            training_master.joining_date,training_master.assign_status,training_master.slno as master_slno
+            FROM hrm_emp_master
+            LEFT JOIN hrm_department ON hrm_department.dept_id=hrm_emp_master.em_department
+            LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
+            LEFT JOIN designation ON designation.desg_slno=hrm_emp_master.em_designation
+            LEFT JOIN training_master ON training_master.emp_no=hrm_emp_master.em_no 
+            WHERE hrm_emp_master.em_id!=1 and training_master.assign_status=0 and
+            hrm_emp_master.em_department=? and training_master.joining_date between ? AND ? `,
+            [
+                data.dept,
+                data.fromdate,
+                data.todate
+
+            ],
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+            }
+        )
+    },
+
     ScheduleInductionTrainings: (data, callBack) => {
         pool.query(
             `INSERT INTO training_induction_schedule (

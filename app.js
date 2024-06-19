@@ -143,8 +143,9 @@ const TrainingDetails = require("./api/TrainingDetails/TrainingDetails.route")
 const LeaveReport = require("./api/LeaveReport/LeaveReport.router")
 const TrainingDashboard = require("./api/TrainingDashboard/TrainingDashboard.router")
 const AttendenceReport = require("./api/AttendenceReport/AttendenceReport.router")
-
-
+const TrainingVerification = require("./api/TrainingVerification/TrainingVerification.route")
+const TrainingFeedback = require("./api/Training_Feedback/TrainingFeedback.router")
+const TrainingRecord = require("./api/TrainingRecord/TrainingRecord.router")
 
 app.use(express.json({ limit: '50mb' }));
 app.use((req, res, next) => {
@@ -325,6 +326,11 @@ app.use("/api/TrainingDetails", TrainingDetails)
 app.use("/api/LeaveReport", LeaveReport)
 app.use("/api/TrainingDashboard", TrainingDashboard)
 app.use("/api/AttendenceReport", AttendenceReport)
+app.use("/api/TrainingVerification", TrainingVerification)
+app.use("/api/TrainingFeedback", TrainingFeedback)
+app.use("/api/TrainingRecord", TrainingRecord)
+
+
 // ------ Database Connection --------
 
 app.listen(process.env.APP_PORT, () =>

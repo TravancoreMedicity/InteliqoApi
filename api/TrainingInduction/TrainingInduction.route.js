@@ -1,8 +1,9 @@
 const router = require('express').Router();
 const { checkToken } = require("../../auth/token_validation");
-const { GetDatewiseEmps, ScheduleInductionTrainings, InsertInductionEmps, GetTypeWiseTraining, UpdateTrainers, UpdateDate, GetTraineers, GetInductionCanderDetails, GetIncutCalenderEmpDetails, GetIncutCalenderTrainers } = require('./TrainingInduction.controller');
+const { GetDatewiseEmps, ScheduleInductionTrainings, InsertInductionEmps, GetTypeWiseTraining, UpdateTrainers, UpdateDate, GetTraineers, GetInductionCanderDetails, GetIncutCalenderEmpDetails, GetIncutCalenderTrainers, GetDeptWiseEmps } = require('./TrainingInduction.controller');
 
 router.post('/getEmps', checkToken, GetDatewiseEmps)
+router.post('/getDeptWiseEmployee/List', checkToken, GetDeptWiseEmps)
 router.post('/ScheduleInduction', checkToken, ScheduleInductionTrainings)
 router.post('/addInductnEmps', checkToken, InsertInductionEmps)
 router.post('/gettrainings/:id', checkToken, GetTypeWiseTraining)
