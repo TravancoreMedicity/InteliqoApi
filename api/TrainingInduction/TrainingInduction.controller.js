@@ -1,5 +1,5 @@
 const { logger } = require('../../logger/logger');
-const { GetDatewiseEmps, ScheduleInductionTrainings, InsertInductionEmps, GetTypeWiseTraining, UpdateTrainers, UpdateDate, GetTraineers, GetInductionCanderDetails, GetIncutCalenderEmpDetails, GetIncutCalenderTrainers, UpdateDateOnScheduleTbl, UpdateAssignStatus } = require('./TrainingInduction.service');
+const { GetDatewiseEmps, ScheduleInductionTrainings, InsertInductionEmps, GetTypeWiseTraining, UpdateTrainers, UpdateDate, GetTraineers, GetInductionCanderDetails, GetIncutCalenderEmpDetails, GetIncutCalenderTrainers, UpdateDateOnScheduleTbl, UpdateAssignStatus, GetIncutCalenderDatas, GetInductDeptDatas } = require('./TrainingInduction.service');
 module.exports = {
 
     GetDatewiseEmps: (req, res) => {
@@ -225,6 +225,68 @@ module.exports = {
         GetIncutCalenderTrainers(body, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "no Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 2,
+                data: results,
+            });
+        });
+    },
+
+    GetIncutCalenderDatas: (req, res) => {
+        const body = req.body;
+        GetIncutCalenderDatas(body, (err, results) => {
+            const datas = results.map((val) => {
+                const obj = {
+                    schedule_slno: val.schedule_slno,
+                    schedule_type: val.schedule_type,
+                    schedule_topic: val.schedule_topic,
+                    induction_date: val.induction_date,
+                    trainingtype_slno: val.trainingtype_slno,
+                    type_name: val.type_name,
+                    topic_slno: val.topic_slno,
+                    training_topic_name: val.training_topic_name,
+                    trainers: JSON.parse(val.trainers),
+                    trainer_name: val.trainer_name
+                }
+                return obj
+            })
+
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "no Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 2,
+                data: datas,
+            });
+        });
+    },
+
+    GetInductDeptDatas: (req, res) => {
+        const body = req.body;
+        GetInductDeptDatas(body, (err, results) => {
+            if (err) {
+                // logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err
