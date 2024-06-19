@@ -303,9 +303,26 @@ module.exports = {
     },
     GetEmployeeShiftDetails: (data, callBack) => {
         pool.query(
-            `select shift_id,shift_in,shift_out,shft_cross_day,punch_in,punch_out from punch_master
-            left join hrm_shift_mast on hrm_shift_mast.shft_slno=punch_master.shift_id
-            where em_no=? and date(duty_day)=?`,
+            `select punch_slno,
+            duty_day,
+            shift_id,
+            emp_id,
+            em_no,
+            punch_in,
+            punch_out,
+            shift_in,
+            shift_out,
+            hrs_worked,
+            late_in,
+            early_out,
+            duty_desc,
+            duty_status,
+            holiday_status,
+            leave_status,
+            lvereq_desc,
+            lve_tble_updation_flag from punch_master
+        left join hrm_shift_mast on hrm_shift_mast.shft_slno=punch_master.shift_id
+        where em_no=? and date(duty_day)=?`,
             [
                 data.empno,
                 data.dutyday
@@ -919,7 +936,7 @@ module.exports = {
     },
     getEmployeeRights: (data, callBack) => {
         pool.query(
-            `  SELECT * FROM medi_hrm.module_group_user_rights where emp_slno=?`,
+            `  SELECT * FROM module_group_user_rights where emp_slno=?`,
             [
                 data.emid
             ],
@@ -960,7 +977,7 @@ module.exports = {
         pool.query(
             `SELECT plan_slno,emp_id,hrm_emp_master.em_no,hrm_emp_master.em_name,shift_id,duty_day,
             attendance_update_flag,holiday,offday_flag,holiday_name,holiday_slno
-            FROM medi_hrm.hrm_duty_plan
+            FROM hrm_duty_plan
             left join hrm_emp_master on hrm_emp_master.em_no=hrm_duty_plan.em_no
             left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
             where  duty_day between ? and ? and em_dept_section=?
@@ -1180,7 +1197,7 @@ module.exports = {
     updateLCPunchMaster: (data, callBack) => { //added on 27/06/2024 10:00 PM (Ajith)
         pool.query(
             `UPDATE punch_master 
-                SET lvereq_desc = 'HD'
+                SET lvereq_desc = 'CHD'
             WHERE punch_slno IN (?)`,
             [
                 data

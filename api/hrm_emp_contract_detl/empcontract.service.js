@@ -943,4 +943,26 @@ module.exports = {
             )
         }).catch((e) => { return { status: 0 } })
     },
+    updatePunchEmno: (data) => {
+        return new Promise((resolve, reject) => {
+            pool.query(
+                `UPDATE punch_data SET emp_code=? where slno IN (?)`,
+                [
+                    data.em_no,
+                    data.punchslno
+                ],
+                (error, results, feilds) => {
+                    if (error) {
+                        reject({ status: 0, message: error })
+                    } else {
+                        resolve({
+                            status: 1, message: 'success'
+                        })
+                    }
+                }
+            )
+        }).then((result) => {
+            return result
+        }).catch((e) => { return { status: 0 } })
+    },
 }

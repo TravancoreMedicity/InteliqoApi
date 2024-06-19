@@ -25,7 +25,6 @@ module.exports = {
         )
     },
     update: (data, callBack) => {
-        console.log(data);
         pool.query(
             `UPDATE module_group_user_rights
                 SET emp_slno  = ?,

@@ -172,8 +172,9 @@ module.exports = {
                 hf_hod_apprv_cmnt,
                 hf_hod_apprv_time,
                 hf_hr_aprrv_requ,
-                hf_ceo_req_status
-            ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+                hf_ceo_req_status,
+                halfday_status
+            ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
                 data.checkIn,
                 data.checkOut,
@@ -196,7 +197,8 @@ module.exports = {
                 data.hod_apprv_cmnt,
                 data.hod_apprv_time,
                 data.hr_aprrv_requ,
-                data.ceo_req_status
+                data.ceo_req_status,
+                data.halfDayStat
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -608,6 +610,7 @@ module.exports = {
     },
     saveLeaveRequestMasterTable: (data) => {
         return new Promise((resolve, reject) => {
+
             pool.query(
                 `INSERT INTO hrm_leave_request 
                     (
@@ -671,7 +674,6 @@ module.exports = {
         }).then((result) => {
             return result;
         }).catch((error) => {
-            console.log(error)
             return ({ status: 0, message: error })
         });
     },
@@ -688,7 +690,8 @@ module.exports = {
                         leavetype_name,                
                         leave_name,
                         no_days,
-                        sl_leave
+                        sl_leave,
+                        leaveCount
                     )
                     VALUES (?)`,
                     [e],

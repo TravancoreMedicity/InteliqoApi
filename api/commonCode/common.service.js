@@ -408,7 +408,8 @@ module.exports = {
 			ifnull(em_adhar_no,'')em_adhar_no,
 			ifnull(em_pan_no,'')em_pan_no,
 			ifnull(em_passport_no,'')em_passport_no,
-            ifnull(salarytype,'')salarytype
+            ifnull(salarytype,'')salarytype,
+            em_bank_branch
                 FROM hrm_emp_master
                 left join  hrm_emp_personal on  hrm_emp_master.em_no= hrm_emp_personal.em_no
                 WHERE hrm_emp_master.em_no = ?` ,

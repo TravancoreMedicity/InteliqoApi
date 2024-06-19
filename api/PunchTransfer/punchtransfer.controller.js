@@ -6,7 +6,7 @@ module.exports = {
     getpunchdata: (req, res) => {
         const body = req.body;
         getpunchdataZtech(body, (err, results) => {
-            const zkteco = [...results]
+            const etpData = [...results]
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
@@ -23,7 +23,7 @@ module.exports = {
                         message: err
                     });
                 }
-                let newpunchdata = zkteco.filter(value => {
+                let newpunchdata = etpData.filter(value => {
                     return !hrPunch.find(values => {
                         return values.id === value.id
                     })

@@ -214,7 +214,8 @@ module.exports = {
                     hrm_pin2=?, 
                     blood_slno=?,
                     hrm_religion=?,
-                    recomend_salary=?
+                    recomend_salary=?,
+                    em_gender=?
                 WHERE em_no = ?`,
             [
                 data.emp_dob,
@@ -233,6 +234,7 @@ module.exports = {
                 data.em_bloodgroup,
                 data.em_religion,
                 data.recomend_salary,
+                data.em_gender,
                 data.em_no
             ],
             (error, results, feilds) => {
@@ -389,6 +391,7 @@ module.exports = {
                 hrm_department.dept_name,
                 hrm_dept_section.sect_name,
                 designation.desg_name,
+                gross_salary,
                 IF(em_status = 1, 'Yes', 'No') emp_status
             FROM
                 hrm_emp_master

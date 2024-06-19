@@ -29,6 +29,56 @@ const calculateIn = async (empid, punchTime) => {
     })
 
 }
+
+
+const punchInsert = async (id, emp_code, punch_time, punch_state) => {
+
+    insertPunchInDetail(id, emp_code, punch_time, punch_state, (err, result) => {
+        //    console.log(result);
+        if (err) {
+            console.log('error')
+        }
+
+        if (result !== 1000) {
+            // const data = result[0].shift_id;
+
+        }
+
+        if (result === 1000) {
+            // console.log('no shift')
+        }
+    })
+
+}
+
+//CHECK CHECK IN UPDATED OR NOT
+const insertPunchInDetail = (id, emp_code, punch_time, punch_state, callBack) => {
+    pool.query(
+        `INSERT INTO punch_data (
+            id,
+            emp_code,
+            punch_time,
+            punch_state)
+        VALUES (?,?,?,?)`,
+        [
+            id,
+            emp_code,
+            punch_time,
+            punch_state
+        ],
+        (error, results, feilds) => {
+            if (error) {
+                return callBack(error);
+            }
+            return callBack(null, results);
+        }
+    )
+}
+
+
+
+
+
 //GET SHIFT AND UPDATE OUNCH IN 
 const updatePunchIn = async (empid, punchTime, callBack) => {
     pool.query(
@@ -97,7 +147,6 @@ const updatePunchInDetails = async (data) => {
 //calculater shift in and out 
 const calculateShift = async (shiftDetl, punchTime, slno) => {
 
-    console.log(punchTime);
     // console.log(slno)
     const {
         shft_chkin_start,
@@ -198,7 +247,7 @@ const checkOutUpdation = async (slno, punch, callBack) => {
 //CHECK CHECK IN UPDATED OR NOT
 const checkinUpdated = (slno, callBack) => {
     pool.query(
-        `SELECT punch_in FROM medi_hrm.punch_master where punch_slno = ?`,
+        `SELECT punch_in FROM punch_master where punch_slno = ?`,
         [
             slno
         ],
@@ -213,5 +262,6 @@ const checkinUpdated = (slno, callBack) => {
 
 
 module.exports = {
-    calculateIn
+    calculateIn,
+    punchInsert
 }
