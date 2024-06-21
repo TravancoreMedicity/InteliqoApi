@@ -1,4 +1,4 @@
-const { TrainingNameGet, TrainingScheduleInsert, TrainingScheduleGet, TrainingScheduleUpdate } = require('./TrainingSchedule.service');
+const { TrainingNameGet, TrainingScheduleInsert, TrainingScheduleGet, TrainingScheduleUpdate, GetDeptWiseTrainings } = require('./TrainingSchedule.service');
 
 module.exports = {
     TrainingNameGet: (req, res) => {
@@ -82,5 +82,28 @@ module.exports = {
                 message: "Training Schedule Updated Successfully"
             });
         });
-    }
+    },
+    GetDeptWiseTrainings: (req, res) => {
+        const id = req.params.id;
+        GetDeptWiseTrainings(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "no Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 2,
+                data: results,
+            });
+        });
+    },
+
 }

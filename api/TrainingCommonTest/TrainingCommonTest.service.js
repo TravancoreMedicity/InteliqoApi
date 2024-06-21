@@ -4,11 +4,14 @@ module.exports = {
     GetTrainingTopics: (id, callback) => {
         pool.query(
             ` 
-            SELECT ROW_NUMBER() OVER() as sno, topic, training_topic.topic_slno, training_topic.training_topic_name, schedule_date
+            SELECT ROW_NUMBER() OVER() as sno, topic, training_topic.topic_slno, training_topic.training_topic_name, schedule_date,
+            training_topic.pretest_status,training_topic.post_test_status
             FROM training_employee_details
             LEFT JOIN training_topic ON training_topic.topic_slno = training_employee_details.topic
             where emp_dept=? and date(training_employee_details.schedule_date)=current_date()
-            group by  topic, training_topic.topic_slno, training_topic.training_topic_name, schedule_date
+            and training_topic.pretest_status=1 and training_topic.post_test_status=1
+            group by  topic, training_topic.topic_slno, training_topic.training_topic_name, schedule_date,
+            pretest_status,post_test_status
             `, [id],
 
             (err, results, feilds) => {
@@ -88,11 +91,13 @@ module.exports = {
     },
     GetDashboardTrainingTopics: (callback) => {
         pool.query(
-            `    SELECT ROW_NUMBER() OVER() as sno, topic, training_topic.topic_slno, training_topic.training_topic_name, schedule_date
+            `SELECT ROW_NUMBER() OVER() as sno, topic, training_topic.topic_slno, training_topic.training_topic_name, schedule_date,
+            training_topic.pretest_status,training_topic.post_test_status
             FROM training_employee_details
             LEFT JOIN training_topic ON training_topic.topic_slno = training_employee_details.topic
             where date(training_employee_details.schedule_date)=current_date()
-            group by topic, training_topic.topic_slno, training_topic.training_topic_name, schedule_date
+            and training_topic.pretest_status=1 and training_topic.post_test_status=1
+            group by topic, training_topic.topic_slno, training_topic.training_topic_name, schedule_date, pretest_status,post_test_status
             `, [],
 
             (err, results, feilds) => {

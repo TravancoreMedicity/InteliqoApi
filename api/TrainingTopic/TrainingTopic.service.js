@@ -56,6 +56,27 @@ module.exports = {
         )
     },
 
+    checkInsertVal: (data, callBack) => {
+        pool.query(
+            `SELECT
+                dept_status,
+                training_topic_name, 
+                training_name
+                FROM training_topic
+                WHERE training_topic_name=?'`,
+            [
+                data.training_topic_name
+
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error)
+                }
+                return callBack(null, results)
+            }
+        )
+    },
+
     TrainingTopicGet: (callback) => {
         pool.query(
             `SELECT topic_slno,training_dept,training_topic.dept_status,training_topic_name,training_topic.training_name,training_status, tutorial_status, medical_status, non_medical_status,
@@ -198,6 +219,47 @@ module.exports = {
             FROM training_topic
             LEFT JOIN training_name ON training_topic.training_name=training_name.name_slno
             where type_slno=?`, [id],
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+
+            }
+        )
+    },
+    TrainingTopicByTypeGet: (id, callback) => {
+        pool.query(
+            `SELECT topic_slno,training_dept,training_topic.dept_status,training_topic_name,training_topic.training_name,training_status,
+            tutorial_status, medical_status, non_medical_status,pretest_status, post_test_status,online_status, offline_status,
+            both_status,video_link,video_time,name_slno,training_name.training_name,hours,upload_status,trainers,type_slno
+            FROM training_topic
+            LEFT JOIN training_name ON training_topic.training_name=training_name.name_slno
+            where type_slno=?`, [id],
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+
+            }
+        )
+    },
+
+    GetDeptWiseTopic: (id, callback) => {
+        pool.query(
+            `SELECT topic_slno,training_dept,training_topic.dept_status,training_topic_name,training_topic.training_name,training_status, tutorial_status, medical_status, non_medical_status,
+            pretest_status, post_test_status,online_status, offline_status, both_status,video_link,video_time,
+            name_slno,training_name.training_name,hours,hrm_department.dept_id,dept_name,name_slno,upload_status,
+            GROUP_CONCAT(em_name)  as trainers_name,trainers
+            FROM training_topic
+            LEFT JOIN hrm_department ON hrm_department.dept_id=training_topic.training_dept
+            LEFT JOIN training_name ON training_topic.training_name=training_name.name_slno
+            LEFT JOIN hrm_emp_master on JSON_CONTAINS(training_topic.trainers,cast(hrm_emp_master.em_id as json),'$')
+            where hrm_department.dept_id=? 
+            group by topic_slno`, [id],
             (err, results, feilds) => {
                 if (err) {
                     return callback(err)
