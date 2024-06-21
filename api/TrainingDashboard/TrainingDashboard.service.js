@@ -190,23 +190,6 @@ module.exports = {
         )
     },
 
-
-    // GetBarChartData: (data, callBack) => {
-    //     const year = data.selectedYear;
-    //     pool.query(
-
-    //         `SELECT * 
-    //         FROM training_employee_details 
-    //         WHERE YEAR(schedule_date) = ('${year}')`,
-    //         {},
-    //         (error, results, feilds) => {
-    //             if (error) {
-    //                 return callBack(error);
-    //             }
-    //             return callBack(null, results);
-    //         }
-    //     )
-    // },
     GetBarChartData: (data, callBack) => {
         const fromDate = data.fromDate
         const toDate = data.toDate

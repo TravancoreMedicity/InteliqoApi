@@ -1,9 +1,18 @@
 const pool = require('../config/database');
 const MySQLEvents = require('@rodrigogs/mysql-events')
-const { calculateIn, punchInsert } = require('../upload/punchTableUpdation')
+const { calculateIn } = require('../upload/punchTableUpdation')
 
+// console.log(MySQLEvents.STATEMENTS)
 
 const program = async () => {
+
+    // const connection = mysql.createConnection({
+    //     host: process.env.DB_HOST,
+    //     user: process.env.DB_USER,
+    //     password: process.env.DB_PASS,
+    //     dateStrings: true
+    // })
+
 
     const instance = new MySQLEvents(pool, {
         startAtEnd: true,
@@ -16,7 +25,7 @@ const program = async () => {
 
     instance.addTrigger({
         name: 'TEST',
-        expression: 'etp.iclock_transaction',
+        expression: 'medi_hrm.punch_data',
         statement: MySQLEvents.STATEMENTS.INSERT,
         onEvent: (event) => {
             // Only get the INSERT EVENT
@@ -25,7 +34,6 @@ const program = async () => {
             if (objectLngth > 0) {
                 // console.log(obj)
                 const { slno, id, emp_code, punch_time, punch_state } = obj;
-                punchInsert(id, emp_code, punch_time, punch_state)
                 calculateIn(emp_code, punch_time)
             }
         },
