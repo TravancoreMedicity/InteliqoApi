@@ -83,5 +83,18 @@ module.exports = {
                 return callback(null, results)
             }
         )
-    }
+    },
+    GetDeptWiseTrainings: (id, callback) => {
+        pool.query(
+            `SELECT name_slno,training_name FROM training_name`, [id],
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+
+            }
+        )
+    },
 }

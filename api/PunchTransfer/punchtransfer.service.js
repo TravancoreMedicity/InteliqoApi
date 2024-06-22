@@ -1,9 +1,9 @@
-// const zkpool = require('../../config/zkdatabase')
+const zkpool = require('../../config/zkdatabase')
 const pool = require('../../config/database')
 module.exports = {
     getpunchdataZtech: (data, callBack) => {
-        pool.query(
-            `select * FROM etp.iclock_transaction where 
+        zkpool.query(
+            `select * FROM zkteco.iclock_transaction where 
             date(punch_time)           
                       BETWEEN ? AND ?`,
             [

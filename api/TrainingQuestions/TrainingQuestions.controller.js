@@ -1,5 +1,5 @@
 
-const { TrainingQuestionGetTopic, TrainingQuestionInsert, TrainingQuestionGet, TrainingQuestionUpdate, GetlastEntryDatas } = require('./TrainingQuestions.service')
+const { TrainingQuestionGetTopic, TrainingQuestionInsert, TrainingQuestionGet, TrainingQuestionUpdate, GetlastEntryDatas, GetDeptWiseQuestns } = require('./TrainingQuestions.service')
 
 module.exports = {
     TrainingQuestionGetTopic: (req, res) => {
@@ -109,6 +109,28 @@ module.exports = {
                 data: results
             })
 
+        });
+    },
+    GetDeptWiseQuestns: (req, res) => {
+        const id = req.params.id;
+        GetDeptWiseQuestns(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "no Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 2,
+                data: results,
+            });
         });
     },
 }
