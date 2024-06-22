@@ -143,15 +143,11 @@ const TrainingDetails = require("./api/TrainingDetails/TrainingDetails.route")
 const LeaveReport = require("./api/LeaveReport/LeaveReport.router")
 const TrainingDashboard = require("./api/TrainingDashboard/TrainingDashboard.router")
 const AttendenceReport = require("./api/AttendenceReport/AttendenceReport.router")
-<<<<<<< HEAD
 const TrainingVerification = require("./api/TrainingVerification/TrainingVerification.route")
 const TrainingFeedback = require("./api/Training_Feedback/TrainingFeedback.router")
 const TrainingRecord = require("./api/TrainingRecord/TrainingRecord.router")
-=======
 const OnObservationRequest = require("./api/OnobservationRequest/OnobservationRouter")
 
-
->>>>>>> 1f863ca9dc8e30d9fb1882cf39239ab79e8324b3
 
 app.use(express.json({ limit: '50mb' }));
 app.use((req, res, next) => {
@@ -334,6 +330,7 @@ app.use("/api/TrainingVerification", TrainingVerification)
 app.use("/api/TrainingFeedback", TrainingFeedback)
 app.use("/api/TrainingRecord", TrainingRecord)
 app.use("/api/OnObservationRequest", OnObservationRequest)
+
 
 
 

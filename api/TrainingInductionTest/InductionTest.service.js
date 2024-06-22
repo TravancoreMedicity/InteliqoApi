@@ -40,7 +40,8 @@ module.exports = {
             training_induction_emp_details.induction_slno as Emslno,
             training_induction_emp_details.schedule_no,
             training_induction_emp_details.induct_detail_date,
-            training_induction_schedule.trainers
+            training_induction_schedule.trainers,
+            training_induct_feedback.fedbk_topic
             FROM hrm_emp_master
             LEFT JOIN hrm_department ON hrm_department.dept_id=hrm_emp_master.em_department
             LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
@@ -50,6 +51,7 @@ module.exports = {
             LEFT JOIN training_topic ON training_topic.topic_slno=training_induction_schedule.schedule_topic
             LEFT JOIN training_induction_pretest ON training_induction_pretest.emp_id=training_induction_emp_details.indct_emp_no
             LEFT JOIN training_induct_posttest ON training_induct_posttest.emp_id=training_induction_emp_details.indct_emp_no
+            LEFT JOIN training_induct_feedback ON training_induct_feedback.emp_id=training_induction_emp_details.indct_emp_no
             where hrm_emp_master.em_no=?
             and hrm_emp_master.em_mobile=? and  training_topic.topic_slno=?`,
             [
