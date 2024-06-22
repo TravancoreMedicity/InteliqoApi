@@ -6,7 +6,7 @@ module.exports = {
     getpunchdata: (req, res) => {
         const body = req.body;
         getpunchdataZtech(body, (err, results) => {
-            const etpData = [...results]
+            const zkteco = [...results]
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
@@ -23,28 +23,35 @@ module.exports = {
                         message: err
                     });
                 }
-                let newpunchdata = etpData.filter(value => {
+                let newpunchdata = zkteco.filter(value => {
                     return !hrPunch.find(values => {
                         return values.id === value.id
                     })
                 })
-                var a1 = newpunchdata.map((value, index) => {
-                    return [value.id, value.emp_code, value.punch_time, value.punch_state
-                    ]
-                })
-                InsertPunchdata(a1, (err, results) => {
-                    if (err) {
-                        logger.logwindow(err)
-                        return res.status(200).json({
-                            success: 0,
-                            message: err
-                        });
-                    }
+                if (newpunchdata.length === 0) {
                     return res.status(200).json({
                         success: 1,
                         message: "Punch Data Transfer Successfully"
                     });
-                });
+                } else {
+                    var a1 = newpunchdata.map((value, index) => {
+                        return [value.id, value.emp_code, value.punch_time, value.punch_state
+                        ]
+                    })
+                    InsertPunchdata(a1, (err, results) => {
+                        if (err) {
+                            logger.logwindow(err)
+                            return res.status(200).json({
+                                success: 0,
+                                message: err
+                            });
+                        }
+                        return res.status(200).json({
+                            success: 1,
+                            message: "Punch Data Transfer Successfully"
+                        });
+                    });
+                }
             });
         });
     },
