@@ -137,4 +137,34 @@ module.exports = {
             }
         )
     },
+    GetDeptWiseQuestns: (id, callback) => {
+        pool.query(
+            `SELECT
+            q_slno,
+            training_topic.topic_slno,
+            training_questions.training_topics,
+            training_topic_name,training_topic.training_dept,
+                questions,
+                answer_a,
+                answer_b,
+                answer_c,
+                answer_d,
+                right_answer,
+                writtenStatus,
+                handwrite_answer,
+                marks
+             FROM training_questions
+             LEFT JOIN training_topic ON
+             training_questions.training_topics=training_topic.topic_slno 
+             WHERE training_topic.training_dept=?`, [id],
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+
+            }
+        )
+    },
 }
