@@ -205,11 +205,11 @@ module.exports = {
 
     GetPosttestQRdetails: (id, callback) => {
         pool.query(
-            `  SELECT ROW_NUMBER() OVER () as sno,induction_slno, schedule_no, indct_emp_no, induct_emp_dept, induct_emp_sec,
+            `  SELECT ROW_NUMBER() OVER () as sno,induction_slno, schedule_no, indct_emp_no, training_induction_emp_details.induct_detail_date, induct_emp_sec,
                training_induction_emp_details.training_status, question_count, training_induction_emp_details.pretest_status, 
                training_induction_emp_details.posttest_status, online_mode, offline_mode, retest,
                hrm_department.dept_id,hrm_emp_master.em_id,hrm_dept_section.sect_id,training_topic.topic_slno,training_induction_schedule.schedule_topic,
-               training_topic_name,em_name, training_induction_schedule.schedule_slno
+               training_topic_name,em_name, training_induction_schedule.schedule_slno,training_induction_schedule.trainers
                FROM training_induction_emp_details
                LEFT JOIN hrm_department on hrm_department.dept_id=training_induction_emp_details.induct_emp_dept
                LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_induction_emp_details.indct_emp_no
@@ -288,6 +288,42 @@ module.exports = {
                 data.slno
 
             ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+
+    GetEmpDataForFeedback: (data, callBack) => {
+        pool.query(
+            ` 
+            SELECT training_induction_emp_details.induction_slno,schedule_no,training_induction_emp_details.indct_emp_no,training_induction_emp_details.induct_detail_date,
+            training_induction_schedule.trainers,training_induction_schedule.schedule_topic,
+            training_induction_emp_details.training_status,training_induction_emp_details.question_count,training_induction_emp_details.pretest_status,training_induction_emp_details.posttest_status,
+            training_induction_emp_details.online_mode,training_induction_emp_details.offline_mode,training_induction_emp_details.retest,
+            training_topic.topic_slno,training_topic.training_topic_name,
+            training_induction_pretest.mark as pretest_mark,training_induct_posttest.mark as post_mark,
+            hrm_emp_master.em_no,hrm_emp_master.em_name,hrm_emp_master.em_designation,
+            hrm_department.dept_name,
+            designation.desg_name
+            FROM training_induction_emp_details
+            LEFT JOIN training_induction_schedule ON training_induction_schedule.schedule_slno=training_induction_emp_details.schedule_no
+			LEFT JOIN training_topic ON training_topic.topic_slno=training_induction_schedule.schedule_topic
+            LEFT JOIN training_induction_pretest ON training_induction_pretest.emp_id=training_induction_emp_details.indct_emp_no
+            LEFT JOIN training_induct_posttest ON training_induct_posttest.emp_id=training_induction_emp_details.indct_emp_no
+            LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_induction_emp_details.indct_emp_no
+			LEFT JOIN hrm_department ON hrm_department.dept_id=training_induction_emp_details.induct_emp_dept
+            LEFT JOIN designation ON designation.desg_slno=hrm_emp_master.em_designation
+            WHERE training_induction_schedule.schedule_topic=? AND training_induction_emp_details.schedule_no=? AND training_induction_emp_details.indct_emp_no=?`,
+            [
+                data.topic_no,
+                data.schedule_no,
+                data.EmId
+            ],
+
             (error, results, feilds) => {
                 if (error) {
                     return callBack(error);
