@@ -3,8 +3,6 @@ const pool = require('../../config/database');
 module.exports = {
     //training_induct_feedback
 
-    //feedback_slno, induct_schedule_no, emp_id, fedbk_topic, training_date, induct_trainer, quest_a, quest_b, quest_c, quest_d, induct_feedback, create_user, create_date, update_user, update_date
-
     InsertInductFeedback: (data, callBack) => {
         pool.query(
             `INSERT INTO training_induct_feedback
@@ -13,6 +11,7 @@ module.exports = {
                 emp_id,
                 fedbk_topic,
                 training_date,
+                induct_trainer,
                 quest_a,
                 quest_b,
                 quest_c,
@@ -20,13 +19,13 @@ module.exports = {
                 induct_feedback,
                 create_user
             )
-            VALUES (?,?,?,?,?,?,?,?,?,?)`,
+            VALUES (?,?,?,?,?,?,?,?,?,?,?)`,
             [
                 data.schedule_no,
                 data.em_id,
                 data.topic,
                 data.induct_detail_date,
-                // JSON.stringify(data.trainers),
+                JSON.stringify(data.trainers),
                 data.q1,
                 data.q2,
                 data.q3,
