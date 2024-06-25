@@ -148,8 +148,6 @@ const TrainingFeedback = require("./api/Training_Feedback/TrainingFeedback.route
 const TrainingRecord = require("./api/TrainingRecord/TrainingRecord.router")
 const OnObservationRequest = require("./api/OnobservationRequest/OnobservationRouter")
 
-
-
 app.use(express.json({ limit: '50mb' }));
 app.use((req, res, next) => {
     //     res.header("Access-Control-Allow-Origin", "http://192.168.10.170:8080
@@ -331,6 +329,7 @@ app.use("/api/TrainingVerification", TrainingVerification)
 app.use("/api/TrainingFeedback", TrainingFeedback)
 app.use("/api/TrainingRecord", TrainingRecord)
 app.use("/api/OnObservationRequest", OnObservationRequest)
+
 
 
 
