@@ -5,7 +5,8 @@ module.exports = {
         pool.query(
             `SELECT hrm_emp_master.em_no,em_name,em_dob,em_doj,em_mobile,em_email,branch_name,dept_name,
             sect_name,desg_name,ecat_name,inst_emp_type,gross_salary,addressPresent1,em_account_no,hrm_pin2,em_pan_no,
-            addressPresent2,em_retirement_date,em_passport_no,em_adhar_no,if(em_gender=1,'Male','Female')em_gender 
+            addressPresent2,em_retirement_date,em_passport_no,em_adhar_no,if(em_gender=1,'Male','Female')em_gender,
+           ifnull(em_pf_no,0) em_pf_no, em_esi_no,lwfnumber
             FROM hrm_emp_master
             inner join hrm_branch on hrm_branch.branch_slno=hrm_emp_master.em_branch
             inner join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
@@ -14,7 +15,10 @@ module.exports = {
             inner join hrm_emp_category on hrm_emp_category.category_slno=hrm_emp_master.em_category
             inner join institution_type on institution_type.inst_slno=hrm_emp_master.em_institution_type
             left join hrm_emp_personal on hrm_emp_personal.em_id=hrm_emp_master.em_id
-            where (hrm_emp_master.em_status=1 and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2 and doctor_status=0) and (hrm_branch.branch_slno IN (?))`,
+            left join hrm_emp_pfesi on hrm_emp_pfesi.em_id=hrm_emp_master.em_id
+            where (hrm_emp_master.em_status=1 and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2 and doctor_status=0) 
+            and (hrm_branch.branch_slno IN (?))
+            group by hrm_emp_master.em_no`,
             [
                 data
             ],
@@ -30,7 +34,8 @@ module.exports = {
         pool.query(
             `SELECT hrm_emp_master.em_no,em_name,em_dob,em_doj,em_mobile,em_email,branch_name,dept_name,
             sect_name,desg_name,ecat_name,inst_emp_type,gross_salary,addressPresent1,em_account_no,hrm_pin2,em_pan_no,
-            addressPresent2,em_retirement_date,em_passport_no,em_adhar_no,if(em_gender=1,'Male','Female')em_gender 
+            addressPresent2,em_retirement_date,em_passport_no,em_adhar_no,if(em_gender=1,'Male','Female')em_gender,
+           ifnull(em_pf_no,0) em_pf_no, em_esi_no,lwfnumber
             FROM hrm_emp_master
             inner join hrm_branch on hrm_branch.branch_slno=hrm_emp_master.em_branch
             inner join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
@@ -39,7 +44,10 @@ module.exports = {
             inner join hrm_emp_category on hrm_emp_category.category_slno=hrm_emp_master.em_category
             inner join institution_type on institution_type.inst_slno=hrm_emp_master.em_institution_type
             left join hrm_emp_personal on hrm_emp_personal.em_id=hrm_emp_master.em_id
-            where (hrm_emp_master.em_status=1 and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2 and doctor_status=0) and (hrm_branch.branch_slno IN (?) and hrm_department.dept_id IN (?))`,
+            left join hrm_emp_pfesi on hrm_emp_pfesi.em_id=hrm_emp_master.em_id
+            where (hrm_emp_master.em_status=1 and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2 and doctor_status=0) 
+            and (hrm_branch.branch_slno IN (?) AND hrm_department.dept_id IN (?))
+            group by hrm_emp_master.em_no`,
             [
                 data.branch_slno,
                 data.dept_id
@@ -56,7 +64,8 @@ module.exports = {
         pool.query(
             `SELECT hrm_emp_master.em_no,em_name,em_dob,em_doj,em_mobile,em_email,branch_name,dept_name,
             sect_name,desg_name,ecat_name,inst_emp_type,gross_salary,addressPresent1,em_account_no,hrm_pin2,em_pan_no,
-            addressPresent2,em_retirement_date,em_passport_no,em_adhar_no,if(em_gender=1,'Male','Female')em_gender 
+            addressPresent2,em_retirement_date,em_passport_no,em_adhar_no,if(em_gender=1,'Male','Female')em_gender,
+           ifnull(em_pf_no,0) em_pf_no, em_esi_no,lwfnumber
             FROM hrm_emp_master
             inner join hrm_branch on hrm_branch.branch_slno=hrm_emp_master.em_branch
             inner join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
@@ -65,7 +74,10 @@ module.exports = {
             inner join hrm_emp_category on hrm_emp_category.category_slno=hrm_emp_master.em_category
             inner join institution_type on institution_type.inst_slno=hrm_emp_master.em_institution_type
             left join hrm_emp_personal on hrm_emp_personal.em_id=hrm_emp_master.em_id
-            where (hrm_emp_master.em_status=1 and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2 and doctor_status=0) and (hrm_branch.branch_slno IN (?) AND hrm_department.dept_id IN (?) AND hrm_dept_section.sect_id IN (?))`,
+            left join hrm_emp_pfesi on hrm_emp_pfesi.em_id=hrm_emp_master.em_id
+            where (hrm_emp_master.em_status=1 and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2 and doctor_status=0) 
+            and (hrm_branch.branch_slno IN (?) AND hrm_department.dept_id IN (?) AND hrm_dept_section.sect_id IN (?))
+            group by hrm_emp_master.em_no`,
             [
                 data.branch_slno,
                 data.dept_id,
@@ -83,7 +95,8 @@ module.exports = {
         pool.query(
             `SELECT hrm_emp_master.em_no,em_name,em_dob,em_doj,em_mobile,em_email,branch_name,dept_name,
             sect_name,desg_name,ecat_name,inst_emp_type,gross_salary,addressPresent1,em_account_no,hrm_pin2,em_pan_no,
-            addressPresent2,em_retirement_date,em_passport_no,em_adhar_no,if(em_gender=1,'Male','Female')em_gender 
+            addressPresent2,em_retirement_date,em_passport_no,em_adhar_no,if(em_gender=1,'Male','Female')em_gender,
+           ifnull(em_pf_no,0) em_pf_no, em_esi_no,lwfnumber
             FROM hrm_emp_master
             inner join hrm_branch on hrm_branch.branch_slno=hrm_emp_master.em_branch
             inner join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
@@ -92,7 +105,10 @@ module.exports = {
             inner join hrm_emp_category on hrm_emp_category.category_slno=hrm_emp_master.em_category
             inner join institution_type on institution_type.inst_slno=hrm_emp_master.em_institution_type
             left join hrm_emp_personal on hrm_emp_personal.em_id=hrm_emp_master.em_id
-            where (hrm_emp_master.em_status=1 and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2 and doctor_status=0) and (hrm_branch.branch_slno IN (?) and em_doj between ? and ?)`,
+            left join hrm_emp_pfesi on hrm_emp_pfesi.em_id=hrm_emp_master.em_id
+            where (hrm_emp_master.em_status=1 and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2 and doctor_status=0) 
+            and (hrm_branch.branch_slno IN (?) and em_doj between ? and ?)
+            group by hrm_emp_master.em_no`,
             [
                 data.branch_slno,
                 data.date_of_join_start,
@@ -110,7 +126,8 @@ module.exports = {
         pool.query(
             `SELECT hrm_emp_master.em_no,em_name,em_dob,em_doj,em_mobile,em_email,branch_name,dept_name,
             sect_name,desg_name,ecat_name,inst_emp_type,gross_salary,addressPresent1,em_account_no,hrm_pin2,em_pan_no,
-            addressPresent2,em_retirement_date,em_passport_no,em_adhar_no,if(em_gender=1,'Male','Female')em_gender 
+            addressPresent2,em_retirement_date,em_passport_no,em_adhar_no,if(em_gender=1,'Male','Female')em_gender,
+           ifnull(em_pf_no,0) em_pf_no, em_esi_no,lwfnumber
             FROM hrm_emp_master
             inner join hrm_branch on hrm_branch.branch_slno=hrm_emp_master.em_branch
             inner join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
@@ -119,7 +136,10 @@ module.exports = {
             inner join hrm_emp_category on hrm_emp_category.category_slno=hrm_emp_master.em_category
             inner join institution_type on institution_type.inst_slno=hrm_emp_master.em_institution_type
             left join hrm_emp_personal on hrm_emp_personal.em_id=hrm_emp_master.em_id
-            where (hrm_emp_master.em_status=1 and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2 and doctor_status=0) and (hrm_branch.branch_slno IN (?) and hrm_department.dept_id IN (?) and em_doj between ? and ?)`,
+            left join hrm_emp_pfesi on hrm_emp_pfesi.em_id=hrm_emp_master.em_id
+            where (hrm_emp_master.em_status=1 and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2 and doctor_status=0) 
+            and (hrm_branch.branch_slno IN (?) AND hrm_department.dept_id IN (?)  and em_doj between ? and ?)
+            group by hrm_emp_master.em_no`,
             [
                 data.branch_slno,
                 data.dept_id,
@@ -138,7 +158,8 @@ module.exports = {
         pool.query(
             `SELECT hrm_emp_master.em_no,em_name,em_dob,em_doj,em_mobile,em_email,branch_name,dept_name,
             sect_name,desg_name,ecat_name,inst_emp_type,gross_salary,addressPresent1,em_account_no,hrm_pin2,em_pan_no,
-            addressPresent2,em_retirement_date,em_passport_no,em_adhar_no,if(em_gender=1,'Male','Female')em_gender 
+            addressPresent2,em_retirement_date,em_passport_no,em_adhar_no,if(em_gender=1,'Male','Female')em_gender,
+           ifnull(em_pf_no,0) em_pf_no, em_esi_no,lwfnumber
             FROM hrm_emp_master
             inner join hrm_branch on hrm_branch.branch_slno=hrm_emp_master.em_branch
             inner join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
@@ -147,8 +168,10 @@ module.exports = {
             inner join hrm_emp_category on hrm_emp_category.category_slno=hrm_emp_master.em_category
             inner join institution_type on institution_type.inst_slno=hrm_emp_master.em_institution_type
             left join hrm_emp_personal on hrm_emp_personal.em_id=hrm_emp_master.em_id
-            where (hrm_emp_master.em_status=1 and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2 and doctor_status=0) and (hrm_branch.branch_slno IN (?) and hrm_department.dept_id IN (?) and hrm_dept_section.sect_id IN (?)
-            and em_doj between ? and ?)`,
+            left join hrm_emp_pfesi on hrm_emp_pfesi.em_id=hrm_emp_master.em_id
+            where (hrm_emp_master.em_status=1 and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2 and doctor_status=0) 
+            and (hrm_branch.branch_slno IN (?) AND hrm_department.dept_id IN (?) AND hrm_dept_section.sect_id IN (?) and em_doj between ? and ?)
+            group by hrm_emp_master.em_no`,
             [
                 data.branch_slno,
                 data.dept_id,
