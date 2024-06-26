@@ -1,6 +1,6 @@
 const router = require('express').Router();
-const { InsertInductFeedback } = require('./TrainingFeedback.controller');
+const { InsertInductFeedback, InsertInductFeedbackWithoutTest } = require('./TrainingFeedback.controller');
 
 router.post('/inductfeedback', InsertInductFeedback)
-
+router.post('/inductfeedbackWithoutTest', InsertInductFeedbackWithoutTest)
 module.exports = router;

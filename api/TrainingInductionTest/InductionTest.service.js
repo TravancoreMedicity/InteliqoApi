@@ -4,12 +4,11 @@ module.exports = {
     GetInductionTestTopics: (callback) => {
         pool.query(
             `SELECT ROW_NUMBER() OVER () as sno,schedule_slno, schedule_type, schedule_topic,training_induction_emp_details.induct_detail_date,
-            training_topic.topic_slno,training_topic.training_topic_name
+            training_topic.topic_slno,training_topic.training_topic_name,training_topic.post_test_status as topic_post,training_topic.pretest_status as topic_pre
              FROM training_induction_schedule
              LEFT JOIN training_topic ON training_topic.topic_slno=training_induction_schedule.schedule_topic
              LEFT JOIN training_induction_emp_details ON training_induction_emp_details.schedule_no=training_induction_schedule.schedule_slno
              where training_topic.training_status=1 and date(training_induction_emp_details.induct_detail_date)=current_date() 
-             and training_topic.pretest_status=1 and training_topic.post_test_status=1
              group by schedule_slno, schedule_type, schedule_topic,training_induction_emp_details.induct_detail_date,
             training_topic.topic_slno,training_topic.training_topic_name
             `, [],
@@ -27,7 +26,7 @@ module.exports = {
     GetLogEmpDetails: (data, callBack) => {
         pool.query(
             ` 
-             SELECT em_id, em_no, em_name, em_mobile, 
+            SELECT em_id, em_no, em_name, em_mobile, 
             em_department, em_dept_section, em_designation,
             hrm_department.dept_id,hrm_department.dept_name,hrm_dept_section.sect_id,
             hrm_dept_section.sect_name, designation.desg_slno,designation.desg_name,
@@ -41,7 +40,9 @@ module.exports = {
             training_induction_emp_details.schedule_no,
             training_induction_emp_details.induct_detail_date,
             training_induction_schedule.trainers,
-            training_induct_feedback.fedbk_topic
+            training_induct_feedback.fedbk_topic,
+			training_topic.pretest_status as topic_pre_status,
+            training_topic.post_test_status as topic_post_status
             FROM hrm_emp_master
             LEFT JOIN hrm_department ON hrm_department.dept_id=hrm_emp_master.em_department
             LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
@@ -322,6 +323,36 @@ module.exports = {
                 data.topic_no,
                 data.schedule_no,
                 data.EmId
+            ],
+
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+
+    GetEmpDetailsForFeedbackWithoutTest: (data, callBack) => {
+        pool.query(
+            ` 
+              SELECT schedule_no,training_induction_emp_details.induct_detail_date,
+            training_induction_schedule.trainers,training_induction_schedule.schedule_topic,
+            training_topic.topic_slno,training_topic.training_topic_name,
+            hrm_emp_master.em_no,hrm_emp_master.em_name
+            FROM training_induction_emp_details
+            LEFT JOIN training_induction_schedule ON training_induction_schedule.schedule_slno=training_induction_emp_details.schedule_no
+			LEFT JOIN training_topic ON training_topic.topic_slno=training_induction_schedule.schedule_topic
+            LEFT JOIN hrm_emp_master on JSON_CONTAINS(training_induction_schedule.trainers,cast(hrm_emp_master.em_id as json),'$') 
+            WHERE training_induction_schedule.schedule_topic=1 AND training_induction_emp_details.schedule_no=2
+            group by schedule_no,training_induction_emp_details.induct_detail_date,
+            training_induction_schedule.trainers,training_induction_schedule.schedule_topic,
+            training_topic.topic_slno,training_topic.training_topic_name,
+            hrm_emp_master.em_no,hrm_emp_master.em_name`,
+            [
+                data.topic_no,
+                data.schedule_no
             ],
 
             (error, results, feilds) => {

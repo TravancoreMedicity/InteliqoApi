@@ -1,5 +1,5 @@
 const { logger } = require('../../logger/logger');
-const { InsertInductFeedback, checkFeedbackExistORNot } = require('./TrainingFeedback.service');
+const { InsertInductFeedback, checkFeedbackExistORNot, InsertInductFeedbackWithoutTest } = require('./TrainingFeedback.service');
 module.exports = {
 
     InsertInductFeedback: (req, res) => {
@@ -31,4 +31,22 @@ module.exports = {
         })
     },
 
+    InsertInductFeedbackWithoutTest: (req, res) => {
+        const body = req.body;
+        InsertInductFeedbackWithoutTest(body, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Training Question Added Successfully",
+                });
+            }
+
+        });
+    },
 } 
