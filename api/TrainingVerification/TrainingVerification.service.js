@@ -20,7 +20,7 @@ module.exports = {
 
     GetInductAllData: (id, callback) => {
         pool.query(
-            `   SELECT ROW_NUMBER() OVER () as veriftn_slno,induction_slno, schedule_no, indct_emp_no, induction_date,
+            ` SELECT ROW_NUMBER() OVER () as veriftn_slno,induction_slno, schedule_no, indct_emp_no, induction_date,
             training_induction_emp_details.training_status, question_count, training_induction_emp_details.pretest_status,
             training_induction_emp_details.posttest_status, training_induction_emp_details.online_mode, training_induction_emp_details.offline_mode, retest,
             training_iduct_tnd_verify_status,
@@ -35,7 +35,16 @@ module.exports = {
 		    LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_induction_emp_details.indct_emp_no
             LEFT JOIN training_induct_posttest ON training_induct_posttest.emp_id=training_induction_emp_details.indct_emp_no
 			LEFT JOIN training_induction_pretest ON training_induction_pretest.emp_id=training_induction_emp_details.indct_emp_no
-            where schedule_no=?`
+            where training_induction_emp_details.schedule_no=?
+            group by induction_slno, schedule_no, indct_emp_no, induction_date,
+            training_induction_emp_details.training_status, question_count, training_induction_emp_details.pretest_status,
+            training_induction_emp_details.posttest_status, training_induction_emp_details.online_mode, training_induction_emp_details.offline_mode, retest,
+            training_iduct_tnd_verify_status,
+            topic_slno,training_topic_name,hours,
+            em_id,em_name,em_no,
+            schedule_topic,
+            training_induction_pretest.mark ,
+            training_induct_posttest.mark`
             , [id],
             (err, results, feilds) => {
                 if (err) {

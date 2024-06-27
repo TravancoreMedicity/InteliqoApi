@@ -63,6 +63,43 @@ module.exports = {
             }
         )
     },
-
+    InsertInductFeedbackWithoutTest: (data, callBack) => {
+        pool.query(
+            `INSERT INTO training_induct_feedback
+            (
+                induct_schedule_no,
+                emp_id,
+                fedbk_topic,
+                training_date,
+                induct_trainer,
+                quest_a,
+                quest_b,
+                quest_c,
+                quest_d,
+                induct_feedback,
+                create_user
+            )
+            VALUES (?,?,?,?,?,?,?,?,?,?,?)`,
+            [
+                data.schedule_no,
+                data.em_id,
+                data.topic,
+                data.induct_detail_date,
+                JSON.stringify(data.trainers),
+                data.q1,
+                data.q2,
+                data.q3,
+                data.q4,
+                data.feedback,
+                data.create_user
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 
 }

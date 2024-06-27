@@ -2,7 +2,7 @@
 const { TrainingAfterJoiningGet, TrainingNewJoineeInsert, JoineeDetailsInsert,
     JoineeDetailsUpdate, ScheduleDetailsGet, ScheduleUpdate, ScheduleDateUpdate, GetTopic, GetTrainers, ScheduleInsert,
     GetScheduleDetails, DepartmentalScheduleInsert, DepartmentalScheduleGet, getDeptTopic, getEmpNameBydepID, InsertEmpDetails,
-    GetDeptEmpNameDetails, InsertTrainingMaster, ScheduleDateDetailUpdate, UpdateTrainers, getTrainerByTopic, getScheduleDatas } = require('./TrainingAfterJoining.service');
+    GetDeptEmpNameDetails, InsertTrainingMaster, ScheduleDateDetailUpdate, UpdateTrainers, getTrainerByTopic, getScheduleDatas, GetMonthWiseDeptSchedules } = require('./TrainingAfterJoining.service');
 
 module.exports = {
 
@@ -233,7 +233,8 @@ module.exports = {
             else {
                 return res.status(200).json({
                     success: 1,
-                    message: "Successfully Inserted"
+                    InsertId: results.insertId,
+                    message: "Successfully Inserted",
                 });
             }
 
@@ -487,6 +488,46 @@ module.exports = {
                 data: results
             })
 
+        });
+    },
+
+    GetMonthWiseDeptSchedules: (req, res) => {
+        const body = req.body;
+        GetMonthWiseDeptSchedules(body, (err, results) => {
+            const datas = results.map((val) => {
+                const obj = {
+                    schedule_slno: val.slno,
+                    dept_id: val.dept_id,
+                    dept_name: val.dept_name,
+                    sect_id: val.sect_id,
+                    schedule_year: val.schedule_year,
+                    schedule_date: val.schedule_date,
+                    type_name: val.type_name,
+                    topic_slno: val.topic_slno,
+                    training_topic_name: val.training_topic_name,
+                    schedule_trainers: JSON.parse(val.schedule_trainers),
+                    traineer_name: val.traineer_name
+                }
+                return obj
+            })
+
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "no Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 2,
+                data: datas,
+            });
         });
     },
 }

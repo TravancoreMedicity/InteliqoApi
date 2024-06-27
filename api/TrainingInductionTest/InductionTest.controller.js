@@ -1,5 +1,5 @@
 const { logger } = require('../../logger/logger');
-const { GetInductionTestTopics, GetLogEmpDetails, InsertPretest, checkPreeTestEntryExistORNot, UpdatePretestStatus, GetTestEmpdetails, UpdateOnlineMode, UpdateOfflineMode, GetPosttestQRdetails, InsertPostTest, checkPostTestEntryExistORNot, UpdatePosttestStatus, GetLogDetails, GetEmpDataForFeedback } = require('./InductionTest.service');
+const { GetInductionTestTopics, GetLogEmpDetails, InsertPretest, checkPreeTestEntryExistORNot, UpdatePretestStatus, GetTestEmpdetails, UpdateOnlineMode, UpdateOfflineMode, GetPosttestQRdetails, InsertPostTest, checkPostTestEntryExistORNot, UpdatePosttestStatus, GetLogDetails, GetEmpDataForFeedback, GetEmpDetailsForFeedbackWithoutTest } = require('./InductionTest.service');
 module.exports = {
 
     GetInductionTestTopics: (req, res) => {
@@ -78,7 +78,9 @@ module.exports = {
                     schedule_no: val.schedule_no,
                     induct_detail_date: val.induct_detail_date,
                     trainers: JSON.parse(val.trainers),
-                    fedbk_topic: val.fedbk_topic
+                    fedbk_topic: val.fedbk_topic,
+                    topic_pre_status: val.topic_pre_status,
+                    topic_post_status: val.topic_post_status
                 }
                 return obj
             })
@@ -316,6 +318,44 @@ module.exports = {
                     em_name: val.em_name,
                     dept_name: val.dept_name,
                     desg_name: val.desg_name
+                }
+                return obj
+            })
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "no Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 2,
+                // data: results,
+                data: datas
+            });
+        });
+    },
+
+
+    GetEmpDetailsForFeedbackWithoutTest: (req, res) => {
+        const body = req.body;
+        GetEmpDetailsForFeedbackWithoutTest(body, (err, results) => {
+            const datas = results.map((val) => {
+                const obj = {
+                    schedule_no: val.schedule_no,
+                    induct_detail_date: val.induct_detail_date,
+                    schedule_topic: val.schedule_topic,
+                    trainers: JSON.parse(val.trainers),
+                    topic_slno: val.topic_slno,
+                    training_topic_name: val.training_topic_name,
+                    em_no: val.em_no,
+                    em_name: val.em_name
                 }
                 return obj
             })
