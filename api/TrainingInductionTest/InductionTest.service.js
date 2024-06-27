@@ -345,7 +345,7 @@ module.exports = {
             LEFT JOIN training_induction_schedule ON training_induction_schedule.schedule_slno=training_induction_emp_details.schedule_no
 			LEFT JOIN training_topic ON training_topic.topic_slno=training_induction_schedule.schedule_topic
             LEFT JOIN hrm_emp_master on JSON_CONTAINS(training_induction_schedule.trainers,cast(hrm_emp_master.em_id as json),'$') 
-            WHERE training_induction_schedule.schedule_topic=1 AND training_induction_emp_details.schedule_no=2
+            WHERE training_induction_schedule.schedule_topic=? AND training_induction_emp_details.schedule_no=?
             group by schedule_no,training_induction_emp_details.induct_detail_date,
             training_induction_schedule.trainers,training_induction_schedule.schedule_topic,
             training_topic.topic_slno,training_topic.training_topic_name,
