@@ -703,6 +703,7 @@ module.exports = {
 
     },
     getEmpNoDeptWise: (data, callBack) => {
+
         pool.query(
             `select hrm_emp_master.em_no,
             em_name,
@@ -1068,6 +1069,7 @@ module.exports = {
         )
     },
     getAllEmployee: (data, callBack) => {
+
         pool.query(
             `select hrm_emp_master.em_no,
             em_name,
