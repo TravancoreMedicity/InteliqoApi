@@ -780,4 +780,31 @@ module.exports = {
             }
         )
     },
+    checkLeaveexist: async (data) => {
+        return new Promise((resolve, reject) => {
+            pool.query(
+                `SELECT 
+            COUNT(leave_slno) CNT
+        FROM hrm_leave_request R
+        INNER JOIN hrm_leave_request_detl D ON D.lve_uniq_no = R.lve_uniq_no AND R.em_no = ?
+        WHERE D.leave_dates BETWEEN ? AND ? and (incapprv_status!=2 and hod_apprv_status!=2 and hr_apprv_status!=2 and lv_cancel_status!=1 and lv_cancel_status_user!=1)`,
+                [
+                    data.em_no,
+                    data.fromDate,
+                    data.toDate
+                ],
+                (error, results, fields) => {
+                    if (error) {
+                        reject({ status: 0 });
+                    } else {
+                        resolve({ status: 1, data: JSON.parse(JSON.stringify(results)) });
+                    }
+                }
+            );
+        }).then((result) => {
+            return { status: 1, data: result.data };
+        }).catch((error) => {
+            return { status: 0, data: error };
+        });
+    },
 }
