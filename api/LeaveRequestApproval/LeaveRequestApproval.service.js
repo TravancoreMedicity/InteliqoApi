@@ -2297,10 +2297,9 @@ module.exports = {
                     cmn_lv_taken =cmn_lv_taken-1,
                     cmn_lv_balance =cmn_lv_balance+1
                    
-                    WHERE llvetype_slno = ? and em_no=?`,
+                    WHERE hrm_lv_cmn=?`,
                     [
-                        data.leave_typeid,
-                        data.em_no
+                        data.leave_processid
                     ],
                     (error, results, fields) => {
                         if (error) {
