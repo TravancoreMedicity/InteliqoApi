@@ -6,7 +6,7 @@ const { create, checkInsertVal, createGenralRq, createOndutyRequest, createEnabl
     addHrComment, checkingAttendanceMarking, HRNopunchMasterIn, HRNopunchMasterOut,
     checkMispunchRequest, checksEnableRq, punchdataEntry, HROnDutyPunchMaster,
     checkAttendanceProcess, generalHRapproval, cancelEnable, enableOnduty, cancelOnehour,
-    cancelgeneral, checkPunchMarkingHR
+    cancelgeneral, checkPunchMarkingHR, onDutyReport
 } = require('../CommonRequest/CommonReqst.service')
 const { validateOneHourReqst } = require('../../validation/validation_schema')
 
@@ -880,6 +880,32 @@ module.exports = {
                 return res.status(200).json({
                     success: 1,
                     message: "Request Cancelled successfully"
+                });
+
+            }
+        });
+    },
+    onDutyReport: (req, res) => {
+        const body = req.body;
+        onDutyReport(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+            else {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Request Cancelled successfully",
+                    data: results
                 });
 
             }
