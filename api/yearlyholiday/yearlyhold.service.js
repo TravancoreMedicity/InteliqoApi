@@ -92,7 +92,8 @@ module.exports = {
             hrm_yearly_holiday_list.lvetype_slno,
             if(hld_status=1,'Yes','No')status
         FROM hrm_yearly_holiday_list
-        LEFT JOIN hrm_leave_type ON hrm_leave_type.lvetype_slno = hrm_yearly_holiday_list.lvetype_slno`,
+        LEFT JOIN hrm_leave_type ON hrm_leave_type.lvetype_slno = hrm_yearly_holiday_list.lvetype_slno
+        ORDER BY hld_date DESC`,
             [],
             (error, results, feilds) => {
                 if (error) {

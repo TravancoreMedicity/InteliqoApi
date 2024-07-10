@@ -9,7 +9,7 @@ const {
     dataannualcalculationEmployee, creditPrivilegeLeave, getLeaveProccedData, inactiveLastYearProcessData,
     inactiveCasualLeave, inactiveEarnLeave, inactiveHoliday, inactiveCommonLeave,
     getEsiPfDetails, getleaveProcessData, inactiveSickLeave, insertStatutoryCommonleave,
-    insertSickLeave
+    insertSickLeave, updateCommonUpdateSlno
 } = require('../yearleaveprocess/yearllraveprocess.service');
 const logger = require('../../logger/logger');
 const { differenceInMonths, endOfYear, startOfYear } = require('date-fns');
@@ -37,12 +37,10 @@ module.exports = {
                 msge: results[0]
             });
         });
-
     },
     inactiveLastYearProcessData: (req, res) => {
         const body = req.body;
         inactiveLastYearProcessData(body, (err, results) => {
-
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
@@ -56,13 +54,11 @@ module.exports = {
                     updateMessage: "No Results Found"
                 });
             }
-
             return res.status(200).json({
                 success: 1,
                 updateMessage: "Data Inactive Successfully"
             });
         });
-
     },
     checkprocesstable: (req, res) => {
         const body = req.body;
@@ -80,17 +76,12 @@ module.exports = {
                     message: "No Results Found"
                 });
             }
-
-
             return res.status(200).json({
                 success: 1,
                 message: results
             });
         });
-
     },
-
-
     insertprocesstable: (req, res) => {
         const body = req.body;
         insertprocesstable(body, (err, results) => {
@@ -116,23 +107,15 @@ module.exports = {
                     });
                 });
             }
-
-
-
-
-
         });
     },
 
     insertcasualleave: (req, res) => {
         const body = req.body;
         var a1 = body.map((value, index) => {
-
             return [value.em_no, value.em_id, value.cl_lv_mnth, value.cl_lv_year,
             value.cl_lv_allowed, value.cl_lv_credit, value.cl_lv_taken, value.lv_process_slno, value.update_user]
-
         })
-
         insertcasualleave(a1, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
@@ -153,7 +136,6 @@ module.exports = {
             });
         });
     },
-
     insertearnleave: (req, res) => {
         const body = req.body;
         var a1 = body.map((value, index) => {
@@ -203,11 +185,8 @@ module.exports = {
         });
     },
     getproceedataByID: (req, res) => {
-
         const id = req.params.id;
         getdataById(id, (err, results) => {
-
-
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
@@ -228,13 +207,9 @@ module.exports = {
                     data: results
                 });
             }
-
         });
-
     },
     getholidaylist: (req, res) => {
-
-
         getholidaylist((err, results) => {
             if (err) {
                 logger.errorLogger(err)
@@ -243,14 +218,12 @@ module.exports = {
                     message: err
                 });
             }
-
             if (results.length == 0) {
                 return res.status(200).json({
                     success: 2,
                     message: "No Record Found"
                 });
             }
-
             return res.status(200).json({
                 success: 1,
                 data: results
@@ -261,12 +234,9 @@ module.exports = {
     insertHoliday: (req, res) => {
         const body = req.body;
         var a1 = body.map((value, index) => {
-
             return [value.em_no, value.hd_slno, value.hl_lv_year, value.hl_date,
             value.hl_lv_credit, value.hl_lv_taken, value.hl_lv_allowed, value.lv_process_slno, value.update_user, value.em_id]
-
         })
-
         insertHoliday(a1, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
@@ -275,30 +245,21 @@ module.exports = {
                     message: err
                 });
             }
-
             if (!results) {
                 return res.status(200).json({
                     success: 0,
                     message: "No Results Found"
                 });
             }
-
             return res.status(200).json({
                 success: 1,
                 message: "Data Created Successfully"
             });
-
-
-
-
         });
     },
     updatecasualleave: (req, res) => {
         const body = req.body;
-
-
         updatecasualleave(body, (err, results) => {
-
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
@@ -306,26 +267,21 @@ module.exports = {
                     message: err
                 });
             }
-
             if (!results) {
                 return res.status(200).json({
                     success: 1,
                     message: "Record Not Found"
                 });
             }
-
             return res.status(200).json({
                 success: 2,
                 message: "Data Updated Successfully"
             });
-
         });
     },
     updateholiday: (req, res) => {
         const body = req.body;
-
         updateholiday(body, (err, results) => {
-
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
@@ -333,26 +289,21 @@ module.exports = {
                     message: err
                 });
             }
-
             if (!results) {
                 return res.status(200).json({
                     success: 1,
                     message: "Record Not Found"
                 });
             }
-
             return res.status(200).json({
                 success: 2,
                 message: "Data Updated Successfully"
             });
-
         });
     },
     updateearnleave: (req, res) => {
         const body = req.body;
-
         updateearnleave(body, (err, results) => {
-
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
@@ -360,26 +311,21 @@ module.exports = {
                     message: err
                 });
             }
-
             if (!results) {
                 return res.status(200).json({
                     success: 1,
                     message: "Record Not Found"
                 });
             }
-
             return res.status(200).json({
                 success: 2,
                 message: "Data Updated Successfully"
             });
-
         });
     },
     updatecommon: (req, res) => {
         const body = req.body;
-
         updatecommon(body, (err, results) => {
-
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
@@ -387,32 +333,25 @@ module.exports = {
                     message: err
                 });
             }
-
             if (!results) {
                 return res.status(200).json({
                     success: 1,
                     message: "Record Not Found"
                 });
             }
-
             return res.status(200).json({
                 success: 2,
                 message: "Data Updated Successfully"
             });
-
         });
     },
     insertCommonleave: (req, res) => {
         const body = req.body;
         var a1 = body.map((value, index) => {
-
             return [value.em_no, value.llvetype_slno, value.cmn_lv_allowedflag, value.cmn_lv_allowed,
             value.cmn_lv_taken, value.cmn_lv_balance, value.Iv_process_slno, value.update_user, value.em_id, value.cmn_lv_year]
-
         })
-
         insertCommonleave(a1, (err, results) => {
-
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
@@ -420,30 +359,22 @@ module.exports = {
                     message: err
                 });
             }
-
             if (!results) {
                 return res.status(200).json({
                     success: 0,
                     message: "No Results Found"
                 });
             }
-
             return res.status(200).json({
                 success: 1,
                 message: "Data Created Successfully"
             });
-
-
-
-
         });
     },
 
     updateholidayupdateslno: (req, res) => {
         const body = req.body;
-
         updateholidayupdateslno(body, (err, results) => {
-
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
@@ -451,26 +382,21 @@ module.exports = {
                     message: err
                 });
             }
-
             if (!results) {
                 return res.status(200).json({
                     success: 1,
                     message: "Record Not Found"
                 });
             }
-
             return res.status(200).json({
                 success: 2,
                 message: "Data Updated Successfully"
             });
-
         });
     },
     updatecasualleaveupdateslno: (req, res) => {
         const body = req.body;
-
         updatecasualleaveupdateslno(body, (err, results) => {
-
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
@@ -478,27 +404,21 @@ module.exports = {
                     message: err
                 });
             }
-
             if (!results) {
                 return res.status(200).json({
                     success: 1,
                     message: "Record Not Found"
                 });
             }
-
             return res.status(200).json({
                 success: 2,
                 message: "Data Updated Successfully"
             });
-
         });
     },
-
     updateeanleaveupdate: (req, res) => {
         const body = req.body;
-
         updateeanleaveupdate(body, (err, results) => {
-
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
@@ -506,30 +426,21 @@ module.exports = {
                     message: err
                 });
             }
-
             if (!results) {
                 return res.status(200).json({
                     success: 1,
                     message: "Record Not Found"
                 });
             }
-
             return res.status(200).json({
                 success: 2,
                 message: "Data Updated Successfully"
             });
-
         });
     },
-
-
-
-
-
     creditCasualLeave: (req, res) => {
         const body = req.body;
         creditCasualLeave(body, (err, results) => {
-
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
@@ -537,26 +448,21 @@ module.exports = {
                     message: err
                 });
             }
-
             if (!results) {
                 return res.status(200).json({
                     success: 1,
                     message: "Record Not Found"
                 });
             }
-
             return res.status(200).json({
                 success: 2,
                 message: "Data Updated Successfully"
             });
-
         });
     },
     allowableCasualLeave: (req, res) => {
         const id = req.params.id;
         allowableCasualLeave(id, (err, results) => {
-
-
             if (err) {
                 logger.errorLogger(err)
                 return res.status(400).json({
@@ -564,7 +470,6 @@ module.exports = {
                     message: err
                 });
             }
-
             else if (results.length == 0) {
                 return res.status(200).json({
                     success: 2,
@@ -577,16 +482,11 @@ module.exports = {
                     data: results
                 });
             }
-
         });
-
     },
     allowableholiday: (req, res) => {
-
         const id = req.params.id;
         allowableholiday(id, (err, results) => {
-
-
             if (err) {
                 logger.errorLogger(err)
                 return res.status(400).json({
@@ -594,7 +494,6 @@ module.exports = {
                     message: err
                 });
             }
-
             else if (results.length == 0) {
                 return res.status(200).json({
                     success: 2,
@@ -607,17 +506,11 @@ module.exports = {
                     data: results
                 });
             }
-
         });
-
     },
-
     allowablefesitval: (req, res) => {
-
         const id = req.params.id;
         allowablefesitval(id, (err, results) => {
-
-
             if (err) {
                 logger.errorLogger(err)
                 return res.status(400).json({
@@ -640,14 +533,10 @@ module.exports = {
             }
 
         });
-
     },
     allowableearnleave: (req, res) => {
-
         const id = req.params.id;
         allowableearnleave(id, (err, results) => {
-
-
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
@@ -655,7 +544,6 @@ module.exports = {
                     message: err
                 });
             }
-
             else if (results.length == 0) {
                 return res.status(200).json({
                     success: 2,
@@ -668,9 +556,7 @@ module.exports = {
                     data: results
                 });
             }
-
         });
-
     },
     allowableconleave: (req, res) => {
         const id = req.params.id;
@@ -682,7 +568,6 @@ module.exports = {
                     message: err
                 });
             }
-
             else if (results.length == 0) {
                 return res.status(200).json({
                     success: 2,
@@ -695,16 +580,11 @@ module.exports = {
                     data: results
                 });
             }
-
         });
-
     },
     dataannualcalculation: (req, res) => {
         const body = req.body;
-
-
         dataannualcalculation(body, (err, results) => {
-
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
@@ -712,27 +592,21 @@ module.exports = {
                     message: err
                 });
             }
-
             if (!results) {
                 return res.status(200).json({
                     success: 1,
                     message: "Record Not Found"
                 });
             }
-
             return res.status(200).json({
                 success: 2,
                 data: results
             });
-
         });
     },
     holidaylistyear: (req, res) => {
         const body = req.body;
-
-
         holidaylistyear(body, (err, results) => {
-
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
@@ -740,26 +614,22 @@ module.exports = {
                     message: err
                 });
             }
-
             else if (results.length == 0) {
                 return res.status(200).json({
                     success: 1,
                     message: "Record Not Found"
                 });
             }
-
             return res.status(200).json({
                 success: 2,
                 data: results
             });
-
         });
     },
 
     insertyearly: (req, res) => {
         const body = req.body;
         insertyearly(body, (err, results) => {
-
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
@@ -776,8 +646,6 @@ module.exports = {
     select_yearlyprocess: (req, res) => {
         const body = req.body;
         select_yearlyprocess(body, (err, results) => {
-
-
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
@@ -785,14 +653,12 @@ module.exports = {
                     message: err
                 });
             }
-
             if (results.length == 0) {
                 return res.status(200).json({
                     successStatus: 1,
                     message: "Record Not Found"
                 });
             }
-
             return res.status(200).json({
                 successStatus: 2,
                 data: results
@@ -801,10 +667,7 @@ module.exports = {
     },
     dataannualcalculationEmployee: (req, res) => {
         const body = req.body;
-
-
         dataannualcalculationEmployee(body, (err, results) => {
-
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
@@ -812,25 +675,21 @@ module.exports = {
                     message: err
                 });
             }
-
             if (!results) {
                 return res.status(200).json({
                     success: 1,
                     message: "Record Not Found"
                 });
             }
-
             return res.status(200).json({
                 success: 2,
                 data: results
             });
-
         });
     },
     creditPrivilegeLeave: (req, res) => {
         const body = req.body;
         creditPrivilegeLeave(body, (err, results) => {
-
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
@@ -838,14 +697,12 @@ module.exports = {
                     message: err
                 });
             }
-
             if (!results) {
                 return res.status(200).json({
                     success: 1,
                     message: "Record Not Found"
                 });
             }
-
             return res.status(200).json({
                 success: 2,
                 data: results
@@ -855,7 +712,6 @@ module.exports = {
     inactiveCasualLeave: (req, res) => {
         const body = req.body;
         inactiveCasualLeave(body, (err, results) => {
-
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
@@ -863,14 +719,12 @@ module.exports = {
                     message: err
                 });
             }
-
             if (!results) {
                 return res.status(200).json({
                     success: 1,
                     message: "Record Not Found"
                 });
             }
-
             return res.status(200).json({
                 success: 2,
                 message: "Inactive Successfully"
@@ -880,7 +734,6 @@ module.exports = {
     inactiveEarnLeave: (req, res) => {
         const body = req.body;
         inactiveEarnLeave(body, (err, results) => {
-
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
@@ -888,14 +741,12 @@ module.exports = {
                     message: err
                 });
             }
-
             if (!results) {
                 return res.status(200).json({
                     success: 1,
                     message: "Record Not Found"
                 });
             }
-
             return res.status(200).json({
                 success: 2,
                 message: "Inactive Successfully"
@@ -905,7 +756,6 @@ module.exports = {
     inactiveHoliday: (req, res) => {
         const body = req.body;
         inactiveHoliday(body, (err, results) => {
-
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
@@ -913,14 +763,12 @@ module.exports = {
                     message: err
                 });
             }
-
             if (!results) {
                 return res.status(200).json({
                     success: 1,
                     message: "Record Not Found"
                 });
             }
-
             return res.status(200).json({
                 success: 2,
                 message: "Inactive Successfully"
@@ -930,7 +778,6 @@ module.exports = {
     inactiveCommonLeave: (req, res) => {
         const body = req.body;
         inactiveCommonLeave(body, (err, results) => {
-
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
@@ -938,14 +785,12 @@ module.exports = {
                     message: err
                 });
             }
-
             if (!results) {
                 return res.status(200).json({
                     success: 1,
                     message: "Record Not Found"
                 });
             }
-
             return res.status(200).json({
                 success: 2,
                 message: "Inactive Successfully"
@@ -962,7 +807,6 @@ module.exports = {
                     message: err
                 });
             }
-
             else if (results.length === 0) {
                 return res.status(200).json({
                     success: 2,
@@ -975,7 +819,6 @@ module.exports = {
                     data: results
                 });
             }
-
         });
     },
     getleaveProcessData: (req, res) => {
@@ -1072,9 +915,9 @@ module.exports = {
             em_no: em_no,
             llvetype_slno: 7,
             cmn_lv_allowedflag,
-            cmn_lv_allowed: result,
+            cmn_lv_allowed: result + 1,
             cmn_lv_taken: 0,
-            cmn_lv_balance: result,
+            cmn_lv_balance: result + 1,
             Iv_process_slno: Iv_process_slno,
             update_user: update_user,
             em_id: em_id,
@@ -1104,7 +947,33 @@ module.exports = {
                 });
             }
         })
-    }
+    },
+    updateCommonUpdateSlno: (req, res) => {
+        const body = req.body;
+        updateCommonUpdateSlno(body, (err, results) => {
+
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 2,
+                message: "Data Updated Successfully"
+            });
+
+        });
+    },
 }
 
 
