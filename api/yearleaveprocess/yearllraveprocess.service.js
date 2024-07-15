@@ -436,6 +436,7 @@ module.exports = {
                 hrm_cl_slno,
                 em_no,
                 em_id,
+                cl_lv_year,
                 MONTHNAME(cl_lv_mnth)cl_lv_mnth,
                 cl_bal_leave,
                 hl_lv_tkn_status,
