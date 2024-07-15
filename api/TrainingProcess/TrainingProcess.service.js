@@ -185,9 +185,11 @@ module.exports = {
                 emp_desg,
                 emp_topic,
                 mark,
-                create_user
+                create_user,
+                pre_dept_schedule_slno,
+               pre_dept_schedule_date
             )
-            VALUES (?,?,?,?,?,?,?)`,
+            VALUES (?,?,?,?,?,?,?,?,?)`,
             [
                 data.emp_id,
                 data.emp_dept,
@@ -195,7 +197,9 @@ module.exports = {
                 data.emp_desg,
                 data.emp_topic,
                 data.mark,
-                data.create_user
+                data.create_user,
+                data.scheduled_slno,
+                data.schedule_date
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -212,10 +216,11 @@ module.exports = {
             `     
             SELECT emp_id,emp_topic
             FROM training_pretest 
-            WHERE emp_id=? and emp_topic=?
+            WHERE emp_id=? and emp_topic=? and pre_dept_schedule_slno=?
             `, [
             data.emp_id,
-            data.emp_topic
+            data.emp_topic,
+            data.scheduled_slno
         ],
 
             (err, results, feilds) => {
@@ -259,9 +264,11 @@ module.exports = {
                 emp_desg,
                 emp_topic,
                 mark,
-                create_user
+                create_user,
+                dept_schedule_slno,
+                post_dept_schedule_date
             )
-            VALUES (?,?,?,?,?,?,?)`,
+            VALUES (?,?,?,?,?,?,?,?,?)`,
             [
                 data.emp_id,
                 data.emp_dept,
@@ -269,7 +276,9 @@ module.exports = {
                 data.emp_desg,
                 data.emp_topic,
                 data.mark,
-                data.create_user
+                data.create_user,
+                data.scheduled_slno,
+                data.schedule_date
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -285,10 +294,11 @@ module.exports = {
             `     
             SELECT emp_id,emp_topic
             FROM training_posttest 
-            WHERE emp_id=? and emp_topic=?
+            WHERE emp_id=? and emp_topic=? and dept_schedule_slno=?
             `, [
             data.emp_id,
-            data.emp_topic
+            data.emp_topic,
+            data.scheduled_slno
         ],
 
             (err, results, feilds) => {

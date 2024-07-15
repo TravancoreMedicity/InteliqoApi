@@ -28,27 +28,65 @@ module.exports = {
             }
         )
     },
-    GetDeptTraining: (id, callback) => {
-        pool.query(
-            `  SELECT ROW_NUMBER() OVER () as view_slno ,training_employee_details.slno,training_employee_details.scheduled_slno,training_employee_details.emp_name,
-               training_employee_details.emp_dept,training_employee_details.emp_dept_sectn,training_employee_details.schedule_date,
-               training_employee_details.topic,training_employee_details.training_status,training_employee_details.pretest_status,
-               training_employee_details.posttest_status,training_employee_details.training_apprvl_status,
-               training_employee_details.training_hod_apprvls_status,training_employee_details.tnd_verification_status,
-               training_topic.topic_slno,training_topic.training_topic_name,hrm_emp_master.em_id,hrm_emp_master.em_no,hrm_emp_master.em_name,
-               training_pretest.mark as pre_mark,training_posttest.mark as post_mark,training_topic.hours,training_employee_details.tnd_verification_status
-               FROM training_employee_details
-	           LEFT JOIN training_topic ON training_topic.topic_slno=training_employee_details.topic
-               LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_employee_details.emp_name
-	           LEFT JOIN training_pretest ON training_pretest.emp_id=training_employee_details.emp_name
-	           LEFT JOIN training_posttest ON training_posttest.emp_id=training_employee_details.emp_name
-	           WHERE training_employee_details.emp_name=?`, [id],
-            (err, results, feilds) => {
-                if (err) {
-                    return callback(err)
+    // GetDeptTraining: (id, callback) => {
+    //     pool.query(
+    //         `SELECT 
+    //            training_employee_details.schedule_date,
+    //            training_employee_details.emp_name ,
+    //            training_employee_details.topic,
+    //            training_topic.training_topic_name,
+    //            training_pretest.mark as pretest_mark,
+    //            training_posttest.mark as posttest_mark
+    //         FROM 
+    //            medi_hrm.training_employee_details
+    //            LEFT JOIN training_topic ON training_topic.topic_slno = training_employee_details.topic
+    //            LEFT JOIN training_pretest ON training_pretest.pre_dept_schedule_slno = training_employee_details.scheduled_slno and training_pretest.emp_id = ?
+    //            LEFT JOIN training_posttest ON training_posttest.dept_schedule_slno =training_employee_details.scheduled_slno and training_pretest.emp_id = ?
+    //         WHERE 
+    //            training_employee_details.emp_name = ?
+    //         GROUP BY 
+    //            training_employee_details.scheduled_slno`, [id],
+    //         (err, results, feilds) => {
+    //             if (err) {
+    //                 return callback(err)
 
+    //             }
+    //             return callback(null, results)
+    //         }
+    //     )
+    // },
+
+    GetDeptTraining: (data, callBack) => {
+        pool.query(
+            `SELECT ROW_NUMBER() OVER () as view_slno,
+               training_employee_details.schedule_date,
+               training_employee_details.emp_name ,
+               training_employee_details.topic,
+               training_topic.training_topic_name,
+               training_pretest.mark as pre_mark,
+               training_posttest.mark as post_mark,
+               training_topic.hours,
+               training_employee_details.tnd_verification_status
+            FROM 
+               medi_hrm.training_employee_details
+               LEFT JOIN training_topic ON training_topic.topic_slno = training_employee_details.topic
+               LEFT JOIN training_pretest ON training_pretest.pre_dept_schedule_slno = training_employee_details.scheduled_slno and training_pretest.emp_id = ?
+               LEFT JOIN training_posttest ON training_posttest.dept_schedule_slno =training_employee_details.scheduled_slno and training_posttest.emp_id = ?
+            WHERE 
+               training_employee_details.emp_name = ?
+            GROUP BY 
+               training_employee_details.scheduled_slno`,
+            [
+                data.pre_id,
+                data.post_id,
+                data.emp_id
+
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
                 }
-                return callback(null, results)
+                return callBack(null, results);
             }
         )
     },

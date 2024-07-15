@@ -1,5 +1,5 @@
 const { logger } = require('../../logger/logger');
-const { GetDatewiseEmps, ScheduleInductionTrainings, InsertInductionEmps, GetTypeWiseTraining, UpdateTrainers, UpdateDate, GetTraineers, GetInductionCanderDetails, GetIncutCalenderEmpDetails, GetIncutCalenderTrainers, UpdateDateOnScheduleTbl, UpdateAssignStatus, GetIncutCalenderDatas, GetInductDeptDatas } = require('./TrainingInduction.service');
+const { GetDatewiseEmps, ScheduleInductionTrainings, InsertInductionEmps, GetTypeWiseTraining, UpdateTrainers, UpdateDate, GetTraineers, GetInductionCanderDetails, GetIncutCalenderEmpDetails, GetIncutCalenderTrainers, UpdateDateOnScheduleTbl, UpdateAssignStatus, GetIncutCalenderDatas, GetInductDeptDatas, GetInductscheduledatas } = require('./TrainingInduction.service');
 module.exports = {
 
     GetDatewiseEmps: (req, res) => {
@@ -51,6 +51,7 @@ module.exports = {
         var values = body.map((value, index) => {
             return [value.insertId, value.emp_id, value.date, value.dept_id, value.sect_id, value.create_user]
         })
+
         InsertInductionEmps(values, (err, results) => {
             if (err) {
 
@@ -60,18 +61,22 @@ module.exports = {
                 });
             }
             else {
-                const result = UpdateAssignStatus(body)
-                    .then((r) => {
-                        return res.status(200).json({
-                            success: 1,
-                            message: r
-                        });
-                    }).catch((e) => {
-                        return res.status(200).json({
-                            success: 0,
-                            message: e.sqlMessage
-                        });
-                    })
+                return res.status(200).json({
+                    success: 1,
+                    message: "Training Scheduled Succesfully"
+                });
+                // const result = UpdateAssignStatus(body)
+                //     .then((r) => {
+                //         return res.status(200).json({
+                //             success: 1,
+                //             message: r
+                //         });
+                //     }).catch((e) => {
+                //         return res.status(200).json({
+                //             success: 0,
+                //             message: e.sqlMessage
+                //         });
+                //     })
             }
 
         });
@@ -178,6 +183,7 @@ module.exports = {
             });
         });
     },
+
     GetInductionCanderDetails: (req, res) => {
         GetInductionCanderDetails((err, results) => {
             if (err) {
@@ -201,6 +207,23 @@ module.exports = {
     GetIncutCalenderEmpDetails: (req, res) => {
         const body = req.body;
         GetIncutCalenderEmpDetails(body, (err, results) => {
+            const datas = results.map((val) => {
+                const obj = {
+                    emno: val.emno,
+                    employee_name: val.employee_name,
+                    indct_emp_no: val.indct_emp_no,
+                    induction_date: val.induction_date,
+                    schedule_slno: val.schedule_slno,
+                    schedule_type: val.schedule_type,
+                    sect_id: val.sect_id,
+                    sect_name: val.sect_name,
+                    topic_slno: val.topic_slno,
+                    training_topic_name: val.training_topic_name,
+                    trainers: JSON.parse(val.trainers),
+                    trainingtype_slno: val.trainingtype_slno
+                }
+                return obj
+            })
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
@@ -216,7 +239,7 @@ module.exports = {
             }
             return res.status(200).json({
                 success: 2,
-                data: results,
+                data: datas,
             });
         });
     },
@@ -304,4 +327,25 @@ module.exports = {
             });
         });
     },
+
+    GetInductscheduledatas: (req, res) => {
+        GetInductscheduledatas((err, results) => {
+            if (err) {
+                return res.status(400).json({
+                    success: 0,
+                    message: "Error"
+                })
+            }
+            if (results === 0) {
+                return res.status(400).json({
+                    success: 1,
+                    message: "No Record Found"
+                })
+            }
+            return res.status(200).json({
+                success: 2,
+                data: results
+            })
+        })
+    }
 } 
