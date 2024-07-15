@@ -606,7 +606,7 @@ module.exports = {
                 proceeuser,
                 year_of_process,
                 year
-                ) values (?,?,?,?)`,
+                ) values (?,?,?,?,?)`,
             [
                 data.em_no,
                 data.em_id,
@@ -856,6 +856,20 @@ module.exports = {
             }
         )
     },
+    updateCommonUpdateSlno: (data, callBack) => {
+        pool.query(
+            `update hrm_leave_common set cmn_status='1' where Iv_process_slno=? and  cmn_status='0'`,
+            [
+                data.oldprocessslno
 
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 
 }

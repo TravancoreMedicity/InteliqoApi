@@ -703,6 +703,7 @@ module.exports = {
 
     },
     getEmpNoDeptWise: (data, callBack) => {
+
         pool.query(
             `select hrm_emp_master.em_no,
             em_name,
@@ -714,6 +715,7 @@ module.exports = {
             ecat_name,
             inst_emp_type,
             COALESCE(em_account_no,0) em_account_no,
+            COALESCE(em_ifsc,0) em_ifsc,
             COALESCE(nps,0) nps,
             COALESCE(npsamount,0)npsamount,
             COALESCE(lwf_status,0)lwf_status,
@@ -1067,6 +1069,7 @@ module.exports = {
         )
     },
     getAllEmployee: (data, callBack) => {
+
         pool.query(
             `select hrm_emp_master.em_no,
             em_name,
@@ -1078,6 +1081,7 @@ module.exports = {
             ecat_name,
             inst_emp_type,
             COALESCE(em_account_no,0) em_account_no,
+            COALESCE(em_ifsc,0) em_ifsc,
             COALESCE(nps,0) nps,
             COALESCE(npsamount,0)npsamount,
             COALESCE(lwf_status,0)lwf_status,
