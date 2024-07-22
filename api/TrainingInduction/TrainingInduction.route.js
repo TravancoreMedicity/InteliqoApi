@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const { checkToken } = require("../../auth/token_validation");
-const { GetDatewiseEmps, ScheduleInductionTrainings, InsertInductionEmps, GetTypeWiseTraining, GetIncutCalenderDatas, UpdateTrainers, UpdateDate, GetTraineers, GetInductionCanderDetails, GetIncutCalenderEmpDetails, GetIncutCalenderTrainers, GetInductDeptDatas } = require('./TrainingInduction.controller');
+const { GetDatewiseEmps, ScheduleInductionTrainings, InsertInductionEmps, GetTypeWiseTraining, GetIncutCalenderDatas, UpdateTrainers, UpdateDate, GetTraineers, GetInductionCanderDetails, GetIncutCalenderEmpDetails, GetIncutCalenderTrainers, GetInductDeptDatas, GetInductscheduledatas } = require('./TrainingInduction.controller');
 
 router.post('/getEmps', checkToken, GetDatewiseEmps)
 router.post('/ScheduleInduction', checkToken, ScheduleInductionTrainings)
@@ -14,4 +14,5 @@ router.post('/getcalEmpdetails', checkToken, GetIncutCalenderEmpDetails)
 router.post('/getcalTrainers', checkToken, GetIncutCalenderTrainers)
 router.post('/getInductionCalenderDatas', checkToken, GetIncutCalenderDatas)
 router.post('/getInductDeptData', checkToken, GetInductDeptDatas)
+router.get('/Inductscheduledatas', checkToken, GetInductscheduledatas)
 module.exports = router;
