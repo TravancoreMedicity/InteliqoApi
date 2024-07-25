@@ -7,17 +7,15 @@ module.exports = {
                     message_deptsec,
                     emp_id,
                     message,
-                    created_date,
                     expr_date,
                     created_user
                   )
-                VALUES (?,?,?,?,?,?,?)`,
+                VALUES (?,?,?,?,?,?)`,
             [
                 data.message_dept,
                 data.message_deptsec,
                 data.emp_id,
                 data.message,
-                data.created_date,
                 data.expr_date,
                 data.created_user,
             ],
