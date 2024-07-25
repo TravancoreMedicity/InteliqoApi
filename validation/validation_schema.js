@@ -1222,7 +1222,8 @@ const validatecommonsettings = Joi.object({
         weekoff_policy_max_count: Joi.number().optional(),
         weekoff_policy_min_count: Joi.number().optional(),
         coff_min_working_hour: Joi.number().optional(),
-        onobservation_days: Joi.number().optional()
+        onobservation_days: Joi.number().optional(),
+        hod_leave_day_count: Joi.number().optional()
 
 })
 //validate carryforward
@@ -1253,7 +1254,6 @@ const validateMessage = Joi.object({
         message_dept: Joi.number().required(),
         emp_id: Joi.number().required(),
         message: Joi.string().optional(),
-        created_date: Joi.date().optional(),
         expr_date: Joi.date().required(),
         created_user: Joi.number().optional(),
 })
