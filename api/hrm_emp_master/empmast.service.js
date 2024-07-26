@@ -1139,4 +1139,19 @@ module.exports = {
             }
         )
     },
+    empLoginDeactivate: (data, callBack) => {
+        pool.query(
+            `update hrm_employee set emp_status=0 where emp_id=? and emp_no=? `,
+            [
+                data.em_id,
+                data.em_no
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }

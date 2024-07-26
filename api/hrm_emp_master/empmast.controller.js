@@ -30,7 +30,8 @@ const {
     insertActivateEmp,
     createCompany,
     updateContractEmpmastData,
-    updatePermanentData
+    updatePermanentData,
+    empLoginDeactivate
 } = require('../hrm_emp_master/empmast.service');
 const { validateempmaster, validateempmasterupdate, validateempmasterEdit } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
@@ -509,19 +510,32 @@ module.exports = {
                     success: 0,
                     message: err
                 });
-            }
+            } else {
+                empLoginDeactivate(body, (err, results) => {
 
-            if (!results) {
-                return res.status(200).json({
-                    success: 1,
-                    message: "Record Not Found"
+                    if (err) {
+                        logger.errorLogger(err)
+                        return res.status(200).json({
+                            success: 0,
+                            message: err
+                        });
+                    }
+
+                    if (!results) {
+                        return res.status(200).json({
+                            success: 1,
+                            message: "Record Not Found"
+                        });
+                    }
+
+                    return res.status(200).json({
+                        success: 2,
+                        message: "Data Updated Successfully"
+                    });
+
                 });
             }
 
-            return res.status(200).json({
-                success: 2,
-                message: "Data Updated Successfully"
-            });
 
         });
     },
