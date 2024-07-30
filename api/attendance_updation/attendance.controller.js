@@ -17,7 +17,7 @@ const { getEmployeeDetl, getEmployeeShiftDetl, getDepartmentShiftMast,
     getPunchDataEmCodeWiseDateWise, getDutyPlanBySection, getPunchMastData, monthlyUpdatePunchMaster,
     updatePunchMaster, updatePunchMarkingHR, updateDutyPlanTable, updateDelStatDutyPlanTable, checkPunchMarkingHR,
     updatePunchMasterSingleRow, updatePunchMasterCalCulcated, getPunchReportLCCount, updateLCPunchMaster, getPData,
-    deletePunchMasterSingleRow
+    deletePunchMasterSingleRow, updateManualRequest, createManualrequestLog
 } = require("../attendance_updation/attendance.service")
 //SHIFT DETAILS
 //get the shift details 
@@ -1783,5 +1783,44 @@ module.exports = {
                 message: "Successfully Updated",
             });
         });
+    },
+    updateManualRequest: (req, res) => {
+
+        const body = req.body;
+        const result = updateManualRequest(body)
+            .then((r) => {
+                var values = body.map((value, index) => {
+                    return [value.em_id, value.em_no, value.duty_day, value.lvereq_desc, value.duty_desc, value.create_user]
+                })
+
+                createManualrequestLog(values, (err, results) => {
+                    if (err) {
+                        //logger.errorLogger(err)
+                        return res.status(200).json({
+                            success: 0,
+                            message: err
+                        });
+                    }
+                    if (!results) {
+                        return res.status(200).json({
+                            success: 0,
+                            message: "No Results Found"
+                        });
+                    }
+                    return res.status(200).json({
+                        success: 1,
+                        message: "Data Submitted Successfully"
+                    });
+                });
+                // return res.status(200).json({
+                //     success: 1,
+                //     message: r
+                // });
+            }).catch((e) => {
+                return res.status(200).json({
+                    success: 0,
+                    message: e.sqlMessage
+                });
+            })
     },
 }

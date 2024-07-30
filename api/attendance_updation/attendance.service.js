@@ -1342,5 +1342,54 @@ module.exports = {
             }
         )
     },
+    updateManualRequest: (data, callBack) => {
+        return new Promise((resolve, reject) => {
+            data.map((val) => {
+                pool.query(
+                    ` UPDATE punch_master
+                    SET punch_in = ?,
+                        punch_out = ?,
+                        hrs_worked =0,
+                        late_in = 0,
+                        early_out = 0,
+                        duty_status=1,
+                        duty_desc=?,
+                        lvereq_desc=?,
+                        lve_tble_updation_flag = 1
+                    WHERE punch_slno = ? `,
+                    [val.punch_in, val.punch_out, val.duty_desc, val.lvereq_desc, val.punch_slno],
+                    (error, results, feilds) => {
+                        if (error) {
+                            return reject(error)
+                        }
+                        return resolve(results)
+                    }
+                )
+            })
 
+        })
+    },
+    createManualrequestLog: (data, callBack) => {
+        pool.query(
+            `INSERT INTO manual_request_log 
+                    (
+                    em_id,
+                    em_no,
+                    duty_date,
+                    lvereq_desc,
+                    duty_desc,
+                    create_user
+                    ) 
+                VALUES ?`,
+            [
+                data
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }
