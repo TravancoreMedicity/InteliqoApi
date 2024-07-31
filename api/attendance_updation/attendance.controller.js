@@ -1790,7 +1790,7 @@ module.exports = {
         const result = updateManualRequest(body)
             .then((r) => {
                 var values = body.map((value, index) => {
-                    return [value.em_id, value.em_no, value.duty_day, value.lvereq_desc, value.duty_desc, value.create_user]
+                    return [value.em_id, value.em_no, value.duty_day, value.lvereq_desc, value.duty_desc, value.create_user, value.remrk]
                 })
 
                 createManualrequestLog(values, (err, results) => {

@@ -1355,6 +1355,7 @@ module.exports = {
                         duty_status=1,
                         duty_desc=?,
                         lvereq_desc=?,
+                        leave_status=1,
                         lve_tble_updation_flag = 1
                     WHERE punch_slno = ? `,
                     [val.punch_in, val.punch_out, val.duty_desc, val.lvereq_desc, val.punch_slno],
@@ -1378,7 +1379,8 @@ module.exports = {
                     duty_date,
                     lvereq_desc,
                     duty_desc,
-                    create_user
+                    create_user,
+                    remrk
                     ) 
                 VALUES ?`,
             [
