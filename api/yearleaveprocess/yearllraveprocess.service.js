@@ -443,7 +443,7 @@ module.exports = {
                 cl_lv_taken
             From hrm_leave_cl
             where cl_lv_credit=1 and em_no = ? and cl_lv_taken < 1
-            and year(cl_lv_year) = year(curdate())`,
+            and year(cl_lv_year) = year(curdate()) and cl_lv_active=0`,
             [
                 data
             ],
