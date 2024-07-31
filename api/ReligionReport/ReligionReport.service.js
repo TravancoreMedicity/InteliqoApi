@@ -75,6 +75,8 @@ module.exports = {
             sect_name,
             shift_id,
             shft_desc,
+            lvereq_desc,
+            duty_desc,
             shft_cross_day
             FROM punch_master
 			left join hrm_emp_master on hrm_emp_master.em_no=punch_master.em_no
