@@ -17,7 +17,8 @@ const { getEmployeeDetl, getEmployeeShiftDetl, getDepartmentShiftMast,
     getPunchDataEmCodeWiseDateWise, getDutyPlanBySection, getPunchMastData, monthlyUpdatePunchMaster,
     updatePunchMaster, updatePunchMarkingHR, updateDutyPlanTable, updateDelStatDutyPlanTable, checkPunchMarkingHR,
     updatePunchMasterSingleRow, updatePunchMasterCalCulcated, getPunchReportLCCount, updateLCPunchMaster, getPData,
-    deletePunchMasterSingleRow, updateManualRequest, createManualrequestLog
+    deletePunchMasterSingleRow, updateManualRequest, createManualrequestLog, getManualRequestAll,
+    InactiveManualrequest
 } = require("../attendance_updation/attendance.service")
 //SHIFT DETAILS
 //get the shift details 
@@ -1790,7 +1791,8 @@ module.exports = {
         const result = updateManualRequest(body)
             .then((r) => {
                 var values = body.map((value, index) => {
-                    return [value.em_id, value.em_no, value.duty_day, value.lvereq_desc, value.duty_desc, value.create_user, value.remrk]
+                    return [value.em_id, value.em_no, value.duty_day, value.lvereq_desc, value.duty_desc, value.create_user, value.remrk,
+                    value.punch_slno]
                 })
 
                 createManualrequestLog(values, (err, results) => {
@@ -1822,5 +1824,52 @@ module.exports = {
                     message: e.sqlMessage
                 });
             })
+    },
+    getManualRequestAll: (req, res) => {
+        getManualRequestAll((err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                logger.infoLogger("No Records Found")
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    InactiveManualrequest: (req, res) => {
+        const body = req.body
+        InactiveManualrequest(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+            if (results.length === 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found",
+                    data: []
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                message: "Successfully Updated",
+            });
+        });
     },
 }
