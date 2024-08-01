@@ -1321,6 +1321,7 @@ module.exports = {
                 duty_status=?,
                 duty_desc=?,
                 lvereq_desc=?,
+                leave_status=?,
                 lve_tble_updation_flag = 0
             WHERE punch_slno = ? `,
             [
@@ -1332,6 +1333,7 @@ module.exports = {
                 data.duty_status,
                 data.duty_desc,
                 data.lvereq_desc,
+                null,
                 data.punch_slno,
             ],
             (error, results, feilds) => {
@@ -1380,11 +1382,50 @@ module.exports = {
                     lvereq_desc,
                     duty_desc,
                     create_user,
-                    remrk
+                    remrk,
+                    punch_slno
                     ) 
                 VALUES ?`,
             [
                 data
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getManualRequestAll: (callBack) => {
+        pool.query(
+            `SELECT 
+            manual_slno,
+            manual_request_log.em_no,
+            manual_request_log.em_id,
+            em_name,
+            duty_date,
+            lvereq_desc,
+            duty_desc,
+            punch_slno,
+            manual_request_date
+            FROM manual_request_log
+            left join hrm_emp_master on hrm_emp_master.em_id=manual_request_log.em_id
+            where delete_status=0`,
+            [],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    InactiveManualrequest: (data, callBack) => {
+        pool.query(
+            `UPDATE manual_request_log SET delete_status=1 where manual_slno=? `,
+            [
+                data.manual_slno,
             ],
             (error, results, feilds) => {
                 if (error) {
