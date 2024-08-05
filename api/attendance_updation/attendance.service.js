@@ -1423,8 +1423,16 @@ module.exports = {
     },
     InactiveManualrequest: (data, callBack) => {
         pool.query(
-            `UPDATE manual_request_log SET delete_status=1 where manual_slno=? `,
+            `UPDATE manual_request_log 
+            SET delete_status=1,
+            delete_comments=?,
+            delete_user=?,
+            delete_date=? 
+            where manual_slno=? `,
             [
+                data.delete_comments,
+                data.delete_user,
+                data.delete_date,
                 data.manual_slno,
             ],
             (error, results, feilds) => {
