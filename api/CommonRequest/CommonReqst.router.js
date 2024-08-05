@@ -5,7 +5,8 @@ const { create, createGenralRq, createOndutyRequest, createEnableMispunchRqst, g
     hodEnable, hodOnDuty, hodOneHour, ceoEnable, ceoonduty, ceoOnehour, hrEnable, hrOnduty,
     hrOnehour, getGeneralReqstAll, addHrComment, checkMispunchRequest, hrEnableComment,
     hrOndutyComment, checkAttendanceProcess, generalHRapproval, cancelEnable, enableOnduty,
-    cancelOnehour, cancelgeneral, onDutyReport
+    cancelOnehour, cancelgeneral, onDutyReport, HrApprovedOneHourData, HrApprovedOnDutyData,
+    cancelApprovedOneHour, cancelApprovedOnDuty
 } = require("../CommonRequest/CommonReqst.controller")
 
 
@@ -54,5 +55,11 @@ router.patch("/cancel/onhour", checkToken, cancelOnehour)
 router.patch("/cancel/general", checkToken, cancelgeneral)
 
 router.post("/onduty/list", checkToken, onDutyReport)
+
+router.get("/hrApproved/onehour", checkToken, HrApprovedOneHourData)
+router.get("/hrApproved/Onduty", checkToken, HrApprovedOnDutyData)
+
+router.post("/cancel/approvedOneHour", checkToken, cancelApprovedOneHour)
+router.post("/cancel/approvedOnDuty", checkToken, cancelApprovedOnDuty)
 
 module.exports = router;

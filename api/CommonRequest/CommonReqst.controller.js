@@ -6,9 +6,10 @@ const { create, checkInsertVal, createGenralRq, createOndutyRequest, createEnabl
     addHrComment, checkingAttendanceMarking, HRNopunchMasterIn, HRNopunchMasterOut,
     checkMispunchRequest, checksEnableRq, punchdataEntry, HROnDutyPunchMaster,
     checkAttendanceProcess, generalHRapproval, cancelEnable, enableOnduty, cancelOnehour,
-    cancelgeneral, checkPunchMarkingHR, onDutyReport
+    cancelgeneral, checkPunchMarkingHR, onDutyReport, HrApprovedOneHourData, HrApprovedOnDutyData
 } = require('../CommonRequest/CommonReqst.service')
-const { validateOneHourReqst } = require('../../validation/validation_schema')
+const { validateOneHourReqst } = require('../../validation/validation_schema');
+const { deletePunchMasterSingleRow } = require('../attendance_updation/attendance.service');
 
 module.exports = {
     create: (req, res) => {
@@ -911,4 +912,118 @@ module.exports = {
             }
         });
     },
+    HrApprovedOneHourData: (req, res) => {
+        HrApprovedOneHourData((err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    HrApprovedOnDutyData: (req, res) => {
+        HrApprovedOnDutyData((err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    cancelApprovedOneHour: (req, res) => {
+        const body = req.body;
+        deletePunchMasterSingleRow(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+            cancelOnehour(body, (err, results) => {
+                if (err) {
+                    logger.errorLogger(err)
+                    return res.status(200).json({
+                        success: 0,
+                        message: err
+                    });
+                }
+                else if (!results) {
+                    return res.status(200).json({
+                        success: 2,
+                        message: "Record Not Found"
+                    });
+                }
+                else {
+                    return res.status(200).json({
+                        success: 1,
+                        message: "Request Cancelled successfully"
+                    });
+
+                }
+            });
+        });
+    },
+    cancelApprovedOnDuty: (req, res) => {
+        const body = req.body;
+        deletePunchMasterSingleRow(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+            enableOnduty(body, (err, results) => {
+                if (err) {
+                    logger.errorLogger(err)
+                    return res.status(200).json({
+                        success: 0,
+                        message: err
+                    });
+                }
+                else if (!results) {
+                    return res.status(200).json({
+                        success: 2,
+                        message: "Record Not Found"
+                    });
+                }
+                else {
+                    return res.status(200).json({
+                        success: 1,
+                        message: "Request Cancelled successfully"
+                    });
+
+                }
+            });
+        });
+    }
 }

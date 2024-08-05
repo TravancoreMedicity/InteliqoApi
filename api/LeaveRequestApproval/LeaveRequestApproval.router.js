@@ -83,7 +83,12 @@ const {
     empLeaveData,
     sectionLeaveData,
     sectionMisspunchData,
-    sectionHalfdayData
+    sectionHalfdayData,
+    HrApprovedMisspunch,
+    hrApprovedLeaveRq,
+    hrApprovedHalfday,
+    cancelApprovedMisspunch,
+    cancelApprovedHalfday
 } = require('../LeaveRequestApproval/LeaveRequestApproval.controller');
 
 
@@ -205,6 +210,13 @@ router.post("/inchargeHod/leaveData", checkToken, sectionLeaveData)
 router.post("/inchargeHod/misspunchData", checkToken, sectionMisspunchData)
 router.post("/inchargeHod/halfday", checkToken, sectionHalfdayData)
 
+
+router.get("/hrApproved/misspunch", checkToken, HrApprovedMisspunch)
+router.get("/hrApproved/Leavereqst", checkToken, hrApprovedLeaveRq)
+router.get("/hrApproved/halfday", checkToken, hrApprovedHalfday)
+
+router.post("/cancel/misspunch", checkToken, cancelApprovedMisspunch)
+router.patch("/cancel/halfday", checkToken, cancelApprovedHalfday)
 
 
 module.exports = router;
