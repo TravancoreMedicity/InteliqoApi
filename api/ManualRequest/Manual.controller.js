@@ -55,12 +55,15 @@ module.exports = {
                     status: 0,
                     message: err.message,
                 });
-            } else if (!req.files || req.files.length === 0) {
-                return res.status(200).json({
-                    status: 0,
-                    message: "Files are required!",
-                });
-            } else {
+            }
+            //  else if (!req.files || req.files.length === 0) {
+            //     return res.status(200).json({
+            //         status: 0,
+            //         message: "Files are required!",
+            //     }
+            // );
+            //}
+            else {
                 try {
                     const files = req.files;
                     const empno = body.emno;

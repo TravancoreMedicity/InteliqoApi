@@ -109,7 +109,8 @@ module.exports = {
                 first_half_in,
                 first_half_out,
                 second_half_in,
-                second_half_out
+                second_half_out,
+                holiday
             FROM hrm_duty_plan
             LEFT JOIN hrm_shift_mast ON hrm_shift_mast.shft_slno = hrm_duty_plan.shift_id 
             WHERE duty_day= ? AND emp_id=?`,
