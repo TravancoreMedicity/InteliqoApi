@@ -1383,7 +1383,8 @@ module.exports = {
                     duty_desc,
                     create_user,
                     remrk,
-                    punch_slno
+                    punch_slno,
+                    filename
                     ) 
                 VALUES ?`,
             [
@@ -1408,7 +1409,8 @@ module.exports = {
             lvereq_desc,
             duty_desc,
             punch_slno,
-            manual_request_date
+            manual_request_date,
+            filename
             FROM manual_request_log
             left join hrm_emp_master on hrm_emp_master.em_id=manual_request_log.em_id
             where delete_status=0`,
