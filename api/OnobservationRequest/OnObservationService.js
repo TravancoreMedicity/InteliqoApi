@@ -84,4 +84,43 @@ module.exports = {
             }
         )
     },
+    getAllOnObservation: (callBack) => {
+        pool.query(
+            `SELECT observation_slno,emp_id,em_doj, em_no,em_name,observation_day,dept_name,sect_name 
+            FROM on_observation_request
+            left join hrm_emp_master on hrm_emp_master.em_id=on_observation_request.emp_id
+            inner join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
+            inner join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
+            where delete_status=0;`,
+            [],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    InactiveOnobservationrequest: (data, callBack) => {
+        pool.query(
+            `UPDATE on_observation_request 
+            SET delete_status=1,
+            delete_comment=?,
+            delete_user=?,
+            delete_date=? 
+            where observation_slno=? `,
+            [
+                data.delete_comment,
+                data.delete_user,
+                data.delete_date,
+                data.observation_slno,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }

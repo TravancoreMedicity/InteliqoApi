@@ -1075,6 +1075,7 @@ module.exports = {
         pool.query(
             `select hrm_emp_master.em_no,
             em_name,
+            em_name as emp_name,
             gross_salary,
             hrm_emp_master.em_id ,
             branch_name,

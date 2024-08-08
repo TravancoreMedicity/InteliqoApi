@@ -1383,7 +1383,8 @@ module.exports = {
                     duty_desc,
                     create_user,
                     remrk,
-                    punch_slno
+                    punch_slno,
+                    filename
                     ) 
                 VALUES ?`,
             [
@@ -1408,7 +1409,8 @@ module.exports = {
             lvereq_desc,
             duty_desc,
             punch_slno,
-            manual_request_date
+            manual_request_date,
+            filename
             FROM manual_request_log
             left join hrm_emp_master on hrm_emp_master.em_id=manual_request_log.em_id
             where delete_status=0`,
@@ -1423,8 +1425,16 @@ module.exports = {
     },
     InactiveManualrequest: (data, callBack) => {
         pool.query(
-            `UPDATE manual_request_log SET delete_status=1 where manual_slno=? `,
+            `UPDATE manual_request_log 
+            SET delete_status=1,
+            delete_comments=?,
+            delete_user=?,
+            delete_date=? 
+            where manual_slno=? `,
             [
+                data.delete_comments,
+                data.delete_user,
+                data.delete_date,
                 data.manual_slno,
             ],
             (error, results, feilds) => {

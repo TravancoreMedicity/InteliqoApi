@@ -1792,7 +1792,7 @@ module.exports = {
             .then((r) => {
                 var values = body.map((value, index) => {
                     return [value.em_id, value.em_no, value.duty_day, value.lvereq_desc, value.duty_desc, value.create_user, value.remrk,
-                    value.punch_slno]
+                    value.punch_slno, value.filename]
                 })
 
                 createManualrequestLog(values, (err, results) => {
@@ -1811,7 +1811,8 @@ module.exports = {
                     }
                     return res.status(200).json({
                         success: 1,
-                        message: "Data Submitted Successfully"
+                        message: "Data Submitted Successfully",
+                        insetId: results.insertId
                     });
                 });
                 // return res.status(200).json({
