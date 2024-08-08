@@ -15,10 +15,13 @@ const { getleaverequestdep, nopunchreq, halfrequst, getcompenoff, getlevereqmast
     CancelHolidayLeave, CancelCasualyLeave, CancelEarnLeave, CancelCoffLeave, CancelCommonLeave,
     CancelpunchMastEsiLeave, CancelpunchMastLwfLeave, CancelpunchMastLeave, UpdateHalfdayCasual,
     updateCompFlag, empCoffData, sectionCoffData, empMisspunchData, empHalfdayData, empLeaveData,
-    sectionLeaveData, sectionMisspunchData, sectionHalfdayData
+    sectionLeaveData, sectionMisspunchData, sectionHalfdayData, HrApprovedMisspunch, hrApprovedLeaveRq,
+    hrApprovedHalfday
+
 } = require('../LeaveRequestApproval/LeaveRequestApproval.service');
 const { validationinchageapprv, validateotcancel } = require('../../validation/validation_schema');
-const logger = require('../../logger/logger')
+const logger = require('../../logger/logger');
+const { deletePunchMasterSingleRow } = require('../attendance_updation/attendance.service');
 module.exports = {
     getleaverequestdep: (req, res) => {
         const body = req.body
@@ -2234,6 +2237,146 @@ module.exports = {
                     data: results
                 });
             }
+        });
+    },
+    HrApprovedMisspunch: (req, res) => {
+        HrApprovedMisspunch((err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    hrApprovedLeaveRq: (req, res) => {
+        hrApprovedLeaveRq((err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    hrApprovedHalfday: (req, res) => {
+        hrApprovedHalfday((err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    cancelApprovedMisspunch: (req, res) => {
+        const body = req.body;
+        deletePunchMasterSingleRow(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+            NoPunchReqCancelHr(body, (err, results) => {
+                if (err) {
+                    logger.errorLogger(err)
+                    return res.status(200).json({
+                        success: 0,
+                        message: err
+                    });
+                }
+                else if (!results) {
+                    return res.status(200).json({
+                        success: 2,
+                        message: "Record Not Found"
+                    });
+                }
+                else {
+                    return res.status(200).json({
+                        success: 1,
+                        message: "Request Cancelled successfully"
+                    });
+
+                }
+            });
+        });
+    },
+    cancelApprovedHalfday: (req, res) => {
+        const body = req.body;
+        deletePunchMasterSingleRow(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+            HalfDayHrRejectCl(body, (err, results) => {
+                if (err) {
+                    logger.errorLogger(err)
+                    return res.status(200).json({
+                        success: 0,
+                        message: err
+                    });
+                }
+                HalfDayReqCancelHr(body, (err, results) => {
+                    if (err) {
+                        logger.errorLogger(err)
+                        return res.status(200).json({
+                            success: 0,
+                            message: err
+                        });
+                    }
+                    else if (!results) {
+                        return res.status(200).json({
+                            success: 2,
+                            message: "Record Not Found"
+                        });
+                    }
+                    else {
+                        return res.status(200).json({
+                            success: 1,
+                            message: "Leave Request Rejected Successfully"
+                        });
+                    }
+                })
+            })
+
         });
     },
 }
