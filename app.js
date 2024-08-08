@@ -5,6 +5,10 @@ require("./upload/punchTableEventCheck")
 const express = require("express");
 const fs = require('fs');
 const app = express();
+
+const cors = require("cors");
+app.use(cors())
+
 const { infoLogger } = require('./logger/logger')
 
 
