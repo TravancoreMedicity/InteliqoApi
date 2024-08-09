@@ -20,7 +20,7 @@ module.exports = {
             const body = req.body;
             const file = req.file;
 
-            console.log(body)
+            console.log(file.filename)
 
             // console.log(file)
 
