@@ -24,9 +24,10 @@ module.exports = {
                 hod_app_date,
                 hod_id,
                 ceo_required,
-                hr_required
+                hr_required,
+                attachment
                 )
-                VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+                VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
                 data.dept_id,
                 data.sect_id,
@@ -50,6 +51,7 @@ module.exports = {
                 data.hod_id,
                 data.ceo_required,
                 data.hr_required,
+                data.fileName
             ],
             (error, results, fields) => {
                 if (error) {
