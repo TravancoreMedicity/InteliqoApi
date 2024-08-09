@@ -5,6 +5,10 @@ require("./upload/punchTableEventCheck")
 const express = require("express");
 const fs = require('fs');
 const app = express();
+
+const cors = require("cors");
+app.use(cors())
+
 const { infoLogger } = require('./logger/logger')
 
 
@@ -147,6 +151,7 @@ const TrainingVerification = require("./api/TrainingVerification/TrainingVerific
 const TrainingFeedback = require("./api/Training_Feedback/TrainingFeedback.router")
 const TrainingRecord = require("./api/TrainingRecord/TrainingRecord.router")
 const OnObservationRequest = require("./api/OnobservationRequest/OnobservationRouter")
+const ManualrequestUpload = require("./api/ManualRequest/Manual.router")
 
 app.use(express.json({ limit: '50mb' }));
 app.use((req, res, next) => {
@@ -329,7 +334,7 @@ app.use("/api/TrainingVerification", TrainingVerification)
 app.use("/api/TrainingFeedback", TrainingFeedback)
 app.use("/api/TrainingRecord", TrainingRecord)
 app.use("/api/OnObservationRequest", OnObservationRequest)
-
+app.use("/api/manualRequest", ManualrequestUpload)
 
 
 

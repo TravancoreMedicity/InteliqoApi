@@ -1,3 +1,6 @@
+// @ts-nocheck
+const multer = require('multer');
+// @ts-nocheck
 const { InsertResignationRequest, getInchargePending, getResignationRequestByID,
     ResignationApprovalIncahrge, getHoDPending, getResignationRequestHOdByID,
     ResignationApprovalHOD, getHRPending, getResignationRequestHRByID,
@@ -6,23 +9,34 @@ const { InsertResignationRequest, getInchargePending, getResignationRequestByID,
     getHRPendingList, getContractClosed, getFullSettlementEmp, insertResigSalaryDetails } = require('../ResignationRequest/ResignationRequest.service');
 const { validateResignationRequest, validateResignationRequestApprovalHOD, validateResignationRequestApprovalCEO, validateResignationRequestCancel,
     validateResignationRequestApprovalINcharge, validateResignationRequestApprovalHR } = require('../../validation/validation_schema');
-const logger = require('../../logger/logger')
+const logger = require('../../logger/logger');
+const { uploadResignationReqFiles } = require('./ResignationFileUpload');
+
 
 module.exports = {
     InsertResignationRequest: (req, res) => {
 
-        console.log(req)
-        // console.log(req.file)
+        uploadResignationReqFiles(req, res, (err) => {
+            const body = req.body;
+            const file = req.file;
 
-        const body = req.body;
+            console.log(body)
+
+            // console.log(file)
+
+        })
+
+        // for (let [key, value] of body.entries()) {
+        //     console.log(`${key}: ${value}`);
+        // }
+
         // const body_result = validateResignationRequest.validate(body);
-
-        if (body.error) {
-            return res.status(200).json({
-                success: 2,
-                message: body.error.details[0].message
-            });
-        }
+        // if (body_result.error) {
+        //     return res.status(200).json({
+        //         success: 2,
+        //         message: body_result.error.details[0].message
+        //     });
+        // }
         // InsertResignationRequest(body, (err, results) => {
         //     if (err) {
         //         logger.errorLogger(err)
