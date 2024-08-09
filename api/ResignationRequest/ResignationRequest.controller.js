@@ -16,41 +16,35 @@ const { uploadResignationReqFiles } = require('./ResignationFileUpload');
 module.exports = {
     InsertResignationRequest: (req, res) => {
         // console.log(req.file)
-
         uploadResignationReqFiles(req, res, (err) => {
-            const body = req.body;
-            const file = req.file;
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            } else {
 
-            console.log(body)
+                const body = req.body;
+                const file = req.file;
+                const fileName = file?.filename;
+                const postData = JSON.parse(JSON.parse(JSON.stringify(body))?.postData);
+                postData.fileName = fileName
 
-            // console.log(file)
-
+                InsertResignationRequest(postData, (error, results) => {
+                    if (error) {
+                        return res.status(200).json({
+                            success: 0,
+                            message: error
+                        });
+                    }
+                    return res.status(200).json({
+                        success: 1,
+                        message: "Resignation Submitted SuccessFully"
+                    })
+                })
+            }
         })
 
-        // for (let [key, value] of body.entries()) {
-        //     console.log(`${key}: ${value}`);
-        // }
-
-        // const body_result = validateResignationRequest.validate(body);
-        // if (body_result.error) {
-        //     return res.status(200).json({
-        //         success: 2,
-        //         message: body_result.error.details[0].message
-        //     });
-        // }
-        // InsertResignationRequest(body, (err, results) => {
-        //     if (err) {
-        //         logger.errorLogger(err)
-        //         return res.status(200).json({
-        //             success: 0,
-        //             message: err
-        //         });
-        //     }
-        //     return res.status(200).json({
-        //         success: 1,
-        //         message: "Resignation Submitted SuccessFully"
-        //     })
-        // })
     },
     getInchargePending: (req, res) => {
         const body = req.body;
