@@ -64,23 +64,24 @@ module.exports = {
     getInchargePending: (data, callBack) => {
         pool.query(
             `SELECT 
-            ROW_NUMBER() OVER () as slno,
-            resig_slno,
-            hrm_resignation_request.dept_id,
-            hrm_resignation_request.sect_id,
-            dept_name,
-            sect_name,
-            em_name,
-            hrm_resignation_request.em_no,
-            request_date,
-            resign_reason,
-            relieving_date,
-            inch_app_status,
-            case when inch_app_status=1 then 'Approved' when  inch_app_status = 2 then 'Rejected' else 'Incharge Approval Pending' end as 'status'
+                ROW_NUMBER() OVER () as slno,
+                resig_slno,
+                hrm_resignation_request.dept_id,
+                hrm_resignation_request.sect_id,
+                dept_name,
+                sect_name,
+                em_name,
+                hrm_resignation_request.em_no,
+                request_date,
+                resign_reason,
+                relieving_date,
+                inch_app_status,
+                case when inch_app_status=1 then 'Approved' when  inch_app_status = 2 then 'Rejected' else 'Incharge Approval Pending' end as 'status',
+                attachment
             FROM hrm_resignation_request
-            left join hrm_department on hrm_department.dept_id=hrm_resignation_request.dept_id
-            left join hrm_dept_section on hrm_dept_section.sect_id=hrm_resignation_request.sect_id
-            left join hrm_emp_master on hrm_emp_master.em_id=hrm_resignation_request.em_id
+                left join hrm_department on hrm_department.dept_id=hrm_resignation_request.dept_id
+                left join hrm_dept_section on hrm_dept_section.sect_id=hrm_resignation_request.sect_id
+                left join hrm_emp_master on hrm_emp_master.em_id=hrm_resignation_request.em_id
             WHERE hrm_resignation_request.sect_id IN(?)
             AND incharge_required=1 AND resign_status is null`,
             [
