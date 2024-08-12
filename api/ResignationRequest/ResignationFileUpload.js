@@ -3,7 +3,7 @@ const path = require('path');
 
 const storageResignation = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'C:/NAS/PersonalRecords/ResignationReq')
+        cb(null, 'D:/PersonalRecords/ResignationReq')
     },
     filename: function (req, file, cb) {
         const extension = path.extname(file.originalname);

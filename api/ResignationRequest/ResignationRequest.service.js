@@ -63,6 +63,28 @@ module.exports = {
             }
         )
     },
+    checkResignationEntryExcist: (data, callBack) => {
+        pool.query(
+            `SELECT 
+                resig_slno
+            FROM
+                hrm_resignation_request
+            WHERE
+                resign_cancel IS NULL
+                    AND (resign_status != 'R'
+                    || resign_status IS NULL)
+                    AND em_no = ?`,
+            [
+                data.em_no,
+            ],
+            (error, results, fields) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results)
+            }
+        )
+    },
     getInchargePending: (data, callBack) => {
         pool.query(
             `SELECT 
@@ -80,7 +102,9 @@ module.exports = {
                 inch_app_status,
                 case when inch_app_status=1 then 'Approved' when  inch_app_status = 2 then 'Rejected' else 'Incharge Approval Pending' end as 'status',
                 attachment,
-                attachment_type
+                attachment_type,
+                replacement_required_incharge,
+                replacement_required_hod
             FROM hrm_resignation_request
                 left join hrm_department on hrm_department.dept_id=hrm_resignation_request.dept_id
                 left join hrm_dept_section on hrm_dept_section.sect_id=hrm_resignation_request.sect_id
@@ -145,25 +169,29 @@ module.exports = {
     getHoDPending: (data, callBack) => {
         pool.query(
             `SELECT 
-            ROW_NUMBER() OVER () as slno,
-            resig_slno,
-            hrm_resignation_request.dept_id,
-            hrm_resignation_request.sect_id,
-            dept_name,
-            sect_name,
-            em_name,
-            resign_reason,
-            relieving_date,
-            hrm_resignation_request.em_no,
-            request_date,
-            inch_app_status,
-            inch_coment,
-            hod_app_status,
-            if(inch_app_status is null ,'Incharge Approval Pending',if(hod_app_status=1,'Approved',if(hod_app_status=2,'Reject','HOD Approval Pending')))status
+                ROW_NUMBER() OVER () as slno,
+                resig_slno,
+                hrm_resignation_request.dept_id,
+                hrm_resignation_request.sect_id,
+                dept_name,
+                sect_name,
+                em_name,
+                resign_reason,
+                relieving_date,
+                hrm_resignation_request.em_no,
+                request_date,
+                inch_app_status,
+                inch_coment,
+                hod_app_status,
+                if(inch_app_status is null ,'Incharge Approval Pending',if(hod_app_status=1,'Approved',if(hod_app_status=2,'Reject','HOD Approval Pending')))status,
+                attachment,
+                attachment_type,
+                replacement_required_incharge,
+                replacement_required_hod
             FROM hrm_resignation_request
-            left join hrm_department on hrm_department.dept_id=hrm_resignation_request.dept_id
-            left join hrm_dept_section on hrm_dept_section.sect_id=hrm_resignation_request.sect_id
-            left join hrm_emp_master on hrm_emp_master.em_id=hrm_resignation_request.em_id
+                left join hrm_department on hrm_department.dept_id=hrm_resignation_request.dept_id
+                left join hrm_dept_section on hrm_dept_section.sect_id=hrm_resignation_request.sect_id
+                left join hrm_emp_master on hrm_emp_master.em_id=hrm_resignation_request.em_id
             WHERE hrm_resignation_request.sect_id IN(?)
             AND hod_required=1 AND resign_status is null and ((incharge_required=1 and inch_app_status=1) or incharge_required =0)`,
             [
@@ -337,13 +365,12 @@ module.exports = {
     ResignationApprovalHR: (data, callBack) => {
         pool.query(
             `UPDATE hrm_resignation_request
-                SET hr_id = ?,
+                SET 
+                hr_id = ?,
                 hr_app_date = ?,
                 hr_app_status =?,
                 hr_coment =?,
-                resign_status =?,
-                replacement_required_hr=?,
-                salaryPenalty=?
+                resign_status =?
                 WHERE resig_slno =?`,
             [
                 data.hr_id,
@@ -351,8 +378,6 @@ module.exports = {
                 data.hr_app_status,
                 data.hr_coment,
                 data.resign_status,
-                data.replacement_required_hr,
-                data.salaryPenalty,
                 data.resig_slno
             ],
             (error, results, feilds) => {
@@ -466,21 +491,23 @@ module.exports = {
     getHRPendingList: (callBack) => {
         pool.query(
             ` SELECT 
-            ROW_NUMBER() OVER () as slno,
-            resig_slno,
-            hrm_resignation_request.dept_id,
-            hrm_resignation_request.sect_id,
-            dept_name,
-            sect_name,
-            em_name,
-            resignation_type,
-            hrm_resignation_request.em_id,
-            resign_reason,
-            hrm_resignation_request.em_no,request_date
+                ROW_NUMBER() OVER () as slno,
+                resig_slno,
+                hrm_resignation_request.dept_id,
+                hrm_resignation_request.sect_id,
+                dept_name,
+                sect_name,
+                em_name,
+                resignation_type,
+                hrm_resignation_request.em_id,
+                resign_reason,
+                hrm_resignation_request.em_no,request_date,
+                attachment,
+                attachment_type
             FROM hrm_resignation_request
-            left join hrm_department on hrm_department.dept_id=hrm_resignation_request.dept_id
-            left join hrm_dept_section on hrm_dept_section.sect_id=hrm_resignation_request.sect_id
-            left join hrm_emp_master on hrm_emp_master.em_id=hrm_resignation_request.em_id
+                left join hrm_department on hrm_department.dept_id=hrm_resignation_request.dept_id
+                left join hrm_dept_section on hrm_dept_section.sect_id=hrm_resignation_request.sect_id
+                left join hrm_emp_master on hrm_emp_master.em_id=hrm_resignation_request.em_id
             where resign_status is null and hr_required=1 and (inch_app_status =1 or inch_app_status=2) 
             and (hod_app_status=1 or hod_app_status=2) and (ceo_appr_status=1 or ceo_appr_status=2 or ceo_appr_status is null) `,
             [],

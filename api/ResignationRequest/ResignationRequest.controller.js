@@ -6,7 +6,7 @@ const { InsertResignationRequest, getInchargePending, getResignationRequestByID,
     ResignationApprovalHOD, getHRPending, getResignationRequestHRByID,
     getCEOPending, getCEOPendingById, ResignationApprovalCEO, ResignationApprovalHR,
     getResignCancel, ResignationCancelHR, InsertResignationRequestContractClose,
-    getHRPendingList, getContractClosed, getFullSettlementEmp, insertResigSalaryDetails } = require('../ResignationRequest/ResignationRequest.service');
+    getHRPendingList, getContractClosed, getFullSettlementEmp, insertResigSalaryDetails, checkResignationEntryExcist } = require('../ResignationRequest/ResignationRequest.service');
 const { validateResignationRequest, validateResignationRequestApprovalHOD, validateResignationRequestApprovalCEO, validateResignationRequestCancel,
     validateResignationRequestApprovalINcharge, validateResignationRequestApprovalHR } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger');
@@ -19,7 +19,7 @@ module.exports = {
         uploadResignationReqFiles(req, res, (err) => {
             if (err) {
                 return res.status(200).json({
-                    success: 0,
+                    success: 2,
                     message: err
                 });
             } else {
@@ -32,18 +32,34 @@ module.exports = {
                 postData.fileName = fileName
                 postData.fileType = fileType
 
-                InsertResignationRequest(postData, (error, results) => {
+                checkResignationEntryExcist(postData, (error, results) => {
                     if (error) {
                         return res.status(200).json({
                             success: 0,
                             message: error
                         });
                     }
-                    return res.status(200).json({
-                        success: 1,
-                        message: "Resignation Submitted SuccessFully"
-                    })
+                    if (results.length > 0) {
+                        return res.status(200).json({
+                            success: 0,
+                            message: "Resignation Already Submitted"
+                        });
+                    } else {
+                        InsertResignationRequest(postData, (error, results) => {
+                            if (error) {
+                                return res.status(200).json({
+                                    success: 0,
+                                    message: error
+                                });
+                            }
+                            return res.status(200).json({
+                                success: 1,
+                                message: "Resignation Submitted SuccessFully"
+                            })
+                        })
+                    }
                 })
+
             }
         })
 

@@ -1020,8 +1020,6 @@ const validateResignationRequestApprovalHR = Joi.object({
         hr_app_status: Joi.number().required(),
         hr_coment: Joi.string().required(),
         resign_status: Joi.string().required(),
-        replacement_required_hr: Joi.number().required(),
-        salaryPenalty: Joi.number().required(),
         resig_slno: Joi.number().optional(),
 
 })
