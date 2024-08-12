@@ -27,8 +27,10 @@ module.exports = {
                 const body = req.body;
                 const file = req.file;
                 const fileName = file?.filename;
+                const fileType = file?.mimetype;
                 const postData = JSON.parse(JSON.parse(JSON.stringify(body))?.postData);
                 postData.fileName = fileName
+                postData.fileType = fileType
 
                 InsertResignationRequest(postData, (error, results) => {
                     if (error) {

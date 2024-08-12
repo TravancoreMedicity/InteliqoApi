@@ -25,9 +25,10 @@ module.exports = {
                 hod_id,
                 ceo_required,
                 hr_required,
-                attachment
+                attachment,
+                attachment_type
                 )
-                VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+                VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
                 data.dept_id,
                 data.sect_id,
@@ -51,7 +52,8 @@ module.exports = {
                 data.hod_id,
                 data.ceo_required,
                 data.hr_required,
-                data.fileName
+                data.fileName,
+                data.fileType
             ],
             (error, results, fields) => {
                 if (error) {
@@ -77,7 +79,8 @@ module.exports = {
                 relieving_date,
                 inch_app_status,
                 case when inch_app_status=1 then 'Approved' when  inch_app_status = 2 then 'Rejected' else 'Incharge Approval Pending' end as 'status',
-                attachment
+                attachment,
+                attachment_type
             FROM hrm_resignation_request
                 left join hrm_department on hrm_department.dept_id=hrm_resignation_request.dept_id
                 left join hrm_dept_section on hrm_dept_section.sect_id=hrm_resignation_request.sect_id
