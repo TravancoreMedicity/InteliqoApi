@@ -411,7 +411,8 @@ const validateshiftmaster = Joi.object({
         shift_duration_in_min: Joi.number().optional(),
         shift_start_in_min: Joi.number().optional(),
         shift_end_in_min: Joi.number().optional(),
-        night_off_flag: Joi.number().optional()
+        night_off_flag: Joi.number().optional(),
+        twenty_four: Joi.number().optional(),
 
 })
 
