@@ -1757,5 +1757,18 @@ module.exports = {
             }
         )
     },
+
+    getSkillData: (callBack) => {
+        pool.query(
+            `SELECT * FROM hrm_skills `,
+            [],
+            (error, results, fields) => {
+                if (error) {
+                    callBack(error)
+                }
+                return callBack(null, results)
+            }
+        );
+    },
 }
 

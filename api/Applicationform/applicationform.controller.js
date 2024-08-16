@@ -2,7 +2,7 @@ const { insertapplicationform, updateapplicationslno, vacancyList, getname, getv
     getapplication, insertHodinterview, insertInchargeinterview, insertcallletter, insertinterview, getselectionStatus, getselectdesgstatus, insertJoinstatus,
     getquestion, getempdetails, insertshortlistapprove, getstatus, getstatusdata, insertDmsinterview, insertCeointerview, getempselect, getpdfdata, insertAppmtstatus,
     insertOperationinterview, insertHrinterview, getinitialstatus, getlogindata, getloginselect, insertselection, updateselection,
-    insertappointmentdata, insertAppmtcancelstatus, insertjoincancelstatus } = require('../Applicationform/applicationform.service');
+    insertappointmentdata, insertAppmtcancelstatus, insertjoincancelstatus, insertInterviewLevel } = require('../Applicationform/applicationform.service');
 const nodemailer = require('nodemailer');
 const { Application_form } = require('../../validation/validation_schema')
 const logger = require('../../logger/logger')
@@ -958,6 +958,34 @@ module.exports = {
             });
         })
     },
+    insertInterviewLevel: (req, res) => {
+        const body = req.body
+        insertInterviewLevel(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: res.err
+                });
+            }
+
+            if (results.length === 0) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found",
+                    data: []
+
+                });
+            }
+
+            return res.status(200).json({
+
+                success: 1,
+                data: results,
+                message: "Data Inserted Sucessfully",
+            });
+        })
+    },
     insertcallletter: (req, res) => {
         const body = req.body;
         insertcallletter(body)
@@ -1003,6 +1031,7 @@ module.exports = {
                     message: e.sqlMessage || 'Failed to process request.'
                 });
             });
-    }
+    },
+
 
 };

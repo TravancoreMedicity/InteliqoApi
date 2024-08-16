@@ -87,7 +87,7 @@ module.exports = {
              desg_name
               FROM hrm_manpower_request
             LEFT JOIN designation ON hrm_manpower_request.desg_id = designation.desg_slno
-           WHERE JSON_CONTAINS(qualification, '?')  `,
+           WHERE JSON_CONTAINS(qualification, '?') and announcement_status=1 `,
             [
                 data.education
             ],
@@ -291,11 +291,10 @@ module.exports = {
             SELECT
             Job_applied,
            desg_name,
-            desg_slno
-       FROM hrm_application_form
-       LEFT JOIN designation on JSON_CONTAINS(hrm_application_form.Job_applied,cast(designation.desg_slno as json),'$')
-       WHERE application_no = ?
-      
+           desg_slno
+           FROM hrm_application_form
+           LEFT JOIN designation on JSON_CONTAINS(hrm_application_form.Job_applied,cast(designation.desg_slno as json),'$')
+           WHERE application_no = ?
             `,
             [
                 data.application_no,
@@ -360,7 +359,13 @@ module.exports = {
             attitude_mark=?,
             confidence_mark=?,
             bodylang_mark=?,
-            incharge_remark=?
+            incharge_remark=?,
+            Hod_level_staus=?,
+            Incharge_level_staus=?,
+            Ms_level_status=?,
+            Dms_level_status=?,
+            Ceo_level_status=?,
+            operation_level_status=?
             WHERE application_no = ? and desg_id=?`,
             [
                 data.incharge_interview_status,
@@ -376,8 +381,15 @@ module.exports = {
                 data.confidencemark,
                 data.bodylanmark,
                 data.remark,
+                data.Hod_level_staus,
+                data.Incharge_level_staus,
+                data.Ms_level_status,
+                data.Dms_level_status,
+                data.Ceo_level_status,
+                data.operation_level_status,
                 data.application_no,
                 data.desg_id,
+
             ],
             (error, results, feilds) => {
 
@@ -403,7 +415,13 @@ module.exports = {
             Hod_atti_mark=?,
             Hod_confi_mark=?,
             Hod_bodylang_mark=?,
-            hod_remark=?
+            hod_remark=?,
+            Hod_level_staus=?,
+            Incharge_level_staus=?,
+            Ms_level_status=?,
+            Dms_level_status=?,
+            Ceo_level_status=?,
+            operation_level_status=?
             WHERE application_no = ? and desg_id=?`,
             [
                 data.incharge_interview_status,
@@ -419,6 +437,12 @@ module.exports = {
                 data.confidencemark,
                 data.bodylanmark,
                 data.remark,
+                data.Hod_level_staus,
+                data.Incharge_level_staus,
+                data.Ms_level_status,
+                data.Dms_level_status,
+                data.Ceo_level_status,
+                data.operation_level_status,
                 data.application_no,
                 data.desg_id,
             ],
@@ -446,7 +470,13 @@ module.exports = {
             Ms_atti_mark=?,
             Ms_confi_mark=?,
             Ms_bodylang_mark=?,
-            ms_remark=?
+            ms_remark=?,
+             Hod_level_staus=?,
+            Incharge_level_staus=?,
+            Ms_level_status=?,
+            Dms_level_status=?,
+            Ceo_level_status=?,
+            operation_level_status=?
             WHERE application_no = ? and desg_id=?`,
             [
                 data.incharge_interview_status,
@@ -462,6 +492,12 @@ module.exports = {
                 data.confidencemark,
                 data.bodylanmark,
                 data.remark,
+                data.Hod_level_staus,
+                data.Incharge_level_staus,
+                data.Ms_level_status,
+                data.Dms_level_status,
+                data.Ceo_level_status,
+                data.operation_level_status,
                 data.application_no,
                 data.desg_id,
             ],
@@ -489,7 +525,13 @@ module.exports = {
             Dms_atti_mark=?,
             Dms_confi_mark=?,
             Dms_bodylang_mark=?,
-            dms_remark=?
+            dms_remark=?,
+            Hod_level_staus=?,
+            Incharge_level_staus=?,
+            Ms_level_status=?,
+            Dms_level_status=?,
+            Ceo_level_status=?,
+            operation_level_status=?
             WHERE application_no = ? and desg_id=?`,
             [
                 data.incharge_interview_status,
@@ -505,6 +547,12 @@ module.exports = {
                 data.confidencemark,
                 data.bodylanmark,
                 data.remark,
+                data.Hod_level_staus,
+                data.Incharge_level_staus,
+                data.Ms_level_status,
+                data.Dms_level_status,
+                data.Ceo_level_status,
+                data.operation_level_status,
                 data.application_no,
                 data.desg_id,
             ],
@@ -532,7 +580,13 @@ module.exports = {
             Op_atti_mark=?,
             Op_confi_mark=?,
             Op_bodylang_mark=?,
-            operation_remark=?
+            operation_remark=?,
+              Hod_level_staus=?,
+            Incharge_level_staus=?,
+            Ms_level_status=?,
+            Dms_level_status=?,
+            Ceo_level_status=?,
+            operation_level_status=?
             WHERE application_no = ? and desg_id=?`,
             [
                 data.incharge_interview_status,
@@ -548,8 +602,15 @@ module.exports = {
                 data.confidencemark,
                 data.bodylanmark,
                 data.remark,
+                data.Hod_level_staus,
+                data.Incharge_level_staus,
+                data.Ms_level_status,
+                data.Dms_level_status,
+                data.Ceo_level_status,
+                data.operation_level_status,
                 data.application_no,
                 data.desg_id,
+
             ],
             (error, results, feilds) => {
 
@@ -575,7 +636,13 @@ module.exports = {
             Ceo_atti_mark=?,
             Ceo_confi_mark=?,
             Ceo_bodylang_mark=?,
-            ceo_remark=?
+            ceo_remark=?,
+             Hod_level_staus=?,
+            Incharge_level_staus=?,
+            Ms_level_status=?,
+            Dms_level_status=?,
+            Ceo_level_status=?,
+            operation_level_status=?
             WHERE application_no = ? and desg_id=?`,
             [
                 data.incharge_interview_status,
@@ -591,6 +658,12 @@ module.exports = {
                 data.confidencemark,
                 data.bodylanmark,
                 data.remark,
+                data.Hod_level_staus,
+                data.Incharge_level_staus,
+                data.Ms_level_status,
+                data.Dms_level_status,
+                data.Ceo_level_status,
+                data.operation_level_status,
                 data.application_no,
                 data.desg_id,
             ],
@@ -706,7 +779,13 @@ module.exports = {
             assigned_join_date,
             salary,
             em_contract_end_date,
-            em_no
+            em_no,
+            Hod_level_staus,
+            Incharge_level_staus,
+            Ms_level_status,
+            Dms_level_status,
+            Ceo_level_status,
+            operation_level_status
             from hrm_applicationform_status
 			LEFT JOIN hrm_candidate_selection ON hrm_applicationform_status.application_no = hrm_candidate_selection.application_no and 
             hrm_applicationform_status.desg_id=hrm_candidate_selection.desg_id or hrm_candidate_selection.changed_desg_id
@@ -1054,6 +1133,52 @@ module.exports = {
             (error, results, feilds) => {
 
                 if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+
+    insertInterviewLevel: (data, callBack) => {
+        pool.query(
+            `UPDATE
+             hrm_applicationform_status
+            SET  Incharge_required_status=?,
+            Hod_required_status=?,
+            Ms_required_status=?,
+            Dms_required_status=?,
+            Operation_required_status=?,
+            Ceo_required_status=?,
+            Hod_level_staus=?,
+            Incharge_level_staus=?,
+            Ms_level_status=?,
+            Dms_level_status=?,
+            Ceo_level_status=?,
+            operation_level_status=?
+            WHERE application_no = ?  AND  desg_id=?`,
+            [
+                data.inchargereq,
+                data.Hodreq,
+                data.Msreq,
+                data.Dmsreq,
+                data.Operationreq,
+                data.Ceoreq,
+                data.Hodlevel,
+                data.inchargelevel,
+                data.MSlevel,
+                data.Dmslevel,
+                data.Ceolevel,
+                data.Operationlevel,
+                data.application_no,
+                data.desg_id,
+
+
+            ],
+            (error, results, feilds) => {
+
+                if (error) {
+
                     return callBack(error);
                 }
                 return callBack(null, results);

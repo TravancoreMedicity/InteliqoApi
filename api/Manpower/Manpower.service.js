@@ -88,6 +88,7 @@ module.exports = {
         )
     },
     getdesignation: (data, callBack) => {
+
         pool.query(
             `SELECT  
             DISTINCT d.desg_name,

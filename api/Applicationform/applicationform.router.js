@@ -4,7 +4,7 @@ const { insertapplicationform, vacancyList, getname, insertDmsinterview, getsele
     getvacancy, insertMsinterview, insertHodinterview, getapplication, insertOperationinterview, insertselection, getempselect, getJoinpdfdata,
     insertInchargeinterview, insertinterview, insertcallletter, getquestion, insertCeointerview, getloginselect, updateselection, getpdfdata, insertJoinstatus,
     getempdetails, insertshortlistapprove, getstatus, getstatusdata, insertHrinterview, getinitialstatus, getlogindata, insertappointmentdata,
-    insertAppmtstatus, insertAppmtcancelstatus, insertjoincancelstatus } = require('../Applicationform/applicationform.controller');
+    insertAppmtstatus, insertAppmtcancelstatus, insertjoincancelstatus, insertInterviewLevel } = require('../Applicationform/applicationform.controller');
 
 
 
@@ -49,6 +49,10 @@ router.post("/insertjoining", checkToken, insertJoining)
 router.post("/Joinpdfdata", checkToken, getJoinpdfdata);
 router.post("/joinpdfstatus", checkToken, insertJoinstatus)
 router.post("/joincancel", checkToken, insertjoincancelstatus)
+
+//interview Levels
+router.post("/InterviewLevel", checkToken, insertInterviewLevel)
+
 
 
 

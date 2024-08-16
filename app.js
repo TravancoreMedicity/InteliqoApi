@@ -148,6 +148,8 @@ const TrainingDetails = require("./api/TrainingDetails/TrainingDetails.route")
 const LeaveReport = require("./api/LeaveReport/LeaveReport.router")
 const TrainingDashboard = require("./api/TrainingDashboard/TrainingDashboard.router")
 const AttendenceReport = require("./api/AttendenceReport/AttendenceReport.router")
+const AnnualHealthcheckUp = require("./api/AnnualHealthCheckUp/AnnualHealth.router")
+const JobAndSkillDesc = require("./api/JobAndSkillDesc/jobAndSkill.router")
 
 
 app.use(express.json({ limit: '50mb' }));
@@ -303,6 +305,7 @@ app.use('/api/Manpower', Manpower)
 app.use('/api/Applicationform', Applicationform)
 app.use('/api/Interview', Interview)
 app.use('/api/EmailandPdf', EmailandPdf)
+app.use("/api/AnnualHealthUp", AnnualHealthcheckUp)
 
 // app.use("/api/LeaveReports", LeaveReports)
 
@@ -335,6 +338,9 @@ app.use("/api/TrainingDetails", TrainingDetails)
 app.use("/api/LeaveReport", LeaveReport)
 app.use("/api/TrainingDashboard", TrainingDashboard)
 app.use("/api/AttendenceReport", AttendenceReport)
+app.use("/api/JobAndSkillDesc", JobAndSkillDesc)
+
+
 // ------ Database Connection --------
 
 app.listen(process.env.APP_PORT, () =>

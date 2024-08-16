@@ -22,6 +22,7 @@ module.exports = {
         pool.query(
             `SELECT e.em_no,
             em_name,
+            em_department,
             desg_name,
             em_dept_section,
             hrm_candidate_selection.application_no,
@@ -71,7 +72,7 @@ module.exports = {
             LEFT JOIN bloodgroup ON bloodgroup.group_slno =  e.blood_slno
             LEFT JOIN hrm_religion ON hrm_religion.relg_slno =  e.hrm_religion
             LEFT JOIN hrm_antecedent_form ON hrm_antecedent_form.em_no =  e.em_no
-             where e.em_no=? group by e.em_no,e.em_name,designation.desg_name,
+             where e.em_no=? group by e.em_no,e.em_name,designation.desg_name,e.em_department,
              hrm_candidate_selection.application_no,e.em_gender,e.em_dob,e.em_age_year,e.em_doj,e.em_mobile,hrm_application_form.recruitment_unit,
              e.em_phone,e.em_email,e.addressPermnt1,e.addressPermnt2,hrm_application_form.relatives_friends_name,hrm_department.dept_name,e.recomend_salary,e.em_contract_end_date,
              hrm_emp_category.ecat_name,e.hrm_pin2,e.hrm_pin1,e.em_id,e.addressPresent1,e.addressPresent2,Experience_details,Education_details;`,
@@ -1359,6 +1360,1784 @@ module.exports = {
             `,
             [
                 data
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+
+            }
+        )
+    },
+
+    EmpCredentialTraining: (data) => {
+        return new Promise((resolve, reject) => {
+            pool.query(
+                `INSERT INTO credential_doc_training
+            (
+            Training_name, Condcuted, em_no, em_id, department
+           )
+            VALUES ?`,
+                [
+                    data
+                ],
+                (error, results, feilds) => {
+                    if (error) {
+                        reject({ status: 0, message: 'Please Enter the Training details' })
+                    } else {
+                        resolve({ status: 1, message: 'success' })
+                    }
+                }
+            )
+        }).then((result) => {
+            return result
+        }).catch((error) => {
+            return { status: 0 }
+        })
+    },
+
+    Empcertificate: (data) => {
+        return new Promise((resolve, reject) => {
+            pool.query(
+                `INSERT INTO credential_doc_certification
+            (
+                em_id, em_no, Certification, certification_date
+           )
+            VALUES ?`,
+                [
+                    data
+                ],
+                (error, results, feilds) => {
+                    if (error) {
+                        reject({ status: 0, message: 'Please Enter the certificate ' })
+                    } else {
+                        resolve({ status: 1, message: 'success' })
+                    }
+                }
+            )
+        }).then((result) => {
+            return result
+        }).catch((error) => {
+            return { status: 0 }
+        })
+    },
+
+    PrivilegingData: (data) => {
+        return new Promise((resolve, reject) => {
+            pool.query(
+                `INSERT INTO credential_doc_details (
+                 specialization,
+                 Orginal_Certificates,
+                 Registration,
+                  Orginal,
+                 Copies,
+                 Screenshot,
+                 copies_Training,
+                 Registration_Copies,
+                 em_no,
+                 em_id,
+                 department,
+                 staff_hrd,
+                 date_saved,
+                 insurance_yes,
+                 insurance_no,
+                 details,
+                 Outpatient_yes,
+                 Outpatient_no,
+                 Request_clinical,
+                 Admitting_yes,
+                 Admitting_no,
+                 Operating_yes,
+                 Operating_no
+                    )
+                    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+                [
+
+                    data.specialization, data.original, data.Registration, data.OriginalChecked, data.Copies, data.screenshot, data.TrainingCopies, data.RegistrationCopies,
+                    data.em_no, data.em_id, data.department, data.HrdNo, data.datesaved, data.insuranceyes, data.insuranceno, data.details, data.Outpatientyes, data.Outpatientno
+                    , data.clinical, data.Admittingyes, data.Admittingno, data.Operatingyes, data.Operatingno
+                ],
+                (error, results, feilds) => {
+                    if (error) {
+                        reject({ status: 0, message: 'Please Enter the Privileging Data ' })
+                    } else {
+                        resolve({ status: 1, message: 'success' })
+                    }
+                }
+            )
+        }).then((result) => {
+            return result
+        }).catch((error) => {
+            return { status: 0 }
+        })
+    },
+
+    Previlegedocdata: (data) => {
+
+        return new Promise((resolve, reject) => {
+            pool.query(
+                `INSERT INTO credential_doc_privilege
+            (
+                name_procedure, procedure_unsupervised, supervision, interested, em_no, em_id, department, decision
+           )
+            VALUES ?`,
+                [
+                    data
+                ],
+                (error, results, feilds) => {
+                    if (error) {
+                        reject({ status: 0, message: 'Please enter the all details' })
+                    } else {
+                        resolve({ status: 1, message: 'Data inserted Sucessfully' })
+                    }
+                }
+            )
+        }).then((result) => {
+            return result
+        }).catch((error) => {
+            return { status: 0 }
+        })
+    },
+
+    GetcredentialdocTraining: (data, callBack) => {
+        pool.query(
+            `
+            SELECT  Training_name, Condcuted, em_no, em_id FROM credential_doc_training where em_no=?;
+            `,
+            [
+                data.em_no,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+
+            }
+        )
+    },
+
+    GetcredentialdocCertificate: (data, callBack) => {
+        pool.query(
+            `
+            SELECT  em_id, em_no, Certification, certification_date FROM credential_doc_certification where em_no=?;
+            `,
+            [
+                data.em_no,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+
+            }
+        )
+    },
+
+    Getcredentialdocdetails: (data, callBack) => {
+        pool.query(
+            `
+          SELECT specialization,
+            Orginal_Certificates,
+            Registration, Orginal,
+            Copies, Screenshot,
+            copies_Training,
+            Registration_Copies,
+            credential_doc_details.em_no,
+            credential_doc_details.em_id,
+            department,
+            staff_hrd,
+             date_saved,
+            insurance_yes,
+            insurance_no,
+            details,
+             Outpatient_yes,
+             Outpatient_no,
+            Request_clinical,
+            Admitting_yes,
+            Admitting_no,
+             Operating_yes,
+             Operating_no,
+             hrm_emp_master.em_name,
+             Hod_doc_approvalDate,
+             Hod_comments,
+             MS_doc_approvalDate,
+             MS_comments,
+            e.em_name as MsApproval_name,
+            CP_doc_approvalDate,
+            CP_comments,
+            f.em_name as CpApproval_name,
+            MD_Doc_approvalDate,
+            Md_comments,
+            g.em_name as MdApproval_name
+            FROM credential_doc_details
+			LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=credential_doc_details.approval_id_hod
+			LEFT JOIN hrm_emp_master as e ON e.em_id=credential_doc_details.approval_id_ms
+			LEFT JOIN hrm_emp_master as f ON f.em_id=credential_doc_details.approval_id_cp
+            LEFT JOIN hrm_emp_master as g ON g.em_id=credential_doc_details.approval_id_md
+            where credential_doc_details.em_no=?;
+            `,
+            [
+                data.em_no,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+
+            }
+        )
+    },
+
+    GetcredentialprivilageData: (data, callBack) => {
+        pool.query(
+            `
+            SELECT  name_procedure,
+             procedure_unsupervised,
+              supervision,
+            interested,
+            em_no,
+            em_id,
+            department,
+             decision
+            FROM credential_doc_privilege where em_no=?;
+
+            `,
+            [
+                data.em_no,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+
+            }
+        )
+    },
+    EmpCredentialnursingTraining: (data) => {
+        return new Promise((resolve, reject) => {
+            pool.query(
+                `INSERT INTO credential_nurse_training
+            (
+            Training_name, Condcuted, em_no, em_id, department
+           )
+            VALUES ?`,
+                [
+                    data
+                ],
+                (error, results, feilds) => {
+                    if (error) {
+                        reject({ status: 0, message: 'Please Enter the Training details' })
+                    } else {
+                        resolve({ status: 1, message: 'success' })
+                    }
+                }
+            )
+        }).then((result) => {
+            return result
+        }).catch((error) => {
+            return { status: 0 }
+        })
+    },
+
+
+    Empnursingcertificate: (data) => {
+        return new Promise((resolve, reject) => {
+            pool.query(
+                `INSERT INTO credential_nursing_certification
+            (
+                em_id, em_no, Certification, certification_date
+           )
+            VALUES ?`,
+                [
+                    data
+                ],
+                (error, results, feilds) => {
+                    if (error) {
+                        reject({ status: 0, message: 'Please Enter the Training details' })
+                    } else {
+                        resolve({ status: 1, message: 'success' })
+                    }
+                }
+            )
+        }).then((result) => {
+            return result
+        }).catch((error) => {
+            return { status: 0 }
+        })
+    },
+    PrivilegingnursingData: (data) => {
+
+        return new Promise((resolve, reject) => {
+            pool.query(
+                `INSERT INTO credential_nursing_details (
+                 specialization,
+                 Orginal_Certificates,
+                 Registration,
+                  Orginal,
+                 Copies,
+                 Screenshot,
+                 copies_Training,
+                 Registration_Copies,
+                 em_no,
+                 em_id,
+                 department,
+                 staff_hrd,
+                 date_saved
+                    )
+                    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+                [
+
+                    data.specialization, data.original, data.Registration, data.OriginalChecked, data.Copies, data.screenshot, data.TrainingCopies, data.RegistrationCopies,
+                    data.em_no, data.em_id, data.department, data.HrdNo, data.datesaved
+                ],
+                (error, results, feilds) => {
+                    if (error) {
+                        reject({ status: 0, message: 'Please Enter the Privileging Data ' })
+                    } else {
+                        resolve({ status: 1, message: 'success' })
+                    }
+                }
+            )
+        }).then((result) => {
+            return result
+        }).catch((error) => {
+            return { status: 0 }
+        })
+    },
+    nursingdata: (data) => {
+        return new Promise((resolve, reject) => {
+            pool.query(
+                `INSERT INTO credential_nursing_privilege
+            (
+                name_procedure, procedure_unsupervised, supervision, interested, em_no, em_id, department, decision
+           )
+            VALUES ?`,
+                [
+                    data
+                ],
+                (error, results, feilds) => {
+                    if (error) {
+                        reject({ status: 0, message: 'Please enter the all details' })
+                    } else {
+                        resolve({ status: 1, message: 'Data inserted Sucessfully' })
+                    }
+                }
+            )
+        }).then((result) => {
+            return result
+        }).catch((error) => {
+            return { status: 0 }
+        })
+    },
+
+    GetcredentialnursingTraining: (data, callBack) => {
+        pool.query(
+            `
+            SELECT  Training_name, Condcuted, em_no, em_id FROM credential_nurse_training where em_no=?;
+            `,
+            [
+                data.em_no,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+
+            }
+        )
+    },
+
+    GetcredentialnursingCertificate: (data, callBack) => {
+        pool.query(
+            `
+            SELECT  em_id, em_no, Certification, certification_date FROM credential_nursing_certification where em_no=?;
+            `,
+            [
+                data.em_no,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+
+            }
+        )
+    },
+
+    Getcredentialnursingdetails: (data, callBack) => {
+        pool.query(
+            `
+             SELECT
+             specialization,
+            Orginal_Certificates,
+            Registration, Orginal,
+            Copies, Screenshot,
+            copies_Training,
+            Registration_Copies,
+            credential_nursing_details.em_no,
+             credential_nursing_details.em_id,
+            department,
+            staff_hrd,
+             date_saved,
+            hrm_emp_master.em_name,
+             Hod_doc_approvalDate,
+             Hod_comments,
+            MS_Nurse_approvalDate,
+            MS_comments,
+            e.em_name as MsApproval_name,
+            CP_doc_approvalDate,
+            CP_comments,
+            e.em_name as CpApproval_name,
+            MD_Nurse_approvalDate,
+            Md_comments,
+              g.em_name as MdApproval_name
+            FROM credential_nursing_details
+            LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=credential_nursing_details.approval_id_hod
+            LEFT JOIN hrm_emp_master as e ON e.em_id=credential_nursing_details.approval_id_ms
+            LEFT JOIN hrm_emp_master as f ON f.em_id=credential_nursing_details.approval_id_cp
+            LEFT JOIN hrm_emp_master as g ON g.em_id=credential_nursing_details.approval_id_md
+            where credential_nursing_details.em_no=?
+            ;
+            `,
+            [
+                data.em_no,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+
+            }
+        )
+    },
+    GetcredentialnursingData: (data, callBack) => {
+        pool.query(
+            `
+            SELECT  name_procedure,
+             procedure_unsupervised,
+              supervision,
+            interested,
+            em_no,
+            em_id,
+            department,
+             decision
+            FROM credential_nursing_privilege where em_no=?;
+
+            `,
+            [
+                data.em_no,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+
+            }
+        )
+    },
+
+    EmpCredentialparaTraining: (data) => {
+        return new Promise((resolve, reject) => {
+            pool.query(
+                `INSERT INTO credential_para_training
+            (
+            Training_name, Condcuted, em_no, em_id, department
+           )
+            VALUES ?`,
+                [
+                    data
+                ],
+                (error, results, feilds) => {
+                    if (error) {
+                        reject({ status: 0, message: 'Please Enter the Training details' })
+                    } else {
+                        resolve({ status: 1, message: 'success' })
+                    }
+                }
+            )
+        }).then((result) => {
+            return result
+        }).catch((error) => {
+            return { status: 0 }
+        })
+    },
+
+    Empcertificatepara: (data) => {
+        return new Promise((resolve, reject) => {
+            pool.query(
+                `INSERT INTO credential_para_certification
+            (
+                em_id, em_no, Certification, certification_date
+           )
+            VALUES ?`,
+                [
+                    data
+                ],
+                (error, results, feilds) => {
+                    if (error) {
+                        reject({ status: 0, message: 'Please Enter the Training details' })
+                    } else {
+                        resolve({ status: 1, message: 'success' })
+                    }
+                }
+            )
+        }).then((result) => {
+            return result
+        }).catch((error) => {
+            return { status: 0 }
+        })
+    },
+
+
+    PrivilegingDatapara: (data) => {
+
+        return new Promise((resolve, reject) => {
+            pool.query(
+                `INSERT INTO credential_para_details (
+                 specialization,
+                 Orginal_Certificates,
+                 Registration,
+                  Orginal,
+                 Copies,
+                 Screenshot,
+                 copies_Training,
+                 Registration_Copies,
+                 em_no,
+                 em_id,
+                 department,
+                 staff_hrd,
+                 date_saved
+                    )
+                    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+                [
+
+                    data.specialization, data.original, data.Registration, data.OriginalChecked, data.Copies, data.screenshot, data.TrainingCopies, data.RegistrationCopies,
+                    data.em_no, data.em_id, data.department, data.HrdNo, data.datesaved
+                ],
+                (error, results, feilds) => {
+                    if (error) {
+                        reject({ status: 0, message: 'Please Enter the Privileging Data ' })
+                    } else {
+                        resolve({ status: 1, message: 'success' })
+                    }
+                }
+            )
+        }).then((result) => {
+            return result
+        }).catch((error) => {
+            return { status: 0 }
+        })
+    },
+
+    Previlegedocdatapara: (data) => {
+        return new Promise((resolve, reject) => {
+            pool.query(
+                `INSERT INTO credential_para_privilege
+            (
+                name_procedure, procedure_unsupervised, supervision, interested, em_no, em_id, department, decision
+           )
+            VALUES ?`,
+                [
+                    data
+                ],
+                (error, results, feilds) => {
+
+                    if (error) {
+                        reject({ status: 0, message: 'Please enter the all details' })
+                    } else {
+                        resolve({ status: 1, message: 'Data inserted Sucessfully' })
+                    }
+                }
+            )
+        }).then((result) => {
+            return result
+        }).catch((error) => {
+            return { status: 0 }
+        })
+    },
+
+    GetcredentialparaTraining: (data, callBack) => {
+        pool.query(
+            `
+            SELECT  Training_name, Condcuted, em_no, em_id FROM credential_para_training where em_no=?;
+            `,
+            [
+                data.em_no,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+
+            }
+        )
+    },
+
+
+    GetcredentialparaCertificate: (data, callBack) => {
+        pool.query(
+            `
+            SELECT  em_id, em_no, Certification, certification_date FROM credential_para_certification where em_no=?;
+            `,
+            [
+                data.em_no,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+
+            }
+        )
+    },
+
+    Getcredentialparadetails: (data, callBack) => {
+        pool.query(
+            `
+            SELECT
+             specialization,
+            Orginal_Certificates,
+            Registration, Orginal,
+            Copies, Screenshot,
+            copies_Training,
+            Registration_Copies,
+            credential_para_details.em_no,
+             credential_para_details.em_id,
+            department,
+            staff_hrd,
+             date_saved,
+              hrm_emp_master.em_name,
+             Hod_para_approvalDate,
+             Hod_comments,
+            MS_Para_approvalDate,
+             MS_comments,
+            e.em_name as MsApproval_name,
+            CP_Para_approvalDate,
+            CP_comments,
+            f.em_name as CpApproval_name,
+            MD_Para_approvalDate,
+            Md_comments,
+            g.em_name as MdApproval_name
+            FROM credential_para_details
+            LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=credential_para_details.approval_id_hod
+            LEFT JOIN hrm_emp_master as e ON e.em_id=credential_para_details.approval_id_ms
+            LEFT JOIN hrm_emp_master as f ON f.em_id=credential_para_details.approval_id_cp
+            LEFT JOIN hrm_emp_master as g ON g.em_id=credential_para_details.approval_id_md
+            where credential_para_details.em_no=?;
+            `,
+            [
+                data.em_no,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+
+            }
+        )
+    },
+    GetcredentialparaprivilageData: (data, callBack) => {
+        pool.query(
+            `
+            SELECT  name_procedure,
+             procedure_unsupervised,
+              supervision,
+            interested,
+            em_no,
+            em_id,
+            department,
+             decision
+            FROM credential_para_privilege where em_no=?;
+
+            `,
+            [
+                data.em_no,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+
+            }
+        )
+    },
+
+    EmpCredentialotherTraining: (data) => {
+        return new Promise((resolve, reject) => {
+            pool.query(
+                `INSERT INTO credential_other_training
+            (
+            Training_name, Condcuted, em_no, em_id, department
+           )
+            VALUES ?`,
+                [
+                    data
+                ],
+                (error, results, feilds) => {
+                    if (error) {
+                        reject({ status: 0, message: 'Please Enter the Training details' })
+                    } else {
+                        resolve({ status: 1, message: 'success' })
+                    }
+                }
+            )
+        }).then((result) => {
+            return result
+        }).catch((error) => {
+            return { status: 0 }
+        })
+    },
+
+    Empcertificateother: (data) => {
+        return new Promise((resolve, reject) => {
+            pool.query(
+                `INSERT INTO credential_other_certification
+            (
+                em_id, em_no, Certification, certification_date
+           )
+            VALUES ?`,
+                [
+                    data
+                ],
+                (error, results, feilds) => {
+                    if (error) {
+                        reject({ status: 0, message: 'Please Enter the certificate ' })
+                    } else {
+                        resolve({ status: 1, message: 'success' })
+                    }
+                }
+            )
+        }).then((result) => {
+            return result
+        }).catch((error) => {
+            return { status: 0 }
+        })
+    },
+
+    PrivilegingDataother: (data) => {
+        return new Promise((resolve, reject) => {
+            pool.query(
+                `INSERT INTO credential_other_details (
+                 specialization,
+                 Orginal_Certificates,
+                 Registration,
+                  Orginal,
+                 Copies,
+                 Screenshot,
+                 copies_Training,
+                 Registration_Copies,
+                 em_no,
+                 em_id,
+                 department,
+                 staff_hrd,
+                 date_saved,
+                 insurance_yes,
+                 insurance_no,
+                 details,
+                 Outpatient_yes,
+                 Outpatient_no,
+                 Request_clinical,
+                 Admitting_yes,
+                 Admitting_no,
+                 Operating_yes,
+                 Operating_no
+                    )
+                    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+                [
+
+                    data.specialization, data.original, data.Registration, data.OriginalChecked, data.Copies, data.screenshot, data.TrainingCopies, data.RegistrationCopies,
+                    data.em_no, data.em_id, data.department, data.HrdNo, data.datesaved, data.insuranceyes, data.insuranceno, data.details, data.Outpatientyes, data.Outpatientno
+                    , data.clinical, data.Admittingyes, data.Admittingno, data.Operatingyes, data.Operatingno
+                ],
+                (error, results, feilds) => {
+                    if (error) {
+                        reject({ status: 0, message: 'Please Enter the Privileging Data ' })
+                    } else {
+                        resolve({ status: 1, message: 'success' })
+                    }
+                }
+            )
+        }).then((result) => {
+            return result
+        }).catch((error) => {
+            return { status: 0 }
+        })
+    },
+
+    Previlegedocdataother: (data) => {
+
+        return new Promise((resolve, reject) => {
+            pool.query(
+                `INSERT INTO credential_other_privilege
+            (
+              name_procedure, Observer, supervision, Procedures, Perform_procedure, em_no, em_id, department, decision
+           )
+            VALUES ?`,
+                [
+                    data
+                ],
+                (error, results, feilds) => {
+                    if (error) {
+                        reject({ status: 0, message: 'Please enter the all details' })
+                    } else {
+                        resolve({ status: 1, message: 'Data inserted Sucessfully' })
+                    }
+                }
+            )
+        }).then((result) => {
+            return result
+        }).catch((error) => {
+            return { status: 0 }
+        })
+    },
+
+    GetcredentialotherTraining: (data, callBack) => {
+        pool.query(
+            `
+            SELECT  Training_name, Condcuted, em_no, em_id FROM credential_other_training where em_no=?;
+            `,
+            [
+                data.em_no,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+
+            }
+        )
+    },
+
+    GetcredentialotherCertificate: (data, callBack) => {
+        pool.query(
+            `
+            SELECT  em_id, em_no, Certification, certification_date FROM credential_other_certification where em_no=?;
+            `,
+            [
+                data.em_no,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+
+            }
+        )
+    },
+
+    Getcredentialotherdetails: (data, callBack) => {
+        pool.query(
+            `
+            SELECT specialization,
+            Orginal_Certificates,
+            Registration, Orginal,
+            Copies, Screenshot,
+            copies_Training,
+            Registration_Copies,
+            credential_other_details.em_no,
+             credential_other_details.em_id,
+            department,
+            staff_hrd,
+             date_saved,
+            insurance_yes,
+            insurance_no,
+            details,
+             Outpatient_yes,
+             Outpatient_no,
+            Request_clinical,
+            Admitting_yes,
+            Admitting_no,
+             Operating_yes,
+             Operating_no,
+             Hod_Other_approvalDate,
+             Hod_comments,
+              hrm_emp_master.em_name,
+             MS_Other_approvalDate,
+             MS_comments,
+            e.em_name as MsApproval_name,
+            CP_Other_approvalDate,
+            CP_comments,
+             f.em_name as CpApproval_name,
+             MD_comments,
+             MD_Other_approvalDate,
+            g.em_name as MdApproval_name
+            FROM credential_other_details
+            LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=credential_other_details.approval_id_hod
+            LEFT JOIN hrm_emp_master as e ON e.em_id=credential_other_details.approval_id_ms
+             LEFT JOIN hrm_emp_master as f ON f.em_id=credential_other_details.approval_id_cp
+            LEFT JOIN hrm_emp_master as g ON g.em_id=credential_other_details.approval_id_md
+            where credential_other_details.em_no=?;
+            `,
+            [
+                data.em_no,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+
+            }
+        )
+    },
+
+    GetcredentialotherprivilageData: (data, callBack) => {
+        pool.query(
+            `
+            SELECT
+            name_procedure,
+            Observer,
+            supervision,
+            Procedures,
+            Perform_procedure,
+            department,
+            decision
+             
+            FROM credential_other_privilege where em_no=?;
+
+            `,
+            [
+                data.em_no,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+
+            }
+        )
+    },
+
+    GetHodapprovalData: (data, callBack) => {
+        pool.query(
+            `
+            SELECT
+            credential_doc_details.em_no,
+            em_name,
+            dept_name,
+            sect_name,
+            desg_name
+            FROM credential_doc_details
+			LEFT JOIN hrm_emp_master ON hrm_emp_master.em_no =  credential_doc_details.em_no
+			LEFT JOIN hrm_department ON hrm_department.dept_id =  credential_doc_details.department
+			LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id =  hrm_emp_master.em_dept_section
+			LEFT JOIN designation ON designation.desg_slno =  hrm_emp_master.em_designation
+            where department=? and required_hod_status=0;
+
+            `,
+            [
+                data.department,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+
+            }
+        )
+    },
+
+    GetHodapprovalNurseData: (data, callBack) => {
+        pool.query(
+            `
+            SELECT
+            credential_nursing_details.em_no,
+            em_name,
+            dept_name,
+            sect_name,
+            desg_name
+            FROM credential_nursing_details
+			LEFT JOIN hrm_emp_master ON hrm_emp_master.em_no =  credential_nursing_details.em_no
+			LEFT JOIN hrm_department ON hrm_department.dept_id =  credential_nursing_details.department
+			LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id =  hrm_emp_master.em_dept_section
+			LEFT JOIN designation ON designation.desg_slno =  hrm_emp_master.em_designation
+            where department=? and required_hod_status=0;
+
+            `,
+            [
+                data.department,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+
+            }
+        )
+    },
+
+    GetHodapprovalParaData: (data, callBack) => {
+        pool.query(
+            `
+            SELECT
+            credential_para_details.em_no,
+            em_name,
+            dept_name,
+            sect_name,
+            desg_name
+            FROM credential_para_details
+			LEFT JOIN hrm_emp_master ON hrm_emp_master.em_no =  credential_para_details.em_no
+			LEFT JOIN hrm_department ON hrm_department.dept_id =  credential_para_details.department
+			LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id =  hrm_emp_master.em_dept_section
+			LEFT JOIN designation ON designation.desg_slno =  hrm_emp_master.em_designation
+            where department=? and required_hod_status=0;
+
+            `,
+            [
+                data.department,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+
+            }
+        )
+    },
+
+    GetHodapprovalotheraData: (data, callBack) => {
+        pool.query(
+            `
+            SELECT
+            credential_other_details.em_no,
+            em_name,
+            dept_name,
+            sect_name,
+            desg_name
+            FROM credential_other_details
+			LEFT JOIN hrm_emp_master ON hrm_emp_master.em_no =  credential_other_details.em_no
+			LEFT JOIN hrm_department ON hrm_department.dept_id =  credential_other_details.department
+			LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id =  hrm_emp_master.em_dept_section
+			LEFT JOIN designation ON designation.desg_slno =  hrm_emp_master.em_designation
+            where department=? and required_hod_status=0;
+
+            `,
+            [
+                data.department,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+
+            }
+        )
+    },
+
+    GetMSapprovalData: (data, callBack) => {
+        pool.query(
+            `
+              SELECT
+            credential_doc_details.em_no,
+            em_name,
+            dept_name,
+            sect_name,
+            desg_name
+            FROM credential_doc_details
+			LEFT JOIN hrm_emp_master ON hrm_emp_master.em_no =  credential_doc_details.em_no
+			LEFT JOIN hrm_department ON hrm_department.dept_id =  credential_doc_details.department
+			LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id =  hrm_emp_master.em_dept_section
+			LEFT JOIN designation ON designation.desg_slno =  hrm_emp_master.em_designation
+            where required_ms_status=0 and required_hod_status=1;
+
+            `,
+            [
+                data.department,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+
+            }
+        )
+    },
+
+
+    GetMSapprovalNurseData: (data, callBack) => {
+        pool.query(
+            `
+            SELECT
+            credential_nursing_details.em_no,
+            em_name,
+            dept_name,
+            sect_name,
+            desg_name
+            FROM credential_nursing_details
+			LEFT JOIN hrm_emp_master ON hrm_emp_master.em_no =  credential_nursing_details.em_no
+			LEFT JOIN hrm_department ON hrm_department.dept_id =  credential_nursing_details.department
+			LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id =  hrm_emp_master.em_dept_section
+			LEFT JOIN designation ON designation.desg_slno =  hrm_emp_master.em_designation
+            where required_ms_status=0 and required_hod_status=1;
+
+            `,
+            [
+                data.department,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+
+            }
+        )
+    },
+    GetMSapprovalParaData: (data, callBack) => {
+        pool.query(
+            `
+            SELECT
+            credential_para_details.em_no,
+            em_name,
+            dept_name,
+            sect_name,
+            desg_name
+            FROM credential_para_details
+			LEFT JOIN hrm_emp_master ON hrm_emp_master.em_no =  credential_para_details.em_no
+			LEFT JOIN hrm_department ON hrm_department.dept_id =  credential_para_details.department
+			LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id =  hrm_emp_master.em_dept_section
+			LEFT JOIN designation ON designation.desg_slno =  hrm_emp_master.em_designation
+            where required_ms_status=0 and required_hod_status=1;
+
+            `,
+            [
+                data.department,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+
+            }
+        )
+    },
+
+
+    GetMSapprovalotheraData: (data, callBack) => {
+        pool.query(
+            `
+            SELECT
+            credential_other_details.em_no,
+            em_name,
+            dept_name,
+            sect_name,
+            desg_name
+            FROM credential_other_details
+			LEFT JOIN hrm_emp_master ON hrm_emp_master.em_no =  credential_other_details.em_no
+			LEFT JOIN hrm_department ON hrm_department.dept_id =  credential_other_details.department
+			LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id =  hrm_emp_master.em_dept_section
+			LEFT JOIN designation ON designation.desg_slno =  hrm_emp_master.em_designation
+            where  required_ms_status=0 and required_hod_status=1;
+            `,
+            [
+                data.department,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+
+            }
+        )
+    },
+
+
+
+    GetCPapprovalData: (data, callBack) => {
+        pool.query(
+            `
+              SELECT
+            credential_doc_details.em_no,
+            em_name,
+            dept_name,
+            sect_name,
+            desg_name
+            FROM credential_doc_details
+			LEFT JOIN hrm_emp_master ON hrm_emp_master.em_no =  credential_doc_details.em_no
+			LEFT JOIN hrm_department ON hrm_department.dept_id =  credential_doc_details.department
+			LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id =  hrm_emp_master.em_dept_section
+			LEFT JOIN designation ON designation.desg_slno =  hrm_emp_master.em_designation
+            where required_cp_status=0 and required_ms_status=1;
+
+            `,
+            [
+                data.department,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+
+            }
+        )
+    },
+
+    GetCPapprovalNurseData: (data, callBack) => {
+        pool.query(
+            `
+            SELECT
+            credential_nursing_details.em_no,
+            em_name,
+            dept_name,
+            sect_name,
+            desg_name
+            FROM credential_nursing_details
+			LEFT JOIN hrm_emp_master ON hrm_emp_master.em_no =  credential_nursing_details.em_no
+			LEFT JOIN hrm_department ON hrm_department.dept_id =  credential_nursing_details.department
+			LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id =  hrm_emp_master.em_dept_section
+			LEFT JOIN designation ON designation.desg_slno =  hrm_emp_master.em_designation
+            where required_cp_status=0 and required_ms_status=1;
+
+            `,
+            [
+                data.department,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+
+            }
+        )
+    },
+
+
+    GetCPapprovalParaData: (data, callBack) => {
+        pool.query(
+            `
+            SELECT
+            credential_para_details.em_no,
+            em_name,
+            dept_name,
+            sect_name,
+            desg_name
+            FROM credential_para_details
+			LEFT JOIN hrm_emp_master ON hrm_emp_master.em_no =  credential_para_details.em_no
+			LEFT JOIN hrm_department ON hrm_department.dept_id =  credential_para_details.department
+			LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id =  hrm_emp_master.em_dept_section
+			LEFT JOIN designation ON designation.desg_slno =  hrm_emp_master.em_designation
+            where required_cp_status=0 and required_ms_status=1;
+
+            `,
+            [
+                data.department,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+
+            }
+        )
+    },
+
+
+    GetCPapprovalotheraData: (data, callBack) => {
+        pool.query(
+            `
+            SELECT
+            credential_other_details.em_no,
+            em_name,
+            dept_name,
+            sect_name,
+            desg_name
+            FROM credential_other_details
+			LEFT JOIN hrm_emp_master ON hrm_emp_master.em_no =  credential_other_details.em_no
+			LEFT JOIN hrm_department ON hrm_department.dept_id =  credential_other_details.department
+			LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id =  hrm_emp_master.em_dept_section
+			LEFT JOIN designation ON designation.desg_slno =  hrm_emp_master.em_designation
+            where  required_cp_status=0 and required_ms_status=1;
+            `,
+            [
+                data.department,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+
+            }
+        )
+    },
+
+
+
+    GetMDapprovalData: (data, callBack) => {
+        pool.query(
+            `
+              SELECT
+            credential_doc_details.em_no,
+            em_name,
+            dept_name,
+            sect_name,
+            desg_name
+            FROM credential_doc_details
+			LEFT JOIN hrm_emp_master ON hrm_emp_master.em_no =  credential_doc_details.em_no
+			LEFT JOIN hrm_department ON hrm_department.dept_id =  credential_doc_details.department
+			LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id =  hrm_emp_master.em_dept_section
+			LEFT JOIN designation ON designation.desg_slno =  hrm_emp_master.em_designation
+            where required_md_status=0 and required_cp_status=1;
+
+            `,
+            [
+                data.department,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+
+            }
+        )
+    },
+
+    GetMDapprovalNurseData: (data, callBack) => {
+        pool.query(
+            `
+            SELECT
+            credential_nursing_details.em_no,
+            em_name,
+            dept_name,
+            sect_name,
+            desg_name
+            FROM credential_nursing_details
+			LEFT JOIN hrm_emp_master ON hrm_emp_master.em_no =  credential_nursing_details.em_no
+			LEFT JOIN hrm_department ON hrm_department.dept_id =  credential_nursing_details.department
+			LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id =  hrm_emp_master.em_dept_section
+			LEFT JOIN designation ON designation.desg_slno =  hrm_emp_master.em_designation
+            where required_md_status=0 and required_cp_status=1;
+
+            `,
+            [
+                data.department,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+
+            }
+        )
+    },
+
+    GetMDapprovalParaData: (data, callBack) => {
+        pool.query(
+            `
+            SELECT
+            credential_para_details.em_no,
+            em_name,
+            dept_name,
+            sect_name,
+            desg_name
+            FROM credential_para_details
+			LEFT JOIN hrm_emp_master ON hrm_emp_master.em_no =  credential_para_details.em_no
+			LEFT JOIN hrm_department ON hrm_department.dept_id =  credential_para_details.department
+			LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id =  hrm_emp_master.em_dept_section
+			LEFT JOIN designation ON designation.desg_slno =  hrm_emp_master.em_designation
+            where required_md_status=0 and required_cp_status=1;
+
+            `,
+            [
+                data.department,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+
+            }
+        )
+    },
+
+    GetMDapprovalotheraData: (data, callBack) => {
+        pool.query(
+            `
+            SELECT
+            credential_other_details.em_no,
+            em_name,
+            dept_name,
+            sect_name,
+            desg_name
+            FROM credential_other_details
+			LEFT JOIN hrm_emp_master ON hrm_emp_master.em_no =  credential_other_details.em_no
+			LEFT JOIN hrm_department ON hrm_department.dept_id =  credential_other_details.department
+			LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id =  hrm_emp_master.em_dept_section
+			LEFT JOIN designation ON designation.desg_slno =  hrm_emp_master.em_designation
+            where  required_md_status=0  and required_cp_status=1;
+            `,
+            [
+                data.department,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+
+            }
+        )
+    },
+
+    InsertCredHod: (data, callBack) => {
+        pool.query(
+            `UPDATE credential_doc_details 
+            SET  required_hod_status=1 ,
+            approval_id_hod=?,
+            Hod_doc_approvalDate=?,
+            Hod_comments=?
+            WHERE em_no=? `,
+            [
+                data.em_id, data.Hoddatesaved, data.HodRemark, data.em_no
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+
+            }
+        )
+    },
+
+
+    InsertCredNurseHod: (data, callBack) => {
+        pool.query(
+            `UPDATE credential_nursing_details 
+            SET  required_hod_status=1 ,
+            approval_id_hod=?,
+            Hod_doc_approvalDate=?,
+            Hod_comments=?
+            WHERE em_no=? `,
+            [
+                data.em_id, data.Hoddatesaved, data.HodRemark, data.em_no
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+
+            }
+        )
+    },
+
+
+    InsertCredParaHod: (data, callBack) => {
+        pool.query(
+            `UPDATE credential_para_details 
+            SET  required_hod_status=1 ,
+            approval_id_hod=?,
+            Hod_para_approvalDate=?,
+            Hod_comments=?
+            WHERE em_no=? `,
+            [
+                data.em_id, data.Hoddatesaved, data.HodRemark, data.em_no
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+
+            }
+        )
+    },
+    InsertCredOtherHod: (data, callBack) => {
+        pool.query(
+            `UPDATE credential_other_details 
+            SET  required_hod_status=1 ,
+            approval_id_hod=?,
+            Hod_Other_approvalDate=?,
+            Hod_comments=?
+            WHERE em_no=? `,
+            [
+                data.em_id, data.Hoddatesaved, data.HodRemark, data.em_no
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+
+            }
+        )
+    },
+
+
+    InsertCredMS: (data, callBack) => {
+        pool.query(
+            `UPDATE credential_doc_details 
+            SET  required_ms_status=1 ,
+            approval_id_ms=?,
+            MS_doc_approvalDate=?,
+            MS_comments=?
+            WHERE em_no=? `,
+            [
+                data.em_id, data.MSdatesaved, data.MSRemark, data.em_no
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+
+            }
+        )
+    },
+
+    InsertCredNurseMS: (data, callBack) => {
+        pool.query(
+            `UPDATE credential_nursing_details 
+            SET  required_ms_status=1 ,
+            approval_id_ms=?,
+            MS_Nurse_approvalDate=?,
+            MS_comments=?
+            WHERE em_no=? `,
+            [
+                data.em_id, data.MSdatesaved, data.MSRemark, data.em_no
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+
+            }
+        )
+    },
+
+    InsertCredParaMS: (data, callBack) => {
+        pool.query(
+            `UPDATE credential_para_details 
+            SET  required_ms_status=1 ,
+            approval_id_ms=?,
+            MS_Para_approvalDate=?,
+            MS_comments=?
+            WHERE em_no=? `,
+            [
+                data.em_id, data.MSdatesaved, data.MSRemark, data.em_no
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+
+            }
+        )
+    },
+
+    InsertCredOtherMS: (data, callBack) => {
+        pool.query(
+            `UPDATE credential_other_details 
+            SET  required_ms_status=1 ,
+            approval_id_ms=?,
+            MS_Other_approvalDate =?,
+            MS_comments=?
+            WHERE em_no=? `,
+            [
+                data.em_id, data.MSdatesaved, data.MSRemark, data.em_no
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+
+            }
+        )
+    },
+
+    InsertCredDocCP: (data, callBack) => {
+        pool.query(
+            `UPDATE credential_doc_details 
+            SET  required_cp_status=1 ,
+            approval_id_cp=?,
+            CP_doc_approvalDate=?,
+            CP_comments=?
+            WHERE em_no=? `,
+            [
+                data.em_id, data.MSdatesaved, data.MSRemark, data.em_no
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+
+            }
+        )
+    },
+
+    InsertCredNurseCP: (data, callBack) => {
+        pool.query(
+            `UPDATE credential_nursing_details 
+            SET  required_cp_status=1 ,
+            approval_id_cp=?,
+            CP_doc_approvalDate=?,
+            CP_comments=?
+            WHERE em_no=? `,
+            [
+                data.em_id, data.MSdatesaved, data.MSRemark, data.em_no
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+
+            }
+        )
+    },
+
+    InsertCredParaCP: (data, callBack) => {
+        pool.query(
+            `UPDATE credential_para_details 
+            SET  required_cp_status=1 ,
+            approval_id_cp=?,
+            CP_Para_approvalDate=?,
+            CP_comments=?
+            WHERE em_no=? `,
+            [
+                data.em_id, data.MSdatesaved, data.MSRemark, data.em_no
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+
+            }
+        )
+    },
+
+    InsertCredOtherCP: (data, callBack) => {
+        pool.query(
+            `UPDATE credential_other_details 
+            SET  required_cp_status=1 ,
+            approval_id_cp=?,
+            CP_Other_approvalDate=?,
+            CP_comments=?
+            WHERE em_no=? `,
+            [
+                data.em_id, data.MSdatesaved, data.MSRemark, data.em_no
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+
+            }
+        )
+    },
+
+    InsertCredDocMD: (data, callBack) => {
+        pool.query(
+            `UPDATE credential_doc_details 
+            SET  required_md_status=1 ,
+            approval_id_md=?,
+            MD_Doc_approvalDate=?,
+            Md_comments=?
+            WHERE em_no=? `,
+            [
+                data.em_id, data.MSdatesaved, data.MSRemark, data.em_no
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+
+            }
+        )
+    },
+
+
+    InsertCredNurseMD: (data, callBack) => {
+        pool.query(
+            `UPDATE credential_nursing_details 
+            SET  required_md_status=1 ,
+            approval_id_md=?,
+            MD_Nurse_approvalDate=?,
+            Md_comments=?
+            WHERE em_no=? `,
+            [
+                data.em_id, data.MSdatesaved, data.MSRemark, data.em_no
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+
+            }
+        )
+    },
+
+
+    InsertCredParaMD: (data, callBack) => {
+        pool.query(
+            `UPDATE credential_para_details 
+            SET  required_md_status=1 ,
+            approval_id_md=?,
+            MD_Para_approvalDate=?,
+            Md_comments=?
+            WHERE em_no=? `,
+            [
+                data.em_id, data.MSdatesaved, data.MSRemark, data.em_no
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+
+            }
+        )
+    },
+
+    InsertCredOtherMD: (data, callBack) => {
+
+        pool.query(
+            `UPDATE credential_other_details 
+            SET  required_md_status=1 ,
+            approval_id_md=?,
+            MD_Other_approvalDate=?,
+            MD_comments=?
+            WHERE em_no=? `,
+            [
+                data.em_id, data.MSdatesaved, data.MSRemark, data.em_no
             ],
             (error, results, feilds) => {
                 if (error) {

@@ -298,7 +298,6 @@ module.exports = {
   uploadchecklist: (req, res) => {
     uploadmul(req, res, async (err) => {
       const body = req.body;
-
       if (err instanceof multer.MulterError) {
         return res.status(200).json({
           status: 0,
