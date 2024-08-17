@@ -1,5 +1,5 @@
 const { logger } = require('../../logger/logger')
-const { GetInductList, GetInductAllData, UpdateVerification, GetDeptTrainingEmpList, UpdateDeptVerification, GetDeptTrainings } = require('./TrainingVerification.service')
+const { GetInductList, GetInductAllData, UpdateVerification, GetDeptTrainingEmpList, UpdateDeptVerification, GetDeptTrainings, GetDeptPreMark, GetDeptPostMark } = require('./TrainingVerification.service')
 module.exports = {
     GetInductList: (req, res) => {
         GetInductList((err, results) => {
@@ -145,6 +145,50 @@ module.exports = {
         });
     },
 
+    GetDeptPreMark: (req, res) => {
+        const body = req.body;
+        GetDeptPreMark(body, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "no Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 2,
+                data: results,
+            });
+        });
+    },
+
+    GetDeptPostMark: (req, res) => {
+        const body = req.body;
+        GetDeptPostMark(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "no Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 2,
+                data: results,
+            });
+        });
+    },
     // UpdateDeptVerification: (req, res) => {
     //     const body = req.body;
     //     UpdateDeptVerification(body, (err, results) => {
