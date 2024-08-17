@@ -757,12 +757,14 @@ module.exports = {
     getPunchmastData: (data, callBack) => {
         pool.query(
             `select punch_slno, duty_day,shift_id,punch_master.emp_id,punch_master.em_no,
-            hrm_emp_master.em_name,punch_in, gross_salary,
+            hrm_emp_master.em_name,dept_name,sect_name, gross_salary,
             punch_out,shift_in,shift_out,hrs_worked,over_time,late_in,
             early_out,duty_status,holiday_status,leave_status,holiday_slno,
             lvereq_desc,duty_desc,lve_tble_updation_flag,hrm_emp_master.em_name
             from  punch_master
             left join hrm_emp_master on hrm_emp_master.em_no=punch_master.em_no
+            left join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
+            left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
             where punch_master.em_no IN (?)
                  and date(duty_day) between ? and ?`,
             [
@@ -1073,6 +1075,7 @@ module.exports = {
         pool.query(
             `select hrm_emp_master.em_no,
             em_name,
+            em_name as emp_name,
             gross_salary,
             hrm_emp_master.em_id ,
             branch_name,

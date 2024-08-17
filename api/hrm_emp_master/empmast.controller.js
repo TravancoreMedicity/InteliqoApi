@@ -8,8 +8,12 @@ const {
     getEmpByDeptAndSection,
     updateserialnum,
     updateCompanyInfo,
-    createCompanyInfo, updatecategory,
-    getDepartmentSectEmployye, checkidvaluedate, getCategoryType, updateDeptSec,
+    createCompanyInfo,
+    updatecategory,
+    getDepartmentSectEmployye,
+    checkidvaluedate,
+    getCategoryType,
+    updateDeptSec,
     getInactiveEmpByDeptAndSection,
     InActiveEmpHR,
     getEmpBybranch,
@@ -24,7 +28,10 @@ const {
     insertInactiveEmp,
     getEmpList,
     insertActivateEmp,
-    createCompany
+    createCompany,
+    updateContractEmpmastData,
+    updatePermanentData,
+    empLoginDeactivate
 } = require('../hrm_emp_master/empmast.service');
 const { validateempmaster, validateempmasterupdate, validateempmasterEdit } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
@@ -503,19 +510,32 @@ module.exports = {
                     success: 0,
                     message: err
                 });
-            }
+            } else {
+                empLoginDeactivate(body, (err, results) => {
 
-            if (!results) {
-                return res.status(200).json({
-                    success: 1,
-                    message: "Record Not Found"
+                    if (err) {
+                        logger.errorLogger(err)
+                        return res.status(200).json({
+                            success: 0,
+                            message: err
+                        });
+                    }
+
+                    if (!results) {
+                        return res.status(200).json({
+                            success: 1,
+                            message: "Record Not Found"
+                        });
+                    }
+
+                    return res.status(200).json({
+                        success: 2,
+                        message: "Data Updated Successfully"
+                    });
+
                 });
             }
 
-            return res.status(200).json({
-                success: 2,
-                message: "Data Updated Successfully"
-            });
 
         });
     },
@@ -815,5 +835,77 @@ module.exports = {
             });
 
         });
+    },
+    craeteCateChange: (req, res) => {
+        const body = req.body;
+        createCompanyInfo(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else {
+                updateContractEmpmastData(body, (err, results) => {
+
+                    if (err) {
+                        logger.errorLogger(err)
+                        return res.status(200).json({
+                            success: 2,
+                            message: err
+                        });
+                    }
+                    if (!results) {
+                        return res.status(200).json({
+                            success: 1,
+                            message: "Record Not Found"
+                        });
+                    }
+                    return res.status(200).json({
+                        success: 1,
+                        message: "Data Updated Successfully"
+                    });
+
+                });
+
+            }
+        })
+    },
+    createPermanentChange: (req, res) => {
+        const body = req.body;
+        createCompanyInfo(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else {
+                updatePermanentData(body, (err, results) => {
+
+                    if (err) {
+                        logger.errorLogger(err)
+                        return res.status(200).json({
+                            success: 2,
+                            message: err
+                        });
+                    }
+                    if (!results) {
+                        return res.status(200).json({
+                            success: 1,
+                            message: "Record Not Found"
+                        });
+                    }
+                    return res.status(200).json({
+                        success: 1,
+                        message: "Data Updated Successfully"
+                    });
+
+                });
+
+            }
+        })
     },
 }
