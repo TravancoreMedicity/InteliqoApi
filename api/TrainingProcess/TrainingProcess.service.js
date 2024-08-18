@@ -642,4 +642,31 @@ module.exports = {
             }
         )
     },
+
+    //T & D Dept Training Process
+
+    GetAllTodaysDeptTrainings: (callback) => {
+        pool.query(
+            `     
+          SELECT ROW_NUMBER() OVER () as serialNo, training_departmental_schedule.slno, department, deparment_sect, schedule_year, schedule_topics,
+            topic_slno,training_topic_name,training_employee_details.schedule_date,
+            hrm_department.dept_name,hrm_dept_section.sect_name
+            FROM training_departmental_schedule
+            LEFT JOIN training_topic ON training_topic.topic_slno=training_departmental_schedule.schedule_topics
+			LEFT JOIN training_employee_details ON training_employee_details.scheduled_slno=training_departmental_schedule.slno
+            LEFT JOIN hrm_department ON hrm_department.dept_id=training_departmental_schedule.department
+             LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=training_departmental_schedule.deparment_sect
+            where training_employee_details.schedule_date=current_date() 
+            group by slno,schedule_date
+            `, [],
+
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+            }
+        )
+    },
 }

@@ -3,7 +3,7 @@ const { GetTrainingProcess, AttendanceMarking, EmpVerification, GetDepartmentalT
     InsertpostTest, UpdatePosttestStatus, GetTopicAssignToEmp, GetQuestionDetails, UpdateQuestionCount,
     GetDataBasedOnCount, InsertPretest, UpdateTrainingDate, GetTrainingCompletedList, GetTodaysTrainingList,
     GetAttendanceList, GetTrainingEmpDetailsAll, GetTrainingEmp, checkTopicExistORNot, InsertScheduleTable, AllotToPostTest,
-    GetpreTestEmpListAll, GetpostTestEmpListAll, checkPreeTestEntryExistORNot, checkPostTestEntryExistORNot, UpdateOnlineMode, UpdateOfflineMode, InsertReScheduleTable } = require('./TrainingProcess.service')
+    GetpreTestEmpListAll, GetpostTestEmpListAll, checkPreeTestEntryExistORNot, checkPostTestEntryExistORNot, UpdateOnlineMode, UpdateOfflineMode, InsertReScheduleTable, GetAllTodaysDeptTrainings } = require('./TrainingProcess.service')
 module.exports = {
     GetTrainingProcess: (req, res) => {
         GetTrainingProcess((err, results) => {
@@ -488,6 +488,7 @@ module.exports = {
             })
         })
     },
+
     GetpreTestEmpListAll: (req, res) => {
         GetpreTestEmpListAll((err, results) => {
             if (err) {
@@ -564,6 +565,28 @@ module.exports = {
                 });
             }
 
+        })
+    },
+    //T &D Dept Training Process
+
+    GetAllTodaysDeptTrainings: (req, res) => {
+        GetAllTodaysDeptTrainings((err, results) => {
+            if (err) {
+                return res.status(400).json({
+                    success: 0,
+                    message: "Error"
+                })
+            }
+            if (results === 0) {
+                return res.status(400).json({
+                    success: 1,
+                    message: "No Record Found"
+                })
+            }
+            return res.status(200).json({
+                success: 2,
+                data: results
+            })
         })
     },
 

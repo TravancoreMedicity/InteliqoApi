@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const { checkToken } = require("../../auth/token_validation");
 const { GetTrainingProcess, AttendanceMarking, GetDepartmentalTrainings, EmpVerification, InsertpostTest, GetTopicAssignToEmp, GetQuestionDetails, UpdateQuestionCount, GetDataBasedOnCount, InsertPretest, UpdateTrainingDate,
-    GetTrainingCompletedList, GetTodaysTrainingList, GetAttendanceList, GetTrainingEmpDetailsAll, GetTrainingEmp, AllotToPostTest, GetpreTestEmpListAll, GetpostTestEmpListAll, UpdateOnlineMode, UpdateOfflineMode } = require('./TrainingProcess.controller');
+    GetTrainingCompletedList, GetTodaysTrainingList, GetAttendanceList, GetTrainingEmpDetailsAll, GetTrainingEmp, AllotToPostTest, GetpreTestEmpListAll, GetpostTestEmpListAll, UpdateOnlineMode, UpdateOfflineMode, GetAllTodaysDeptTrainings } = require('./TrainingProcess.controller');
 
 router.get('/select', checkToken, GetTrainingProcess)
 router.patch('/attendance', checkToken, AttendanceMarking)
@@ -28,7 +28,8 @@ router.get('/preTestEmpAll', GetpreTestEmpListAll)
 router.patch('/update_online', UpdateOnlineMode)
 router.patch('/update_offline', UpdateOfflineMode)
 
-
+//T and D Departmental Training Process
+router.get('/getAllDeptTodaysTrainings', GetAllTodaysDeptTrainings)
 module.exports = router;
 
 
