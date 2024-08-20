@@ -1215,7 +1215,7 @@ const validatecommonsettings = Joi.object({
         noff_selct_day_count: Joi.number().optional(),
         noff: Joi.number().optional(),
         group_slno: Joi.optional(),
-        eoff: Joi.number().optional(),
+        doff: Joi.number().optional(),
         comp_day_count: Joi.number().optional(),
         comp_hour_count: Joi.number().optional(),
         training_mastergroup: Joi.optional(),

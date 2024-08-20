@@ -1,6 +1,7 @@
-const { updateDutyPlanTable, deletePunchMasterSingleRow, updateDelStatDutyPlanTable } = require('../attendance_updation/attendance.service');
-const { punchMasterUpdate } = require('./OffRequest.service');
-const { create, getEmpwiseDoff, deletedoff } = require('./OffRequest.service')
+const { deletePunchMasterSingleRow, } = require('../attendance_updation/attendance.service');
+const { punchMasterUpdate, disableDutyplanData } = require('./OffRequest.service');
+const { create, getEmpwiseDoff, deletedoff, disableDoffDutyplanData, updateDelStatDutyPlan,
+    enableDoffDutyplanData } = require('./OffRequest.service')
 module.exports = {
     create: (req, res) => {
         const body = req.body;
@@ -12,7 +13,7 @@ module.exports = {
                     message: err
                 });
             }
-            updateDutyPlanTable(body.planSlno, (err, results) => {
+            disableDutyplanData(body, (err, results) => {
                 if (err) {
                     logger.errorLogger(err)
                     return res.status(400).json({
@@ -28,9 +29,18 @@ module.exports = {
                             message: err
                         });
                     }
-                    return res.status(200).json({
-                        success: 1,
-                        message: "Request Submitted Successfully"
+                    disableDoffDutyplanData(body, (err, results) => {
+                        if (err) {
+                            logger.errorLogger(err)
+                            return res.status(200).json({
+                                success: 0,
+                                message: err
+                            });
+                        }
+                        return res.status(200).json({
+                            success: 1,
+                            message: "Request Submitted Successfully"
+                        });
                     });
                 });
             });
@@ -72,7 +82,7 @@ module.exports = {
                     message: err
                 });
             }
-            updateDelStatDutyPlanTable(body.planSlno, (err, results) => {
+            updateDelStatDutyPlan(body, (err, results) => {
                 if (err) {
                     logger.errorLogger(err)
                     return res.status(400).json({
@@ -88,19 +98,28 @@ module.exports = {
                             message: err
                         });
                     }
-                    else if (!results) {
-                        return res.status(200).json({
-                            success: 2,
-                            message: "Record Not Found"
-                        });
-                    }
-                    else {
-                        return res.status(200).json({
-                            success: 1,
-                            message: "Request Cancelled successfully"
-                        });
+                    enableDoffDutyplanData(body, (err, results) => {
+                        if (err) {
+                            logger.errorLogger(err)
+                            return res.status(200).json({
+                                success: 0,
+                                message: err
+                            });
+                        }
+                        else if (!results) {
+                            return res.status(200).json({
+                                success: 2,
+                                message: "Record Not Found"
+                            });
+                        }
+                        else {
+                            return res.status(200).json({
+                                success: 1,
+                                message: "Request Cancelled successfully"
+                            });
 
-                    }
+                        }
+                    });
                 });
             });
         });
