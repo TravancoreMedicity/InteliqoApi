@@ -110,7 +110,10 @@ module.exports = {
                 first_half_out,
                 second_half_in,
                 second_half_out,
-                holiday
+                holiday,
+                twenty_four,
+                attendance_update_flag,
+                shft_cross_day
             FROM hrm_duty_plan
             LEFT JOIN hrm_shift_mast ON hrm_shift_mast.shft_slno = hrm_duty_plan.shift_id 
             WHERE duty_day= ? AND emp_id=?`,
@@ -370,7 +373,8 @@ module.exports = {
         pool.query(
             `SELECT 
             holiday_status,
-                punch_slno
+            lvereq_desc,
+            punch_slno
             FROM punch_master
             WHERE emp_id=? AND duty_day = ?`,
             [

@@ -30,9 +30,10 @@ module.exports = {
                 shift_start_in_min,
                 shift_end_in_min,
                 night_off_flag,
-                shft_status
+                shft_status,
+                twenty_four
             )
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
                 data.shft_desc,
                 data.shft_code,
@@ -60,7 +61,8 @@ module.exports = {
                 data.shift_start_in_min,
                 data.shift_end_in_min,
                 data.night_off_flag,
-                data.shft_status
+                data.shft_status,
+                data.twenty_four
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -121,7 +123,8 @@ module.exports = {
                     shift_start_in_min=?,
                     shift_end_in_min=?,
                     night_off_flag=?,
-                    shft_status=?
+                    shft_status=?,
+                    twenty_four=?
                 WHERE shft_slno =?`,
             [
                 data.shft_desc,
@@ -151,6 +154,7 @@ module.exports = {
                 data.shift_end_in_min,
                 data.night_off_flag,
                 data.shft_status,
+                data.twenty_four,
                 data.shft_slno
             ],
             (error, results, feilds) => {
@@ -231,7 +235,8 @@ module.exports = {
                 second_half_out,
                 shft_status,
                 night_off_flag,
-                shift_duration_in_min
+                shift_duration_in_min,
+                twenty_four
             FROM hrm_shift_mast
             WHERE shft_slno = ?`,
             [
