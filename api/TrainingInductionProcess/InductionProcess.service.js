@@ -5,7 +5,7 @@ module.exports = {
         pool.query(
 
             `
-            SELECT schedule_slno, schedule_type, schedule_topic, training_induction_schedule.trainers, training_induction_emp_details.induct_detail_date,
+            SELECT ROW_NUMBER() OVER () as slno, schedule_slno, schedule_type, schedule_topic, training_induction_schedule.trainers, training_induction_emp_details.induct_detail_date,
             topic_slno,training_topic_name
             FROM training_induction_schedule
             LEFT JOIN training_topic ON training_topic.topic_slno=training_induction_schedule.schedule_topic
@@ -28,7 +28,7 @@ module.exports = {
     GetAttendanceList: (id, callback) => {
         pool.query(
 
-            ` SELECT induction_slno, schedule_no, indct_emp_no, induct_emp_dept, induct_emp_sec,
+            `  SELECT ROW_NUMBER() OVER () as serial_no,induction_slno, schedule_no, indct_emp_no, induct_emp_dept, induct_emp_sec,
             training_induction_schedule.schedule_topic,training_induction_schedule.induction_date,
             training_induction_emp_details.training_status,question_count,training_induction_emp_details.pretest_status,
             training_induction_emp_details.posttest_status,training_induction_emp_details.online_mode,training_induction_emp_details.offline_mode,
@@ -101,7 +101,7 @@ module.exports = {
     GetInductionCompletedList: (callback) => {
         pool.query(
             `
-            SELECT ROW_NUMBER() OVER () as sn,induction_slno, schedule_no, indct_emp_no, induct_emp_dept,induction_date,
+             SELECT ROW_NUMBER() OVER () as sn,induction_slno, schedule_no, indct_emp_no, induct_emp_dept,induction_date,
             induct_emp_sec, training_induction_emp_details.training_status, question_count, training_induction_emp_details.pretest_status,
             training_induction_emp_details.posttest_status, training_induction_emp_details.online_mode, training_induction_emp_details.offline_mode, retest,
             topic_slno,training_topic_name,
@@ -116,7 +116,7 @@ module.exports = {
             LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=training_induction_emp_details.induct_emp_sec
             LEFT JOIN training_induct_posttest ON training_induct_posttest.emp_id=training_induction_emp_details.indct_emp_no
             where training_induction_emp_details.training_status =1 and training_induction_emp_details.posttest_status = 1
-            and training_induction_emp_details.pretest_status = 1
+            and training_induction_emp_details.pretest_status = 1 group by training_induction_emp_details.indct_emp_no
             `, [],
 
             (err, results, feilds) => {

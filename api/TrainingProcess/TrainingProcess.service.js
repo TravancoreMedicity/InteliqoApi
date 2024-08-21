@@ -373,50 +373,101 @@ module.exports = {
             }
         )
     },
-    GetTrainingCompletedList: (id, callback) => {
+    // GetTrainingCompletedList: (id, callback) => {
+    //     pool.query(
+    //         `SELECT ROW_NUMBER() OVER () as sn, training_employee_details.slno,scheduled_slno, em_id,em_no,hrm_emp_master.em_name, emp_dept,emp_dept_sectn,topic,
+    //         training_employee_details.schedule_date, training_employee_details.training_status, question_count,
+    //         training_employee_details.pretest_status, posttest_status, posttest_permission,topic_slno,training_topic_name,
+    //         hrm_dept_section.sect_id,hrm_dept_section.sect_name
+    //         FROM training_employee_details
+    //         LEFT JOIN training_topic ON training_topic.topic_slno=training_employee_details.topic
+    //         LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_employee_details.emp_name
+    //         LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=training_employee_details.emp_dept_sectn
+    //         where training_employee_details.training_status = 1 and training_employee_details.posttest_status = 1 
+    //         and training_employee_details.pretest_status = 1  and emp_dept=?
+    //         `, [id],
+
+    //         (err, results, feilds) => {
+    //             if (err) {
+    //                 return callback(err)
+
+    //             }
+    //             return callback(null, results)
+    //         }
+    //     )
+    // },
+
+    GetTrainingCompletedList: (data, callBack) => {
         pool.query(
-            `SELECT ROW_NUMBER() OVER () as sn, training_employee_details.slno,scheduled_slno, em_id,em_no,hrm_emp_master.em_name, emp_dept,emp_dept_sectn,topic,
-            training_employee_details.schedule_date, training_employee_details.training_status, question_count,
-            training_employee_details.pretest_status, posttest_status, posttest_permission,topic_slno,training_topic_name,
-            hrm_dept_section.sect_id,hrm_dept_section.sect_name
-            FROM training_employee_details
-            LEFT JOIN training_topic ON training_topic.topic_slno=training_employee_details.topic
-            LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_employee_details.emp_name
-            LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=training_employee_details.emp_dept_sectn
-            where training_employee_details.training_status = 1 and training_employee_details.posttest_status = 1 
-            and training_employee_details.pretest_status = 1  and emp_dept=?
-            `, [id],
+            `SELECT ROW_NUMBER() OVER () as sn, training_employee_details.slno,scheduled_slno, em_id,em_no,hrm_emp_master.em_name,   emp_dept, emp_dept_sectn,topic,
+        training_employee_details.schedule_date, training_employee_details.training_status, question_count,
+        training_employee_details.pretest_status, posttest_status, posttest_permission,topic_slno,training_topic_name,
+        hrm_dept_section.sect_id,hrm_dept_section.sect_name
+        FROM training_employee_details
+        LEFT JOIN training_topic ON training_topic.topic_slno=training_employee_details.topic
+        LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_employee_details.emp_name
+        LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=training_employee_details.emp_dept_sectn
+        where training_employee_details.training_status = 1 and training_employee_details.posttest_status = 1 
+        and training_employee_details.pretest_status = 1  and training_employee_details.emp_dept=? and training_employee_details.emp_dept_sectn=?`,
+            [
+                data.em_department,
+                data.em_dept_section
 
-            (err, results, feilds) => {
-                if (err) {
-                    return callback(err)
-
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
                 }
-                return callback(null, results)
+                return callBack(null, results);
             }
         )
     },
-    GetTodaysTrainingList: (id, callback) => {
+
+    // GetTodaysTrainingList: (id, callback) => {
+    //     pool.query(
+    //         `     
+    //         SELECT training_departmental_schedule.slno, department, deparment_sect, schedule_year, schedule_topics,
+    //         topic_slno,training_topic_name,training_employee_details.schedule_date
+    //         FROM training_departmental_schedule
+    //         LEFT JOIN training_topic ON training_topic.topic_slno=training_departmental_schedule.schedule_topics
+    //           LEFT JOIN training_employee_details ON training_employee_details.scheduled_slno=training_departmental_schedule.slno
+    //         where training_employee_details.schedule_date=current_date() and department=?
+    //         group by slno,schedule_date
+    //         `, [id],
+
+    //         (err, results, feilds) => {
+    //             if (err) {
+    //                 return callback(err)
+
+    //             }
+    //             return callback(null, results)
+    //         }
+    //     )
+    // },
+
+    GetTodaysTrainingList: (data, callBack) => {
         pool.query(
-            `     
-            SELECT training_departmental_schedule.slno, department, deparment_sect, schedule_year, schedule_topics,
+            `  SELECT training_departmental_schedule.slno, department, deparment_sect, schedule_year, schedule_topics,
             topic_slno,training_topic_name,training_employee_details.schedule_date
             FROM training_departmental_schedule
             LEFT JOIN training_topic ON training_topic.topic_slno=training_departmental_schedule.schedule_topics
               LEFT JOIN training_employee_details ON training_employee_details.scheduled_slno=training_departmental_schedule.slno
-            where training_employee_details.schedule_date=current_date() and department=?
-            group by slno,schedule_date
-            `, [id],
+            where training_employee_details.schedule_date=current_date() and department=? and deparment_sect=?
+            group by slno,schedule_date`,
+            [
+                data.em_department,
+                data.em_dept_section
 
-            (err, results, feilds) => {
-                if (err) {
-                    return callback(err)
-
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
                 }
-                return callback(null, results)
+                return callBack(null, results);
             }
         )
     },
+
 
     GetAttendanceList: (id, callback) => {
         pool.query(
@@ -436,47 +487,94 @@ module.exports = {
             }
         )
     },
-    GetTrainingEmpDetailsAll: (id, callback) => {
+    // GetTrainingEmpDetailsAll: (id, callback) => {
+    //     pool.query(
+    //         `     
+    //         SELECT schedule_topics,schedule_date,topic_slno,training_topic_name FROM training_departmental_schedule        
+    //         LEFT JOIN training_topic ON training_topic.topic_slno=training_departmental_schedule.schedule_topics  where department=?
+    //         `, [id],
+
+    //         (err, results, feilds) => {
+    //             if (err) {
+    //                 return callback(err)
+
+    //             }
+    //             return callback(null, results)
+    //         }
+    //     )
+    // },
+    GetTrainingEmpDetailsAll: (data, callBack) => {
         pool.query(
-            `     
-            SELECT schedule_topics,schedule_date,topic_slno,training_topic_name FROM training_departmental_schedule        
-            LEFT JOIN training_topic ON training_topic.topic_slno=training_departmental_schedule.schedule_topics  where department=?
-            `, [id],
+            `SELECT schedule_topics,schedule_date,topic_slno,training_topic_name FROM training_departmental_schedule        
+             LEFT JOIN training_topic ON training_topic.topic_slno=training_departmental_schedule.schedule_topics
+             where department=? and deparment_sect=? `,
+            [
+                data.em_department,
+                data.em_dept_section
 
-            (err, results, feilds) => {
-                if (err) {
-                    return callback(err)
-
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
                 }
-                return callback(null, results)
+                return callBack(null, results);
             }
         )
     },
-    GetTrainingEmp: (id, callback) => {
+
+    // GetTrainingEmp: (id, callback) => {
+    //     pool.query(
+    //         `     
+    //         SELECT ROW_NUMBER() OVER () as sn, training_employee_details.slno,scheduled_slno, emp_name,hrm_emp_master.em_id,hrm_emp_master.em_name, emp_desig, emp_dept, emp_dept_sectn, topic,
+    //         training_topic.topic_slno,training_topic.training_topic_name,training_employee_details.schedule_date, 
+    //         training_employee_details.training_status, training_employee_details.question_count, training_employee_details.pretest_status,
+    //         training_employee_details.posttest_status, training_employee_details.posttest_permission,training_departmental_schedule.slno as shSlno,
+    //         training_departmental_schedule.schedule_year,training_departmental_schedule.schedule_trainers,training_departmental_schedule.schedule_remark,
+    //         hrm_emp_master.em_no
+    //         FROM training_employee_details
+    //         left join hrm_emp_master on hrm_emp_master.em_id=training_employee_details.emp_name
+    //         left join training_topic on training_topic.topic_slno=training_employee_details.topic
+    //         left join training_departmental_schedule on training_departmental_schedule.slno=training_employee_details.scheduled_slno
+    //         where training_employee_details.pretest_status = 0 and  training_employee_details.posttest_status = 0 and emp_dept=?
+    //         `, [id],
+
+    //         (err, results, feilds) => {
+    //             if (err) {
+    //                 return callback(err)
+
+    //             }
+    //             return callback(null, results)
+    //         }
+    //     )
+    // },
+
+    GetTrainingEmp: (data, callBack) => {
         pool.query(
-            `     
-            SELECT ROW_NUMBER() OVER () as sn, training_employee_details.slno,scheduled_slno, emp_name,hrm_emp_master.em_id,hrm_emp_master.em_name, emp_desig, emp_dept, emp_dept_sectn, topic,
-            training_topic.topic_slno,training_topic.training_topic_name,training_employee_details.schedule_date, 
-            training_employee_details.training_status, training_employee_details.question_count, training_employee_details.pretest_status,
+            `         SELECT ROW_NUMBER() OVER () as sn, training_employee_details.slno,scheduled_slno, emp_name,hrm_emp_master.em_id,hrm_emp_master.em_name, emp_desig, emp_dept, emp_dept_sectn, topic,
+         training_topic.topic_slno,training_topic.training_topic_name,training_employee_details.schedule_date, 
+          training_employee_details.training_status, training_employee_details.question_count, training_employee_details.pretest_status,
             training_employee_details.posttest_status, training_employee_details.posttest_permission,training_departmental_schedule.slno as shSlno,
-            training_departmental_schedule.schedule_year,training_departmental_schedule.schedule_trainers,training_departmental_schedule.schedule_remark,
-            hrm_emp_master.em_no
-            FROM training_employee_details
-            left join hrm_emp_master on hrm_emp_master.em_id=training_employee_details.emp_name
-            left join training_topic on training_topic.topic_slno=training_employee_details.topic
-            left join training_departmental_schedule on training_departmental_schedule.slno=training_employee_details.scheduled_slno
-            where training_employee_details.pretest_status = 0 and  training_employee_details.posttest_status = 0 and emp_dept=?
-            `, [id],
+        training_departmental_schedule.schedule_year,training_departmental_schedule.schedule_trainers,training_departmental_schedule.schedule_remark,
+        hrm_emp_master.em_no
+        FROM training_employee_details
+        left join hrm_emp_master on hrm_emp_master.em_id=training_employee_details.emp_name
+        left join training_topic on training_topic.topic_slno=training_employee_details.topic
+        left join training_departmental_schedule on training_departmental_schedule.slno=training_employee_details.scheduled_slno
+        where training_employee_details.pretest_status = 0 and  training_employee_details.posttest_status = 0 and training_employee_details.emp_dept=? and training_employee_details.emp_dept_sectn=?`,
+            [
+                data.em_department,
+                data.em_dept_section
 
-            (err, results, feilds) => {
-                if (err) {
-                    return callback(err)
-
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
                 }
-                return callback(null, results)
+                return callBack(null, results);
             }
         )
     },
+
 
     //     SELECT * FROM training_dept_emp_reschedule;
     // dept_reschedule_slno, dept_schedule_tbl_slno, dept_reschdl_em_id, dept_reschdl_depart, dept_reshdl_dept_sec, dept_reshdl_topic, 
@@ -642,4 +740,109 @@ module.exports = {
             }
         )
     },
+
+    //T & D Dept Training Process
+
+    GetAllTodaysDeptTrainings: (callback) => {
+        pool.query(
+            `     
+          SELECT ROW_NUMBER() OVER () as serialNo, training_departmental_schedule.slno, department, deparment_sect, schedule_year, schedule_topics,
+            topic_slno,training_topic_name,training_employee_details.schedule_date,
+            hrm_department.dept_name,hrm_dept_section.sect_name
+            FROM training_departmental_schedule
+            LEFT JOIN training_topic ON training_topic.topic_slno=training_departmental_schedule.schedule_topics
+			LEFT JOIN training_employee_details ON training_employee_details.scheduled_slno=training_departmental_schedule.slno
+            LEFT JOIN hrm_department ON hrm_department.dept_id=training_departmental_schedule.department
+             LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=training_departmental_schedule.deparment_sect
+            where training_employee_details.schedule_date=current_date() 
+            group by slno,schedule_date
+            `, [],
+
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+            }
+        )
+    },
+    GetAllDeptCompletedTrainings: (callback) => {
+        pool.query(
+            `     
+            SELECT ROW_NUMBER() OVER () as sn,slno,department,deparment_sect,schedule_date,schedule_topics,
+            training_topic.training_topic_name,hrm_department.dept_name,hrm_dept_section.sect_name
+            FROM training_departmental_schedule
+	        LEFT JOIN training_topic ON training_topic.topic_slno=training_departmental_schedule.schedule_topics
+	        LEFT JOIN hrm_department ON hrm_department.dept_id=training_departmental_schedule.department
+	        LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=training_departmental_schedule.deparment_sect
+            `, [],
+
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+            }
+        )
+    },
+    GetAllDeptEmpPendings: (callback) => {
+        pool.query(
+            `     
+            SELECT ROW_NUMBER() OVER () as sn, training_employee_details.slno,scheduled_slno, emp_name,hrm_emp_master.em_id,hrm_emp_master.em_name, emp_desig, emp_dept, emp_dept_sectn, topic,
+            training_topic.topic_slno,training_topic.training_topic_name,training_employee_details.schedule_date, 
+            training_employee_details.training_status, training_employee_details.question_count, training_employee_details.pretest_status,
+            training_employee_details.posttest_status, training_employee_details.posttest_permission,training_departmental_schedule.slno as shSlno,
+            training_departmental_schedule.schedule_year,training_departmental_schedule.schedule_trainers,training_departmental_schedule.schedule_remark,
+            hrm_emp_master.em_no,hrm_department.dept_name,hrm_dept_section.sect_name
+            FROM training_employee_details
+            left join hrm_emp_master on hrm_emp_master.em_id=training_employee_details.emp_name
+            left join training_topic on training_topic.topic_slno=training_employee_details.topic
+            left join training_departmental_schedule on training_departmental_schedule.slno=training_employee_details.scheduled_slno
+             LEFT JOIN hrm_department ON hrm_department.dept_id=training_employee_details.emp_dept
+	        LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=training_employee_details.emp_dept_sectn
+            where training_employee_details.pretest_status = 0 and  training_employee_details.posttest_status = 0 
+            `, [],
+
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+            }
+        )
+    },
+    GetAllDeptBelowAvgEmpList: (callback) => {
+        pool.query(
+            `     
+           SELECT ROW_NUMBER() OVER () as sn, training_employee_details.slno, scheduled_slno, training_employee_details.emp_name, training_employee_details.emp_desig,
+           training_employee_details.emp_dept, training_employee_details.emp_dept_sectn, topic, training_employee_details.schedule_date, 
+           training_employee_details.training_status, question_count, training_employee_details.pretest_status, 
+           training_employee_details.posttest_status,training_employee_details.posttest_permission,emp_topic,hrm_emp_master.em_no,
+           em_id as candid_id,em_name,topic_slno,training_topic_name,training_posttest.mark,training_employee_details.retest,
+           hrm_department.dept_name,hrm_dept_section.sect_name
+           FROM training_employee_details
+           LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_employee_details.emp_name
+           LEFT JOIN training_topic ON training_topic.topic_slno=training_employee_details.topic
+           LEFT JOIN training_posttest ON training_posttest.emp_id=training_employee_details.emp_name
+           LEFT JOIN hrm_department ON hrm_department.dept_id=training_employee_details.emp_dept
+           LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=training_employee_details.emp_dept_sectn
+           where training_employee_details.posttest_status=1 and training_posttest.mark <2 
+            `, [],
+
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+            }
+        )
+    },
 }
+
+
+
+

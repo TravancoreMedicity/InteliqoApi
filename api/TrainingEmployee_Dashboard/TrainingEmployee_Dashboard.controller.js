@@ -33,28 +33,6 @@ module.exports = {
             }
         });
     },
-
-    GetBelowAvgEmpList: (req, res) => {
-        const id = req.params.id;
-        GetBelowAvgEmpList(id, (err, results) => {
-            if (err) {
-                return res.status(400).json({
-                    success: 0,
-                    message: "Error"
-                })
-            }
-            if (results === 0) {
-                return res.status(400).json({
-                    success: 1,
-                    message: "No Record Found"
-                })
-            }
-            return res.status(200).json({
-                success: 2,
-                data: results
-            })
-        })
-    },
     GetEmpRetestTopics: (req, res) => {
         const id = req.params.id;
         GetEmpRetestTopics(id, (err, results) => {
@@ -247,6 +225,27 @@ module.exports = {
     GetRetestQREmpDetails: (req, res) => {
         const body = req.body;
         GetRetestQREmpDetails(body, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results === 0) {
+                return res.status(400).json({
+                    success: 1,
+                    message: "No Record Found"
+                })
+            }
+            return res.status(200).json({
+                success: 2,
+                data: results
+            })
+        });
+    },
+    GetBelowAvgEmpList: (req, res) => {
+        const body = req.body;
+        GetBelowAvgEmpList(body, (err, results) => {
             if (err) {
                 return res.status(200).json({
                     success: 0,

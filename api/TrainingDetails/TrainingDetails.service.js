@@ -15,7 +15,7 @@ module.exports = {
             LEFT JOIN designation ON designation.desg_slno=training_employee_details.emp_desig
              left join hrm_authorization_assign on hrm_authorization_assign.dept_section=training_employee_details.emp_dept_sectn
              LEFT JOIN hrm_emp_master HO ON HO.em_id=hrm_authorization_assign.emp_id
-            WHERE department=? and deparment_sect=? and hrm_authorization_assign.auth_post=1
+            WHERE department=? and deparment_sect=? and hrm_authorization_assign.auth_post=1 group by hrm_emp_master.em_id
 		  `,
             [
                 data.dept,
@@ -137,7 +137,8 @@ module.exports = {
             LEFT JOIN designation ON designation.desg_slno=training_employee_details.emp_desig
             left join hrm_authorization_assign on hrm_authorization_assign.dept_section=training_employee_details.emp_dept_sectn
              LEFT JOIN hrm_emp_master HO ON HO.em_id=hrm_authorization_assign.emp_id
-            WHERE E.em_no=? and hrm_authorization_assign.auth_post=1 `, [id],
+            WHERE E.em_no=? and hrm_authorization_assign.auth_post=1 
+            group by E.em_id `, [id],
             (err, results, feilds) => {
                 if (err) {
                     return callback(err)
@@ -241,9 +242,39 @@ module.exports = {
             }
         )
     },
-    GetAllDeptEmpData: (id, callback) => {
+    // GetAllDeptEmpData: (id, callback) => {
+    //     pool.query(
+    //         `SELECT ROW_NUMBER() OVER () as Dept_slno,training_employee_details.slno, scheduled_slno, emp_name, 
+    //         training_departmental_schedule.schedule_date,training_departmental_schedule.schedule_trainers,
+    //                    hrm_emp_master.em_id,hrm_emp_master.em_no,hrm_emp_master.em_name,training_departmental_schedule.schedule_year,
+    //                    training_employee_details.question_count,training_employee_details.pretest_status,training_employee_details.posttest_status,
+    //                    training_employee_details.online_mode,training_employee_details.offline_mode,training_employee_details.retest,
+    //                    training_topic.topic_slno,training_topic.training_topic_name,training_pretest.mark as dept_pre_mark,training_posttest.mark as dept_post_mark,
+    //                    training_retest_emp_details.retest_mark as dept_retest_mark,hours,training_employee_details.training_hod_apprvls_status,training_employee_details.training_status
+    //                    FROM training_employee_details
+    //                    LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_employee_details.emp_name
+    //                    LEFT JOIN training_departmental_schedule ON training_departmental_schedule.slno=training_employee_details.scheduled_slno
+    //                    LEFT JOIN training_topic ON training_topic.topic_slno=training_employee_details.topic
+    //                    LEFT JOIN training_pretest ON training_pretest.pre_dept_schedule_slno=training_employee_details.scheduled_slno and training_pretest.emp_id=?
+    //                    LEFT JOIN training_posttest ON training_posttest.dept_schedule_slno=training_employee_details.scheduled_slno and training_posttest.emp_id=?
+    //                    LEFT JOIN training_retest_emp_details ON training_retest_emp_details.candidate_em_no=training_employee_details.emp_name
+    //                    WHERE training_employee_details.emp_name=? group by training_topic.topic_slno
+    //                   `, [id],
+    //         (err, results, feilds) => {
+    //             if (err) {
+    //                 return callback(err)
+
+    //             }
+    //             return callback(null, results)
+
+    //         }
+    //     )
+    // },
+
+    GetAllDeptEmpData: (data, callBack) => {
         pool.query(
-            `SELECT ROW_NUMBER() OVER () as Dept_slno,training_employee_details.slno, scheduled_slno, emp_name, 
+            `
+            SELECT ROW_NUMBER() OVER () as Dept_slno,training_employee_details.slno, scheduled_slno, emp_name, 
             training_departmental_schedule.schedule_date,training_departmental_schedule.schedule_trainers,
                        hrm_emp_master.em_id,hrm_emp_master.em_no,hrm_emp_master.em_name,training_departmental_schedule.schedule_year,
                        training_employee_details.question_count,training_employee_details.pretest_status,training_employee_details.posttest_status,
@@ -254,18 +285,21 @@ module.exports = {
                        LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_employee_details.emp_name
                        LEFT JOIN training_departmental_schedule ON training_departmental_schedule.slno=training_employee_details.scheduled_slno
                        LEFT JOIN training_topic ON training_topic.topic_slno=training_employee_details.topic
-                       LEFT JOIN training_pretest ON training_pretest.emp_id=training_employee_details.emp_name
-                       LEFT JOIN training_posttest ON training_posttest.emp_id=training_employee_details.emp_name
+                       LEFT JOIN training_pretest ON training_pretest.pre_dept_schedule_slno=training_employee_details.scheduled_slno and training_pretest.emp_id=?
+                       LEFT JOIN training_posttest ON training_posttest.dept_schedule_slno=training_employee_details.scheduled_slno and training_posttest.emp_id=?
                        LEFT JOIN training_retest_emp_details ON training_retest_emp_details.candidate_em_no=training_employee_details.emp_name
-                       WHERE training_employee_details.emp_name=?
-                      `, [id],
-            (err, results, feilds) => {
-                if (err) {
-                    return callback(err)
-
+                       WHERE training_employee_details.emp_name=? group by training_topic.topic_slno
+           `,
+            [
+                data.preId,
+                data.postId,
+                data.emid
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
                 }
-                return callback(null, results)
-
+                return callBack(null, results);
             }
         )
     },
