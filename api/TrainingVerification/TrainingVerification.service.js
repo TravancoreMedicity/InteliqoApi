@@ -164,7 +164,7 @@ module.exports = {
       training_employee_details.training_hod_apprvls_status,training_employee_details.tnd_verification_status,
       training_topic.topic_slno,training_topic.training_topic_name,hrm_emp_master.em_id,hrm_emp_master.em_no,hrm_emp_master.em_name,
       training_pretest.mark as pre_mark,training_posttest.mark as post_mark,training_topic.hours,
-       hrm_department.dept_id,hrm_department.dept_name,hrm_dept_section.sect_name,hrm_dept_section.sect_id
+      hrm_department.dept_id,hrm_department.dept_name,hrm_dept_section.sect_name,hrm_dept_section.sect_id
       FROM training_employee_details
 	  LEFT JOIN training_topic ON training_topic.topic_slno=training_employee_details.topic
       LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_employee_details.emp_name
@@ -172,10 +172,12 @@ module.exports = {
 	  LEFT JOIN training_posttest ON training_posttest.emp_id=training_employee_details.emp_name
 	  LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=training_employee_details.emp_dept_sectn
 	  LEFT JOIN hrm_department ON hrm_department.dept_id= training_employee_details.emp_dept
-	  WHERE training_employee_details.emp_dept=? and training_employee_details.emp_dept_sectn=?`,
+	  WHERE training_employee_details.emp_dept=? and training_employee_details.emp_dept_sectn=? and training_employee_details.scheduled_slno=?
+      group by training_employee_details.emp_name`,
             [
                 data.dept_id,
                 data.sect_id,
+                data.slno
 
             ],
             (err, results, feilds) => {
@@ -188,6 +190,46 @@ module.exports = {
         )
     },
 
+
+    GetDeptPreMark: (data, callback) => {
+        pool.query(
+            `
+     SELECT mark
+     FROM training_pretest
+     where training_pretest.emp_id=? and training_pretest.pre_dept_schedule_slno=? `,
+            [
+                data.emId,
+                data.scheduled_slno,
+            ],
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+            }
+        )
+    },
+
+    GetDeptPostMark: (data, callback) => {
+        pool.query(
+            `
+     SELECT mark
+     FROM training_posttest
+     where training_posttest.emp_id=? and training_posttest.dept_schedule_slno=? `,
+            [
+                data.emId,
+                data.scheduled_slno,
+            ],
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+            }
+        )
+    },
 
     UpdateDeptVerification: (data, callBack) => {
         return new Promise((resolve, reject) => {

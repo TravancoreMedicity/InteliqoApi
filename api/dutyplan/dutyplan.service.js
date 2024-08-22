@@ -382,4 +382,19 @@ module.exports = {
             }
         )
     },
+    dutyplanExitorNot: (data, callBack) => {
+        pool.query(
+            ` SELECT * FROM hrm_duty_plan WHERE duty_day =? AND em_no=?   `,
+            [
+                data.duty_day,
+                data.em_no
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }

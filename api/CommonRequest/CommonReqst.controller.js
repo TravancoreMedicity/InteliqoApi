@@ -6,7 +6,8 @@ const { create, checkInsertVal, createGenralRq, createOndutyRequest, createEnabl
     addHrComment, checkingAttendanceMarking, HRNopunchMasterIn, HRNopunchMasterOut,
     checkMispunchRequest, checksEnableRq, punchdataEntry, HROnDutyPunchMaster,
     checkAttendanceProcess, generalHRapproval, cancelEnable, enableOnduty, cancelOnehour,
-    cancelgeneral, checkPunchMarkingHR, onDutyReport, HrApprovedOneHourData, HrApprovedOnDutyData
+    cancelgeneral, checkPunchMarkingHR, onDutyReport, HrApprovedOneHourData, HrApprovedOnDutyData,
+    getEmpwiseOnduty, getEmpwiseOneHour
 } = require('../CommonRequest/CommonReqst.service')
 const { validateOneHourReqst } = require('../../validation/validation_schema');
 const { deletePunchMasterSingleRow } = require('../attendance_updation/attendance.service');
@@ -66,7 +67,7 @@ module.exports = {
             value.onduty_reason, value.incharge_req_status, value.incharge_approval_status,
             value.incharge_approval_comment, value.incharge_approval_date, value.hod_req_status,
             value.hod_approval_status, value.hod_approval_comment, value.hod_approval_date,
-            value.ceo_req_status, value.hr_req_status]
+            value.ceo_req_status, value.hr_req_status, value.incharge_empid, value.hod_empid]
         })
 
         createOndutyRequest(values, (err, results) => {
@@ -1025,5 +1026,57 @@ module.exports = {
                 }
             });
         });
-    }
+    },
+    getEmpwiseOnduty: (req, res) => {
+        const body = req.body;
+        getEmpwiseOnduty(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+            else {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Request Cancelled successfully",
+                    data: results
+                });
+
+            }
+        });
+    },
+    getEmpwiseOneHour: (req, res) => {
+        const body = req.body;
+        getEmpwiseOneHour(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+            else {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Request Cancelled successfully",
+                    data: results
+                });
+
+            }
+        });
+    },
 }

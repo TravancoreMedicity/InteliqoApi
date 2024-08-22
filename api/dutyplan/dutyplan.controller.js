@@ -1,7 +1,7 @@
 const { getData, getEmpdetl, insertDutyplan, updateDutyPlan,
     CheckInsertVal, updateDefaultShift, updateWoffShift, updateholiday, getPlanDetl, updateMultiShift,
     checkDutyPlanExcist, getdeptEmpdetl, checkDutyPlanExcistNew, getDutyPlanAboveselectedDate,
-    getEmployeeDutyplan } = require('../dutyplan/dutyplan.service');
+    getEmployeeDutyplan, dutyplanExitorNot } = require('../dutyplan/dutyplan.service');
 const logger = require('../../logger/logger')
 module.exports = {
     getDutyPlan: (req, res) => {
@@ -309,6 +309,29 @@ module.exports = {
             if (results.length == 0) {
                 return res.status(200).json({
                     success: 0,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    dutyplanExitorNot: (req, res) => {
+        const body = req.body;
+        dutyplanExitorNot(body, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 2,
                     message: "No Record Found"
                 });
             }

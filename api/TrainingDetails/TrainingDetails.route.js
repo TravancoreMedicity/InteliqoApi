@@ -10,7 +10,8 @@ router.get('/getDeptEmp/:id', checkToken, GetDeptEmp)
 router.get('/getInductEmp/:id', checkToken, GetInductEmp)
 //get full Induction data of emp
 router.get('/getInduct/:id', checkToken, GetAllInductEmpData)
-router.get('/getDepartmental/:id', checkToken, GetAllDeptEmpData)
+// router.get('/getDepartmental/:id', checkToken, GetAllDeptEmpData)
+router.post('/getDepartmental', checkToken, GetAllDeptEmpData)
 router.post('/getTrainers', checkToken, GetTrainers)
 router.post('/getInductTrainers', checkToken, GetInductTrainers)
 //Apprvls

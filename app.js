@@ -152,6 +152,7 @@ const TrainingFeedback = require("./api/Training_Feedback/TrainingFeedback.route
 const TrainingRecord = require("./api/TrainingRecord/TrainingRecord.router")
 const OnObservationRequest = require("./api/OnobservationRequest/OnobservationRouter")
 const ManualrequestUpload = require("./api/ManualRequest/Manual.router")
+const OffRquest = require('./api/OFFRequest/OffRequest.router')
 
 app.use(express.json({ limit: '50mb' }));
 app.use((req, res, next) => {
@@ -335,7 +336,7 @@ app.use("/api/TrainingFeedback", TrainingFeedback)
 app.use("/api/TrainingRecord", TrainingRecord)
 app.use("/api/OnObservationRequest", OnObservationRequest)
 app.use("/api/manualRequest", ManualrequestUpload)
-
+app.use("/api/OffRequest", OffRquest)
 
 
 
