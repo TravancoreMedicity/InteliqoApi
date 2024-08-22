@@ -3,7 +3,7 @@ const path = require('path');
 
 const storageResignation = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'D:/PersonalRecords/ResignationReq')
+        cb(null, 'D:/DocMeliora/Inteliqo/ResignationReq')
     },
     filename: function (req, file, cb) {
         const extension = path.extname(file.originalname);
