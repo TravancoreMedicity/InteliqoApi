@@ -58,9 +58,11 @@ module.exports = {
             duty_date,
             required_date,
             delete_status,
-            duty_off_slno
+            duty_off_slno,
+            sect_id
             FROM duty_off_request
             left join hrm_emp_master on hrm_emp_master.em_id=duty_off_request.em_id
+            inner join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
             where hrm_emp_master.em_id=? and delete_status=0 order by required_date desc`,
             [
                 data.em_id
