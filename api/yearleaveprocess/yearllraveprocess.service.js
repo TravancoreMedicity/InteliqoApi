@@ -984,7 +984,7 @@ module.exports = {
                 cmn_lv_allowed SLallowed,
                 0 takenSL
                 from hrm_leave_common 
-            where llvetype_slno = 7 and year(cmn_lv_year) = year(curdate())
+            where llvetype_slno = 7 and year(cmn_lv_year) = year(curdate()) and cmn_status=0
             union all
             select 
                 b.em_no,

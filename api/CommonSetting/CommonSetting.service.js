@@ -49,9 +49,11 @@ module.exports = {
                 training_mastergroup,
                 onobservation_days,
                 hod_leave_day_count,
-                holiday_leave_request
+                holiday_leave_request,
+                halfday_time_count,
+                punch_taken_hour_count
                 )
-                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
         )
 
         [
@@ -100,7 +102,9 @@ module.exports = {
             data.coff_min_working_hour,
             data.onobservation_days,
             data.hod_leave_day_count,
-            data.holiday_leave_request
+            data.holiday_leave_request,
+            data.halfday_time_count,
+            data.punch_taken_hour_count
         ],
             (error, results, feilds) => {
                 if (error) {
@@ -170,7 +174,9 @@ module.exports = {
                 training_mastergroup=?,
                 onobservation_days=?,
                 hod_leave_day_count=?,
-                holiday_leave_request=?
+                holiday_leave_request=?,
+                halfday_time_count=?,
+                punch_taken_hour_count=?
                 WHERE setting_slno =?`,
 
             [
@@ -220,6 +226,8 @@ module.exports = {
                 data.onobservation_days,
                 data.hod_leave_day_count,
                 data.holiday_leave_request,
+                data.halfday_time_count,
+                data.punch_taken_hour_count,
                 data.setting_slno
             ],
             (error, results, feilds) => {
