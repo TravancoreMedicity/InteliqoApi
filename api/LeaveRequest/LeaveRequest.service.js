@@ -109,7 +109,11 @@ module.exports = {
                 first_half_in,
                 first_half_out,
                 second_half_in,
-                second_half_out
+                second_half_out,
+                holiday,
+                twenty_four,
+                attendance_update_flag,
+                shft_cross_day
             FROM hrm_duty_plan
             LEFT JOIN hrm_shift_mast ON hrm_shift_mast.shft_slno = hrm_duty_plan.shift_id 
             WHERE duty_day= ? AND emp_id=?`,
@@ -369,7 +373,8 @@ module.exports = {
         pool.query(
             `SELECT 
             holiday_status,
-                punch_slno
+            lvereq_desc,
+            punch_slno
             FROM punch_master
             WHERE emp_id=? AND duty_day = ?`,
             [
@@ -779,5 +784,32 @@ module.exports = {
                 return callBack(null, results);
             }
         )
+    },
+    checkLeaveexist: async (data) => {
+        return new Promise((resolve, reject) => {
+            pool.query(
+                `SELECT 
+            COUNT(leave_slno) CNT
+        FROM hrm_leave_request R
+        INNER JOIN hrm_leave_request_detl D ON D.lve_uniq_no = R.lve_uniq_no AND R.em_no = ?
+        WHERE D.leave_dates BETWEEN ? AND ? and (incapprv_status!=2 and hod_apprv_status!=2 and hr_apprv_status!=2 and lv_cancel_status!=1 and lv_cancel_status_user!=1)`,
+                [
+                    data.em_no,
+                    data.fromDate,
+                    data.toDate
+                ],
+                (error, results, fields) => {
+                    if (error) {
+                        reject({ status: 0 });
+                    } else {
+                        resolve({ status: 1, data: JSON.parse(JSON.stringify(results)) });
+                    }
+                }
+            );
+        }).then((result) => {
+            return { status: 1, data: result.data };
+        }).catch((error) => {
+            return { status: 0, data: error };
+        });
     },
 }

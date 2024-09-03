@@ -1,8 +1,7 @@
 const router = require("express").Router();
 const { checkToken } = require('../../auth/token_validation');
-const { createmastleave, createdetlleave, gethafdayshift,
-    getfirsthalf, getsecondhalf, inserthalfdayreque, insertnopunchrequest, insertcompensatyoff,
-    getLeaveCancelEmpdetl, modifiedLeaveRequest, getLeaveExcistOrNot,
+const { createmastleave, createdetlleave, gethafdayshift, getfirsthalf, getsecondhalf, inserthalfdayreque,
+    insertnopunchrequest, insertcompensatyoff, getLeaveCancelEmpdetl, modifiedLeaveRequest, getLeaveExcistOrNot,
     getHolidayStatus, creditCoff } = require('../LeaveRequest/LeaveRequest.controller');
 
 router.post("/", checkToken, createmastleave)

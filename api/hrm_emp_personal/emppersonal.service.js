@@ -456,4 +456,23 @@ module.exports = {
             }
         )
     },
+    checkAccountExist: (id, callBack) => {
+
+        pool.query(
+            `SELECT 
+                emper_slno,
+                em_no              
+            FROM hrm_emp_personal
+            WHERE em_account_no =? `,
+            [
+                id.em_account_no
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }

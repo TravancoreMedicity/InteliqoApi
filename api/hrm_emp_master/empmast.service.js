@@ -1,3 +1,4 @@
+const { format, addDays } = require('date-fns');
 const pool = require('../../config/database');
 
 module.exports = {
@@ -214,7 +215,8 @@ module.exports = {
                     hrm_pin2=?, 
                     blood_slno=?,
                     hrm_religion=?,
-                    recomend_salary=?
+                    recomend_salary=?,
+                    em_gender=?
                 WHERE em_no = ?`,
             [
                 data.emp_dob,
@@ -233,6 +235,7 @@ module.exports = {
                 data.em_bloodgroup,
                 data.em_religion,
                 data.recomend_salary,
+                data.em_gender,
                 data.em_no
             ],
             (error, results, feilds) => {
@@ -1055,5 +1058,100 @@ module.exports = {
                 return callBack(null, results);
             }
         )
-    }
+    },
+    updateContractEmpmastData: (data, callBack) => {
+        pool.query(
+            `UPDATE hrm_emp_master
+                SET  
+                em_doj=?,         
+                em_branch = ?,
+                em_department = ?,
+                em_dept_section = ?,
+                em_institution_type = ?,
+                em_category = ?,
+                contract_status=?,
+                em_prob_end_date=?,
+                em_contract_end_date=?,
+                probation_status=?,
+                em_designation=?,
+                em_conf_end_date=?
+                WHERE em_no = ?`,
+            [
+                data.category_ineffect_date,
+                data.em_branch,
+                data.em_department,
+                data.em_dept_section,
+                data.em_institution_type,
+                data.em_category,
+                data.contract_status,
+                data.em_prob_end_date,
+                format(addDays(new Date(data?.category_ineffect_date), 365), 'yyyy-MM-dd'),
+                data.probation_status,
+                data.em_designation,
+                data.em_conf_end_date,
+                data.em_no
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    updatePermanentData: (data, callBack) => {
+        pool.query(
+            `UPDATE hrm_emp_master
+                SET  
+                em_doj=?,         
+                em_branch = ?,
+                em_department = ?,
+                em_dept_section = ?,
+                em_institution_type = ?,
+                em_category = ?,
+                contract_status=?,
+                em_prob_end_date=?,
+                em_contract_end_date=?,
+                probation_status=?,
+                em_designation=?,
+                em_conf_end_date=?
+                WHERE em_no = ?`,
+            [
+                data.category_ineffect_date,
+                data.em_branch,
+                data.em_department,
+                data.em_dept_section,
+                data.em_institution_type,
+                data.em_category,
+                data.contract_status,
+                data.em_prob_end_date,
+                '2000-01-31',
+                data.probation_status,
+                data.em_designation,
+                data.em_conf_end_date,
+                data.em_no
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    empLoginDeactivate: (data, callBack) => {
+        pool.query(
+            `update hrm_employee set emp_status=0 where emp_id=? and emp_no=? `,
+            [
+                data.em_id,
+                data.em_no
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }

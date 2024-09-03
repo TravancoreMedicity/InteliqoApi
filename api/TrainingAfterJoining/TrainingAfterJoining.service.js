@@ -448,4 +448,33 @@ module.exports = {
             }
         )
     },
+
+    GetMonthWiseDeptSchedules: (data, callback) => {
+        pool.query(
+            `
+            SELECT slno, department, deparment_sect, schedule_year, schedule_date, schedule_topics, schedule_trainers, 
+            schedule_remark,hrm_department.dept_id,dept_name, topic_slno,training_topic_name,sect_id,
+            GROUP_CONCAT(em_name)  as traineer_name
+            FROM training_departmental_schedule
+            LEFT JOIN hrm_department ON hrm_department.dept_id=training_departmental_schedule.department
+            LEFT JOIN training_topic ON training_topic.topic_slno=training_departmental_schedule.schedule_topics
+            LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id =training_departmental_schedule.deparment_sect
+            LEFT JOIN hrm_emp_master on JSON_CONTAINS(training_departmental_schedule.schedule_trainers,cast(hrm_emp_master.em_id as json),'$')
+            where month( schedule_date)=? and training_departmental_schedule.department=? and training_departmental_schedule.deparment_sect=?
+            GROUP BY slno, department, deparment_sect, schedule_year, schedule_date, schedule_topics, schedule_trainers, 
+            schedule_remark,hrm_department.dept_id,dept_name, topic_slno,training_topic_name,sect_id`,
+            [
+                data.month,
+                data.dept,
+                data.deptSec
+            ],
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+            }
+        )
+    },
 }

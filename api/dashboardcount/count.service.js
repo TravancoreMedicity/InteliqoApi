@@ -516,7 +516,7 @@ module.exports = {
             inner join hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
              WHERE NOT EXISTS (SELECT * FROM hrm_emp_pfesi
                       WHERE hrm_emp_pfesi.em_id=hrm_emp_master.em_id) 
-            and em_status=1 and em_no!=1 and ecat_esi_allow=1`,
+            and em_status=1 and em_no!=1 and ecat_esi_allow=1 and category_slno=1 and doctor_status=0`,
             [],
             (error, results, feilds) => {
                 if (error) {

@@ -1696,7 +1696,7 @@ module.exports = {
             credited,specail_remark 
             FROM hrm_leave_calculated
             WHERE emp_id = ?                    
-            and (specail_remark is null and curdate() <  DATE_ADD(credited_date , interval ? day) or specail_remark is not null )`,
+            and taken=0 and (specail_remark is null and curdate() <  DATE_ADD(credited_date , interval ? day) or specail_remark is not null )`,
             [
                 data.em_id,
                 data.count

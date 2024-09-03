@@ -5,7 +5,8 @@ const { create, createGenralRq, createOndutyRequest, createEnableMispunchRqst, g
     hodEnable, hodOnDuty, hodOneHour, ceoEnable, ceoonduty, ceoOnehour, hrEnable, hrOnduty,
     hrOnehour, getGeneralReqstAll, addHrComment, checkMispunchRequest, hrEnableComment,
     hrOndutyComment, checkAttendanceProcess, generalHRapproval, cancelEnable, enableOnduty,
-    cancelOnehour, cancelgeneral
+    cancelOnehour, cancelgeneral, onDutyReport, HrApprovedOneHourData, HrApprovedOnDutyData,
+    cancelApprovedOneHour, cancelApprovedOnDuty, getEmpwiseOnduty, getEmpwiseOneHour
 } = require("../CommonRequest/CommonReqst.controller")
 
 
@@ -52,5 +53,16 @@ router.patch("/cancel/enable", checkToken, cancelEnable)
 router.patch("/cancel/onduty", checkToken, enableOnduty)
 router.patch("/cancel/onhour", checkToken, cancelOnehour)
 router.patch("/cancel/general", checkToken, cancelgeneral)
+
+router.post("/onduty/list", checkToken, onDutyReport)
+
+router.get("/hrApproved/onehour", checkToken, HrApprovedOneHourData)
+router.get("/hrApproved/Onduty", checkToken, HrApprovedOnDutyData)
+
+router.post("/cancel/approvedOneHour", checkToken, cancelApprovedOneHour)
+router.post("/cancel/approvedOnDuty", checkToken, cancelApprovedOnDuty)
+
+router.post("/onduty/empwise", checkToken, getEmpwiseOnduty)
+router.post("/onhour/empwise", checkToken, getEmpwiseOneHour)
 
 module.exports = router;

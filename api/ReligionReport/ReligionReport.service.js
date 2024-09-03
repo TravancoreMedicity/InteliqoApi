@@ -64,7 +64,9 @@ module.exports = {
     getEmpWisePunchReport: (data, callBack) => {
         pool.query(
             ` SELECT 
+            punch_slno,
             punch_master.em_no,
+            hrm_emp_master.em_id,
             shift_in,
             shift_out,
             duty_day ,
@@ -73,6 +75,8 @@ module.exports = {
             sect_name,
             shift_id,
             shft_desc,
+            lvereq_desc,
+            duty_desc,
             shft_cross_day
             FROM punch_master
 			left join hrm_emp_master on hrm_emp_master.em_no=punch_master.em_no

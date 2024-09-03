@@ -5,7 +5,7 @@ const { create, update, getDataById,
     UpdateEMpIdPersonal, getContractByEmno, getContractDetlId, updateEmpmastSatus,
     getEmployeeByUserName, inactiveLoginNewPromise, activeLoginNewPromise, newLoginInsert,
     updateQualEmpno, updateDutyPlanData, updatePunchmstEmno, newEntryContract,
-    deleteNewLoginEntry,
+    deleteNewLoginEntry, updatePunchEmno,
     reverseUpdateQualEmpno } = require('../hrm_emp_contract_detl/empcontract.service');
 
 const { validateempcontract } = require('../../validation/validation_schema');
@@ -611,8 +611,15 @@ module.exports = {
                 create_user: body.create_user
             }
 
+            const punchData = {
+                em_no: body.emp_no,
+                punchslno: body.punchslno
+            }
 
-
+            const old_punchdata = {
+                em_no: body.old_emno,
+                punchslno: body.punchslno
+            }
             //inactive old empno in hrm_employee table
             const result = await inactiveLoginNewPromise(emp_slno)
             const { status, message } = result;
@@ -642,32 +649,77 @@ module.exports = {
                                     const result = await updatePunchmstEmno(punchmast)
                                     const { status, message } = result;
                                     if (status === 1) {
-                                        if (body.contract_status === 1) {
-                                            //if category is contract, new entry to hrm_emp_contract_detl
-                                            const result = await newEntryContract(newContractEntry)
+                                        if (body?.punchslno?.length !== 0) {
+                                            const result = await updatePunchEmno(punchData)
                                             const { status, message } = result;
                                             if (status === 1) {
-                                                return res.status(200).json({
-                                                    success: 1,
-                                                    message: 'Contract Renewal Completed Successfully!' + message
-                                                });
+                                                if (body.contract_status === 1) {
+                                                    //if category is contract, new entry to hrm_emp_contract_detl
+                                                    const result = await newEntryContract(newContractEntry)
+                                                    const { status, message } = result;
+                                                    if (status === 1) {
+                                                        return res.status(200).json({
+                                                            success: 1,
+                                                            message: 'Contract Renewal Completed Successfully!' + message
+                                                        });
+                                                    } else {
+                                                        await updatePunchmstEmno(old_punchmast)
+                                                        await updateDutyPlanData(old_dutyplandata)
+                                                        await updateQualEmpno(resetOldEmno)
+                                                        await deleteNewLoginEntry(body.emp_username)
+                                                        await updateEmpMaster(oldData)
+                                                        await activeLoginNewPromise(emp_slno)
+                                                        return res.status(200).json({
+                                                            success: 0,
+                                                            message: 'Error Found, Contact IT'
+                                                        });
+                                                    }
+                                                } else {
+                                                    return res.status(200).json({
+                                                        success: 1,
+                                                        message: 'Contract Renewal Completed Successfully!'
+                                                    });
+                                                }
                                             } else {
-                                                await updatePunchmstEmno(old_punchmast)
+                                                await updatePunchEmno(old_punchdata)
                                                 await updateDutyPlanData(old_dutyplandata)
-                                                await updateQualEmpno(resetOldEmno)
+                                                await reverseUpdateQualEmpno(resetOldEmno)
                                                 await deleteNewLoginEntry(body.emp_username)
                                                 await updateEmpMaster(oldData)
                                                 await activeLoginNewPromise(emp_slno)
                                                 return res.status(200).json({
                                                     success: 0,
-                                                    message: 'Error Found, Contact IT'
+                                                    message: 'Error While Updating Employee punch' + message
                                                 });
                                             }
                                         } else {
-                                            return res.status(200).json({
-                                                success: 1,
-                                                message: 'Contract Renewal Completed Successfully!'
-                                            });
+                                            if (body.contract_status === 1) {
+                                                //if category is contract, new entry to hrm_emp_contract_detl
+                                                const result = await newEntryContract(newContractEntry)
+                                                const { status, message } = result;
+                                                if (status === 1) {
+                                                    return res.status(200).json({
+                                                        success: 1,
+                                                        message: 'Contract Renewal Completed Successfully!' + message
+                                                    });
+                                                } else {
+                                                    await updatePunchmstEmno(old_punchmast)
+                                                    await updateDutyPlanData(old_dutyplandata)
+                                                    await updateQualEmpno(resetOldEmno)
+                                                    await deleteNewLoginEntry(body.emp_username)
+                                                    await updateEmpMaster(oldData)
+                                                    await activeLoginNewPromise(emp_slno)
+                                                    return res.status(200).json({
+                                                        success: 0,
+                                                        message: 'Error Found, Contact IT'
+                                                    });
+                                                }
+                                            } else {
+                                                return res.status(200).json({
+                                                    success: 1,
+                                                    message: 'Contract Renewal Completed Successfully!'
+                                                });
+                                            }
                                         }
                                     } else {
                                         await updateDutyPlanData(old_dutyplandata)

@@ -148,8 +148,17 @@ const TrainingDetails = require("./api/TrainingDetails/TrainingDetails.route")
 const LeaveReport = require("./api/LeaveReport/LeaveReport.router")
 const TrainingDashboard = require("./api/TrainingDashboard/TrainingDashboard.router")
 const AttendenceReport = require("./api/AttendenceReport/AttendenceReport.router")
+
 const AnnualHealthcheckUp = require("./api/AnnualHealthCheckUp/AnnualHealth.router")
 const JobAndSkillDesc = require("./api/JobAndSkillDesc/jobAndSkill.router")
+
+
+const TrainingVerification = require("./api/TrainingVerification/TrainingVerification.route")
+const TrainingFeedback = require("./api/Training_Feedback/TrainingFeedback.router")
+const TrainingRecord = require("./api/TrainingRecord/TrainingRecord.router")
+const OnObservationRequest = require("./api/OnobservationRequest/OnobservationRouter")
+const ManualrequestUpload = require("./api/ManualRequest/Manual.router")
+const OffRquest = require('./api/OFFRequest/OffRequest.router')
 
 
 app.use(express.json({ limit: '50mb' }));
@@ -308,8 +317,6 @@ app.use('/api/EmailandPdf', EmailandPdf)
 app.use("/api/AnnualHealthUp", AnnualHealthcheckUp)
 
 // app.use("/api/LeaveReports", LeaveReports)
-
-
 //Training
 app.use("/api/TrainingType", TrainingType)
 app.use("/api/TrainingCategory", TrainingCategory)
@@ -338,7 +345,18 @@ app.use("/api/TrainingDetails", TrainingDetails)
 app.use("/api/LeaveReport", LeaveReport)
 app.use("/api/TrainingDashboard", TrainingDashboard)
 app.use("/api/AttendenceReport", AttendenceReport)
+
 app.use("/api/JobAndSkillDesc", JobAndSkillDesc)
+
+app.use("/api/TrainingVerification", TrainingVerification)
+app.use("/api/TrainingFeedback", TrainingFeedback)
+app.use("/api/TrainingRecord", TrainingRecord)
+app.use("/api/OnObservationRequest", OnObservationRequest)
+app.use("/api/manualRequest", ManualrequestUpload)
+app.use("/api/OffRequest", OffRquest)
+
+
+
 
 
 // ------ Database Connection --------

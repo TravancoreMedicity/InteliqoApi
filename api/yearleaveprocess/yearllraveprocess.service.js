@@ -436,13 +436,14 @@ module.exports = {
                 hrm_cl_slno,
                 em_no,
                 em_id,
+                cl_lv_year,
                 MONTHNAME(cl_lv_mnth)cl_lv_mnth,
                 cl_bal_leave,
                 hl_lv_tkn_status,
                 cl_lv_taken
             From hrm_leave_cl
             where cl_lv_credit=1 and em_no = ? and cl_lv_taken < 1
-            and year(cl_lv_year) = year(curdate())`,
+            and year(cl_lv_year) = year(curdate()) and cl_lv_active=0`,
             [
                 data
             ],
@@ -606,7 +607,7 @@ module.exports = {
                 proceeuser,
                 year_of_process,
                 year
-                ) values (?,?,?,?)`,
+                ) values (?,?,?,?,?)`,
             [
                 data.em_no,
                 data.em_id,
@@ -856,6 +857,171 @@ module.exports = {
             }
         )
     },
+    updateCommonUpdateSlno: (data, callBack) => {
+        pool.query(
+            `update hrm_leave_common set cmn_status='1' where Iv_process_slno=? and  cmn_status='0'`,
+            [
+                data.oldprocessslno
 
-
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getLeavecountbyDate: (data, callBack) => {
+        pool.query(
+            `select 
+            em_no,
+            em_name,
+            Clcredit,
+            takenCL,
+            (Clcredit - takenCL) BalanceCL,
+            ELcredit,
+            takenEl,
+            (ELcredit - takenEl) BalanceEL,
+            SLcredit,
+            takenSL,
+            (SLcredit - takenSL) BalanceSL,
+            dept_name,
+            sect_name
+        from (
+        select 
+            c.em_no,
+            f.em_name,
+            sum(clcredit) CLcredit,
+            sum(takenCL) takenCL,
+            sum(ELcredit) ELcredit,
+            sum(takenEL) takenEL,
+            sum(SLallowed) SLcredit,
+            sum(takenSL) takenSL,
+             g.dept_name,
+             h.sect_name
+        from(
+            select 
+                em_no,
+                sum(cl_lv_allowed) clallowed,
+                sum(cl_lv_credit) clcredit,
+                0 takenCL,
+                0 ELallowed,
+                0 ELcredit,
+                0 takenEL,
+                0 SLallowed,
+                0 takenSL
+            from hrm_leave_cl where cl_lv_active = 0 and year(cl_lv_mnth) =year(curdate())
+            group by em_no
+            union all
+            select 
+                b.em_no,
+                0 clallowed,
+                0 clcredit,
+                count(a.leave_status) takenCL,
+                0 ELallowed,
+                0 ELcredit,
+                0 takenEL,
+                0 SLallowed,
+                0 takenSL
+            from hrm_leave_request_detl a
+            left join hrm_leave_request b on b.lve_uniq_no = a.lve_uniq_no
+            where a.leave_typeid = 1 and a.leave_cancel is null and a.leave_status = 1
+            and a.leave_dates >= ? and a.leave_dates <= ?
+            group by b.em_no 
+             union all
+            select 
+                 a.em_no,
+                0 clallowed,
+                 0 clcredit,
+                  ROUND(count(a.month)/2, 1) AS takenCL,
+                 0 ELallowed,
+                0 ELcredit,
+                 0 takenEL,
+                 0 SLallowed,
+                 0 takenSL
+             from hrm_halfdayrequest a
+             where lv_cancel_status=0 and lv_cancel_req_status_user=0 and a.leavedate >= ? and a.leavedate <= ?
+             group by a.em_no 
+            union all
+            select 
+                em_no,
+                0 Clallowed,
+                0 CLcredit,
+                0 takenCL,
+                sum(ernlv_allowed) ELallowed,
+                sum(ernlv_credit) ELcredit,
+                0 takenEL,
+                0 SLallowed,
+                0 takenSL
+            from hrm_leave_earnlv where earn_lv_active = 0 and credit_year = year(curdate())
+            group by em_no
+            union all
+            select 
+                b.em_no,
+                0 Clallowed,
+                0 CLcredit,
+                0 takenCL,
+                0 ELallowed,
+                0 ELcredit,
+                count(a.leave_status) takenEL,
+                0 SLallowed,
+                0 takenSL
+            from hrm_leave_request_detl a
+            left join hrm_leave_request b on b.lve_uniq_no = a.lve_uniq_no
+            where a.leave_typeid = 8 and a.leave_cancel is null and a.leave_status = 1
+            and a.leave_dates >= ? and a.leave_dates <= ? 
+            group by b.em_no
+            union all
+            select 
+                em_no,
+                0 Clallowed,
+                0 CLcredit,
+                0 takenCL,
+                0 ELallowed,
+                0 ELcredit,
+                0 takenEL,
+                cmn_lv_allowed SLallowed,
+                0 takenSL
+                from hrm_leave_common 
+            where llvetype_slno = 7 and year(cmn_lv_year) = year(curdate()) and cmn_status=0
+            union all
+            select 
+                b.em_no,
+                0 Clallowed,
+                0 CLcredit,
+                0 takenCL,
+                0 ELallowed,
+                0 ELcredit,
+                0 takenEL,
+                0 SLallowed,
+                count(a.leave_status) takenSL
+            from hrm_leave_request_detl a
+            left join hrm_leave_request b on b.lve_uniq_no = a.lve_uniq_no
+            where a.leave_typeid = 7 and a.leave_cancel is null and a.leave_status = 1
+            and a.leave_dates >= ? and a.leave_dates <= ?
+            group by b.em_no
+        ) as c right join hrm_emp_master f on c.em_no = f.em_no
+        right join hrm_department g on f.em_department=g.dept_id
+        right join hrm_dept_section h on f.em_dept_section=h.sect_id
+        where f.em_status = 1
+        group by 1 ) tble `,
+            [
+                data.fromDate1,
+                data.toDate1,
+                data.fromDate1,
+                data.toDate1,
+                data.fromDate1,
+                data.toDate1,
+                data.fromDate1,
+                data.toDate1,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }

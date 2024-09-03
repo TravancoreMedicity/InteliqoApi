@@ -1,6 +1,34 @@
 const pool = require('../../config/database');
 
 module.exports = {
+    // GetDatewiseEmps: (data, callback) => {
+    //     pool.query(
+    //         `
+    //         SELECT em_id,em_no,em_name,em_department,em_dept_section,em_designation,
+    //         hrm_department.dept_id,hrm_department.dept_name,
+    //         hrm_dept_section.sect_id,hrm_dept_section.sect_name,
+    //         designation.desg_slno,designation.desg_name,
+    //         training_master.joining_date,training_master.assign_status,training_master.slno as master_slno
+    //         FROM hrm_emp_master
+    //         LEFT JOIN hrm_department ON hrm_department.dept_id=hrm_emp_master.em_department
+    //         LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
+    //         LEFT JOIN designation ON designation.desg_slno=hrm_emp_master.em_designation
+    //         LEFT JOIN training_master ON training_master.emp_no=hrm_emp_master.em_no 
+    //         WHERE hrm_emp_master.em_id!=1 and training_master.assign_status=0 and
+    //         training_master.joining_date between ? AND ?`,
+    //         [
+    //             data.fromdate,
+    //             data.todate
+    //         ],
+    //         (err, results, feilds) => {
+    //             if (err) {
+    //                 return callback(err)
+
+    //             }
+    //             return callback(null, results)
+    //         }
+    //     )
+    // },
     GetDatewiseEmps: (data, callback) => {
         pool.query(
             `
@@ -14,8 +42,9 @@ module.exports = {
             LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
             LEFT JOIN designation ON designation.desg_slno=hrm_emp_master.em_designation
             LEFT JOIN training_master ON training_master.emp_no=hrm_emp_master.em_no 
-            WHERE hrm_emp_master.em_id!=1 and training_master.assign_status=0 and
-            training_master.joining_date between ? AND ?`,
+            WHERE hrm_emp_master.em_id!=1 and
+            training_master.joining_date between ? AND ? ORDER BY 
+    em_no ASC`,
             [
                 data.fromdate,
                 data.todate
@@ -29,6 +58,38 @@ module.exports = {
             }
         )
     },
+
+    GetDeptWiseEmps: (data, callback) => {
+        pool.query(
+            `
+            SELECT em_id,em_no,em_name,em_department,em_dept_section,em_designation,
+            hrm_department.dept_id,hrm_department.dept_name,
+            hrm_dept_section.sect_id,hrm_dept_section.sect_name,
+            designation.desg_slno,designation.desg_name,
+            training_master.joining_date,training_master.assign_status,training_master.slno as master_slno
+            FROM hrm_emp_master
+            LEFT JOIN hrm_department ON hrm_department.dept_id=hrm_emp_master.em_department
+            LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
+            LEFT JOIN designation ON designation.desg_slno=hrm_emp_master.em_designation
+            LEFT JOIN training_master ON training_master.emp_no=hrm_emp_master.em_no 
+            WHERE hrm_emp_master.em_id!=1 and training_master.assign_status=0 and
+            hrm_emp_master.em_department=? and training_master.joining_date between ? AND ? `,
+            [
+                data.dept,
+                data.fromdate,
+                data.todate
+
+            ],
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+            }
+        )
+    },
+
     ScheduleInductionTrainings: (data, callBack) => {
         pool.query(
             `INSERT INTO training_induction_schedule (
@@ -68,26 +129,26 @@ module.exports = {
     },
 
 
-    UpdateAssignStatus: (data, callBack) => {
-        return new Promise((resolve, reject) => {
-            data.map((val) => {
-                pool.query(
-                    `UPDATE training_master
-            SET assign_status=?,
-            edit_user=?
-            WHERE slno=?  `,
-                    [val.assign_status, val.edit_user, val.slno],
-                    (error, results, feilds) => {
-                        if (error) {
-                            return reject(error)
-                        }
-                        return resolve(results)
-                    }
-                )
-            })
+    // UpdateAssignStatus: (data, callBack) => {
+    //     return new Promise((resolve, reject) => {
+    //         data.map((val) => {
+    //             pool.query(
+    //                 `UPDATE training_master
+    //         SET assign_status=?,
+    //         edit_user=?
+    //         WHERE slno=?  `,
+    //                 [val.assign_status, val.edit_user, val.slno],
+    //                 (error, results, feilds) => {
+    //                     if (error) {
+    //                         return reject(error)
+    //                     }
+    //                     return resolve(results)
+    //                 }
+    //             )
+    //         })
 
-        })
-    },
+    //     })
+    // },
 
 
     GetTypeWiseTraining: (id, callback) => {
@@ -279,6 +340,67 @@ module.exports = {
                 data.topic_slno,
                 data.induction_date
             ],
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+            }
+        )
+    },
+    GetIncutCalenderDatas: (data, callback) => {
+        pool.query(
+            `
+            SELECT schedule_slno, schedule_type, schedule_topic, training_induction_schedule.trainers, induction_date,
+            training_type.trainingtype_slno,training_type.type_name,topic_slno,training_topic_name,GROUP_CONCAT(em_name)  as trainer_name
+            FROM training_induction_schedule
+            LEFT JOIN training_type ON training_type.trainingtype_slno=training_induction_schedule.schedule_type
+            LEFT JOIN training_topic ON training_topic.topic_slno=training_induction_schedule.schedule_topic
+             LEFT JOIN hrm_emp_master on JSON_CONTAINS(training_induction_schedule.trainers,cast(hrm_emp_master.em_id as json),'$')
+             where month(induction_date) =?
+             group by schedule_slno, schedule_type, schedule_topic, training_induction_schedule.trainers, induction_date,
+            training_type.trainingtype_slno,training_type.type_name,topic_slno,training_topic_name`,
+            [
+                data.month
+            ],
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+            }
+        )
+    },
+
+    GetInductDeptDatas: (data, callback) => {
+        pool.query(
+            `
+            SELECT induct_emp_dept ,induct_detail_date,hrm_department.dept_name,training_induction_schedule.schedule_topic,training_topic.training_topic_name
+            FROM training_induction_emp_details
+            LEFT JOIN hrm_department ON hrm_department.dept_id=training_induction_emp_details.induct_emp_dept
+            LEFT JOIN training_induction_schedule On training_induction_schedule.schedule_slno=training_induction_emp_details.schedule_no
+            LEFT JOIN training_topic ON training_topic.topic_slno=training_induction_schedule.schedule_topic
+            where training_induction_schedule.schedule_topic=? and date(training_induction_emp_details.induct_detail_date)=?`,
+            [
+                data.topic,
+                data.current_date
+            ],
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+            }
+        )
+    },
+
+    GetInductscheduledatas: (callback) => {
+        pool.query(
+            `SELECT * FROM  training_induction_emp_details`, [],
+
             (err, results, feilds) => {
                 if (err) {
                     return callback(err)

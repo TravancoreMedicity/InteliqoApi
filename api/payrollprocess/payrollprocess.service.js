@@ -480,6 +480,7 @@ module.exports = {
         pool.query(
             `select 
             hrm_emp_earn_deduction.em_no,
+            hrm_emp_earn_deduction.em_id,
             earning_type_name,
             earnded_name,
             em_salary_desc,
@@ -488,7 +489,7 @@ module.exports = {
              inner join hrm_earning_deduction on hrm_emp_earn_deduction.em_salary_desc=hrm_earning_deduction.earnded_id
              inner join hrm_earning_type on hrm_earning_deduction.erning_type_id=hrm_earning_type.erning_type_id
              inner join hrm_emp_master on hrm_emp_earn_deduction.em_no=hrm_emp_master.em_no
-             where  hrm_earning_deduction.erning_type_id=3 and hrm_emp_master.em_department=? and hrm_emp_master.em_dept_section=?;`,
+             where  hrm_earning_deduction.erning_type_id=3 and hrm_emp_master.em_department IN (?) and hrm_emp_master.em_dept_section IN (?)`,
             [
                 data.em_department,
                 data.em_dept_section
@@ -702,6 +703,7 @@ module.exports = {
 
     },
     getEmpNoDeptWise: (data, callBack) => {
+
         pool.query(
             `select hrm_emp_master.em_no,
             em_name,
@@ -711,8 +713,10 @@ module.exports = {
             dept_name ,
             sect_name,
             ecat_name,
+            desg_name,
             inst_emp_type,
             COALESCE(em_account_no,0) em_account_no,
+            COALESCE(em_ifsc,0) em_ifsc,
             COALESCE(nps,0) nps,
             COALESCE(npsamount,0)npsamount,
             COALESCE(lwf_status,0)lwf_status,
@@ -721,6 +725,7 @@ module.exports = {
             left join hrm_branch on hrm_branch.branch_slno=hrm_emp_master.em_branch
             left join hrm_emp_category on hrm_emp_category.category_slno=hrm_emp_master.em_category
             left join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
+            left join designation on designation.desg_slno=hrm_emp_master.em_designation
             left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
             left join institution_type on institution_type.inst_slno=hrm_emp_master.em_institution_type
             left join hrm_emp_personal on hrm_emp_personal.em_id=hrm_emp_master.em_id
@@ -754,12 +759,14 @@ module.exports = {
     getPunchmastData: (data, callBack) => {
         pool.query(
             `select punch_slno, duty_day,shift_id,punch_master.emp_id,punch_master.em_no,
-            hrm_emp_master.em_name,punch_in, gross_salary,
+            hrm_emp_master.em_name,dept_name,sect_name, gross_salary,
             punch_out,shift_in,shift_out,hrs_worked,over_time,late_in,
             early_out,duty_status,holiday_status,leave_status,holiday_slno,
             lvereq_desc,duty_desc,lve_tble_updation_flag,hrm_emp_master.em_name
             from  punch_master
             left join hrm_emp_master on hrm_emp_master.em_no=punch_master.em_no
+            left join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
+            left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
             where punch_master.em_no IN (?)
                  and date(duty_day) between ? and ?`,
             [
@@ -1066,17 +1073,21 @@ module.exports = {
         )
     },
     getAllEmployee: (data, callBack) => {
+
         pool.query(
             `select hrm_emp_master.em_no,
             em_name,
+            em_name as emp_name,
             gross_salary,
             hrm_emp_master.em_id ,
             branch_name,
             dept_name ,
             sect_name,
             ecat_name,
+            desg_name,
             inst_emp_type,
             COALESCE(em_account_no,0) em_account_no,
+            COALESCE(em_ifsc,0) em_ifsc,
             COALESCE(nps,0) nps,
             COALESCE(npsamount,0)npsamount,
             COALESCE(lwf_status,0)lwf_status,
@@ -1086,6 +1097,7 @@ module.exports = {
             left join hrm_emp_category on hrm_emp_category.category_slno=hrm_emp_master.em_category
             left join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
             left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
+            left join designation on designation.desg_slno=hrm_emp_master.em_designation
             left join institution_type on institution_type.inst_slno=hrm_emp_master.em_institution_type
             left join hrm_emp_personal on hrm_emp_personal.em_id=hrm_emp_master.em_id
             left join hrm_emp_pfesi on hrm_emp_pfesi.em_id=hrm_emp_master.em_id
@@ -1235,6 +1247,43 @@ module.exports = {
             FROM hrm_emp_master WHERE em_status = 1 AND doctor_status = 0 AND em_institution_type != 9) SECT ON SECT.section = hrm_dept_section.sect_id
             WHERE sect_status=1 order by sect_name asc`,
             [],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getPunchmastAboveSelectedDate: (data, callBack) => {
+        pool.query(
+            `select punch_slno, duty_day,shift_id,punch_master.emp_id,punch_master.em_no,
+            hrm_emp_master.em_name,punch_in, gross_salary, punch_out,shift_in,shift_out,
+            hrs_worked,over_time,late_in, early_out,duty_status,holiday_status,leave_status,
+            holiday_slno, lvereq_desc,duty_desc,lve_tble_updation_flag,hrm_emp_master.em_name
+            from  punch_master
+            left join hrm_emp_master on hrm_emp_master.em_no=punch_master.em_no
+            where punch_master.emp_id =?
+                 and date(duty_day) >=? ORDER BY DATE(duty_day) ASC`,
+            [
+                data.emp_id,
+                data.start_date
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getPunchAboveSelectedDate: (data, callBack) => {
+        pool.query(
+            `SELECT * FROM punch_data where emp_code=? and punch_time >= ? `,
+            [
+                data.em_no,
+                data.from
+            ],
             (error, results, feilds) => {
                 if (error) {
                     return callBack(error);
