@@ -1,5 +1,6 @@
 const multer = require('multer');
 const path = require('path');
+const fs = require("fs")
 
 const storageResignation = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -39,7 +40,27 @@ const uploadResignationReqFiles = multer({
     }
 }).single('file')
 
+const storagemul = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'D:/DocMeliora/Inteliqo/FinalSettlement')
+    },
+    filename: function (req, file, cb) {
+        const extension = path.extname(file.originalname);
+        const newFileName = `Final_settlement_${Date.now()}${extension}`;
+        cb(null, newFileName)
+    }
+});
+
+
+const uploadmul = multer({
+    storage: storagemul,
+    limits: { fileSize: maxSize },
+    fileFilter: (req, file, cb) => {
+        checkFileType(file, cb);
+    }
+}).single('file')
 
 module.exports = {
-    uploadResignationReqFiles
+    uploadResignationReqFiles,
+    uploadmul
 }

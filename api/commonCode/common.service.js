@@ -1566,40 +1566,47 @@ module.exports = {
     getEmployeeInformation: (id, callBack) => {
         pool.query(
             `SELECT  
-                E.em_no,
-                E.em_id,
-                E.em_doj,
-                E.em_branch,
-                E.em_designation,
-                E.em_retirement_date,
-                E.em_prob_end_date,
-                E.em_conf_end_date,
-                E.em_contract_end_date,
-                E.em_department,
-                E.em_dept_section,
-                C.ecat_esi_allow,
-                E.em_conf_end_date,
-                E.em_retirement_date,
-                E.em_contract_end_date,
-                E.blood_slno,
-                E.hrm_religion,
-                E.hrm_profile,
-                E.contract_status,
-                E.hod,
-                E.incharge,
-                E.emp__ot,
-                E.ot_amount,
-                E.gross_salary,
-                E.em_category,
-                C.category_slno,
-                C.emp_type,
-                C.des_type,
-                E.probation_status,
-                R.user_grp_slno as groupmenu
-            FROM hrm_emp_master E 
-            LEFT JOIN hrm_emp_category C ON C.category_slno = E.em_category
-            LEFT JOIN module_group_user_rights R on R.emp_slno = E.em_id 
-            WHERE E.em_status = 1 AND E.em_id = ?`,
+            E.em_no,
+            E.em_name,
+            E.em_id,
+            E.em_doj,
+            E.em_branch,
+            E.em_designation,
+            E.em_retirement_date,
+            E.em_prob_end_date,
+            E.em_conf_end_date,
+            E.em_contract_end_date,
+            E.em_department,
+            E.em_dept_section,
+            C.ecat_esi_allow,
+            E.em_conf_end_date,
+            E.em_retirement_date,
+            E.em_contract_end_date,
+            E.blood_slno,
+            E.hrm_religion,
+            E.hrm_profile,
+            E.contract_status,
+            E.hod,
+            E.incharge,
+            E.emp__ot,
+            E.ot_amount,
+            E.gross_salary,
+            E.em_category,
+            C.category_slno,
+            C.emp_type,
+            C.des_type,
+            E.probation_status,
+            R.user_grp_slno as groupmenu,
+            A.desg_name,
+            B.dept_name,
+            D.sect_name
+        FROM hrm_emp_master E 
+        LEFT JOIN hrm_emp_category C ON C.category_slno = E.em_category
+        LEFT JOIN module_group_user_rights R on R.emp_slno = E.em_id 
+        LEFT JOIN designation A ON A.desg_slno=E.em_designation
+        LEFT JOIN hrm_department B ON B.dept_id=E.em_department
+        LEFT JOIN hrm_dept_section D ON D.sect_id=E.em_dept_section
+        WHERE E.em_status = 1 AND E.em_id = ?`,
             [
                 id
             ],

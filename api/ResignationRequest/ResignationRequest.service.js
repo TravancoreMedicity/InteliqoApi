@@ -30,30 +30,30 @@ module.exports = {
                 )
                 VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
-                data.dept_id,
-                data.sect_id,
                 data.em_id,
-                data.em_no,
-                data.designation,
-                data.resignation_type,
-                data.request_date,
+                data.file_attachment,
+                data.attached_type,
+                data.exclusion,
+                data.exclusion_reason,
+                data.resignation_date,
                 data.relieving_date,
-                data.resign_reason,
-                data.notice_period,
-                data.incharge_required,
-                data.inch_app_status,
-                data.inch_coment,
-                data.inch_app_date,
-                data.inch_id,
-                data.hod_required,
-                data.hod_app_status,
-                data.hod_coment,
-                data.hod_app_date,
-                data.hod_id,
-                data.ceo_required,
-                data.hr_required,
-                data.fileName,
-                data.fileType
+                data.total_days,
+                data.leave_count,
+                data.holiday_count,
+                data.late_count,
+                data.lop_count,
+                data.holiday_worked,
+                data.total_paydays,
+                data.lop_amount,
+                data.nps_amount,
+                data.lwf_amount,
+                data.deduction_amount,
+                data.holiday_amount,
+                data.extra_earnings,
+                data.extra_deduction,
+                data.gross_salary,
+                data.net_salary,
+                data.attachment_type
             ],
             (error, results, fields) => {
                 if (error) {
@@ -111,7 +111,7 @@ module.exports = {
                 left join hrm_dept_section on hrm_dept_section.sect_id=hrm_resignation_request.sect_id
                 left join hrm_emp_master on hrm_emp_master.em_id=hrm_resignation_request.em_id
             WHERE hrm_resignation_request.sect_id IN(?)
-            AND incharge_required=1 AND resign_status is null`,
+            AND incharge_required=1 AND hrm_resignation_request.resign_status is null`,
             [
                 data.dept_id,
 
@@ -195,7 +195,7 @@ module.exports = {
                 left join hrm_dept_section on hrm_dept_section.sect_id=hrm_resignation_request.sect_id
                 left join hrm_emp_master on hrm_emp_master.em_id=hrm_resignation_request.em_id
             WHERE hrm_resignation_request.sect_id IN(?)
-            AND hod_required=1 AND resign_status is null and ((incharge_required=1 and inch_app_status=1) or incharge_required =0)`,
+            AND hod_required=1 AND hrm_resignation_request.resign_status is null and ((incharge_required=1 and inch_app_status=1) or incharge_required =0)`,
             [
                 data.dept_id,
 
@@ -261,7 +261,7 @@ module.exports = {
               left join hrm_department on hrm_department.dept_id=hrm_resignation_request.dept_id
               left join hrm_dept_section on hrm_dept_section.sect_id=hrm_resignation_request.sect_id
               left join hrm_emp_master on hrm_emp_master.em_id=hrm_resignation_request.em_id
-              WHERE hrm_resignation_request.sect_id IN(?) AND resign_status is null and ((incharge_required=1 and inch_app_status=1) or incharge_required =0)
+              WHERE hrm_resignation_request.sect_id IN(?) AND hrm_resignation_request.resign_status is null and ((incharge_required=1 and inch_app_status=1) or incharge_required =0)
               and ((hod_required=1 and hod_app_status=1) or hod_required =0) and ((ceo_required=1 and ceo_appr_status=1) or ceo_required =0) `,
             [
                 data.dept_id,
@@ -311,7 +311,7 @@ module.exports = {
             left join hrm_department on hrm_department.dept_id=hrm_resignation_request.dept_id
             left join hrm_dept_section on hrm_dept_section.sect_id=hrm_resignation_request.sect_id
             left join hrm_emp_master on hrm_emp_master.em_id=hrm_resignation_request.em_id
-            WHERE ceo_required=1 AND resign_status is null and ((incharge_required=1 and inch_app_status=1) or incharge_required =0)
+            WHERE ceo_required=1 AND hrm_resignation_request.resign_status is null and ((incharge_required=1 and inch_app_status=1) or incharge_required =0)
             and ((hod_required=1 and hod_app_status=1) or hod_required =0) `,
             [],
             (error, results, fields) => {
@@ -411,7 +411,7 @@ module.exports = {
             left join hrm_department on hrm_department.dept_id=hrm_resignation_request.dept_id
             left join hrm_dept_section on hrm_dept_section.sect_id=hrm_resignation_request.sect_id
             left join hrm_emp_master on hrm_emp_master.em_id=hrm_resignation_request.em_id
-            WHERE resign_status="A" AND resign_cancel is null and contract_close_resign is null`,
+            WHERE hrm_resignation_request.resign_status="A" AND resign_cancel is null and contract_close_resign is null`,
             [
             ],
             (error, results, feilds) => {
@@ -510,7 +510,7 @@ module.exports = {
                 left join hrm_department on hrm_department.dept_id=hrm_resignation_request.dept_id
                 left join hrm_dept_section on hrm_dept_section.sect_id=hrm_resignation_request.sect_id
                 left join hrm_emp_master on hrm_emp_master.em_id=hrm_resignation_request.em_id
-            where resign_status is null and hr_required=1 and (inch_app_status =1 or inch_app_status=2) 
+            where hrm_resignation_request.resign_status is null and hr_required=1 and (inch_app_status =1 or inch_app_status=2) 
             and (hod_app_status=1 or hod_app_status=2) and (ceo_appr_status=1 or ceo_appr_status=2 or ceo_appr_status is null) `,
             [],
             (error, results, fields) => {
@@ -543,7 +543,7 @@ module.exports = {
             inner join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
 			inner join designation on designation.desg_slno=hrm_emp_master.em_designation
             left join hrm_resignation_request on hrm_resignation_request.em_id=hrm_emp_contract_detl.em_id
-			where em_cont_close='C' and em_cont_renew is null and contract_close_hr_appr is null and resign_status is null`,
+			where em_cont_close='C' and em_cont_renew is null and contract_close_hr_appr is null and hrm_resignation_request.resign_status is null`,
             [],
             (error, results, fields) => {
                 if (error) {
@@ -570,22 +570,22 @@ module.exports = {
             hr_app_status,
             resign_reason,
             relieving_date,
-             if(resignation_type=1 ,'30 days Resignation','24 hour resignation')Resign,
-               if(hr_app_status is null ,'Incharge Approval Pending','Approved')appstatus,
-             hr_app_date,
-             hr_coment,
-             em_doj,
-             desg_name,
-             gross_salary,
-             hr_id,
-             status 
+            if(resignation_type=1 ,'30 days Resignation','24 hour resignation')Resign,
+            if(hr_app_status is null ,'Incharge Approval Pending','Approved')appstatus,
+            hr_app_date,
+            hr_coment,
+            em_doj,
+            desg_name,
+            gross_salary,
+            hr_id,
+            status 
             FROM hrm_resignation_request
             inner join hrm_department on hrm_department.dept_id=hrm_resignation_request.dept_id
             inner join hrm_dept_section on hrm_dept_section.sect_id=hrm_resignation_request.sect_id
             inner join hrm_emp_master on hrm_emp_master.em_id=hrm_resignation_request.em_id
             inner join designation on designation.desg_slno=hrm_emp_master.em_designation
-          left join hrm_resignation_salary_details on hrm_resignation_salary_details.em_id=hrm_resignation_request.em_id
-            WHERE resign_status="A" and resign_cancel is null  `,
+            left join hrm_resignation_salary_details on hrm_resignation_salary_details.em_id=hrm_resignation_request.em_id
+            WHERE hrm_resignation_request.resign_status="A" and resign_cancel is null  `,
             [],
             (error, results, feilds) => {
                 if (error) {
@@ -618,6 +618,205 @@ module.exports = {
                 data.balance_amount,
                 data.create_user
 
+            ],
+            (error, results, fields) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results)
+            }
+        )
+    },
+    //Inactiving Employee By Hr
+    InActiveEmpHR: (data, callBack) => {
+        pool.query(
+            `update hrm_emp_master
+            set em_status=?,
+            resign_status=?,
+            resign_date=?,
+            unauthorised_absent_date=?,
+            unauthorized_absent_status=?
+            where em_id=?`,
+            [
+                data.em_status,
+                data.resign_status,
+                data.resign_date,
+                data.unauthorised_absent_date,
+                data.unauthorized_absent_status,
+                data.em_id,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getUnauthorizedAbsentee: (callBack) => {
+        pool.query(
+            `select hrm_emp_master.em_no,
+            hrm_emp_master.em_name,
+            hrm_emp_master.em_id,
+            hrm_emp_master.em_doj,
+            hrm_emp_contract_detl.em_cont_start,
+            hrm_emp_master.contract_status,
+            hrm_emp_master.gross_salary,
+            hrm_department.dept_id,
+            hrm_dept_section.sect_id,
+            dept_name, 
+            sect_name,
+            desg_name,
+            unauthorised_absent_date
+            FROM hrm_emp_master
+            left join hrm_emp_contract_detl on hrm_emp_contract_detl.em_no = hrm_emp_master.em_no and hrm_emp_contract_detl.status = 0
+            inner join hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
+            inner join hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
+            inner join designation on hrm_emp_master.em_designation=designation.desg_slno
+            where  unauthorized_absent_status=1
+                and doctor_status=0 and em_status=1
+                and hrm_emp_master.em_no not in (1 ,2)`,
+            [],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    insertFromActiveEmp: (data, callBack) => {
+        pool.query(
+            `INSERT INTO hrm_resignation_request(
+                dept_id, 
+                sect_id,
+                em_id,
+                em_no,
+                designation,
+                resignation_type,
+                request_date,
+                relieving_date, 
+                resign_reason,
+                notice_period,
+                incharge_required,
+                inch_app_status,
+                inch_coment,
+                inch_app_date,
+                inch_id,
+                hod_required,
+                hod_app_status,
+                hod_coment,
+                hod_app_date,
+                hod_id,
+                hr_required,
+                hr_app_status,
+                hr_app_date,
+                hr_coment,
+                hr_id,
+                resign_status
+                )
+                VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            [
+                data.dept_id,
+                data.sect_id,
+                data.em_id,
+                data.em_no,
+                data.designation,
+                data.resignation_type,
+                data.request_date,
+                data.relieving_date,
+                data.resign_reason,
+                data.notice_period,
+                data.incharge_required,
+                data.inch_app_status,
+                data.inch_coment,
+                data.inch_app_date,
+                data.inch_id,
+                data.hod_required,
+                data.hod_app_status,
+                data.hod_coment,
+                data.hod_app_date,
+                data.hod_id,
+                data.hr_required,
+                data.hr_app_status,
+                data.hr_app_date,
+                data.hr_coment,
+                data.hr_id,
+                data.resign_status
+            ],
+            (error, results, fields) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results)
+            }
+        )
+    },
+    getResignationRequestByEmpId: (id, callBack) => {
+        pool.query(
+            `SELECT * FROM hrm_resignation_request where em_id=?  `,
+            [id],
+            (error, results, fields) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results)
+            }
+        )
+    },
+    insertFinalSettlement: (data, callBack) => {
+        console.log(data);
+        pool.query(
+            `INSERT INTO hrm_emp_final_settlement(
+                em_id, 
+                file_attachment,
+                attached_type,
+                exclusion,
+                exclusion_reason,
+                resignation_date,
+                relieving_date,
+                total_days, 
+                leave_count,
+                holiday_count,
+                late_count,
+                lop_count,
+                holiday_worked,
+                total_paydays,
+                lop_amount,
+                nps_amount,
+                lwf_amount,
+                deduction_amount,
+                holiday_amount,
+                extra_earnings,
+                extra_deduction,
+                gross_salary,
+                net_salary
+                )
+                VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            [
+                data.em_id,
+                data.fileName,
+                data.fileType,
+                data.exclusion,
+                data.exclusion_reason,
+                data.resignation_date,
+                data.relieving_date,
+                data.total_days,
+                data.leave_count,
+                data.holiday_count,
+                data.late_count,
+                data.lop_count,
+                data.holiday_worked,
+                data.total_paydays,
+                data.lop_amount,
+                data.nps_amount,
+                data.lwf_amount,
+                data.deduction_amount,
+                data.holiday_amount,
+                data.extra_earnings,
+                data.extra_deduction,
+                data.gross_salary,
+                data.net_salary,
             ],
             (error, results, fields) => {
                 if (error) {

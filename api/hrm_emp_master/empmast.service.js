@@ -393,7 +393,8 @@ module.exports = {
                 hrm_dept_section.sect_name,
                 designation.desg_name,
                 gross_salary,
-                IF(em_status = 1, 'Yes', 'No') emp_status
+                IF(em_status = 1, 'Yes', 'No') emp_status,
+                unauthorized_absent_status
             FROM
                 hrm_emp_master
                     LEFT JOIN
@@ -940,15 +941,21 @@ module.exports = {
                 em_no,
                 remark,
                 em_status,
-                create_user
+                create_user,
+                resign_status,
+                resign_date,
+                unauthorised_absent_date
                 )
-                VALUES (?,?,?,?,?)`,
+                VALUES (?,?,?,?,?,?,?,?)`,
             [
                 data.em_id,
                 data.em_no,
                 data.remark,
                 0,
-                data.create_user
+                data.create_user,
+                data.resign_status,
+                data.resign_date,
+                data.unauthorised_absent_date
             ],
             (error, results, feilds) => {
                 if (error) {
