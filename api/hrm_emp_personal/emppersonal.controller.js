@@ -1,6 +1,6 @@
 const { create, update, getDataById, getDataBySlno, checkpersonaldata,
     createFamilyDetails, getDetailsbyId, deleteRow, checkLangabyEmp,
-    updateLanguage, createLanguagesKnown, getLangaugesByEmpno
+    updateLanguage, createLanguagesKnown, getLangaugesByEmpno, checkAccountExist
 } = require('../hrm_emp_personal/emppersonal.service');
 const { validateeemployeepersonal } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
@@ -16,55 +16,56 @@ module.exports = {
                 message: body_result.error.details[0].message
             });
         }
-
-        checkpersonaldata(body, (err, results) => {
+        checkAccountExist(body, (err, results) => {
             const value = JSON.parse(JSON.stringify(results))
             if (Object.keys(value).length === 0) {
-                create(body, (err, results) => {
-                    if (err) {
-                        logger.errorLogger(err)
-                        return res.status(200).json({
-                            success: 0,
-                            message: err
+                checkpersonaldata(body, (err, results) => {
+                    const value = JSON.parse(JSON.stringify(results))
+                    if (Object.keys(value).length === 0) {
+                        create(body, (err, results) => {
+                            if (err) {
+                                logger.errorLogger(err)
+                                return res.status(200).json({
+                                    success: 0,
+                                    message: err
+                                });
+                            }
+                            return res.status(200).json({
+                                success: 1,
+                                message: "Data Created Successfully"
+                            });
+                        });
+                    } else {
+                        update(body, (err, results) => {
+                            if (err) {
+                                logger.errorLogger(err)
+                                return res.status(200).json({
+                                    success: 0,
+                                    message: err
+                                });
+                            }
+
+                            if (!results) {
+                                return res.status(200).json({
+                                    success: 2,
+                                    message: "Record Not Found"
+                                });
+                            }
+
+                            return res.status(200).json({
+                                success: 1,
+                                message: "Data Updated Successfully"
+                            });
                         });
                     }
-                    return res.status(200).json({
-                        success: 1,
-                        message: "Data Created Successfully"
-                    });
-                });
-
+                })
             } else {
-                update(body, (err, results) => {
-
-                    if (err) {
-                        logger.errorLogger(err)
-                        return res.status(200).json({
-                            success: 0,
-                            message: err
-                        });
-                    }
-
-                    if (!results) {
-                        return res.status(200).json({
-                            success: 2,
-                            message: "Record Not Found"
-                        });
-                    }
-
-                    return res.status(200).json({
-                        success: 1,
-                        message: "Data Updated Successfully"
-                    });
-
+                return res.status(200).json({
+                    success: 2,
+                    message: "Account Number Already Exist!"
                 });
-
-
             }
-
         })
-
-
     },
     updateEmpPers: (req, res) => {
 

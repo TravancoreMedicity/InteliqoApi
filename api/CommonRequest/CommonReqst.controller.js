@@ -248,7 +248,7 @@ module.exports = {
             else {
                 return res.status(200).json({
                     success: 1,
-                    message: "Miss punch Enable Request Rejected Successfully"
+                    message: " Request Updated Successfully"
                 });
 
             }
@@ -273,7 +273,7 @@ module.exports = {
             else {
                 return res.status(200).json({
                     success: 1,
-                    message: "One Hour Request Rejected Successfully"
+                    message: "One Hour Request Updated Successfully"
                 });
 
             }
@@ -298,7 +298,7 @@ module.exports = {
             else {
                 return res.status(200).json({
                     success: 1,
-                    message: "One Hour Request Rejected Successfully"
+                    message: "On Duty Request Updated Successfully"
                 });
 
             }
@@ -323,7 +323,7 @@ module.exports = {
             else {
                 return res.status(200).json({
                     success: 1,
-                    message: "Miss punch Enable Request Rejected Successfully"
+                    message: "Miss punch Enable Request Updated Successfully"
                 });
 
             }
@@ -348,7 +348,7 @@ module.exports = {
             else {
                 return res.status(200).json({
                     success: 1,
-                    message: "Miss punch Enable Request Rejected Successfully"
+                    message: "On Duty Request updated Successfully"
                 });
 
             }
@@ -373,7 +373,7 @@ module.exports = {
             else {
                 return res.status(200).json({
                     success: 1,
-                    message: "Miss punch Enable Request Rejected Successfully"
+                    message: "One Hour Request Updated Successfully"
                 });
 
             }
@@ -473,7 +473,7 @@ module.exports = {
             else {
                 return res.status(200).json({
                     success: 1,
-                    message: "Miss punch Enable Request Rejected Successfully"
+                    message: "Miss punch Enable Request Updated Successfully"
                 });
 
             }
@@ -498,7 +498,7 @@ module.exports = {
             else {
                 return res.status(200).json({
                     success: 1,
-                    message: "Miss punch Enable Request Rejected Successfully"
+                    message: "On Duty Request Updated Successfully"
                 });
 
             }
@@ -523,7 +523,7 @@ module.exports = {
             else {
                 return res.status(200).json({
                     success: 1,
-                    message: "Miss punch Enable Request Rejected Successfully"
+                    message: "One Hour Request Updated Successfully"
                 });
 
             }
