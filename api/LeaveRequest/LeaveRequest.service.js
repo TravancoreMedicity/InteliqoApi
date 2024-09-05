@@ -374,7 +374,8 @@ module.exports = {
             `SELECT 
             holiday_status,
             lvereq_desc,
-            punch_slno
+            punch_slno,
+            leave_status
             FROM punch_master
             WHERE emp_id=? AND duty_day = ?`,
             [
