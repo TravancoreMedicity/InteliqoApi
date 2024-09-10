@@ -84,10 +84,15 @@ module.exports = {
             `SELECT
              manpower_required_no,
              desg_id,
-             desg_name
+             desg_name,
+             required_date,
+             experiencefrom,
+             experienceto,
+             annouced_date,
+             manpower_Request_slno
               FROM hrm_manpower_request
             LEFT JOIN designation ON hrm_manpower_request.desg_id = designation.desg_slno
-           WHERE JSON_CONTAINS(qualification, '?') and announcement_status=1 `,
+           WHERE JSON_CONTAINS(qualification, '?') and announcement_status=1  `,
             [
                 data.education
             ],
