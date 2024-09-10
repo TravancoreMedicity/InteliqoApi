@@ -927,6 +927,7 @@ module.exports = {
             from hrm_leave_request_detl a
             left join hrm_leave_request b on b.lve_uniq_no = a.lve_uniq_no
             where a.leave_typeid = 1 and a.leave_cancel is null and a.leave_status = 1
+            and b.lv_cancel_status=0 and b.lv_cancel_status_user=0
             and a.leave_dates >= ? and a.leave_dates <= ?
             group by b.em_no 
              union all
