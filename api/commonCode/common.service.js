@@ -1651,6 +1651,25 @@ module.exports = {
             }
         );
     },
+    getEmployeName: (id, callBack) => {
+        pool.query(
+            `SELECT 
+            em_name,
+            em_no
+            from  hrm_emp_master
+            where
+            em_department =? and em_status=1 and  em_id!=1 `,
+            [
+                id
+            ],
+            (error, results, fields) => {
+                if (error) {
+                    callBack(error)
+                }
+                return callBack(null, results)
+            }
+        );
+    },
     getgrossSalaryByEmployeeNo: (id, callBack) => {
         pool.query(
             `SELECT
@@ -1690,9 +1709,21 @@ module.exports = {
             }
         )
     },
+    getapplicationid: (callBack) => {
+        pool.query(
+            `SELECT * FROM master_serialno where serial_slno=8`,
+            [],
+            (error, results, fields) => {
+                if (error) {
+                    callBack(error)
+                }
+                return callBack(null, results)
+            }
+        );
+    },
     getAutharisedDepartmentSection: (id, callBack) => {
         pool.query(
-            `select 
+            `select
                 dept_section
             from hrm_authorization_assign
             where emp_id =?`,
@@ -1707,7 +1738,7 @@ module.exports = {
     },
     getEmployeeArraySectionArray: (data, callBack) => {
         pool.query(
-            `SELECT 
+            `SELECT
                 em_name,
                 em_no,
                 em_id,
@@ -1725,6 +1756,19 @@ module.exports = {
                 return callBack(null, results);
             }
         )
+    },
+
+    getSkillData: (callBack) => {
+        pool.query(
+            `SELECT * FROM hrm_skills `,
+            [],
+            (error, results, fields) => {
+                if (error) {
+                    callBack(error)
+                }
+                return callBack(null, results)
+            }
+        );
     },
 }
 

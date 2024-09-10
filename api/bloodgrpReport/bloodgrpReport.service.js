@@ -14,6 +14,7 @@ module.exports = {
         )
     },
     getBloodgrpWiseReport: (data, callBack) => {
+
         pool.query(
             `SELECT hrm_emp_master.em_no,
             hrm_emp_master.em_name,

@@ -371,12 +371,14 @@ module.exports = {
             em_dept_section,
             contract_status,
             IF(em_status = 1, 'Yes', 'No') emp_status,
-            recomend_salary
+            recomend_salary,
+            group_name
             FROM hrm_emp_master 
             inner join hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
             inner join hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
             inner join hrm_branch on hrm_emp_master.em_branch = hrm_branch.branch_slno
             inner join  designation ON designation.desg_slno = hrm_emp_master.em_designation
+            inner join  bloodgroup ON bloodgroup.group_slno = hrm_emp_master.blood_slno
             where em_no=? and em_status=1`,
             [
                 id

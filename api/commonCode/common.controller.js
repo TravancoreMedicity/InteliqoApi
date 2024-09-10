@@ -67,10 +67,13 @@ const {
     getEmployeeInformation,
     insertErrorLog,
     getgrossSalary,
+    getEmployeName,
+    getapplicationid,
     getEmpCoff,
     getgrossSalaryByEmployeeNo,
     getAutharisedDepartmentSection,
-    getEmployeeArraySectionArray
+    getEmployeeArraySectionArray,
+    getSkillData
 } = require('../commonCode/common.service');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -1914,6 +1917,32 @@ module.exports = {
             });
         });
     },
+    getEmployeName: (req, res) => {
+        const id = req.params.id;
+
+        getEmployeName(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    su: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(400).json({
+                    su: 0,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                su: 1,
+                dataa: results
+            });
+        })
+    },
+
     getgrossSalaryByEmployeeNo: (req, res) => {
         const id = req.params.id;
         getgrossSalaryByEmployeeNo(id, (err, results) => {
@@ -1996,6 +2025,55 @@ module.exports = {
             }
 
             if (results.length == 0) {
+                logger.infoLogger("No Records Found")
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    getapplicationid: (req, res) => {
+        getapplicationid((err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                logger.infoLogger("No Records Found")
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    getSkillData: (req, res) => {
+        getSkillData((err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                logger.infoLogger("No Records Found")
                 return res.status(200).json({
                     success: 0,
                     message: "No Record Found"

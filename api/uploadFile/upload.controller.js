@@ -1,7 +1,7 @@
 const multer = require('multer');
 const path = require('path');
 const fs = require("fs")
-const { insertProfile, getProfilePic, updateUploadStatus } = require('../uploadFile/upload.service')
+const { insertProfile, getProfilePic, insertPersonalRecord, checklistfiles, updateUploadStatus } = require('../uploadFile/upload.service')
 const logger = require('../../logger/logger');
 const { log } = require('winston');
 const storage = multer.diskStorage({
@@ -133,6 +133,7 @@ module.exports = {
   uploadfile: (req, res) => {
     upload(req, res, (err) => {
       const body = req.body;
+      // console.log(res)
       // console.log(body)
       // FILE SIZE ERROR
       if (err instanceof multer.MulterError) {
@@ -255,10 +256,6 @@ module.exports = {
 
 
 
-
-
-
-
   // for getting the file
   selectUploads: (req, res) => {
     const { topic_slno, checklistid } = req.body;
@@ -296,7 +293,117 @@ module.exports = {
         data: results
       });
     })
-  }
+  },
+  //  checklist upload
+  uploadchecklist: (req, res) => {
+    uploadmul(req, res, async (err) => {
+      const body = req.body;
+      if (err instanceof multer.MulterError) {
+        return res.status(200).json({
+          status: 0,
+          message: "Max file size 2MB allowed!",
+        });
+      } else if (err) {
+        logger.errorLogger(err);
+        return res.status(200).json({
+          status: 0,
+          message: err.message,
+        });
+      } else if (!req.files || req.files.length === 0) {
+        return res.status(200).json({
+          status: 0,
+          message: "Files are required!",
+        });
+      } else {
+        try {
+          const files = req.files;
+          const em_id = body.em_id;
+          const checklistid = body.checklistid;
+          const itemname = body.itemname;
 
+          const em_id_folder = path.join('D:/DocMeliora/Inteliqo/', "PersonalRecords", `${em_id}`, "checklist", `${checklistid}`);
+
+          // Create the em_id folder if it doesn't exist
+          if (!fs.existsSync(em_id_folder)) {
+            fs.mkdirSync(em_id_folder, { recursive: true });
+          }
+
+          for (const file of files) {
+            // Process each file
+            const currentDate = new Date();
+            const formattedDate = `${currentDate.getDate().toString().padStart(2, '0')}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${currentDate.getFullYear()}`;
+
+            const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+            const extension = path.extname(file.originalname);
+            const filename = itemname + "-" + file.originalname + "&" + formattedDate + "&" + uniqueSuffix + extension;
+
+            // Move the file to the destination folder
+            const destinationPath = path.join(em_id_folder, filename);
+            fs.renameSync(file.path, destinationPath);
+          }
+
+          // Insert the em_id into the database using the reusable function
+          insertPersonalRecord(body, (err, results) => {
+            if (err) {
+              logger.errorLogger(err);
+              return res.status(200).json({
+                success: 0,
+                message: err,
+              });
+            }
+
+            return res.status(200).json({
+              success: 1,
+              message: "Files Uploaded Successfully",
+            });
+          });
+        } catch (error) {
+          logger.errorLogger(error);
+          return res.status(200).json({
+            success: 0,
+            message: "An error occurred during file upload.",
+          });
+        }
+      }
+    });
+
+  },
+  getEmployeeProfilePic: (req, res) => {
+    const body = req.body;
+
+    getProfilePic(body, (err, results) => {
+      if (err) {
+        logger.errorLogger(err)
+        return res.status(200).json({
+          success: 0,
+          message: err
+        });
+      }
+
+      return res.status(200).json({
+        success: 1,
+        data: results
+      });
+    })
+  },
+  // for getting the file
+  checklistfiles: (req, res) => {
+    const { em_id, checklistid } = req.body;
+    const folderPath = `D:/DocMeliora/Inteliqo/PersonalRecords/${em_id}/checklist/${checklistid}`;
+    fs.readdir(folderPath, (err, files) => {
+      if (err) {
+        logger.errorLogger(err)
+        return res.status(200).json({
+          success: 0,
+          message: err
+        });
+      }
+      return res.status(200).json({
+        success: 1,
+        data: files
+      });
+    });
+
+  },
 
 }
