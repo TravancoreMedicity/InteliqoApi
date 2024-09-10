@@ -37,8 +37,10 @@ module.exports = {
             let transporter = nodemailer.createTransport({
                 service: 'gmail',
                 auth: {
-                    user: 'amalhero1@gmail.com',    //this is sender email id
-                    pass: 'asgl rzvt rcfp keip'     //if 2 factor authentication is on there is a password in the authentication that password is needed
+                    user: 'noreply@travancoremedicity.in',
+                    pass: 'sldj jsjo jrcr ycfg'
+                    // user: 'amalhero1@gmail.com',    
+                    // pass: 'asgl rzvt rcfp keip'     
                 }
             });
 
@@ -998,8 +1000,10 @@ module.exports = {
                 let transporter = nodemailer.createTransport({
                     service: 'gmail',
                     auth: {
-                        user: 'amalhero1@gmail.com',
-                        pass: 'asgl rzvt rcfp keip'
+                        user: 'noreply@travancoremedicity.in',
+                        pass: 'sldj jsjo jrcr ycfg'
+                        // user: 'amalhero1@gmail.com',
+                        // pass: 'asgl rzvt rcfp keip'
                     }
                 });
 
