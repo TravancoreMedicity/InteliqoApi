@@ -429,25 +429,53 @@ module.exports = {
     },
     getScheduleDatas: (data, callback) => {
         pool.query(
-            `SELECT em_id,em_no,em_name,topic,schedule_date
+            ` SELECT em_id,em_no,em_name,topic,schedule_date,training_employee_details.scheduled_slno
             FROM hrm_emp_master 
             LEFT JOIN training_employee_details ON training_employee_details.emp_name=hrm_emp_master.em_id
-            WHERE em_department=? and topic=? and date(schedule_date)=?`,
+            WHERE training_employee_details.scheduled_slno=?`,
             [
-                data.dept,
-                data.topic,
-                data.date
+                data.scheduled_slno
             ],
             (err, results, feilds) => {
+
                 if (err) {
                     return callback(err)
 
                 }
                 return callback(null, results)
-
             }
         )
     },
+
+    // getScheduleDatas: (data, callback) => {
+
+    //     pool.query(
+    //         // `SELECT em_id,em_no,em_name,topic,schedule_date
+    //         // FROM hrm_emp_master 
+    //         // LEFT JOIN training_employee_details ON training_employee_details.emp_name=hrm_emp_master.em_id
+    //         // WHERE em_department=? and topic=? and date(schedule_date)=?`,
+
+    //         ` SELECT em_id,em_no,em_name,topic,schedule_date,training_employee_details.scheduled_slno
+    //         FROM hrm_emp_master 
+    //         LEFT JOIN training_employee_details ON training_employee_details.emp_name=hrm_emp_master.em_id
+    //         WHERE training_employee_details.scheduled_slno=?`,
+    //         [
+    //             // data.dept,
+    //             // data.topic,
+    //             // data.date
+    //             data.scheduled_slno
+    //         ],
+    //         (err, results, feilds) => {
+
+    //             if (err) {
+    //                 return callback(err)
+
+    //             }
+    //             return callback(null, results)
+
+    //         }
+    //     )
+    // },
 
     GetMonthWiseDeptSchedules: (data, callback) => {
         pool.query(
