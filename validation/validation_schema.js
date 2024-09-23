@@ -411,7 +411,8 @@ const validateshiftmaster = Joi.object({
         shift_duration_in_min: Joi.number().optional(),
         shift_start_in_min: Joi.number().optional(),
         shift_end_in_min: Joi.number().optional(),
-        night_off_flag: Joi.number().optional()
+        night_off_flag: Joi.number().optional(),
+        twenty_four: Joi.number().optional(),
 
 })
 
@@ -1214,7 +1215,7 @@ const validatecommonsettings = Joi.object({
         noff_selct_day_count: Joi.number().optional(),
         noff: Joi.number().optional(),
         group_slno: Joi.optional(),
-        eoff: Joi.number().optional(),
+        doff: Joi.number().optional(),
         comp_day_count: Joi.number().optional(),
         comp_hour_count: Joi.number().optional(),
         training_mastergroup: Joi.optional(),
@@ -1224,8 +1225,9 @@ const validatecommonsettings = Joi.object({
         coff_min_working_hour: Joi.number().optional(),
         onobservation_days: Joi.number().optional(),
         hod_leave_day_count: Joi.number().optional(),
-        holiday_leave_request: Joi.number().optional()
-
+        holiday_leave_request: Joi.number().optional(),
+        halfday_time_count: Joi.number().optional(),
+        punch_taken_hour_count: Joi.number().optional(),
 })
 //validate carryforward
 const validatecarryforward = Joi.object({

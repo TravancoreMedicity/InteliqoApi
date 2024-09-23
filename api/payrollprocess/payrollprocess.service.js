@@ -713,6 +713,7 @@ module.exports = {
             dept_name ,
             sect_name,
             ecat_name,
+            desg_name,
             inst_emp_type,
             COALESCE(em_account_no,0) em_account_no,
             COALESCE(em_ifsc,0) em_ifsc,
@@ -724,6 +725,7 @@ module.exports = {
             left join hrm_branch on hrm_branch.branch_slno=hrm_emp_master.em_branch
             left join hrm_emp_category on hrm_emp_category.category_slno=hrm_emp_master.em_category
             left join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
+            left join designation on designation.desg_slno=hrm_emp_master.em_designation
             left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
             left join institution_type on institution_type.inst_slno=hrm_emp_master.em_institution_type
             left join hrm_emp_personal on hrm_emp_personal.em_id=hrm_emp_master.em_id
@@ -1082,6 +1084,7 @@ module.exports = {
             dept_name ,
             sect_name,
             ecat_name,
+            desg_name,
             inst_emp_type,
             COALESCE(em_account_no,0) em_account_no,
             COALESCE(em_ifsc,0) em_ifsc,
@@ -1094,6 +1097,7 @@ module.exports = {
             left join hrm_emp_category on hrm_emp_category.category_slno=hrm_emp_master.em_category
             left join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
             left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
+            left join designation on designation.desg_slno=hrm_emp_master.em_designation
             left join institution_type on institution_type.inst_slno=hrm_emp_master.em_institution_type
             left join hrm_emp_personal on hrm_emp_personal.em_id=hrm_emp_master.em_id
             left join hrm_emp_pfesi on hrm_emp_pfesi.em_id=hrm_emp_master.em_id
