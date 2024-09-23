@@ -1204,4 +1204,193 @@ module.exports = {
             }
         )
     },
+    getSectWiseOneHour: (data, callBack) => {
+        pool.query(
+            `SELECT  
+            request_slno,
+            one_hour_request.em_id,
+            one_hour_request.em_no,
+            em_name,
+            one_hour_request.dept_id,
+            dept_name,
+            sect_name,
+            dept_sect_id,
+            one_hour_duty_day,
+            shift_id ,
+            incharge_req_status,
+            incharge_approval_status,
+            hod_req_status,
+            hod_approval_status,
+            ceo_req_status,
+            ceo_approval_status,
+            hr_req_status,
+            hr_approval_status,
+            shft_desc,
+            check_in,
+            check_out,
+            checkin_flag,
+            checkout_flag,
+            reason,
+            request_date,
+            incharge_approval_comment,
+            hod_approval_comment,
+            ceo_approval_comment,
+            one_hour_duty_day FROM one_hour_request
+            inner join hrm_emp_master on one_hour_request.em_id=hrm_emp_master.em_id
+            inner join hrm_department on one_hour_request.dept_id=hrm_department.dept_id
+            inner join hrm_dept_section on one_hour_request.dept_sect_id=hrm_dept_section.sect_id
+            inner join hrm_shift_mast on one_hour_request.shift_id=hrm_shift_mast.shft_slno
+            where cancel_status=0 and dept_sect_id IN(?) order by one_hour_duty_day desc`,
+            [
+                data.sectIds
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getSectWiseOnDuty: (data, callBack) => {
+        pool.query(
+            ` SELECT  ROW_NUMBER() OVER () as serialno,
+            onduty_slno,
+            on_duty_request.em_id,
+            on_duty_request.em_no,
+            em_name,
+            on_duty_request.dept_id,
+            dept_name,
+            sect_name,
+            dept_sect_id,
+            on_duty_date,
+            shift_id ,
+            incharge_req_status,
+            incharge_approval_status,
+            hod_req_status,
+            hod_approval_status,
+            ceo_req_status,
+            ceo_approval_status,
+            hr_req_status,
+            hr_approval_status,
+            shft_desc,
+            request_date,
+            onduty_reason,
+            incharge_approval_comment,
+            hod_approval_comment,
+            ceo_approval_comment,
+            in_time,
+            out_time
+            FROM on_duty_request
+            inner join hrm_emp_master on on_duty_request.em_id=hrm_emp_master.em_id
+            inner join hrm_department on on_duty_request.dept_id=hrm_department.dept_id
+            inner join hrm_dept_section on on_duty_request.dept_sect_id=hrm_dept_section.sect_id
+            inner join hrm_shift_mast on on_duty_request.shift_id=hrm_shift_mast.shft_slno
+            where in_time!=0 and out_time!=0 and dept_sect_id IN(?) and cancel_status=0 order by on_duty_date desc`,
+            [
+                data.sectIds
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    OneHourForApprovalHR: (callBack) => {
+        pool.query(
+            `
+            SELECT  
+            request_slno,
+            one_hour_request.em_id,
+            one_hour_request.em_no,
+            em_name,
+            one_hour_request.dept_id,
+            dept_name,
+            sect_name,
+            dept_sect_id,
+            one_hour_duty_day,
+            shift_id ,
+            incharge_req_status,
+            incharge_approval_status,
+            hod_req_status,
+            hod_approval_status,
+            ceo_req_status,
+            ceo_approval_status,
+            hr_req_status,
+            hr_approval_status,
+            shft_desc,
+            check_in,
+            check_out,
+            checkin_flag,
+            checkout_flag,
+            reason,
+            request_date,
+            incharge_approval_comment,
+            hod_approval_comment,
+            ceo_approval_comment,
+            one_hour_duty_day FROM one_hour_request
+            inner join hrm_emp_master on one_hour_request.em_id=hrm_emp_master.em_id
+            inner join hrm_department on one_hour_request.dept_id=hrm_department.dept_id
+            inner join hrm_dept_section on one_hour_request.dept_sect_id=hrm_dept_section.sect_id
+            inner join hrm_shift_mast on one_hour_request.shift_id=hrm_shift_mast.shft_slno
+            where cancel_status=0 and hr_req_status=1 and hr_approval_status!=1 and hr_approval_status!=2 
+            and incharge_approval_status!=2 and hod_approval_status!=2 order by one_hour_duty_day desc
+           `,
+            [],
+            (error, results) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    OndutyForApprovalHR: (callBack) => {
+        pool.query(
+            `SELECT  ROW_NUMBER() OVER () as serialno,
+            onduty_slno,
+            on_duty_request.em_id,
+            on_duty_request.em_no,
+            em_name,
+            on_duty_request.dept_id,
+            dept_name,
+            sect_name,
+            dept_sect_id,
+            on_duty_date,
+            shift_id ,
+            incharge_req_status,
+            incharge_approval_status,
+            hod_req_status,
+            hod_approval_status,
+            ceo_req_status,
+            ceo_approval_status,
+            hr_req_status,
+            hr_approval_status,
+            shft_desc,
+            request_date,
+            onduty_reason,
+            incharge_approval_comment,
+            hod_approval_comment,
+            ceo_approval_comment,
+            in_time,
+            out_time
+            FROM on_duty_request
+            inner join hrm_emp_master on on_duty_request.em_id=hrm_emp_master.em_id
+            inner join hrm_department on on_duty_request.dept_id=hrm_department.dept_id
+            inner join hrm_dept_section on on_duty_request.dept_sect_id=hrm_dept_section.sect_id
+            inner join hrm_shift_mast on on_duty_request.shift_id=hrm_shift_mast.shft_slno
+            where in_time!=0 and out_time!=0 and cancel_status=0 and hr_req_status=1 and hr_approval_status!=1 and hr_approval_status!=2 
+            and incharge_approval_status!=2 and hod_approval_status!=2 order by on_duty_date desc
+           `,
+            [],
+            (error, results) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }
