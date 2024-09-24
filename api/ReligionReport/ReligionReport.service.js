@@ -77,7 +77,8 @@ module.exports = {
             shft_desc,
             lvereq_desc,
             duty_desc,
-            shft_cross_day
+            shft_cross_day,
+            leave_status
             FROM punch_master
 			left join hrm_emp_master on hrm_emp_master.em_no=punch_master.em_no
             left join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
