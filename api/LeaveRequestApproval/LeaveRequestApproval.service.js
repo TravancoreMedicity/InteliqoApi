@@ -2205,9 +2205,9 @@ module.exports = {
                 pool.query(
                     `UPDATE 
                             punch_master
-                        SET leave_status = 0,
-                            lvereq_desc = null,
-                            duty_desc = 0,
+                        SET leave_status = null,
+                            lvereq_desc = 'A',
+                            duty_desc = 'A',
                             lve_tble_updation_flag = 0
                         WHERE em_no = ? 
                         AND duty_day = ?`,
@@ -2234,10 +2234,10 @@ module.exports = {
                 pool.query(
                     `UPDATE 
                             punch_master
-                        SET leave_status = 1,
-                            lvereq_desc = null,
-                            duty_desc = null,
-                            lve_tble_updation_flag = 1
+                        SET leave_status = null,
+                            lvereq_desc = 'A',
+                            duty_desc = 'A',
+                            lve_tble_updation_flag = 0
                         WHERE em_no = ? 
                         AND duty_day = ?`,
                     [
@@ -2263,9 +2263,9 @@ module.exports = {
                 pool.query(
                     `UPDATE 
                             punch_master
-                        SET leave_status = 0,
-                            lvereq_desc = null,
-                            duty_desc = null,
+                        SET leave_status = null,
+                            lvereq_desc = 'A',
+                            duty_desc = 'A',
                             lve_tble_updation_flag = 0
                         WHERE em_no = ? 
                         AND duty_day = ?`,
