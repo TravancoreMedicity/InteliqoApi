@@ -1,5 +1,5 @@
 const { logger } = require('../../logger/logger');
-const { GetInductCalenderReport, GetInductionCompletedList, GetInductionPendingList } = require('./TrainingInduction.service');
+const { GetInductCalenderReport, GetInductionCompletedList, GetInductionPendingList, GetInductionPassedEmpList, GetInductionFailedEmpList } = require('./TrainingInduction.service');
 module.exports = {
 
     GetInductCalenderReport: (req, res) => {
@@ -68,6 +68,49 @@ module.exports = {
             });
         });
     },
-
+    GetInductionPassedEmpList: (req, res) => {
+        const body = req.body;
+        GetInductionPassedEmpList(body, (err, results) => {
+            if (err) {
+                // logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "no Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 2,
+                data: results,
+            });
+        });
+    },
+    GetInductionFailedEmpList: (req, res) => {
+        const body = req.body;
+        GetInductionFailedEmpList(body, (err, results) => {
+            if (err) {
+                // logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "no Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 2,
+                data: results,
+            });
+        });
+    },
 }
 
