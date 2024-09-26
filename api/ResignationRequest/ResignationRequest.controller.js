@@ -7,13 +7,14 @@ const { InsertResignationRequest, getInchargePending, getResignationRequestByID,
     getCEOPending, getCEOPendingById, ResignationApprovalCEO, ResignationApprovalHR,
     getResignCancel, ResignationCancelHR, InsertResignationRequestContractClose,
     getHRPendingList, getContractClosed, getFullSettlementEmp, insertResigSalaryDetails,
-    checkResignationEntryExcist, InActiveEmpHR, getUnauthorizedAbsentee,
-    insertFromActiveEmp, getResignationRequestByEmpId, insertFinalSettlement } = require('../ResignationRequest/ResignationRequest.service');
+    checkResignationEntryExcist, InactiveEmployee, getUnauthorizedAbsentee,
+    insertFromActiveEmp, getResignationRequestByEmpId, insertFinalSettlement,
+    resignComplete, finalApprovalList, paymentSubmit, getSettlementData, deactivateLogin } = require('../ResignationRequest/ResignationRequest.service');
 const { validateResignationRequest, validateResignationRequestApprovalHOD, validateResignationRequestApprovalCEO, validateResignationRequestCancel,
     validateResignationRequestApprovalINcharge, validateResignationRequestApprovalHR } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger');
 const { uploadResignationReqFiles, uploadFinalSettlement, uploadmul } = require('./ResignationFileUpload');
-const { empLoginDeactivate, deleteByID } = require('../hrm_emp_master/empmast.service');
+const { empLoginDeactivate, deleteByID, InActiveEmpHR } = require('../hrm_emp_master/empmast.service');
 const { uploadManualreqst } = require('../ManualRequest/Manual.controller');
 
 
@@ -504,9 +505,9 @@ module.exports = {
             })
         })
     },
-    InActiveEmpHR: (req, res) => {
+    InactiveEmployee: (req, res) => {
         const body = req.body;
-        InActiveEmpHR(body, (err, results) => {
+        InactiveEmployee(body, (err, results) => {
 
             if (err) {
                 logger.errorLogger(err)
@@ -651,9 +652,6 @@ module.exports = {
 
     },
     insertFinalSettlement: (req, res) => {
-        const body = req.body;
-
-
         uploadmul(req, res, (err) => {
             if (err) {
                 return res.status(200).json({
@@ -667,14 +665,9 @@ module.exports = {
                 const fileName = file?.filename;
                 const fileType = file?.mimetype;
                 const postData = JSON.parse(JSON.parse(JSON.stringify(body))?.postData);
-
-                console.log(postData);
-
-
                 postData.fileName = fileName
                 postData.fileType = fileType
 
-                console.log("save");
                 insertFinalSettlement(postData, (err, results) => {
                     if (err) {
                         logger.errorLogger(err)
@@ -691,18 +684,134 @@ module.exports = {
                         });
                     }
 
-                    return res.status(200).json({
-                        success: 1,
-                        data: results,
-                        message: "Insert Data Successfully!"
-                    });
-                })
+                    resignComplete(postData, (err, results) => {
+                        if (err) {
+                            logger.errorLogger(err)
+                            return res.status(200).json({
+                                success: 0,
+                                message: err
+                            });
+                        }
 
+                        if (results.length === 0) {
+                            return res.status(200).json({
+                                success: 0,
+                                message: "No Record Found"
+                            });
+                        }
+
+                        return res.status(200).json({
+                            success: 1,
+                            data: results,
+                            message: "Insert Data Successfully!"
+                        });
+                    })
+                })
             }
         })
+    },
+    finalApprovalList: (req, res) => {
+        finalApprovalList((err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: err
+                });
+            }
 
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    paymentSubmit: (req, res) => {
+        const body = req.body;
+        paymentSubmit(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: res.err
+                });
+            }
 
+            if (!results) {
+                return res.status(400).json({
+                    success: 1,
+                    message: "Record Not Found"
+                });
+            }
+            InActiveEmpHR(body, (err, results) => {
+                if (err) {
+                    logger.errorLogger(err)
+                    return res.status(400).json({
+                        success: 0,
+                        message: res.err
+                    });
+                }
 
+                if (!results) {
+                    return res.status(400).json({
+                        success: 1,
+                        message: "Record Not Found"
+                    });
+                }
 
+                deactivateLogin(body, (err, results) => {
+                    if (err) {
+                        logger.errorLogger(err)
+                        return res.status(400).json({
+                            success: 0,
+                            message: res.err
+                        });
+                    }
+
+                    if (!results) {
+                        return res.status(400).json({
+                            success: 1,
+                            message: "Record Not Found"
+                        });
+                    }
+
+                    return res.status(200).json({
+                        success: 2,
+                        message: "Data Updated Successfully"
+                    });
+                });
+            });
+        });
+    },
+    getSettlementData: (req, res) => {
+        const body = req.body;
+        getSettlementData(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: res.err
+                });
+            }
+
+            if (!results) {
+                return res.status(400).json({
+                    success: 1,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 2,
+                message: "Data Updated Successfully",
+                data: results
+            });
+        });
     },
 }

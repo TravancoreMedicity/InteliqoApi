@@ -6,8 +6,9 @@ const { InsertResignationRequest, getInchargePending, getResignationRequestByID,
     getCEOPending, getCEOPendingById, ResignationApprovalCEO, ResignationApprovalHR,
     getResignCancel, ResignationCancelHR, InsertResignationRequestContractClose,
     getHRPendingList, getContractClosed, getFullSettlementEmp, insertResigSalaryDetails,
-    InActiveEmpHR, getUnauthorizedAbsentee, InactiveEmploee, insertFromActiveEmp,
-    getResignationRequestByEmpId, insertFinalSettlement } = require('../ResignationRequest/ResignationRequest.controller');
+    InactiveEmployee, getUnauthorizedAbsentee, InactiveEmploee, insertFromActiveEmp,
+    getResignationRequestByEmpId, insertFinalSettlement, finalApprovalList,
+    paymentSubmit, getSettlementData } = require('../ResignationRequest/ResignationRequest.controller');
 
 router.post("/", checkToken, InsertResignationRequest);
 router.post("/resignlist", checkToken, getInchargePending);
@@ -31,12 +32,16 @@ router.get("/get/contractClosed", checkToken, getContractClosed)
 router.get("/fullsetteleEmplo/all", checkToken, getFullSettlementEmp)
 router.post("/insertResginDetails", checkToken, insertResigSalaryDetails)
 
-router.patch("/Inactiveemp", checkToken, InActiveEmpHR)
+router.patch("/Inactiveemp", checkToken, InactiveEmployee)
 router.get("/getUnauthorized/absentee", checkToken, getUnauthorizedAbsentee)
 
 router.post("/Inactive/fullandfinal", checkToken, InactiveEmploee)
 router.post("/insert/resignation", checkToken, insertFromActiveEmp)
 router.get("/getResignation/:id", checkToken, getResignationRequestByEmpId)
 router.post("/insertFinal", checkToken, insertFinalSettlement)
+
+router.get("/finalList/all", checkToken, finalApprovalList)
+router.post("/update/payment", checkToken, paymentSubmit)
+router.post("/getSettlement", checkToken, getSettlementData)
 
 module.exports = router;

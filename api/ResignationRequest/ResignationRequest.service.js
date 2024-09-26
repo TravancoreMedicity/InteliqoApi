@@ -30,30 +30,30 @@ module.exports = {
                 )
                 VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
+                data.dept_id,
+                data.sect_id,
                 data.em_id,
-                data.file_attachment,
-                data.attached_type,
-                data.exclusion,
-                data.exclusion_reason,
-                data.resignation_date,
+                data.em_no,
+                data.designation,
+                data.resignation_type,
+                data.request_date,
                 data.relieving_date,
-                data.total_days,
-                data.leave_count,
-                data.holiday_count,
-                data.late_count,
-                data.lop_count,
-                data.holiday_worked,
-                data.total_paydays,
-                data.lop_amount,
-                data.nps_amount,
-                data.lwf_amount,
-                data.deduction_amount,
-                data.holiday_amount,
-                data.extra_earnings,
-                data.extra_deduction,
-                data.gross_salary,
-                data.net_salary,
-                data.attachment_type
+                data.resign_reason,
+                data.notice_period,
+                data.incharge_required,
+                data.inch_app_status,
+                data.inch_coment,
+                data.inch_app_date,
+                data.inch_id,
+                data.hod_required,
+                data.hod_app_status,
+                data.hod_coment,
+                data.hod_app_date,
+                data.hod_id,
+                data.ceo_required,
+                data.hr_required,
+                data.fileName,
+                data.fileType
             ],
             (error, results, fields) => {
                 if (error) {
@@ -65,15 +65,9 @@ module.exports = {
     },
     checkResignationEntryExcist: (data, callBack) => {
         pool.query(
-            `SELECT 
-                resig_slno
-            FROM
-                hrm_resignation_request
-            WHERE
-                resign_cancel IS NULL
-                    AND (resign_status != 'R'
-                    || resign_status IS NULL)
-                    AND em_no = ?`,
+            `SELECT resig_slno FROM hrm_resignation_request WHERE resign_cancel IS NULL 
+            AND (resign_status != 'R' or resign_status IS NULL) AND em_no = ? 
+            and (inch_app_status!=2 and hod_app_status!=2 and hr_app_status!=2);`,
             [
                 data.em_no,
             ],
@@ -492,26 +486,26 @@ module.exports = {
     },
     getHRPendingList: (callBack) => {
         pool.query(
-            ` SELECT 
-                ROW_NUMBER() OVER () as slno,
-                resig_slno,
-                hrm_resignation_request.dept_id,
-                hrm_resignation_request.sect_id,
-                dept_name,
-                sect_name,
-                em_name,
-                resignation_type,
-                hrm_resignation_request.em_id,
-                resign_reason,
-                hrm_resignation_request.em_no,request_date,
-                attachment,
-                attachment_type
+            `SELECT 
+            ROW_NUMBER() OVER () as slno,
+            resig_slno,
+            hrm_resignation_request.dept_id,
+            hrm_resignation_request.sect_id,
+            dept_name,
+            sect_name,
+            em_name,
+            resignation_type,
+            hrm_resignation_request.em_id,
+            resign_reason,
+            hrm_resignation_request.em_no,request_date,
+            attachment,
+            attachment_type,
+            hr_app_status
             FROM hrm_resignation_request
-                left join hrm_department on hrm_department.dept_id=hrm_resignation_request.dept_id
-                left join hrm_dept_section on hrm_dept_section.sect_id=hrm_resignation_request.sect_id
-                left join hrm_emp_master on hrm_emp_master.em_id=hrm_resignation_request.em_id
-            where hrm_resignation_request.resign_status is null and hr_required=1 and (inch_app_status =1 or inch_app_status=2) 
-            and (hod_app_status=1 or hod_app_status=2) and (ceo_appr_status=1 or ceo_appr_status=2 or ceo_appr_status is null) `,
+            left join hrm_department on hrm_department.dept_id=hrm_resignation_request.dept_id
+            left join hrm_dept_section on hrm_dept_section.sect_id=hrm_resignation_request.sect_id
+            left join hrm_emp_master on hrm_emp_master.em_id=hrm_resignation_request.em_id
+            where hrm_resignation_request.resign_status is null and hr_required=1 and (inch_app_status !=2 and hod_app_status!=2)`,
             [],
             (error, results, fields) => {
                 if (error) {
@@ -572,13 +566,15 @@ module.exports = {
             relieving_date,
             if(resignation_type=1 ,'30 days Resignation','24 hour resignation')Resign,
             if(hr_app_status is null ,'Incharge Approval Pending','Approved')appstatus,
+            if(resign_complete_status=1, 'Resign Completed','Resign Pending')resignstatus,
             hr_app_date,
             hr_coment,
             em_doj,
             desg_name,
             gross_salary,
             hr_id,
-            status 
+            status,
+            resign_complete_status
             FROM hrm_resignation_request
             inner join hrm_department on hrm_department.dept_id=hrm_resignation_request.dept_id
             inner join hrm_dept_section on hrm_dept_section.sect_id=hrm_resignation_request.sect_id
@@ -628,7 +624,7 @@ module.exports = {
         )
     },
     //Inactiving Employee By Hr
-    InActiveEmpHR: (data, callBack) => {
+    InactiveEmployee: (data, callBack) => {
         pool.query(
             `update hrm_emp_master
             set em_status=?,
@@ -765,10 +761,10 @@ module.exports = {
         )
     },
     insertFinalSettlement: (data, callBack) => {
-        console.log(data);
         pool.query(
             `INSERT INTO hrm_emp_final_settlement(
-                em_id, 
+                em_id,
+                em_no, 
                 file_attachment,
                 attached_type,
                 exclusion,
@@ -790,11 +786,13 @@ module.exports = {
                 extra_earnings,
                 extra_deduction,
                 gross_salary,
-                net_salary
+                net_salary,
+                total_payableamount
                 )
-                VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+                VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
                 data.em_id,
+                data.em_no,
                 data.fileName,
                 data.fileType,
                 data.exclusion,
@@ -817,12 +815,116 @@ module.exports = {
                 data.extra_deduction,
                 data.gross_salary,
                 data.net_salary,
+                data.total_payableamount
             ],
             (error, results, fields) => {
                 if (error) {
                     return callBack(error);
                 }
                 return callBack(null, results)
+            }
+        )
+    },
+    resignComplete: (data, callBack) => {
+        pool.query(
+            `update hrm_resignation_request set resign_complete_status=1 where em_id=?`,
+            [
+                data.em_id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    finalApprovalList: (callBack) => {
+        pool.query(
+            `SELECT 
+            ROW_NUMBER() OVER () as slno,
+            resig_slno,
+            hrm_resignation_request.dept_id,
+            hrm_resignation_request.sect_id,
+            dept_name,
+            sect_name,
+            em_name,
+            resignation_type,
+            hrm_resignation_request.em_no,
+            hrm_resignation_request.em_id,
+            request_date,
+            hr_app_status,
+            resign_reason,
+            hrm_resignation_request.relieving_date,
+            if(resignation_type=1 ,'30 days Resignation','24 hour resignation')Resign,
+            if(hr_app_status is null ,'Incharge Approval Pending','Approved')appstatus,
+            if(resign_complete_status=1, 'Resign Completed','Resign Pending')resignstatus,
+            hr_app_date,
+            hr_coment,
+            em_doj,
+            desg_name,
+            hrm_emp_master.gross_salary,
+            hr_id,
+            status,
+            resign_complete_status
+            FROM hrm_resignation_request
+            inner join hrm_department on hrm_department.dept_id=hrm_resignation_request.dept_id
+            inner join hrm_dept_section on hrm_dept_section.sect_id=hrm_resignation_request.sect_id
+            inner join hrm_emp_master on hrm_emp_master.em_id=hrm_resignation_request.em_id
+            inner join designation on designation.desg_slno=hrm_emp_master.em_designation
+            left join hrm_resignation_salary_details on hrm_resignation_salary_details.em_id=hrm_resignation_request.em_id
+            left join hrm_emp_final_settlement on hrm_emp_final_settlement.em_id=hrm_resignation_request.em_id
+            WHERE hrm_resignation_request.resign_status="A" and resign_cancel is null and resign_complete_status=1 and salary_update=0 `,
+            [],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    paymentSubmit: (data, callBack) => {
+        pool.query(
+            `update hrm_emp_final_settlement set salarytype=?,remark=?,salary_update=1 where final_slno=?`,
+            [
+                data.salarytype,
+                data.remark,
+                data.final_slno
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getSettlementData: (data, callBack) => {
+        pool.query(
+            `SELECT * FROM hrm_emp_final_settlement where em_no=? `,
+            [
+                data.em_no
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    deactivateLogin: (data, callBack) => {
+        pool.query(
+            `update hrm_employee set emp_status=0 where emp_id=? `,
+            [
+                data.em_id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
             }
         )
     },
