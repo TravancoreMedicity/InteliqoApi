@@ -7,7 +7,8 @@ const { create, checkInsertVal, createGenralRq, createOndutyRequest, createEnabl
     checkMispunchRequest, checksEnableRq, punchdataEntry, HROnDutyPunchMaster,
     checkAttendanceProcess, generalHRapproval, cancelEnable, enableOnduty, cancelOnehour,
     cancelgeneral, checkPunchMarkingHR, onDutyReport, HrApprovedOneHourData, HrApprovedOnDutyData,
-    getEmpwiseOnduty, getEmpwiseOneHour
+    getEmpwiseOnduty, getEmpwiseOneHour, getSectWiseOneHour, getSectWiseOnDuty, OneHourForApprovalHR,
+    OndutyForApprovalHR
 } = require('../CommonRequest/CommonReqst.service')
 const { validateOneHourReqst } = require('../../validation/validation_schema');
 const { deletePunchMasterSingleRow } = require('../attendance_updation/attendance.service');
@@ -1077,6 +1078,104 @@ module.exports = {
                 });
 
             }
+        });
+    },
+    getSectWiseOneHour: (req, res) => {
+        const body = req.body;
+        getSectWiseOneHour(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+            else {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Request Cancelled successfully",
+                    data: results
+                });
+
+            }
+        });
+    },
+    getSectWiseOnDuty: (req, res) => {
+        const body = req.body;
+        getSectWiseOnDuty(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+            else {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Request Cancelled successfully",
+                    data: results
+                });
+
+            }
+        });
+    },
+    OneHourForApprovalHR: (req, res) => {
+        OneHourForApprovalHR((err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    OndutyForApprovalHR: (req, res) => {
+        OndutyForApprovalHR((err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
         });
     },
 }

@@ -1359,7 +1359,8 @@ module.exports = {
                         duty_desc=?,
                         lvereq_desc=?,
                         leave_status=1,
-                        lve_tble_updation_flag = 1
+                        lve_tble_updation_flag = 1,
+                        manual_request_flag=1
                     WHERE punch_slno = ? `,
                     [val.punch_in, val.punch_out, val.duty_desc, val.lvereq_desc, val.punch_slno],
                     (error, results, feilds) => {
@@ -1414,7 +1415,7 @@ module.exports = {
             filename
             FROM manual_request_log
             left join hrm_emp_master on hrm_emp_master.em_id=manual_request_log.em_id
-            where delete_status=0`,
+            where delete_status=0 order by manual_request_log.manual_request_date DESC`,
             [],
             (error, results, feilds) => {
                 if (error) {

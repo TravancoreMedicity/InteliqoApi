@@ -167,4 +167,29 @@ module.exports = {
         )
     },
 
+    TrainerNameDeptSecWise: (data, callBack) => {
+        pool.query(
+            `SELECT ROW_NUMBER() OVER () as slno,trainer_slno, trainer_name, trainer_dept, training_trainername.trainer_desig, trainer_status,
+            hrm_emp_master.em_id,hrm_emp_master.em_no,hrm_emp_master.em_name,hrm_emp_master.em_status,hrm_emp_master.hod,hrm_emp_master.incharge,
+             hrm_department.dept_name,hrm_dept_section.sect_name,designation.desg_name,
+             hrm_department.dept_id,hrm_dept_section.sect_id,designation.desg_slno
+            FROM training_trainername   
+                      LEFT JOIN hrm_department ON hrm_department.dept_id=training_trainername.trainer_dept
+                       LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_trainername.trainer_name
+                       LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
+                       LEFT JOIN designation ON designation.desg_slno=training_trainername.trainer_desig
+                       where em_status=1 AND trainer_status=1 AND hrm_department.dept_id=? AND hrm_dept_section.sect_id=?`,
+            [
+                data.em_department,
+                data.em_dept_section
+
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }

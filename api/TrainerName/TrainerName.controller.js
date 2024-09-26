@@ -1,4 +1,4 @@
-const { getEmpNameByID, TrainerNameInsert, TrainerNameGet, TrainerNameUpdate, TrainerNameDelete, GetTrainerDetails, checkInsertVal, checkUpdateVal } = require('./TrainerName.service');
+const { getEmpNameByID, TrainerNameInsert, TrainerNameGet, TrainerNameUpdate, TrainerNameDelete, GetTrainerDetails, checkInsertVal, checkUpdateVal, TrainerNameDeptSecWise } = require('./TrainerName.service');
 const { logger } = require('../../logger/logger');
 const { validateTrainerName } = require('../../validation/validation_schema');
 
@@ -232,4 +232,25 @@ module.exports = {
         });
     },
 
+    TrainerNameDeptSecWise: (req, res) => {
+        const body = req.body;
+        TrainerNameDeptSecWise(body, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results === 0) {
+                return res.status(400).json({
+                    success: 1,
+                    message: "No Record Found"
+                })
+            }
+            return res.status(200).json({
+                success: 2,
+                data: results
+            })
+        });
+    },
 }

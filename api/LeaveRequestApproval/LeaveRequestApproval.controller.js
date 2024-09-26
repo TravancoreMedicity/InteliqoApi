@@ -16,7 +16,7 @@ const { getleaverequestdep, nopunchreq, halfrequst, getcompenoff, getlevereqmast
     CancelpunchMastEsiLeave, CancelpunchMastLwfLeave, CancelpunchMastLeave, UpdateHalfdayCasual,
     updateCompFlag, empCoffData, sectionCoffData, empMisspunchData, empHalfdayData, empLeaveData,
     sectionLeaveData, sectionMisspunchData, sectionHalfdayData, HrApprovedMisspunch, hrApprovedLeaveRq,
-    hrApprovedHalfday
+    hrApprovedHalfday, LeaveforHrApproval, HalfdayforHrApproval, MisspunchforHrApproval
 
 } = require('../LeaveRequestApproval/LeaveRequestApproval.service');
 const { validationinchageapprv, validateotcancel } = require('../../validation/validation_schema');
@@ -2017,7 +2017,7 @@ module.exports = {
     },
     inchargeRejectHalfday: (req, res) => {
         const body = req.body;
-        HodApprvlHalfday(body, (err, results) => {
+        inchargeapprvhalfday(body, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
@@ -2377,6 +2377,69 @@ module.exports = {
                 })
             })
 
+        });
+    },
+    LeaveforHrApproval: (req, res) => {
+        LeaveforHrApproval((err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    HalfdayforHrApproval: (req, res) => {
+        HalfdayforHrApproval((err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    MisspunchforHrApproval: (req, res) => {
+        MisspunchforHrApproval((err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
         });
     },
 }

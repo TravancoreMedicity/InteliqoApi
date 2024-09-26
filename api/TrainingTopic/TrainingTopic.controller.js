@@ -33,7 +33,7 @@ module.exports = {
 
                 TrainingTopicInsert(body, (err, result) => {
                     if (err) {
-                        logger.errorLogger(err)
+                        // logger.errorLogger(err)
                         return res.status(200).json({
                             success: 0,
                             message: err
@@ -138,7 +138,8 @@ module.exports = {
                     dept_name: val.dept_name,
                     upload_status: val.upload_status,
                     trainers_name: val.trainers_name,
-                    trainers: JSON.parse(val.trainers)
+                    trainers: JSON.parse(val.trainers),
+                    non_medical_status: val.non_medical_status
                 }
                 return obj
             })
