@@ -842,13 +842,14 @@ module.exports = {
             punch_out=?,
             leave_status = 1,
             duty_status=1,
-            lvereq_desc = 'ODP',
+            lvereq_desc = ?,
             duty_desc = 'ODP',
             lve_tble_updation_flag = 1
             WHERE em_no = ? and duty_day=?`,
             [
                 data.punch_in,
                 data.punch_out,
+                data.lvereq_desc,
                 data.emno,
                 data.duty_day
             ],
@@ -1375,7 +1376,8 @@ module.exports = {
             hod_approval_comment,
             ceo_approval_comment,
             in_time,
-            out_time
+            out_time,
+            gross_salary
             FROM on_duty_request
             inner join hrm_emp_master on on_duty_request.em_id=hrm_emp_master.em_id
             inner join hrm_department on on_duty_request.dept_id=hrm_department.dept_id
@@ -1386,6 +1388,25 @@ module.exports = {
            `,
             [],
             (error, results) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    CheckOndutyExistorNot: (data, callBack) => {
+        pool.query(
+            `SELECT  *
+            FROM on_duty_request 
+            WHERE em_no=? and on_duty_date BETWEEN ? AND ?
+            and (incharge_approval_status!=2 and hod_approval_status!=2 and hr_approval_status!=2 and cancel_status!=1 )`,
+            [
+                data.em_no,
+                data.fromDate,
+                data.toDate,
+            ],
+            (error, results, feilds) => {
                 if (error) {
                     return callBack(error);
                 }
