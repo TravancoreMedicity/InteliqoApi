@@ -1,5 +1,5 @@
 
-const { TrainingTopicInsert, TrainingTopicGet, TrainingTopicUpdate, TrainingTypeWiseTopic, TrainingTopicByTypeGet, GetDeptWiseTopic, checkInsertVal } = require('./TrainingTopic.service');
+const { TrainingTopicInsert, TrainingTopicGet, TrainingTopicUpdate, TrainingTypeWiseTopic, TrainingTopicByTypeGet, GetDeptWiseTopic, checkInsertVal, GetInductTopics } = require('./TrainingTopic.service');
 const { logger } = require('../../logger/logger');
 const { validationTrainingTopic } = require('../../validation/validation_schema');
 module.exports = {
@@ -161,6 +161,8 @@ module.exports = {
             })
         })
     },
+
+
     TrainingTopicByTypeGet: (req, res) => {
         const id = req.params.id;
         TrainingTopicByTypeGet(id, (err, results) => {
@@ -234,4 +236,55 @@ module.exports = {
             });
         });
     },
+
+    GetInductTopics: (req, res) => {
+        GetInductTopics((err, results) => {
+            const datas = results.map((val) => {
+                const obj = {
+                    training_dept: val.training_dept,
+                    dept_status: val.dept_status,
+                    topic_slno: val.topic_slno,
+                    training_topic_name: val.training_topic_name,
+                    training_name: val.training_name,
+                    training_status: val.training_status,
+                    tutorial_status: val.tutorial_status,
+                    medical_status: val.medical_status,
+                    pretest_status: val.pretest_status,
+                    post_test_status: val.post_test_status,
+                    online_status: val.online_status,
+                    offline_status: val.offline_status,
+                    both_status: val.both_status,
+                    video_link: val.video_link,
+                    video_time: val.video_time,
+                    name_slno: val.name_slno,
+                    hours: val.hours,
+                    dept_id: val.dept_id,
+                    dept_name: val.dept_name,
+                    upload_status: val.upload_status,
+                    trainers_name: val.trainers_name,
+                    trainers: JSON.parse(val.trainers),
+                    non_medical_status: val.non_medical_status
+                }
+                return obj
+            })
+            if (err) {
+                return res.status(400).json({
+                    success: 0,
+                    message: "Error"
+                })
+            }
+            if (results === 0) {
+                return res.status(400).json({
+                    success: 1,
+                    message: "No Record Found"
+                })
+            }
+            return res.status(200).json({
+                success: 2,
+                data: datas
+            })
+        })
+    },
+
+
 }
