@@ -8,8 +8,10 @@ const { create, checkInsertVal, createGenralRq, createOndutyRequest, createEnabl
     checkAttendanceProcess, generalHRapproval, cancelEnable, enableOnduty, cancelOnehour,
     cancelgeneral, checkPunchMarkingHR, onDutyReport, HrApprovedOneHourData, HrApprovedOnDutyData,
     getEmpwiseOnduty, getEmpwiseOneHour, getSectWiseOneHour, getSectWiseOnDuty, OneHourForApprovalHR,
-    OndutyForApprovalHR
+    OndutyForApprovalHR,
+    CheckOndutyExistorNot
 } = require('../CommonRequest/CommonReqst.service')
+const { InsertLeaveCalc } = require('../LeaveRequestApproval/LeaveRequestApproval.service')
 const { validateOneHourReqst } = require('../../validation/validation_schema');
 const { deletePunchMasterSingleRow } = require('../attendance_updation/attendance.service');
 
@@ -62,7 +64,8 @@ module.exports = {
     },
     createOndutyRequest: (req, res) => {
         const body = req.body;
-        var values = body.map((value) => {
+        const { postArray } = body;
+        var values = postArray.map((value) => {
             return [value.em_id, value.em_no, value.dept_id, value.dept_sect_id,
             value.request_date, value.on_duty_date, value.shift_id, value.in_time, value.out_time,
             value.onduty_reason, value.incharge_req_status, value.incharge_approval_status,
@@ -71,24 +74,34 @@ module.exports = {
             value.ceo_req_status, value.hr_req_status, value.incharge_empid, value.hod_empid]
         })
 
-        createOndutyRequest(values, (err, results) => {
-            if (err) {
-                //logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 0,
-                    message: err
+        CheckOndutyExistorNot(body, (err, results) => {
+            const value = JSON.parse(JSON.stringify(results))
+            if (Object.keys(value).length === 0) {
+                createOndutyRequest(values, (err, results) => {
+                    if (err) {
+                        //logger.errorLogger(err)
+                        return res.status(200).json({
+                            success: 0,
+                            message: err
+                        });
+                    }
+                    if (!results) {
+                        return res.status(200).json({
+                            success: 0,
+                            message: "No Results Found"
+                        });
+                    }
+                    return res.status(200).json({
+                        success: 3,
+                        message: "Data Submitted Successfully"
+                    });
                 });
-            }
-            if (!results) {
+            } else {
                 return res.status(200).json({
-                    success: 0,
-                    message: "No Results Found"
-                });
+                    success: 2,
+                    message: "A Request is already Exist In This Date!"
+                })
             }
-            return res.status(200).json({
-                success: 1,
-                message: "Data Submitted Successfully"
-            });
         });
     },
     createEnableMispunchRqst: (req, res) => {
@@ -724,19 +737,6 @@ module.exports = {
                 });
             }
         });
-        // hrOnduty(body, (err, results) => {
-        //     if (err) {
-        //         logger.errorLogger(err)
-        //         return res.status(200).json({
-        //             success: 0,
-        //             message: err
-        //         });
-        //     }
-        //     else {
-
-
-        //     }
-        // });
     },
     checkAttendanceProcess: (req, res) => {
         const body = req.body;
@@ -1157,6 +1157,30 @@ module.exports = {
     },
     OndutyForApprovalHR: (req, res) => {
         OndutyForApprovalHR((err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    holidayOnduty: (req, res) => {
+        const body = req.body;
+        InsertLeaveCalc(body, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({

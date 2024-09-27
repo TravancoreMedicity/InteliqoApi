@@ -7,7 +7,8 @@ const { create, createGenralRq, createOndutyRequest, createEnableMispunchRqst, g
     hrOndutyComment, checkAttendanceProcess, generalHRapproval, cancelEnable, enableOnduty,
     cancelOnehour, cancelgeneral, onDutyReport, HrApprovedOneHourData, HrApprovedOnDutyData,
     cancelApprovedOneHour, cancelApprovedOnDuty, getEmpwiseOnduty, getEmpwiseOneHour,
-    getSectWiseOneHour, getSectWiseOnDuty, OneHourForApprovalHR, OndutyForApprovalHR
+    getSectWiseOneHour, getSectWiseOnDuty, OneHourForApprovalHR, OndutyForApprovalHR,
+    holidayOnduty
 } = require("../CommonRequest/CommonReqst.controller")
 
 
@@ -71,5 +72,6 @@ router.post("/onduty/sectioWise", checkToken, getSectWiseOnDuty)
 
 router.get("/approval/onehour", checkToken, OneHourForApprovalHR)
 router.get("/approval/onduty", checkToken, OndutyForApprovalHR)
+router.post("/creditoff/insert", checkToken, holidayOnduty)
 
 module.exports = router;
