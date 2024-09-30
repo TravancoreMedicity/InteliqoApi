@@ -4,6 +4,7 @@ const fs = require("fs")
 const logger = require('../../logger/logger');
 const { log } = require('winston');
 const { format } = require('date-fns');
+const { getManualReqstBtwDate } = require('./Manual.service');
 
 
 // for multiple file upload
@@ -118,5 +119,29 @@ module.exports = {
             });
         });
 
-    }
+    },
+    getManualReqstBtwDate: (req, res) => {
+        const body = req.body;
+        getManualReqstBtwDate(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
 }
