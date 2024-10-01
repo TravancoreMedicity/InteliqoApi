@@ -12,6 +12,7 @@ const { attMarkingExcistFrLveReq } = require('../attendance_marking_save/attenda
 const pool = require('../../config/database');
 const { InsertLeaveCalc } = require('../LeaveRequestApproval/LeaveRequestApproval.service');
 const { format } = require('date-fns');
+const { disableDutyplanData } = require('../OFFRequest/OffRequest.service');
 module.exports = {
     createmastleave: (req, res) => {
         const body = req.body;
@@ -658,15 +659,17 @@ module.exports = {
                     message: err
                 });
             }
-            insertcompensatyoff(body, (err, results) => {
+            disableDutyplanData(body, (err, results) => {
                 if (err) {
                     logger.errorLogger(err)
-                    return res.status(200).json({
-                        success: 0,
+                    return res.status(400).json({
+                        susc: 0,
                         message: err
                     });
                 }
-                InsertLeaveCalc(body, (err, results) => {
+
+
+                insertcompensatyoff(body, (err, results) => {
                     if (err) {
                         logger.errorLogger(err)
                         return res.status(200).json({
@@ -674,18 +677,27 @@ module.exports = {
                             message: err
                         });
                     }
-                    else if (!results) {
+                    InsertLeaveCalc(body, (err, results) => {
+                        if (err) {
+                            logger.errorLogger(err)
+                            return res.status(200).json({
+                                success: 0,
+                                message: err
+                            });
+                        }
+                        else if (!results) {
+                            return res.status(200).json({
+                                success: 2,
+                                message: "Record Not Found"
+                            });
+                        }
                         return res.status(200).json({
-                            success: 2,
-                            message: "Record Not Found"
+                            success: 1,
+                            message: "Insert Successfully!"
                         });
-                    }
-                    return res.status(200).json({
-                        success: 1,
-                        message: "Insert Successfully!"
                     });
-                });
 
+                })
             })
         })
     },
