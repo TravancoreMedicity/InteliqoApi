@@ -9,6 +9,7 @@ module.exports = {
             (
                 training_dept,
                 dept_status,
+                subtype_no,
                 training_topic_name, 
                 training_name,
                 trainers,
@@ -26,10 +27,11 @@ module.exports = {
                 video_time,
                 create_user
             )
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
                 data.training_dept,
                 data.dept_status,
+                data.subtype_no,
                 data.training_topic_name,
                 data.training_name,
                 JSON.stringify(data.trainers),
@@ -82,11 +84,12 @@ module.exports = {
             `SELECT topic_slno,training_dept,training_topic.dept_status,training_topic_name,training_topic.training_name,training_status, tutorial_status, medical_status, non_medical_status,
             pretest_status, post_test_status,online_status, offline_status, both_status,video_link,video_time,
             name_slno,training_name.training_name,hours,hrm_department.dept_id,dept_name,name_slno,upload_status,
-            GROUP_CONCAT(em_name)  as trainers_name,trainers
+            GROUP_CONCAT(em_name)  as trainers_name,trainers,training_subtype_master.subtype_slno,training_subtype_master.subtype_name
             FROM training_topic
             LEFT JOIN hrm_department ON hrm_department.dept_id=training_topic.training_dept
             LEFT JOIN training_name ON training_topic.training_name=training_name.name_slno
             LEFT JOIN hrm_emp_master on JSON_CONTAINS(training_topic.trainers,cast(hrm_emp_master.em_id as json),'$')  
+            LEFT JOIN training_subtype_master ON training_subtype_master.subtype_slno=training_topic.subtype_no
             group by topic_slno`, [],
 
             (err, results, feilds) => {
@@ -104,6 +107,7 @@ module.exports = {
          SET
          training_dept=?,
          dept_status=?,
+         subtype_no=?,
          training_topic_name=?,
          training_name=?,
          trainers=?,
@@ -124,6 +128,7 @@ module.exports = {
             [
                 data.training_dept,
                 data.dept_status,
+                data.subtype_no,
                 data.training_topic_name,
                 data.training_name,
                 JSON.stringify(data.trainers),
