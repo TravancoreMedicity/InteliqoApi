@@ -1,36 +1,73 @@
+// @ts-nocheck
+const multer = require('multer');
+// @ts-nocheck
 const { InsertResignationRequest, getInchargePending, getResignationRequestByID,
     ResignationApprovalIncahrge, getHoDPending, getResignationRequestHOdByID,
     ResignationApprovalHOD, getHRPending, getResignationRequestHRByID,
     getCEOPending, getCEOPendingById, ResignationApprovalCEO, ResignationApprovalHR,
     getResignCancel, ResignationCancelHR, InsertResignationRequestContractClose,
-    getHRPendingList, getContractClosed, getFullSettlementEmp, insertResigSalaryDetails } = require('../ResignationRequest/ResignationRequest.service');
+    getHRPendingList, getContractClosed, getFullSettlementEmp, insertResigSalaryDetails,
+    checkResignationEntryExcist, InactiveEmployee, getUnauthorizedAbsentee,
+    insertFromActiveEmp, getResignationRequestByEmpId, insertFinalSettlement,
+    resignComplete, finalApprovalList, paymentSubmit, getSettlementData, deactivateLogin } = require('../ResignationRequest/ResignationRequest.service');
 const { validateResignationRequest, validateResignationRequestApprovalHOD, validateResignationRequestApprovalCEO, validateResignationRequestCancel,
     validateResignationRequestApprovalINcharge, validateResignationRequestApprovalHR } = require('../../validation/validation_schema');
-const logger = require('../../logger/logger')
+const logger = require('../../logger/logger');
+const { uploadResignationReqFiles, uploadFinalSettlement, uploadmul } = require('./ResignationFileUpload');
+const { empLoginDeactivate, deleteByID, InActiveEmpHR } = require('../hrm_emp_master/empmast.service');
+const { uploadManualreqst } = require('../ManualRequest/Manual.controller');
+
 
 module.exports = {
     InsertResignationRequest: (req, res) => {
-        const body = req.body;
-        const body_result = validateResignationRequest.validate(body);
-        if (body_result.error) {
-            return res.status(200).json({
-                success: 2,
-                message: body_result.error.details[0].message
-            });
-        }
-        InsertResignationRequest(body, (err, results) => {
+        // console.log(req.file)
+        uploadResignationReqFiles(req, res, (err) => {
             if (err) {
-                logger.errorLogger(err)
                 return res.status(200).json({
-                    success: 0,
+                    success: 2,
                     message: err
                 });
+            } else {
+
+                const body = req.body;
+                const file = req.file;
+                const fileName = file?.filename;
+                const fileType = file?.mimetype;
+                const postData = JSON.parse(JSON.parse(JSON.stringify(body))?.postData);
+                postData.fileName = fileName
+                postData.fileType = fileType
+
+                checkResignationEntryExcist(postData, (error, results) => {
+                    if (error) {
+                        return res.status(200).json({
+                            success: 0,
+                            message: error
+                        });
+                    }
+                    if (results.length > 0) {
+                        return res.status(200).json({
+                            success: 0,
+                            message: "Resignation Already Submitted"
+                        });
+                    } else {
+                        InsertResignationRequest(postData, (error, results) => {
+                            if (error) {
+                                return res.status(200).json({
+                                    success: 0,
+                                    message: error
+                                });
+                            }
+                            return res.status(200).json({
+                                success: 1,
+                                message: "Resignation Submitted SuccessFully"
+                            })
+                        })
+                    }
+                })
+
             }
-            return res.status(200).json({
-                success: 1,
-                message: "Resignation Submitted SuccessFully"
-            })
         })
+
     },
     getInchargePending: (req, res) => {
         const body = req.body;
@@ -467,5 +504,314 @@ module.exports = {
                 message: "Details Submitted SuccessFully"
             })
         })
+    },
+    InactiveEmployee: (req, res) => {
+        const body = req.body;
+        InactiveEmployee(body, (err, results) => {
+
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            } else {
+                if (body.unauthorized_absent_status === 1) {
+                    return res.status(200).json({
+                        success: 2,
+                        message: "Data Updated Successfully"
+                    });
+                } else {
+                    empLoginDeactivate(body, (err, results) => {
+
+                        if (err) {
+                            logger.errorLogger(err)
+                            return res.status(200).json({
+                                success: 0,
+                                message: err
+                            });
+                        }
+
+                        if (!results) {
+                            return res.status(200).json({
+                                success: 1,
+                                message: "Record Not Found"
+                            });
+                        }
+
+                        return res.status(200).json({
+                            success: 2,
+                            message: "Data Updated Successfully"
+                        });
+
+                    });
+                }
+            }
+        });
+    },
+    getUnauthorizedAbsentee: (req, res) => {
+        getUnauthorizedAbsentee((err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    InactiveEmploee: (req, res) => {
+        const body = req.body;
+        deleteByID(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: res.err
+                });
+            }
+
+            if (!results) {
+                return res.status(400).json({
+                    success: 1,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 2,
+                message: "Record Deleted Successfully"
+            });
+        });
+    },
+    insertFromActiveEmp: (req, res) => {
+        const body = req.body;
+
+        checkResignationEntryExcist(body, (error, results) => {
+            if (error) {
+                return res.status(200).json({
+                    success: 0,
+                    message: error
+                });
+            }
+            if (results.length > 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "Resignation Already Submitted"
+                });
+            } else {
+                insertFromActiveEmp(body, (error, results) => {
+                    if (error) {
+                        return res.status(200).json({
+                            success: 0,
+                            message: error
+                        });
+                    }
+                    return res.status(200).json({
+                        success: 1,
+                        message: "Resignation Submitted SuccessFully"
+                    })
+                })
+            }
+        })
+    },
+    getResignationRequestByEmpId: (req, res) => {
+        const id = req.params.id;
+        getResignationRequestByEmpId(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(400).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+
+    },
+    insertFinalSettlement: (req, res) => {
+        uploadmul(req, res, (err) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            } else {
+
+                const body = req.body;
+                const file = req.file;
+                const fileName = file?.filename;
+                const fileType = file?.mimetype;
+                const postData = JSON.parse(JSON.parse(JSON.stringify(body))?.postData);
+                postData.fileName = fileName
+                postData.fileType = fileType
+
+                insertFinalSettlement(postData, (err, results) => {
+                    if (err) {
+                        logger.errorLogger(err)
+                        return res.status(200).json({
+                            success: 0,
+                            message: err
+                        });
+                    }
+
+                    if (results.length === 0) {
+                        return res.status(200).json({
+                            success: 0,
+                            message: "No Record Found"
+                        });
+                    }
+
+                    resignComplete(postData, (err, results) => {
+                        if (err) {
+                            logger.errorLogger(err)
+                            return res.status(200).json({
+                                success: 0,
+                                message: err
+                            });
+                        }
+
+                        if (results.length === 0) {
+                            return res.status(200).json({
+                                success: 0,
+                                message: "No Record Found"
+                            });
+                        }
+
+                        return res.status(200).json({
+                            success: 1,
+                            data: results,
+                            message: "Insert Data Successfully!"
+                        });
+                    })
+                })
+            }
+        })
+    },
+    finalApprovalList: (req, res) => {
+        finalApprovalList((err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    paymentSubmit: (req, res) => {
+        const body = req.body;
+        paymentSubmit(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: res.err
+                });
+            }
+
+            if (!results) {
+                return res.status(400).json({
+                    success: 1,
+                    message: "Record Not Found"
+                });
+            }
+            InActiveEmpHR(body, (err, results) => {
+                if (err) {
+                    logger.errorLogger(err)
+                    return res.status(400).json({
+                        success: 0,
+                        message: res.err
+                    });
+                }
+
+                if (!results) {
+                    return res.status(400).json({
+                        success: 1,
+                        message: "Record Not Found"
+                    });
+                }
+
+                deactivateLogin(body, (err, results) => {
+                    if (err) {
+                        logger.errorLogger(err)
+                        return res.status(400).json({
+                            success: 0,
+                            message: res.err
+                        });
+                    }
+
+                    if (!results) {
+                        return res.status(400).json({
+                            success: 1,
+                            message: "Record Not Found"
+                        });
+                    }
+
+                    return res.status(200).json({
+                        success: 2,
+                        message: "Data Updated Successfully"
+                    });
+                });
+            });
+        });
+    },
+    getSettlementData: (req, res) => {
+        const body = req.body;
+        getSettlementData(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: res.err
+                });
+            }
+
+            if (!results) {
+                return res.status(400).json({
+                    success: 1,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 2,
+                message: "Data Updated Successfully",
+                data: results
+            });
+        });
     },
 }

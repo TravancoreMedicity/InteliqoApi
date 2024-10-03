@@ -162,17 +162,45 @@ module.exports = {
             `SELECT COUNT(*) 'leavehrcount'
             FROM
             (
-               SELECT cmp_off_reqid from comp_off_request
-                        WHERE date(reqestdate)<=CURDATE() AND cf_hr_aprrv_requ=1 AND  cf_hr_apprv_status=0
-                union all
-             SELECT half_slno from hrm_halfdayrequest
-                        WHERE date(requestdate)<=CURDATE() AND hf_hr_aprrv_requ=1 AND  hf_hr_apprv_status=0
-                   union all
-                    SELECT nopunch_slno from nopunchrequest
-                        WHERE date(creteddate)<=CURDATE() AND np_hr_aprrv_requ=1 AND  np_hr_apprv_status=0
-                        union all
-                         SELECT leave_slno from hrm_leave_request
-                        WHERE date(request_date)<=CURDATE() AND hr_aprrv_requ=1 AND  hr_apprv_status=0
+                SELECT nopunch_slno
+                FROM nopunchrequest
+                left join hrm_emp_master on  nopunchrequest.em_no =hrm_emp_master.em_no
+                left join hrm_department on  nopunchrequest.em_department =hrm_department.dept_id
+                inner join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
+                LEFT JOIN hrm_shift_mast ON hrm_shift_mast.shft_slno=nopunchrequest.shift_id
+                where lv_cancel_req_status_user=0 and lv_cancel_status_user=0 and np_hr_aprrv_requ=1 and np_hr_apprv_status!=1 
+                and np_hr_apprv_status!=2 and np_incapprv_status!=2 and np_hod_apprv_status!=2
+                     union all
+                 SELECT    half_slno FROM hrm_halfdayrequest
+                inner join hrm_emp_master on  hrm_halfdayrequest.em_no =hrm_emp_master.em_no
+                inner join hrm_department on  hrm_halfdayrequest.dept_id =hrm_department.dept_id
+                inner join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
+                inner join hrm_shift_mast on hrm_halfdayrequest.shift_id=hrm_shift_mast.shft_slno
+                where  lv_cancel_req_status_user=0 and lv_cancel_status_user=0 and hf_hr_aprrv_requ=1 and hf_hr_apprv_status!=1 
+                and hf_hr_apprv_status!=2 and hf_hod_apprv_status!=2 and hf_incapprv_status!=2
+                    union all
+                   SELECT leave_slno FROM hrm_leave_request 
+                inner join hrm_emp_master on  hrm_leave_request.em_no =hrm_emp_master.em_no
+                inner join hrm_department on  hrm_leave_request.dept_id =hrm_department.dept_id
+                inner join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
+                where  lv_cancel_status=0  and lv_cancel_status_user=0 and hr_aprrv_requ=1 and hr_apprv_status!=1 
+                and hr_apprv_status!=2 and hod_apprv_status!=2 and incapprv_status!=2
+                    union all
+                  SELECT   request_slno FROM one_hour_request
+                inner join hrm_emp_master on one_hour_request.em_id=hrm_emp_master.em_id
+                inner join hrm_department on one_hour_request.dept_id=hrm_department.dept_id
+                inner join hrm_dept_section on one_hour_request.dept_sect_id=hrm_dept_section.sect_id
+                inner join hrm_shift_mast on one_hour_request.shift_id=hrm_shift_mast.shft_slno
+                where cancel_status=0 and hr_req_status=1 and hr_approval_status!=1 and hr_approval_status!=2 
+                and incharge_approval_status!=2 and hod_approval_status!=2
+                    union all
+                    SELECT  onduty_slno FROM on_duty_request
+                inner join hrm_emp_master on on_duty_request.em_id=hrm_emp_master.em_id
+                inner join hrm_department on on_duty_request.dept_id=hrm_department.dept_id
+                inner join hrm_dept_section on on_duty_request.dept_sect_id=hrm_dept_section.sect_id
+                inner join hrm_shift_mast on on_duty_request.shift_id=hrm_shift_mast.shft_slno
+                where in_time!=0 and out_time!=0 and cancel_status=0 and hr_req_status=1 and hr_approval_status!=1 and hr_approval_status!=2 
+                and incharge_approval_status!=2 and hod_approval_status!=2 
             )    x  `,
             [],
             (error, results, feilds) => {

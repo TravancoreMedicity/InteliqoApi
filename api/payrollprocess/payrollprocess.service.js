@@ -762,7 +762,8 @@ module.exports = {
             hrm_emp_master.em_name,dept_name,sect_name, gross_salary,
             punch_out,shift_in,shift_out,hrs_worked,over_time,late_in,
             early_out,duty_status,holiday_status,leave_status,holiday_slno,
-            lvereq_desc,duty_desc,lve_tble_updation_flag,hrm_emp_master.em_name
+            lvereq_desc,duty_desc,lve_tble_updation_flag,hrm_emp_master.em_name,
+            unauthorized_absent_status,manual_request_flag
             from  punch_master
             left join hrm_emp_master on hrm_emp_master.em_no=punch_master.em_no
             left join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department

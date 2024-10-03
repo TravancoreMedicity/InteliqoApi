@@ -424,6 +424,7 @@ module.exports = {
             hrm_emp_master.gross_salary,
             hrm_department.dept_id,
             hrm_dept_section.sect_id,
+            em_designation,
             dept_name, 
             sect_name,
             desg_name
