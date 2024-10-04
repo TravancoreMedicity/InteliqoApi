@@ -139,7 +139,9 @@ module.exports = {
                     upload_status: val.upload_status,
                     trainers_name: val.trainers_name,
                     trainers: JSON.parse(val.trainers),
-                    non_medical_status: val.non_medical_status
+                    non_medical_status: val.non_medical_status,
+                    subtype_slno: val.subtype_slno,
+                    subtype_name: val.subtype_name,
                 }
                 return obj
             })
