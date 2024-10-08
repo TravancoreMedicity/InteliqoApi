@@ -410,7 +410,7 @@ module.exports = {
 			ifnull(em_passport_no,'')em_passport_no,
             ifnull(salarytype,'')salarytype,
             ifnull(relation,0)relation,
-            ifnull(relative_name,'')relative_name
+            ifnull(relative_name,'')relative_name,
             em_bank_branch
                 FROM hrm_emp_master
                 left join  hrm_emp_personal on  hrm_emp_master.em_no= hrm_emp_personal.em_no
@@ -840,7 +840,9 @@ module.exports = {
                 ot_amount,
                 holiday_status,
                 holiday_slno,
-                ot_request_flag
+                ot_request_flag,
+                shft_cross_day,
+                shft_brk_start
             FROM punch_master
             LEFT JOIN hrm_shift_mast ON hrm_shift_mast.shft_slno=punch_master.shift_id
             LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id = punch_master.emp_id
