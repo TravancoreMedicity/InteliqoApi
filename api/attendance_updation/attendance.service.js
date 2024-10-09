@@ -1447,4 +1447,42 @@ module.exports = {
             }
         )
     },
+    getPunchMastDataByEMID: (data, callBack) => {
+        pool.query(
+            `SELECT 
+                punch_slno,
+                duty_day,
+                shift_id,
+                emp_id,
+                em_no,
+                punch_in,
+                punch_out,
+                shift_in,
+                shift_out,
+                hrs_worked,
+                late_in,
+                early_out,
+                duty_desc,
+                duty_status,
+                holiday_status,
+                leave_status,
+                lvereq_desc,
+                lve_tble_updation_flag
+            FROM punch_master 
+            WHERE duty_day BETWEEN ? AND ? 
+            AND emp_id IN (?)`,
+            [
+                data.fromDate_punchMaster,
+                data.toDate_punchMaster,
+                data.empList
+            ],
+            (error, results, feilds) => {
+                // console.log(results)
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }
