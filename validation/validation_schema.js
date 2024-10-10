@@ -731,6 +731,8 @@ const validateeemployeepersonal = Joi.object({
         hrm_region2: Joi.number().min(1).required(),
         salarytype: Joi.number().min(1).required(),
         em_bank_branch: Joi.number().min(1).required(),
+        relation: Joi.number().optional(),
+        relative_name: Joi.optional(),
 })
 
 // VALIDATE EMPLOYEE ESI AND PF
@@ -1495,6 +1497,23 @@ const validateCommonreqstMast = Joi.object({
         slno: Joi.number().optional(),
 });
 
+// subtype_slno, training_type_no, subtype_name, subtype_count, subtype_status, create_user, create_date, update_user, update_date
+
+const validateTrainingSubType = Joi.object({
+        subtype_slno: Joi.optional(),
+        training_type_no: Joi.number().required(),
+        subtype_name: Joi.string().trim().uppercase().min(3).max(45).required()
+                .messages({
+                        'string.empty': 'Traning subtype_name is required',
+                        'string.min': "Traning subtype_name length must be at least 3 characters lonng",
+                        'string.max': 'Training subtype_name length must be less than or equal to 45 characters long'
+                }),
+        subtype_count: Joi.number().optional(),
+        subtype_status: Joi.number().min(0).max(1).required(),
+        create_user: Joi.number().optional(),
+        update_user: Joi.number().optional()
+})
+
 module.exports = {
         authSchema,  //authSchema:authSchema
         validateEmployee,
@@ -1592,5 +1611,6 @@ module.exports = {
         validateTrainingQuestions,
         validateSchedulingTime,
         validateOneHourReqst,
-        validateCommonreqstMast
+        validateCommonreqstMast,
+        validateTrainingSubType
 }
