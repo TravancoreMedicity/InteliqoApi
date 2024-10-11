@@ -99,7 +99,7 @@ module.exports = {
     disableDutyplanData: (data, callBack) => {
         pool.query(
             `UPDATE hrm_duty_plan
-                SET attendance_update_flag = 1
+                SET doff_updation_flag = 1
                 WHERE plan_slno=?`,
             [
                 data.plan_slno
@@ -115,7 +115,7 @@ module.exports = {
     disableDoffDutyplanData: (data, callBack) => {
         pool.query(
             `UPDATE hrm_duty_plan
-                SET attendance_update_flag = 1,
+                SET doff_updation_flag = 1,
                 shift_id=?
                 WHERE plan_slno=?`,
             [
@@ -133,7 +133,7 @@ module.exports = {
     updateDelStatDutyPlan: (data, callBack) => {
         pool.query(
             `UPDATE hrm_duty_plan
-                SET attendance_update_flag = 0
+                SET doff_updation_flag = 0
                 WHERE plan_slno =?`,
             [
                 data.plan_slno
@@ -149,7 +149,7 @@ module.exports = {
     enableDoffDutyplanData: (data, callBack) => {
         pool.query(
             `UPDATE hrm_duty_plan
-                SET attendance_update_flag = 0,
+                SET doff_updation_flag = 0,
                 shift_id=?
                 WHERE plan_slno=?`,
             [

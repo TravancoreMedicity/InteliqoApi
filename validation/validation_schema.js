@@ -425,7 +425,8 @@ const validateyearlyholidaylist = Joi.object({
         hld_status: Joi.number().required(),
         hld_slno: Joi.number().optional(),
         create_user: Joi.number().optional(),
-        edit_user: Joi.number().optional()
+        edit_user: Joi.number().optional(),
+        special_type: Joi.number().required(),
 });
 
 // VALIDATE YEARLY LEAVES
@@ -535,7 +536,9 @@ const validateempmaster = Joi.object({
         gross_salary: Joi.number().optional(),
         recomend_salary: Joi.number().optional(),
         clinicaltype: Joi.number().min(1).required(),
-        doctor_status: Joi.number().optional()
+        doctor_status: Joi.number().optional(),
+        leaveprocess_type: Joi.number().required(),
+
 })
 
 // VALIDATE EMPLOYEE MASTER EDIT
@@ -582,7 +585,8 @@ const validateempmasterEdit = Joi.object({
         gross_salary: Joi.number().optional(),
         recomend_salary: Joi.number().optional(),
         clinicaltype: Joi.number().optional(),
-        doctor_status: Joi.number().optional()
+        doctor_status: Joi.number().optional(),
+        leaveprocess_type: Joi.number().required(),
 })
 // VALIDATE EMPLOYEupdate
 const validateempmasterupdate = Joi.object({
