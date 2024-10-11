@@ -965,4 +965,26 @@ module.exports = {
             return result
         }).catch((e) => { return { status: 0 } })
     },
+    registerUpdate: (data, callBack) => {
+        pool.query(
+            `UPDATE hrm_emp_contract_detl
+                SET 
+                em_cont_start =?,
+                em_cont_end =?,
+                edit_user =?
+                WHERE em_id =?`,
+            [
+                data.em_cont_start,
+                data.em_cont_end,
+                data.edit_user,
+                data.em_id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }
