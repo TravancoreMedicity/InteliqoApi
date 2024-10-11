@@ -27,7 +27,7 @@ module.exports = {
     getPlanDetl: (data, callBack) => {
         pool.query(
             `SELECT 
-                    plan_slno, emp_id, shift_id, duty_day,attendance_update_flag,holiday
+                    plan_slno, emp_id, shift_id, duty_day,attendance_update_flag,holiday,doff_updation_flag
                 FROM
                     hrm_duty_plan
                 WHERE  DATE(duty_day) BETWEEN ? AND ?
@@ -307,7 +307,8 @@ module.exports = {
             dept_name, 
             sect_name,
             desg_name,
-            unauthorized_absent_status
+            unauthorized_absent_status,
+            holiday_type
             FROM hrm_emp_master
             left join hrm_emp_contract_detl on hrm_emp_contract_detl.em_no = hrm_emp_master.em_no and hrm_emp_contract_detl.status = 0
             inner join hrm_department on hrm_emp_master.em_department=hrm_department.dept_id

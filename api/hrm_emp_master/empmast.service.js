@@ -45,10 +45,11 @@ module.exports = {
                 recomend_salary,
                 clinicaltype,
                 doctor_status,
-                gross_salary
+                gross_salary,
+                holiday_type
 
             )
-            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
                 data.em_no,
                 data.em_salutation,
@@ -91,6 +92,7 @@ module.exports = {
                 data.clinicaltype,
                 data.doctor_status,
                 data.recomend_salary,
+                data.holiday_type
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -143,7 +145,8 @@ module.exports = {
                 recomend_salary=?,
                 clinicaltype=?,
                 doctor_status=?,
-                gross_salary=?
+                gross_salary=?,
+                holiday_type=?
                 WHERE em_no = ?`,
             [
                 data.em_salutation,
@@ -186,6 +189,7 @@ module.exports = {
                 data.clinicaltype,
                 data.doctor_status,
                 data.recomend_salary,
+                data.holiday_type,
                 data.em_no
             ],
             (error, results, feilds) => {
@@ -346,7 +350,8 @@ module.exports = {
                     recomend_salary,
                     clinicaltype,
                     gross_salary,
-                    doctor_status
+                    doctor_status,
+                    holiday_type
                 FROM hrm_emp_master
                 WHERE em_no = ?
                 AND em_status=1 `,
