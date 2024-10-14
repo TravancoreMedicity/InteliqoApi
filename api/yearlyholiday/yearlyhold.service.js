@@ -3,15 +3,25 @@ const pool = require('../../config/database');
 module.exports = {
     create: (data, callBack) => {
         pool.query(
-            `INSERT INTO hrm_yearly_holiday_list (hld_desc,lvetype_slno,hld_date,hld_year,hld_status,create_user)
-            VALUES (?,?,?,?,?,?)`,
+            `INSERT INTO hrm_yearly_holiday_list 
+            (
+            hld_desc,
+            lvetype_slno,
+            hld_date,
+            hld_year,
+            hld_status,
+            create_user,
+            special_type
+            )
+            VALUES (?,?,?,?,?,?,?)`,
             [
                 data.hld_desc,
                 data.lvetype_slno,
                 data.hld_date,
                 data.hld_year,
                 data.hld_status,
-                data.create_user
+                data.create_user,
+                data.special_type
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -46,7 +56,8 @@ module.exports = {
                     hld_date =?,
                     hld_year =?,
                     hld_status =?,
-                    edit_user = ?
+                    edit_user = ?,
+                    special_type=?
                 WHERE hld_slno = ?`,
             [
                 data.hld_desc,
@@ -55,6 +66,7 @@ module.exports = {
                 data.hld_year,
                 data.hld_status,
                 data.edit_user,
+                data.special_type,
                 data.hld_slno
             ],
             (error, results, feilds) => {
@@ -90,7 +102,8 @@ module.exports = {
             hld_year,
             hld_status,
             hrm_yearly_holiday_list.lvetype_slno,
-            if(hld_status=1,'Yes','No')status
+            if(hld_status=1,'Yes','No')status,
+            special_type
         FROM hrm_yearly_holiday_list
         LEFT JOIN hrm_leave_type ON hrm_leave_type.lvetype_slno = hrm_yearly_holiday_list.lvetype_slno
         ORDER BY hld_date DESC`,
@@ -176,7 +189,7 @@ module.exports = {
     },
     getyearholiday: (data, callBack) => {
         pool.query(
-            `SELECT hld_desc,DATE_FORMAT(hld_date,'%d %M')hld_year
+            `SELECT hld_desc,DATE_FORMAT(hld_date,'%d %M')hld_year,special_type
             FROM hrm_yearly_holiday_list
             WHERE hld_year = YEAR(CURDATE()) and hld_status=1 order by hld_date asc`,
             [

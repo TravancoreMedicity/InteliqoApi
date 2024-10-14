@@ -5,7 +5,7 @@ const { create, update, getDataById,
     UpdateEMpIdPersonal, getContractByEmno, getContractDetlId, updateEmpmastSatus,
     getEmployeeByUserName, inactiveLoginNewPromise, activeLoginNewPromise, newLoginInsert,
     updateQualEmpno, updateDutyPlanData, updatePunchmstEmno, newEntryContract,
-    deleteNewLoginEntry, updatePunchEmno,
+    deleteNewLoginEntry, updatePunchEmno, registerUpdate,
     reverseUpdateQualEmpno } = require('../hrm_emp_contract_detl/empcontract.service');
 
 const { validateempcontract } = require('../../validation/validation_schema');
@@ -804,6 +804,32 @@ module.exports = {
             }
         }
         Func(body)
-    }
+    },
+    registerUpdate: (req, res) => {
+        const body = req.body;
+        registerUpdate(body, (err, results) => {
+
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 2,
+                message: "Data Updated Successfull!"
+            });
+
+        });
+    },
 }
 

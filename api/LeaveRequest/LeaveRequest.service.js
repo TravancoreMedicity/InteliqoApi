@@ -113,7 +113,8 @@ module.exports = {
                 holiday,
                 twenty_four,
                 attendance_update_flag,
-                shft_cross_day
+                shft_cross_day,
+                doff_updation_flag
             FROM hrm_duty_plan
             LEFT JOIN hrm_shift_mast ON hrm_shift_mast.shft_slno = hrm_duty_plan.shift_id 
             WHERE duty_day= ? AND emp_id=?`,
