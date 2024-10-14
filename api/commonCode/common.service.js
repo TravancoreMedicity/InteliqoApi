@@ -1297,7 +1297,8 @@ module.exports = {
                C.ecat_prob,
                C.ecat_training,
                E.probation_status,
-               U.user_grp_slno as groupmenu
+               U.user_grp_slno as groupmenu,
+               E.holiday_type
         FROM hrm_emp_master E
             LEFT JOIN hrm_branch B ON B.branch_slno = E.em_branch
             LEFT JOIN hrm_department D ON D.dept_id = E.em_department
