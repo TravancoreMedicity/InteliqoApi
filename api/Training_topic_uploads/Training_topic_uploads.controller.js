@@ -113,7 +113,7 @@ module.exports = {
         const folderPath = `D:/DocMeliora/Inteliqo/TrainingTopicUploads/${topic_slno}`;
         fs.readdir(folderPath, (err, files) => {
             if (err) {
-                logger.errorLogger(err)
+                // logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err

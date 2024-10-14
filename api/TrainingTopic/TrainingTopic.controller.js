@@ -115,7 +115,7 @@ module.exports = {
     },
     TrainingTopicGet: (req, res) => {
         TrainingTopicGet((err, results) => {
-            const datas = results.map((val) => {
+            const datas = results?.map((val) => {
                 const obj = {
                     training_dept: val.training_dept,
                     dept_status: val.dept_status,
@@ -140,7 +140,8 @@ module.exports = {
                     trainers_name: val.trainers_name,
                     trainers: JSON.parse(val.trainers),
                     non_medical_status: val.non_medical_status,
-                    subtype_slno: val.subtype_slno,
+                    // subtype_slno: val.subtype_slno,
+                    subtype_slno: val.subtype_no,
                     subtype_name: val.subtype_name,
                 }
                 return obj
@@ -265,7 +266,9 @@ module.exports = {
                     upload_status: val.upload_status,
                     trainers_name: val.trainers_name,
                     trainers: JSON.parse(val.trainers),
-                    non_medical_status: val.non_medical_status
+                    non_medical_status: val.non_medical_status,
+                    subtype_no: val.subtype_no,
+                    subtype_name: val.subtype_name
                 }
                 return obj
             })
