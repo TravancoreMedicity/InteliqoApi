@@ -189,7 +189,7 @@ module.exports = {
     },
     getyearholiday: (data, callBack) => {
         pool.query(
-            `SELECT hld_desc,DATE_FORMAT(hld_date,'%d %M')hld_year
+            `SELECT hld_desc,DATE_FORMAT(hld_date,'%d %M')hld_year,special_type
             FROM hrm_yearly_holiday_list
             WHERE hld_year = YEAR(CURDATE()) and hld_status=1 order by hld_date asc`,
             [
