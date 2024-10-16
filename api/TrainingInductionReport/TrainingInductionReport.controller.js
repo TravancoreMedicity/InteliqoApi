@@ -1,5 +1,5 @@
 const { logger } = require('../../logger/logger');
-const { GetInductCalenderReport, GetInductionCompletedList, GetinductPendingList, GetInductionPendingList, GetInductionPassedEmpList, GetInductionFailedEmpList, GetinductionGeneralList } = require('./TrainingInduction.service');
+const { GetInductCalenderReport, GetInductionCompletedList, GetinductPendingList, GetinductReTestList, GetInductionPendingList, GetInductionPassedEmpList, GetInductionFailedEmpList, GetinductionGeneralList, GetTrainerTrainingInductDatas, GetTrainerTrainingDeptDatas, GetInductTrainingTopicWise, GetInductionDeptWiseTrainings, GetInductionAllStaffReports } = require('./TrainingInduction.service');
 module.exports = {
 
     GetInductCalenderReport: (req, res) => {
@@ -194,6 +194,139 @@ module.exports = {
                 data: results
             })
         })
+    },
+
+    GetinductReTestList: (req, res) => {
+        const body = req.body;
+        GetinductReTestList(body, (err, results) => {
+            if (err) {
+                // logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "no Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 2,
+                data: results,
+            });
+        });
+    },
+    GetTrainerTrainingInductDatas: (req, res) => {
+        const id = req.params.id;
+        GetTrainerTrainingInductDatas(id, (err, results) => {
+            if (err) {
+                // logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "no Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 2,
+                data: results,
+            });
+        });
+    },
+    GetTrainerTrainingDeptDatas: (req, res) => {
+        const id = req.params.id;
+        GetTrainerTrainingDeptDatas(id, (err, results) => {
+            if (err) {
+                // logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "no Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 2,
+                data: results,
+            });
+        });
+    },
+    GetInductTrainingTopicWise: (req, res) => {
+        const body = req.body;
+        GetInductTrainingTopicWise(body, (err, results) => {
+            if (err) {
+                // logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "no Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 2,
+                data: results,
+            });
+        });
+    },
+    GetInductionDeptWiseTrainings: (req, res) => {
+        const body = req.body;
+        GetInductionDeptWiseTrainings(body, (err, results) => {
+            if (err) {
+                // logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "no Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 2,
+                data: results,
+            });
+        });
+    },
+    GetInductionAllStaffReports: (req, res) => {
+        const body = req.body;
+        GetInductionAllStaffReports(body, (err, results) => {
+            if (err) {
+                // logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "no Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 2,
+                data: results,
+            });
+        });
     },
 }
 
