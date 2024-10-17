@@ -577,26 +577,294 @@ GROUP BY training_induction_emp_details.indct_emp_no`,
        GROUP_CONCAT(trainer_master.em_name) AS trainers_name,
        training_induction_schedule.trainers,training_induction_emp_details.training_status,
        hrm_dept_section.sect_name,
-        training_induction_emp_details.training_induct_hod_aprvl_status,
+       training_induction_emp_details.training_induct_hod_aprvl_status,
        training_induction_emp_details.training_iduct_tnd_verify_status,
-        training_induction_emp_details.retest, training_induction_emp_details.offline_mode,
-          training_induction_emp_details.online_mode
-FROM training_induction_emp_details
-LEFT JOIN hrm_emp_master AS emp_master ON emp_master.em_id = training_induction_emp_details.indct_emp_no
-LEFT JOIN hrm_department ON hrm_department.dept_id = training_induction_emp_details.induct_emp_dept
-LEFT JOIN training_induction_schedule ON training_induction_schedule.schedule_slno = training_induction_emp_details.schedule_no
-LEFT JOIN training_topic ON training_topic.topic_slno = training_induction_schedule.schedule_topic
-LEFT JOIN training_induct_posttest ON training_induct_posttest.post_scheduleno = training_induction_emp_details.schedule_no
+       training_induction_emp_details.retest, training_induction_emp_details.offline_mode,
+       training_induction_emp_details.online_mode
+       FROM training_induction_emp_details
+       LEFT JOIN hrm_emp_master AS emp_master ON emp_master.em_id = training_induction_emp_details.indct_emp_no
+       LEFT JOIN hrm_department ON hrm_department.dept_id = training_induction_emp_details.induct_emp_dept
+       LEFT JOIN training_induction_schedule ON training_induction_schedule.schedule_slno = training_induction_emp_details.schedule_no
+       LEFT JOIN training_topic ON training_topic.topic_slno = training_induction_schedule.schedule_topic
+       LEFT JOIN training_induct_posttest ON training_induct_posttest.post_scheduleno = training_induction_emp_details.schedule_no
                                     AND training_induction_emp_details.indct_emp_no = training_induct_posttest.emp_id
-LEFT JOIN training_induction_pretest ON training_induction_pretest.pre_scheduleno = training_induction_emp_details.schedule_no
+       LEFT JOIN training_induction_pretest ON training_induction_pretest.pre_scheduleno = training_induction_emp_details.schedule_no
                                     AND training_induction_emp_details.indct_emp_no = training_induction_pretest.emp_id
-LEFT JOIN hrm_emp_master AS trainer_master ON JSON_CONTAINS(training_induction_schedule.trainers, CAST(trainer_master.em_id AS JSON), '$')
- LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id= emp_master.em_dept_section  
- WHERE  schedule_topic=? and month(induct_detail_date)=?
-GROUP BY training_induction_emp_details.indct_emp_no`,
+       LEFT JOIN hrm_emp_master AS trainer_master ON JSON_CONTAINS(training_induction_schedule.trainers, CAST(trainer_master.em_id AS JSON), '$')
+       LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id= emp_master.em_dept_section  
+       WHERE  schedule_topic=? and month(induct_detail_date)=?
+       GROUP BY training_induction_emp_details.indct_emp_no`,
             [
                 data.topic,
                 data.selectedMonth
+            ],
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+            }
+        )
+    },
+    GetScheduledDeptTrainingList: (data, callback) => {
+        pool.query(
+            `                           
+    SELECT ROW_NUMBER() OVER () as Slno, slno, department, deparment_sect, schedule_date, schedule_topics, schedule_trainers, schedule_remark,
+    GROUP_CONCAT(hrm_emp_master.em_name) AS trainer_name,topic_slno,training_topic_name,hrm_emp_master.em_department,dept_name,
+    hrm_dept_section.sect_name
+    FROM medi_hrm.training_departmental_schedule
+    LEFT JOIN training_topic ON training_topic.topic_slno=training_departmental_schedule.schedule_topics
+    LEFT JOIN hrm_emp_master ON JSON_CONTAINS(training_departmental_schedule.schedule_trainers, CAST(hrm_emp_master.em_id AS JSON), '$')
+    LEFT JOIN hrm_department ON hrm_department.dept_id=training_departmental_schedule.department
+    LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=training_departmental_schedule.deparment_sect
+    WHERE month(schedule_date)=?
+    GROUP BY slno`,
+            [
+                data.selectedmonth
+            ],
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+            }
+        )
+    },
+    getTrainingCompletionEmpReports: (data, callback) => {
+        pool.query(
+            `SELECT ROW_NUMBER() OVER () as calender_slno, training_employee_details.slno, emp_name, emp_desig, training_employee_details.emp_dept, emp_dept_sectn, topic,
+            training_employee_details.training_status,hrm_emp_master.em_no,
+                       training_employee_details.schedule_date, training_employee_details.pretest_status, training_employee_details.posttest_status,
+                       training_topic.topic_slno,training_topic.training_topic_name,hrm_emp_master.em_name,online_status,offline_status,
+                       training_posttest.mark as posttest_mark,training_retest_emp_details.retest_mark,training_retest_emp_details.retest_status,
+                       hrm_emp_master.em_id,training_pretest.mark as Pretest_mark,training_employee_details.online_mode,training_employee_details.offline_mode,
+                       hrm_department.dept_id,hrm_department.dept_name,sect_id,sect_name,training_hod_apprvls_status,tnd_verification_status,
+                       training_employee_details.retest
+                       FROM training_employee_details
+                       LEFT JOIN training_topic ON training_topic.topic_slno=training_employee_details.topic
+                       LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_employee_details.emp_name
+                       LEFT JOIN training_posttest ON training_posttest.dept_schedule_slno=training_employee_details.scheduled_slno and training_posttest.emp_id= training_employee_details.emp_name
+                       LEFT JOIN training_pretest ON training_pretest.pre_dept_schedule_slno =training_employee_details.scheduled_slno and training_pretest.emp_id =training_employee_details.emp_name
+                       LEFT JOIN training_retest_emp_details ON training_retest_emp_details.candidate_em_no=training_employee_details.emp_name
+                       LEFT JOIN hrm_department ON hrm_department.dept_id=training_employee_details.emp_dept
+                       LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=training_employee_details.emp_dept_sectn
+                        LEFT JOIN training_departmental_schedule ON training_departmental_schedule.slno=training_employee_details.scheduled_slno
+                       WHERE  training_employee_details.emp_dept=? and training_employee_details.emp_dept_sectn=?
+                      and training_employee_details.emp_name =?
+                       and training_employee_details.training_status=1
+                       group by training_employee_details.scheduled_slno,training_employee_details.schedule_date`,
+            [
+                data.deptID,
+                data.sectionID,
+                data.emID
+            ],
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+            }
+        )
+    },
+    getDeptPendingEmpReports: (data, callback) => {
+
+        pool.query(
+            `SELECT ROW_NUMBER() OVER () as calender_slno, training_employee_details.slno, emp_name, emp_desig, training_employee_details.emp_dept, emp_dept_sectn, topic,
+            training_employee_details.training_status,hrm_emp_master.em_no,
+                       training_employee_details.schedule_date, training_employee_details.pretest_status, training_employee_details.posttest_status,
+                       training_topic.topic_slno,training_topic.training_topic_name,hrm_emp_master.em_name,online_status,offline_status,
+                       training_posttest.mark as posttest_mark,training_retest_emp_details.retest_mark,training_retest_emp_details.retest_status,
+                       hrm_emp_master.em_id,training_pretest.mark as Pretest_mark,training_employee_details.online_mode,training_employee_details.offline_mode,
+                       hrm_department.dept_id,hrm_department.dept_name,sect_id,hrm_dept_section.sect_name,training_hod_apprvls_status,tnd_verification_status,
+                       training_employee_details.retest
+                       FROM training_employee_details
+                       LEFT JOIN training_topic ON training_topic.topic_slno=training_employee_details.topic
+                       LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_employee_details.emp_name 
+                       LEFT JOIN training_posttest ON training_posttest.dept_schedule_slno=training_employee_details.scheduled_slno and training_posttest.emp_id= training_employee_details.emp_name
+                       LEFT JOIN training_pretest ON training_pretest.pre_dept_schedule_slno =training_employee_details.scheduled_slno and training_pretest.emp_id =training_employee_details.emp_name
+                       LEFT JOIN training_retest_emp_details ON training_retest_emp_details.candidate_em_no=training_employee_details.emp_name
+                       LEFT JOIN hrm_department ON hrm_department.dept_id=training_employee_details.emp_dept
+                       LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=training_employee_details.emp_dept_sectn
+                        LEFT JOIN training_departmental_schedule ON training_departmental_schedule.slno=training_employee_details.scheduled_slno
+                       WHERE  training_employee_details.emp_dept=? and training_employee_details.emp_dept_sectn=?
+                       and training_employee_details.training_status=0
+                       group by training_employee_details.slno, emp_name `,
+            [
+                data.deptID,
+                data.sectionID
+            ],
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+            }
+        )
+    },
+
+    GetDeptStaffExamPassedReport: (data, callback) => {
+        pool.query(
+            `                      
+     SELECT 
+    ROW_NUMBER() OVER () AS serialno, 
+    training_employee_details.slno, 
+    training_employee_details.scheduled_slno, 
+    emp_master.em_name AS emp_name, 
+    training_employee_details.emp_dept, 
+    emp_master.em_dept_section, 
+    training_employee_details.topic, 
+    training_employee_details.schedule_date, 
+    training_employee_details.training_status, 
+    training_employee_details.pretest_status, 
+    training_employee_details.posttest_status, 
+    training_employee_details.online_mode, 
+    training_employee_details.offline_mode, 
+    training_employee_details.retest, 
+    training_employee_details.training_apprvl_status, 
+    training_employee_details.training_hod_apprvls_status, 
+    training_employee_details.tnd_verification_status, 
+    hrm_dept_section.sect_name, 
+    GROUP_CONCAT(trainer_master.em_name) AS trainers_name, 
+    emp_master.em_no, 
+    hrm_department.dept_name, 
+    training_topic.training_topic_name, 
+    training_posttest.mark AS post_mark, 
+    training_departmental_schedule.slno AS schedule_slno, 
+    training_pretest.mark AS pre_mark
+FROM 
+    medi_hrm.training_employee_details
+LEFT JOIN 
+    hrm_emp_master AS emp_master ON emp_master.em_id = training_employee_details.emp_name
+LEFT JOIN 
+    hrm_department ON hrm_department.dept_id = training_employee_details.emp_dept
+LEFT JOIN 
+    training_departmental_schedule ON training_departmental_schedule.slno = training_employee_details.scheduled_slno
+LEFT JOIN 
+    training_topic ON training_topic.topic_slno = training_employee_details.topic
+LEFT JOIN 
+    training_posttest ON training_posttest.dept_schedule_slno = training_employee_details.scheduled_slno
+                      AND training_employee_details.emp_name = training_posttest.emp_id
+LEFT JOIN 
+    training_pretest ON training_pretest.pre_dept_schedule_slno = training_employee_details.scheduled_slno
+                     AND training_employee_details.emp_name = training_pretest.emp_id
+LEFT JOIN 
+    hrm_emp_master AS trainer_master ON JSON_CONTAINS(training_departmental_schedule.schedule_trainers, 
+                      CAST(trainer_master.em_id AS CHAR), '$')
+LEFT JOIN 
+    hrm_dept_section ON hrm_dept_section.sect_id = emp_master.em_dept_section
+ WHERE training_employee_details.emp_dept=? and training_employee_details.emp_dept_sectn=?
+ and month(training_employee_details.schedule_date)=? and training_employee_details.topic=?
+ and training_employee_details.training_status=1 and  training_posttest.mark>2
+    
+GROUP BY 
+    training_employee_details.slno, emp_master.em_name, emp_master.em_no`,
+            [
+                data.deptID,
+                data.sectionID,
+                data.selectedMonth,
+                data.topic
+            ],
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+            }
+        )
+    },
+    GetDeptStaffExamFailledReport: (data, callback) => {
+        pool.query(
+            `                      
+     SELECT 
+    ROW_NUMBER() OVER () AS serialno, 
+    training_employee_details.slno, 
+    training_employee_details.scheduled_slno, 
+    emp_master.em_name AS emp_name, 
+    training_employee_details.emp_dept, 
+    emp_master.em_dept_section, 
+    training_employee_details.topic, 
+    training_employee_details.schedule_date, 
+    training_employee_details.training_status, 
+    training_employee_details.pretest_status, 
+    training_employee_details.posttest_status, 
+    training_employee_details.online_mode, 
+    training_employee_details.offline_mode, 
+    training_employee_details.retest, 
+    training_employee_details.training_apprvl_status, 
+    training_employee_details.training_hod_apprvls_status, 
+    training_employee_details.tnd_verification_status, 
+    hrm_dept_section.sect_name, 
+    GROUP_CONCAT(trainer_master.em_name) AS trainers_name, 
+    emp_master.em_no, 
+    hrm_department.dept_name, 
+    training_topic.training_topic_name, 
+    training_posttest.mark AS post_mark, 
+    training_departmental_schedule.slno AS schedule_slno, 
+    training_pretest.mark AS pre_mark
+FROM 
+    medi_hrm.training_employee_details
+LEFT JOIN 
+    hrm_emp_master AS emp_master ON emp_master.em_id = training_employee_details.emp_name
+LEFT JOIN 
+    hrm_department ON hrm_department.dept_id = training_employee_details.emp_dept
+LEFT JOIN 
+    training_departmental_schedule ON training_departmental_schedule.slno = training_employee_details.scheduled_slno
+LEFT JOIN 
+    training_topic ON training_topic.topic_slno = training_employee_details.topic
+LEFT JOIN 
+    training_posttest ON training_posttest.dept_schedule_slno = training_employee_details.scheduled_slno
+                      AND training_employee_details.emp_name = training_posttest.emp_id
+LEFT JOIN 
+    training_pretest ON training_pretest.pre_dept_schedule_slno = training_employee_details.scheduled_slno
+                     AND training_employee_details.emp_name = training_pretest.emp_id
+LEFT JOIN 
+    hrm_emp_master AS trainer_master ON JSON_CONTAINS(training_departmental_schedule.schedule_trainers, 
+                      CAST(trainer_master.em_id AS CHAR), '$')
+LEFT JOIN 
+    hrm_dept_section ON hrm_dept_section.sect_id = emp_master.em_dept_section
+ WHERE training_employee_details.emp_dept=? and training_employee_details.emp_dept_sectn=?
+ and month(training_employee_details.schedule_date)=? and training_employee_details.topic=?
+ and training_employee_details.training_status=1 and  training_posttest.mark<2
+    
+GROUP BY 
+    training_employee_details.slno, emp_master.em_name,emp_master.em_no`,
+            [
+                data.deptID,
+                data.sectionID,
+                data.selectedMonth,
+                data.topic
+            ],
+            (err, results, feilds) => {
+                if (err) {
+                    return callback(err)
+
+                }
+                return callback(null, results)
+            }
+        )
+    },
+    GetYearWiseDepartmentalTrainingList: (data, callback) => {
+        pool.query(
+            `                      
+ SELECT ROW_NUMBER() OVER () as Slno, slno, department, deparment_sect, schedule_date, schedule_topics, schedule_trainers, schedule_remark,
+  GROUP_CONCAT(hrm_emp_master.em_name) AS trainer_name,topic_slno,training_topic_name,hrm_emp_master.em_department,dept_name,
+  hrm_dept_section.sect_name
+ FROM medi_hrm.training_departmental_schedule
+  LEFT JOIN training_topic ON training_topic.topic_slno=training_departmental_schedule.schedule_topics
+ LEFT JOIN hrm_emp_master ON JSON_CONTAINS(training_departmental_schedule.schedule_trainers, CAST(hrm_emp_master.em_id AS JSON), '$')
+ LEFT JOIN hrm_department ON hrm_department.dept_id=training_departmental_schedule.department
+  LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=training_departmental_schedule.deparment_sect
+ WHERE department=? AND deparment_sect=? AND year(schedule_date)=?
+ group by slno`,
+            [
+                data.deptID,
+                data.sectionID,
+                data.selectedYear
             ],
             (err, results, feilds) => {
                 if (err) {

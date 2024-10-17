@@ -1,5 +1,5 @@
 const { logger } = require('../../logger/logger');
-const { GetInductCalenderReport, GetInductionCompletedList, GetinductPendingList, GetinductReTestList, GetInductionPendingList, GetInductionPassedEmpList, GetInductionFailedEmpList, GetinductionGeneralList, GetTrainerTrainingInductDatas, GetTrainerTrainingDeptDatas, GetInductTrainingTopicWise, GetInductionDeptWiseTrainings, GetInductionAllStaffReports } = require('./TrainingInduction.service');
+const { GetInductCalenderReport, GetInductionCompletedList, GetinductPendingList, GetinductReTestList, GetInductionPendingList, GetInductionPassedEmpList, GetInductionFailedEmpList, GetinductionGeneralList, GetTrainerTrainingInductDatas, GetTrainerTrainingDeptDatas, GetInductTrainingTopicWise, GetInductionDeptWiseTrainings, GetInductionAllStaffReports, GetScheduledDeptTrainingList, getTrainingCompletionEmpReports, getDeptPendingEmpReports, GetDeptStaffExamPassedReport, GetDeptStaffExamFailledReport, GetYearWiseDepartmentalTrainingList } = require('./TrainingInduction.service');
 module.exports = {
 
     GetInductCalenderReport: (req, res) => {
@@ -309,6 +309,139 @@ module.exports = {
     GetInductionAllStaffReports: (req, res) => {
         const body = req.body;
         GetInductionAllStaffReports(body, (err, results) => {
+            if (err) {
+                // logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "no Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 2,
+                data: results,
+            });
+        });
+    },
+    GetScheduledDeptTrainingList: (req, res) => {
+        const body = req.body;
+        GetScheduledDeptTrainingList(body, (err, results) => {
+            if (err) {
+                // logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "no Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 2,
+                data: results,
+            });
+        });
+    },
+    getTrainingCompletionEmpReports: (req, res) => {
+        const body = req.body;
+        getTrainingCompletionEmpReports(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "no Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 2,
+                data: results,
+            });
+        });
+    },
+    getDeptPendingEmpReports: (req, res) => {
+        const body = req.body;
+        getDeptPendingEmpReports(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "no Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 2,
+                data: results,
+            });
+        });
+    },
+
+    GetDeptStaffExamPassedReport: (req, res) => {
+        const body = req.body;
+        GetDeptStaffExamPassedReport(body, (err, results) => {
+            if (err) {
+                // logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "no Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 2,
+                data: results,
+            });
+        });
+    },
+    GetDeptStaffExamFailledReport: (req, res) => {
+        const body = req.body;
+        GetDeptStaffExamFailledReport(body, (err, results) => {
+            if (err) {
+                // logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "no Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 2,
+                data: results,
+            });
+        });
+    },
+    GetYearWiseDepartmentalTrainingList: (req, res) => {
+        const body = req.body;
+        GetYearWiseDepartmentalTrainingList(body, (err, results) => {
             if (err) {
                 // logger.errorLogger(err)
                 return res.status(200).json({
