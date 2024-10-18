@@ -92,7 +92,7 @@ module.exports = {
                 data.clinicaltype,
                 data.doctor_status,
                 data.recomend_salary,
-                data.holiday_type
+                data.leaveprocess_type
             ],
             (error, results, feilds) => {
                 if (error) {
