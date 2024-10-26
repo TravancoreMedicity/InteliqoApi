@@ -3,7 +3,7 @@ const pool = require('../../config/database');
 module.exports = {
     getNewJoineesBydate: (data, callBack) => {
         pool.query(
-            `SELECT em_id,em_no,em_name,em_doj, dept_name,sect_name FROM hrm_emp_master
+            `SELECT em_id,em_no,em_name,em_doj, dept_name,sect_name,em_department,em_dept_section FROM hrm_emp_master
             inner join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
             inner join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
             where em_doj between ? and ? and doctor_status=0 and em_id not in  (select emp_id  FROM on_observation_request);`,
@@ -21,7 +21,7 @@ module.exports = {
     },
     getNewjoineesbyDept: (data, callBack) => {
         pool.query(
-            `SELECT em_id,em_no,em_name,em_doj, dept_name,sect_name FROM hrm_emp_master
+            `SELECT em_id,em_no,em_name,em_doj, dept_name,sect_name,em_department,em_dept_section FROM hrm_emp_master
             inner join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
             inner join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
             where em_doj between ? and ? and em_department=? and em_dept_section=? and doctor_status=0 and em_id not in  (select emp_id  FROM on_observation_request);`,
