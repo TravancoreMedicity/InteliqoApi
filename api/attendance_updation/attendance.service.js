@@ -536,7 +536,8 @@ module.exports = {
                 duty_day,
                 shift_id,
                 emp_id,
-                em_no,
+                punch_master.em_no,
+                hrm_emp_master.em_name,
                 punch_in,
                 punch_out,
                 shift_in,
@@ -549,10 +550,14 @@ module.exports = {
                 holiday_status,
                 leave_status,
                 lvereq_desc,
-                lve_tble_updation_flag
+                lve_tble_updation_flag,
+                dept_name,sect_name
             FROM punch_master 
+            left join hrm_emp_master on hrm_emp_master.em_no=punch_master.em_no
+            left join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
+            left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
             WHERE duty_day BETWEEN ? AND ? 
-            AND em_no IN (?)`,
+            AND punch_master.em_no IN (?)`,
             [
                 data.fromDate_punchMaster,
                 data.toDate_punchMaster,

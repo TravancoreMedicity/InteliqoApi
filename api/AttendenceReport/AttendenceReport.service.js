@@ -176,6 +176,7 @@ module.exports = {
             leave_status,
             lvereq_desc,
              em_name,
+             duty_day,
         dept_name,
         sect_name,
             lve_tble_updation_flag
