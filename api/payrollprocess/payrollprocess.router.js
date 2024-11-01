@@ -10,7 +10,8 @@ const { empDeptdata, empDeptSecdata, empNameBasedata, getFixedByEmid, getEarning
     getIndvidualPayslipDetl, checkPayslipDataExist, deptWisePaySlipData, empWisePaySlipDetl, punchMastLock, InsertPunchInOutHr,
     getPunchInOutHr, CancelPunchInOutHr, getPunchByEmid, InsertArrearSalary, getArearData, getAllEmployee, getPunchMarkingHr,
     getPunchMarkingHrFull, getTotalGrosssalaryByno, getPunchMasterSalaryAllEmployee, getAcriveDepartmentSection,
-    getPunchmastAboveSelectedDate, getPunchAboveSelectedDate
+    getPunchmastAboveSelectedDate, getPunchAboveSelectedDate, submitProcessedSalary, inertMonthlyProcess,
+    getProcessedDepartments, getPayrollDetails
 
 } = require('../payrollprocess/payrollprocess.controller');
 
@@ -82,6 +83,12 @@ router.get("/getAcriveDepartmentSection", checkToken, getAcriveDepartmentSection
 
 router.post("/getPunchmastAboveSelectedDate", checkToken, getPunchmastAboveSelectedDate)//contract renwal new id updation
 router.post("/getPunchAboveSelectedDate", checkToken, getPunchAboveSelectedDate)
+
+router.post("/create/processedSalary", checkToken, submitProcessedSalary)
+router.post("/insert/monthlyprocess", checkToken, inertMonthlyProcess)
+router.post("/getmonthdeptlist", checkToken, getProcessedDepartments)
+router.post("/processed/empdata", checkToken, getPayrollDetails)
+
 
 
 module.exports = router; 

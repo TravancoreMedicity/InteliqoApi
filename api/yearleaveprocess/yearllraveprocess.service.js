@@ -544,7 +544,7 @@ module.exports = {
             FROM hrm_leave_common 
             LEFT JOIN hrm_leave_type ON hrm_leave_type.lvetype_slno = hrm_leave_common.llvetype_slno
             WHERE em_no  = ?
-            AND year(cmn_lv_year) = year(curdate())`,
+            AND year(cmn_lv_year) = year(curdate()) and cmn_status=0`,
             [
                 data
             ],

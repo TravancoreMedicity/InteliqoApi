@@ -720,7 +720,13 @@ module.exports = {
             COALESCE(nps,0) nps,
             COALESCE(npsamount,0)npsamount,
             COALESCE(lwf_status,0)lwf_status,
-            COALESCE(lwfamount,0)lwfamount          
+            COALESCE(lwfamount,0)lwfamount,
+            hrm_branch.branch_slno,
+            hrm_emp_category.category_slno,
+            hrm_department.dept_id,
+            designation.desg_slno,
+            hrm_dept_section.sect_id,
+            institution_type.inst_slno          
             FROM hrm_emp_master 
             left join hrm_branch on hrm_branch.branch_slno=hrm_emp_master.em_branch
             left join hrm_emp_category on hrm_emp_category.category_slno=hrm_emp_master.em_category
@@ -1003,11 +1009,29 @@ module.exports = {
     },
     getPunchByEmid: (data, callBack) => {
         pool.query(
-            `select punch_slno, duty_day,shift_id,punch_master.emp_id,punch_master.em_no,
-            hrm_emp_master.em_name,punch_in,
-            punch_out,shift_in,shift_out,hrs_worked,over_time,late_in,
-            early_out,duty_status,holiday_status,leave_status,holiday_slno,
-            lvereq_desc,duty_desc,lve_tble_updation_flag,hrm_emp_master.em_name
+            `select 
+            punch_slno, 
+            duty_day,
+            shift_id,
+            punch_master.emp_id,
+            punch_master.em_no,
+            hrm_emp_master.em_name,
+            punch_in,
+            punch_out,
+            shift_in,
+            shift_out,
+            hrs_worked,
+            over_time,
+            late_in,
+            early_out,
+            duty_status,
+            holiday_status,
+            leave_status,
+            holiday_slno,
+            lvereq_desc,
+            duty_desc,
+            lve_tble_updation_flag,
+            hrm_emp_master.em_name
             from  punch_master
             left join hrm_emp_master on hrm_emp_master.em_no=punch_master.em_no
             where punch_master.emp_id IN (?)
@@ -1092,7 +1116,13 @@ module.exports = {
             COALESCE(nps,0) nps,
             COALESCE(npsamount,0)npsamount,
             COALESCE(lwf_status,0)lwf_status,
-            COALESCE(lwfamount,0)lwfamount             
+            COALESCE(lwfamount,0)lwfamount,
+            hrm_branch.branch_slno,
+            hrm_emp_category.category_slno,
+            hrm_department.dept_id,
+            designation.desg_slno,
+            hrm_dept_section.sect_id,
+            institution_type.inst_slno                   
             FROM hrm_emp_master 
             left join hrm_branch on hrm_branch.branch_slno=hrm_emp_master.em_branch
             left join hrm_emp_category on hrm_emp_category.category_slno=hrm_emp_master.em_category
@@ -1284,6 +1314,149 @@ module.exports = {
             [
                 data.em_no,
                 data.from
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    submitProcessedSalary: (data, callBack) => {
+        pool.query(
+            `INSERT INTO hrm_processed_salary_details (
+                em_id,
+                em_no,
+                branch_id,
+                dept_id,
+                sect_id,
+                category_id,
+                designation_id,
+                institution_slno,
+                account_number,
+                ifsc_number,
+                total_days,
+                leave_count,
+                holiday_count,
+                halfday_lop_count,
+                lc_count,
+                total_lop_count,
+                total_pay_days,
+                lop_amount,
+                nps_amount,
+                lwf_amount,
+                deduction_amount,
+                gross_salary,
+                total_salary,
+                holidayworked,
+                holiday_amount,
+                processed_month
+                )
+            VALUES ?;`,
+            [
+                data
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    inertMonthlyProcess: (data, callBack) => {
+        pool.query(
+            `INSERT INTO payroll_processed_salary (salary_month,dept_id,sect_id,salary_status,create_user,update_user)
+            VALUES ?`,
+            [
+                data
+            ],
+            (error, results, feilds) => {
+
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getProcessedDepartments: (data, callBack) => {
+        pool.query(
+            `SELECT
+            sect_id,
+                salary_month
+            FROM payroll_processed_salary 
+            WHERE salary_month = ? `,
+            [
+                data.month
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getPayrollDetails: (data, callBack) => {
+        pool.query(
+            `SELECT 
+            hrm_processed_salary_details.em_no,
+            em_name,
+            branch_name,
+            dept_name,
+            sect_name,
+            ecat_name,
+            desg_name,
+            inst_emp_type
+            account_number,
+            ifsc_number,
+            total_days,
+            leave_count,
+            holiday_count,
+            halfday_lop_count,
+            lc_count,
+            total_lop_count,
+            total_pay_days,
+            lop_amount,
+            nps_amount,
+            lwf_amount,
+            deduction_amount,
+            hrm_processed_salary_details.gross_salary,
+            total_salary,
+            holidayworked,
+            holiday_amount
+             FROM hrm_processed_salary_details 
+             left join hrm_emp_master on hrm_emp_master.em_id=hrm_processed_salary_details.em_id
+             left join hrm_branch on hrm_branch.branch_slno=hrm_processed_salary_details.branch_id
+             left join hrm_department on hrm_department.dept_id=hrm_processed_salary_details.dept_id
+             left join hrm_dept_section on hrm_dept_section.sect_id=hrm_processed_salary_details.sect_id
+             left join hrm_emp_category on hrm_emp_category.category_slno=hrm_processed_salary_details.category_id
+             left join designation on designation.desg_slno=hrm_processed_salary_details.designation_id
+             left join institution_type on institution_type.inst_slno=hrm_processed_salary_details.institution_slno
+             where processed_month=? `,
+            [
+                data.month
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    CancelPayrollProcess: (data, callBack) => {
+        pool.query(
+            `update payroll_processed_salary 
+            set salary_status=0 ,
+            update_user=?
+            where dept_id=? and sect_id=? `,
+            [
+                data.update_user,
+                data.dept_id,
+                data.sect_id
             ],
             (error, results, feilds) => {
                 if (error) {

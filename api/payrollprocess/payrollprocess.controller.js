@@ -9,7 +9,8 @@ const { empDeptdata, empDeptSecdata, empNameBasedata, getFixedByEmid, getTotalFi
     updatePunchInOutHr, getPunchInOutHr, CancelPunchInOutHr, getPunchByEmid, InsertArrearSalary,
     getArearData, getAllEmployee, getPunchMarkingHr, getPunchMarkingHrFull, getTotalGrosssalaryByno,
     getPunchMasterSalaryAllEmployee, getAcriveDepartmentSection, getPunchmastAboveSelectedDate,
-    getPunchAboveSelectedDate
+    getPunchAboveSelectedDate, submitProcessedSalary, inertMonthlyProcess, getProcessedDepartments,
+    getPayrollDetails
 } = require('../payrollprocess/payrollprocess.service');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -1214,5 +1215,163 @@ module.exports = {
                 data: results
             });
         })
+    },
+    submitProcessedSalary: (req, res) => {
+        var values = req.body.map((value, index) => {
+            return [
+                value.em_id,
+                value.em_no,
+                value.branch_slno,
+                value.dept_id,
+                value.sect_id,
+                value.category_slno,
+                value.desg_slno,
+                value.inst_slno,
+                value.em_account_no,
+                value.em_ifsc,
+                value.totalDays,
+                value.totalLeaves,
+                value.totalHoliday,
+                value.totalHD,
+                value.totalLC,
+                value.totallopCount,
+                value.paydays,
+                value.lopAmount,
+                value.npsamount,
+                value.lwfamount,
+                value.deductValue,
+                value.empSalary,
+                value.totalSalary,
+                value.holidayworked,
+                value.holidaySalary,
+                value.processed_month
+            ]
+        })
+        submitProcessedSalary(values, (err, results) => {
+            if (err) {
+                //logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (!results) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Results Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                message: "Data Submitted Successfully"
+            });
+        });
+    },
+    inertMonthlyProcess: (req, res) => {
+        const body = req.body;
+        inertMonthlyProcess(body, (err, results) => {
+
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                message: "Data Created Successfully"
+            });
+
+        });
+    },
+    getProcessedDepartments: (req, res) => {
+        const body = req.body
+        getProcessedDepartments(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    succ: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    succ: 2,
+                    message: "No Record Found"
+                });
+            }
+            return res.status(200).json({
+                succ: 1,
+                data: results
+            });
+        });
+    },
+    getPayrollDetails: (req, res) => {
+        const body = req.body
+        getPayrollDetails(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    succ: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    succ: 2,
+                    message: "No Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    getPayrollDetails: (req, res) => {
+        const body = req.body
+        getPayrollDetails(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    succ: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    succ: 2,
+                    message: "No Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    getPayrollDetails: (req, res) => {
+        const body = req.body
+        getPayrollDetails(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    succ: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    succ: 2,
+                    message: "No Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
     },
 }
