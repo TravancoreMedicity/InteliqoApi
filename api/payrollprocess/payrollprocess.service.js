@@ -1367,7 +1367,7 @@ module.exports = {
     },
     inertMonthlyProcess: (data, callBack) => {
         pool.query(
-            `INSERT INTO payroll_processed_salary (salary_month,dept_id,sect_id,salary_status,create_user,update_user)
+            `INSERT INTO payroll_processed_salary (salary_month,dept_id,sect_id,salary_status,create_user,update_user,last_update_date)
             VALUES ?`,
             [
                 data
@@ -1384,8 +1384,11 @@ module.exports = {
     getProcessedDepartments: (data, callBack) => {
         pool.query(
             `SELECT
+            dept_id,
             sect_id,
-                salary_month
+            salary_month,
+            salary_status,
+            last_update_date
             FROM payroll_processed_salary 
             WHERE salary_month = ? `,
             [
@@ -1457,6 +1460,23 @@ module.exports = {
                 data.update_user,
                 data.dept_id,
                 data.sect_id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    deleteProcessedSalary: (data, callBack) => {
+        pool.query(
+            ` DELETE FROM hrm_processed_salary_details
+            WHERE dept_id = ? AND sect_id = ? AND processed_month=?`,
+            [
+                data.dept_id,
+                data.sect_id,
+                data.processed_month
             ],
             (error, results, feilds) => {
                 if (error) {

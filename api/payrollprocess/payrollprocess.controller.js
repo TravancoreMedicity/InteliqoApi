@@ -10,7 +10,7 @@ const { empDeptdata, empDeptSecdata, empNameBasedata, getFixedByEmid, getTotalFi
     getArearData, getAllEmployee, getPunchMarkingHr, getPunchMarkingHrFull, getTotalGrosssalaryByno,
     getPunchMasterSalaryAllEmployee, getAcriveDepartmentSection, getPunchmastAboveSelectedDate,
     getPunchAboveSelectedDate, submitProcessedSalary, inertMonthlyProcess, getProcessedDepartments,
-    getPayrollDetails
+    getPayrollDetails, CancelPayrollProcess, deleteProcessedSalary
 } = require('../payrollprocess/payrollprocess.service');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -1355,6 +1355,50 @@ module.exports = {
     getPayrollDetails: (req, res) => {
         const body = req.body
         getPayrollDetails(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    succ: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    succ: 2,
+                    message: "No Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    CancelPayrollProcess: (req, res) => {
+        const body = req.body
+        CancelPayrollProcess(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    succ: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    succ: 2,
+                    message: "No Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    deleteProcessedSalary: (req, res) => {
+        const body = req.body
+        deleteProcessedSalary(body, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
