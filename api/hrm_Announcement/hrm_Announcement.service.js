@@ -38,7 +38,7 @@ module.exports = {
     },
     getBirthdayEmployee: (callBack) => {
         pool.query(
-            `SELECT em_name,em_no, sect_name FROM hrm_emp_master
+            `SELECT em_id,em_name,em_no, sect_name FROM hrm_emp_master
             inner join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
             where DATE_FORMAT(em_dob, '%m-%d') = DATE_FORMAT(CURRENT_DATE() , '%m-%d') and em_status=1; `,
             [],
