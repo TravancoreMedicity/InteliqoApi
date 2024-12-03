@@ -9,7 +9,8 @@ const { InsertResignationRequest, getInchargePending, getResignationRequestByID,
     getHRPendingList, getContractClosed, getFullSettlementEmp, insertResigSalaryDetails,
     checkResignationEntryExcist, InactiveEmployee, getUnauthorizedAbsentee,
     insertFromActiveEmp, getResignationRequestByEmpId, insertFinalSettlement,
-    resignComplete, finalApprovalList, paymentSubmit, getSettlementData, deactivateLogin } = require('../ResignationRequest/ResignationRequest.service');
+    resignComplete, finalApprovalList, paymentSubmit, getSettlementData, deactivateLogin,
+    getResignationByEmID } = require('../ResignationRequest/ResignationRequest.service');
 const { validateResignationRequest, validateResignationRequestApprovalHOD, validateResignationRequestApprovalCEO, validateResignationRequestCancel,
     validateResignationRequestApprovalINcharge, validateResignationRequestApprovalHR } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger');
@@ -333,27 +334,46 @@ module.exports = {
         })
     },
     ResignationApprovalHR: (req, res) => {
-        const body = req.body;
-        const body_result = validateResignationRequestApprovalHR.validate(body);
-        if (body_result.error) {
-            return res.status(200).json({
-                success: 2,
-                message: body_result.error.details[0].message
-            });
-        }
-        ResignationApprovalHR(body, (err, results) => {
+
+        uploadResignationReqFiles(req, res, (err) => {
             if (err) {
-                logger.errorLogger(err)
-                return res.status(400).json({
-                    success: 0,
+                return res.status(200).json({
+                    success: 2,
                     message: err
                 });
+            } else {
+                const body = req.body;
+                const file = req.file;
+                const fileName = file?.filename;
+                const fileType = file?.mimetype;
+                const postData = JSON.parse(JSON.parse(JSON.stringify(body))?.postData);
+                postData.fileName = fileName
+                postData.fileType = fileType
+
+                ResignationApprovalHR(postData, (err, results) => {
+                    if (err) {
+                        logger.errorLogger(err)
+                        return res.status(400).json({
+                            success: 0,
+                            message: err
+                        });
+                    }
+                    return res.status(200).json({
+                        success: 1,
+                        message: "Data Updated SuccessFully"
+                    })
+                })
             }
-            return res.status(200).json({
-                success: 1,
-                message: "Data Updated SuccessFully"
-            })
+
         })
+        // const body_result = validateResignationRequestApprovalHR.validate(body);
+        // if (body_result.error) {
+        //     return res.status(200).json({
+        //         success: 2,
+        //         message: body_result.error.details[0].message
+        //     });
+        // }
+
     },
     getResignCancel: (req, res) => {
         getResignCancel((err, results) => {
@@ -813,5 +833,32 @@ module.exports = {
                 data: results
             });
         });
+    },
+    getResignationByEmID: (req, res) => {
+        // console.log(req.params);
+        const id = req.params.id;
+
+        getResignationByEmID(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+
     },
 }

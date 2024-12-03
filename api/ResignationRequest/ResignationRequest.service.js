@@ -359,6 +359,7 @@ module.exports = {
         )
     },
     ResignationApprovalHR: (data, callBack) => {
+        console.log(data);
         pool.query(
             `UPDATE hrm_resignation_request
                 SET 
@@ -366,7 +367,9 @@ module.exports = {
                 hr_app_date = ?,
                 hr_app_status =?,
                 hr_coment =?,
-                resign_status =?
+                resign_status =?,
+                attachment=?,
+                attachment_type=?
                 WHERE resig_slno =?`,
             [
                 data.hr_id,
@@ -374,6 +377,8 @@ module.exports = {
                 data.hr_app_status,
                 data.hr_coment,
                 data.resign_status,
+                data.fileName,
+                data.fileType,
                 data.resig_slno
             ],
             (error, results, feilds) => {
@@ -500,7 +505,10 @@ module.exports = {
             hrm_resignation_request.em_no,request_date,
             attachment,
             attachment_type,
-            hr_app_status
+            hr_app_status,
+            inch_coment,
+            hod_coment,
+            resignation_type
             FROM hrm_resignation_request
             left join hrm_department on hrm_department.dept_id=hrm_resignation_request.dept_id
             left join hrm_dept_section on hrm_dept_section.sect_id=hrm_resignation_request.sect_id
@@ -925,6 +933,21 @@ module.exports = {
                     return callBack(error);
                 }
                 return callBack(null, results);
+            }
+        )
+    },
+    getResignationByEmID: (data, callBack) => {
+        pool.query(
+            `SELECT * FROM hrm_resignation_request where em_id=?`,
+            [
+                data
+            ],
+            (error, results, fields) => {
+                //console.log("results", results);
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results)
             }
         )
     },

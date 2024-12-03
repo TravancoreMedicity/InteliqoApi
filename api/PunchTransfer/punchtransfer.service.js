@@ -57,5 +57,35 @@ module.exports = {
             }
         );
     },
+    getActiveEmployee: (callBack) => {
+        pool.query(
+            `SELECT  em_id,em_no FROM hrm_emp_master where em_status=1`,
+            [],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+
+                return callBack(null, results);
+            }
+        );
+    },
+    employeePunch: (data, callBack) => {
+        zkpool.query(
+            `select * FROM zkteco.iclock_transaction where 
+            date(punch_time) BETWEEN ? AND ? AND emp_code IN (?)`,
+            [
+                data.from,
+                data.to,
+                data.em_no
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 
 }

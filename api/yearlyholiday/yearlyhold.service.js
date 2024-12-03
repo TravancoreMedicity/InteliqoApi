@@ -36,9 +36,10 @@ module.exports = {
             `SELECT hld_desc,
                     hld_slno     
             FROM hrm_yearly_holiday_list
-            WHERE hld_desc = ? AND hld_year = year(sysdate()) `,
+            WHERE hld_desc = ? AND hld_year = ? `,
             [
-                data.hld_desc
+                data.hld_desc,
+                data.hld_year
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -189,7 +190,7 @@ module.exports = {
     },
     getyearholiday: (data, callBack) => {
         pool.query(
-            `SELECT hld_desc,DATE_FORMAT(hld_date,'%d %M')hld_year,special_type
+            `SELECT hld_desc,DATE_FORMAT(hld_date,'%d %M')hld_year,special_type,hld_date
             FROM hrm_yearly_holiday_list
             WHERE hld_year = YEAR(CURDATE()) and hld_status=1 order by hld_date asc`,
             [
