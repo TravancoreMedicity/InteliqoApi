@@ -141,9 +141,7 @@ module.exports = {
         });
     },
     geMenuName: (req, res) => {
-        console.log("Zcvxc");
         geMenuName((err, results) => {
-            console.log(results);
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({

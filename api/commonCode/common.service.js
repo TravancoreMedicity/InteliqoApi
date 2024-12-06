@@ -1739,5 +1739,23 @@ module.exports = {
             }
         )
     },
+    getHodlist: (callBack) => {
+        pool.query(
+            `SELECT emp_id, em_no, em_name, dept_name,sect_name FROM hrm_authorization_assign 
+            left join hrm_emp_master on hrm_emp_master.em_id=hrm_authorization_assign.emp_id
+            left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
+            left join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
+            where auth_post=1 and doctor_status=0 group by em_name;`,
+            [],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+
+                return callBack(null, results);
+            }
+        );
+    },
+
 }
 

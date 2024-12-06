@@ -43,7 +43,9 @@ const {
     getUserDetl,
     getDeptsectIncharge,
     getCEOlevel,
-    getDeptsectHOD, getleaverequwestslno, getShiftdata,
+    getDeptsectHOD,
+    getleaverequwestslno,
+    getShiftdata,
     getResignedEmployess,
     getActiveEmployees,
     getInActiveEmployees,
@@ -52,7 +54,9 @@ const {
     getCompansatoryLeave,
     getLeaveCount,
     getENameLeaveCarry,
-    getEmployeeProfileInformation, getCoffDetails, getfrndenddata,
+    getEmployeeProfileInformation,
+    getCoffDetails,
+    getfrndenddata,
     EmpNameCategory,
     getdutydaycheck,
     getCarryDetails,
@@ -70,7 +74,8 @@ const {
     getEmpCoff,
     getgrossSalaryByEmployeeNo,
     getAutharisedDepartmentSection,
-    getEmployeeArraySectionArray
+    getEmployeeArraySectionArray,
+    getHodlist
 } = require('../commonCode/common.service');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -2007,5 +2012,29 @@ module.exports = {
                 data: results
             });
         })
+    },
+    getHodlist: (req, res) => {
+        getHodlist((err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                logger.infoLogger("No Records Found")
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Result Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
     },
 }
