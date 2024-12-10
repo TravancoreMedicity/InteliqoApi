@@ -31,18 +31,24 @@ module.exports = {
             }
         )
     },
+
+
+
+
     checkInsertVal: (data, callBack) => {
         pool.query(
             `SELECT hld_desc,
                     hld_slno     
             FROM hrm_yearly_holiday_list
-            WHERE hld_desc = ? AND hld_year = ? `,
+            WHERE hld_desc = ? AND hld_date=? AND hld_year = ? `,
             [
                 data.hld_desc,
+                data.hld_date,
                 data.hld_year
             ],
             (error, results, feilds) => {
                 if (error) {
+
                     return callBack(error)
                 }
                 return callBack(null, results)
