@@ -106,7 +106,8 @@ module.exports = {
             menu_status,
             module_name
             FROM menu_name 
-            inner join module_name on module_name.module_slno=menu_name.menu_module`,
+            inner join module_name on module_name.module_slno=menu_name.menu_module
+            order by menu_slno desc`,
             [],
             (error, results, feilds) => {
                 if (error) {

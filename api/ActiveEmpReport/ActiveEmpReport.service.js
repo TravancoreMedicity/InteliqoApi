@@ -190,22 +190,7 @@ module.exports = {
 
     getBranchInActiveEmployees: (data, callBack) => {
         pool.query(
-            `select hrm_emp_contract_log.em_id,old_emno as em_no,em_name,em_dob,if(em_gender=1,'Male','Female')em_gender,em_doj,em_mobile,em_email,branch_name,dept_name,
-            sect_name,inst_emp_type,desg_name,doctype_desc,ecat_name,contract_end_date,em_adhar_no,
-            em_retirement_date,addressPresent1,addressPresent2,hrm_pin2,if(contract_end_date is not null,'Contract Closed',null)status,remark
-            from hrm_emp_contract_log
-            left join hrm_emp_master on hrm_emp_master.em_id=hrm_emp_contract_log.em_id
-            left join hrm_emp_personal on hrm_emp_personal.em_id=hrm_emp_master.em_id
-            left join hrm_branch on hrm_branch.branch_slno=hrm_emp_master.em_branch
-            left join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
-            left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
-            left join institution_type on institution_type.inst_slno=hrm_emp_master.em_institution_type
-            left join designation on designation.desg_slno=hrm_emp_master.em_designation
-            left join doctor_type on doctor_type.doctype_slno=hrm_emp_master.em_doc_type
-            left join hrm_emp_category on hrm_emp_category.category_slno=hrm_emp_master.em_category
-            left join hrm_inactive_employee_details on hrm_emp_master.em_no=hrm_inactive_employee_details.em_no
-             where hrm_branch.branch_slno IN (?)
-             union all
+            `
              select hrm_emp_master.em_id,hrm_emp_master.em_no,em_name,em_dob,if(em_gender=1,'Male','Female')em_gender,em_doj,em_mobile,em_email,branch_name,dept_name,
             sect_name,inst_emp_type,desg_name,doctype_desc,ecat_name,em_contract_end_date,em_adhar_no,
             em_retirement_date,addressPresent1,addressPresent2,hrm_pin2,if(hrm_emp_master.em_status=0,'Resigned',null)status,remark
@@ -220,9 +205,9 @@ module.exports = {
             left join doctor_type on doctor_type.doctype_slno=hrm_emp_master.em_doc_type
             left join hrm_emp_category on hrm_emp_category.category_slno=hrm_emp_master.em_category
             left join hrm_inactive_employee_details on hrm_emp_master.em_no=hrm_inactive_employee_details.em_no
-            where hrm_emp_master.em_status=0 and doctor_status=0 and hrm_branch.branch_slno IN (?)`,
+            where hrm_emp_master.em_status=0 and doctor_status=0 and hrm_branch.branch_slno IN (?) 
+            group by em_no;`,
             [
-                data,
                 data
             ],
             (error, results, feilds) => {
