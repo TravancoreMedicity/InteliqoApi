@@ -1486,4 +1486,101 @@ module.exports = {
             }
         )
     },
+    getSectionWiseEmployee: (data, callBack) => {
+        pool.query(
+            `SELECT E.em_no,
+            E.em_id,
+                E.em_salutation,
+                E.em_name,
+                E.em_gender,
+                E.em_dob,
+                E.em_doj,
+                E.em_mobile,
+                E.em_phone,
+                E.em_email,
+                E.em_branch,
+                E.em_designation,
+                E.em_age_year,
+                E.em_retirement_date,
+                E.em_prob_end_date,
+                E.em_conf_end_date,
+                E.em_contract_end_date,
+                N.desg_name,
+                B.branch_name,
+                E.em_department,
+                D.dept_name,
+                E.em_dept_section,
+                S.sect_name,
+                ifnull(S.authorization_incharge,0)authorization_incharge,
+                ifnull(S.authorization_hod,0)authorization_hod,
+                C.ecat_name,
+                C.ecat_esi_allow,
+                E.em_conf_end_date,
+                E.em_retirement_date,
+                E.em_contract_end_date,
+                E.addressPermnt1,
+                E.addressPermnt2,
+                E.hrm_pin1,
+                E.addressPresent1,
+                E.addressPresent2,
+                E.hrm_pin2,
+                E.blood_slno,
+                E.hrm_religion,
+                E.hrm_profile,
+                E.contract_status,
+                E.hod,
+                E.incharge,
+                E.emp__ot,
+                E.ot_amount,
+                E.gross_salary,
+                T.em_pf_no,
+                T.em_uan_no,
+                T.em_esi_no,
+                T.em_grade,
+                T.em_esi_status,
+               Q.em_cont_start,
+               Q.em_cont_end,
+               E.em_category,
+               C.category_slno,
+               C.emp_type,
+               C.des_type,
+               C.ecat_prob,
+               C.ecat_training,
+               E.probation_status,
+               U.user_grp_slno as groupmenu,
+               E.holiday_type,
+               A.lv_process_slno,
+			   A.hrm_clv,
+               A.next_updatedate,
+               A.hrm_process_status
+        FROM hrm_emp_master E
+            LEFT JOIN hrm_branch B ON B.branch_slno = E.em_branch
+            LEFT JOIN hrm_department D ON D.dept_id = E.em_department
+            LEFT JOIN hrm_dept_section S ON S.sect_id  = E.em_dept_section
+            LEFT JOIN hrm_emp_category C ON C.category_slno = E.em_category
+            LEFT JOIN designation N ON N.desg_slno = E.em_designation
+            LEFT JOIN hrm_emp_pfesi T ON T.em_id= E.em_id
+            LEFT JOIN module_group_user_rights U on U.emp_slno = E.em_id 
+            LEFT JOIN hrm_emp_contract_detl Q ON Q.em_id = E.em_id and Q.status = 0
+            LEFT JOIN hrm_leave_process A on A.em_no=E.em_no
+        WHERE E.em_status = 1 AND E.em_department = ? AND E.em_dept_section=? AND E.em_no!=1
+        group by E.em_no,
+            E.em_name,
+            E.gross_salary,
+            E.em_id ,
+            D.dept_name ,
+            S.sect_name,
+            C.ecat_name`,
+            [
+                data.em_department,
+                data.em_dept_section
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }
