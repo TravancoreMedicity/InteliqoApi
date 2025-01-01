@@ -911,7 +911,7 @@ module.exports = {
                 0 takenEL,
                 0 SLallowed,
                 0 takenSL
-            from hrm_leave_cl where cl_lv_active = 0 and year(cl_lv_mnth) =year(curdate())
+            from hrm_leave_cl where cl_lv_active = 0 and year(cl_lv_mnth) =year(?)
             group by em_no
             union all
             select 
@@ -955,7 +955,7 @@ module.exports = {
                 0 takenEL,
                 0 SLallowed,
                 0 takenSL
-            from hrm_leave_earnlv where earn_lv_active = 0 and credit_year = year(curdate())
+            from hrm_leave_earnlv where earn_lv_active = 0 and credit_year = year(?)
             group by em_no
             union all
             select 
@@ -985,7 +985,7 @@ module.exports = {
                 cmn_lv_allowed SLallowed,
                 0 takenSL
                 from hrm_leave_common 
-            where llvetype_slno = 7 and year(cmn_lv_year) = year(curdate()) and cmn_status=0
+            where llvetype_slno = 7 and year(cmn_lv_year) = year(?) and cmn_status=0
             union all
             select 
                 b.em_no,
@@ -1008,12 +1008,15 @@ module.exports = {
         where f.em_status = 1
         group by 1 ) tble `,
             [
+                data.currentyear,
                 data.fromDate1,
                 data.toDate1,
                 data.fromDate1,
                 data.toDate1,
+                data.currentyear,
                 data.fromDate1,
                 data.toDate1,
+                data.currentyear,
                 data.fromDate1,
                 data.toDate1,
             ],
