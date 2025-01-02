@@ -443,7 +443,7 @@ module.exports = {
                 cl_lv_taken
             From hrm_leave_cl
             where cl_lv_credit=1 and em_no = ? and cl_lv_taken < 1
-            and year(cl_lv_year) <= year(curdate()) and cl_lv_active=0`,
+            and year(cl_lv_year) = year(curdate()) and cl_lv_active=0`,
             [
                 data
             ],
@@ -469,7 +469,7 @@ module.exports = {
             FROM hrm_leave_holiday
             left join hrm_yearly_holiday_list on hrm_yearly_holiday_list.hld_slno=hrm_leave_holiday.hd_slno
             where  em_no= ? and  hl_lv_active = 0 and hl_lv_taken < 1
-            and year( hl_lv_year ) <= year(curdate())`,
+            and year( hl_lv_year ) = year(curdate())`,
             [
                 data
             ],
@@ -519,7 +519,7 @@ module.exports = {
             AND em_no = ?
             AND ernlv_taken < 1
             AND earn_lv_active=0
-            AND credit_year <= year(curdate())`,
+            AND credit_year = year(curdate())`,
             [
                 data
             ],
@@ -544,7 +544,7 @@ module.exports = {
             FROM hrm_leave_common 
             LEFT JOIN hrm_leave_type ON hrm_leave_type.lvetype_slno = hrm_leave_common.llvetype_slno
             WHERE em_no  = ?
-            AND year(cmn_lv_year) <= year(curdate()) and cmn_status=0`,
+            AND year(cmn_lv_year) = year(curdate()) and cmn_status=0`,
             [
                 data
             ],
