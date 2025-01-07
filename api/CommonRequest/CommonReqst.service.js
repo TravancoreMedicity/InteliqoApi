@@ -68,8 +68,10 @@ module.exports = {
 
         pool.query(
             `SELECT * FROM one_hour_request WHERE 
-            month(one_hour_duty_day) = month(?) AND em_id=? and cancel_status!=1 `,
+            month(one_hour_duty_day) = month(?) AND month(one_hour_duty_day) = year(?)
+            AND em_id=? and cancel_status!=1 `,
             [
+                data.one_hour_duty_day,
                 data.one_hour_duty_day,
                 data.em_id
             ],
@@ -777,9 +779,11 @@ module.exports = {
                 nopunch_slno,
                 np_hr_apprv_status
             FROM nopunchrequest
-            WHERE em_id=? AND month(nopunchdate) = month(?) AND req_status = 0`,
+            WHERE em_id=? AND month(nopunchdate) = month(?) AND month(nopunchdate) = year(?) 
+            AND req_status = 0`,
             [
                 data.em_id,
+                data.date,
                 data.date
             ],
             (error, result, feild) => {
