@@ -396,9 +396,12 @@ module.exports = {
             `SELECT 
                 nopunch_slno
             FROM nopunchrequest
-            WHERE em_id=? AND month(nopunchdate) = month(?) AND req_status = 0 and (np_incapprv_status!=2 and np_hod_apprv_status!=2 and np_hr_apprv_status!=2 and lv_cancel_status!=1 and lv_cancel_status_user!=1)`,
+            WHERE em_id=? AND month(nopunchdate) = month(?) AND month(nopunchdate) = year(?) 
+            AND req_status = 0 and (np_incapprv_status!=2 and np_hod_apprv_status!=2 
+            and np_hr_apprv_status!=2 and lv_cancel_status!=1 and lv_cancel_status_user!=1)`,
             [
                 data.em_id,
+                data.date,
                 data.date
             ],
             (error, result, feild) => {
