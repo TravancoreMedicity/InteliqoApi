@@ -9,7 +9,7 @@ const {
     dataannualcalculationEmployee, creditPrivilegeLeave, getLeaveProccedData, inactiveLastYearProcessData,
     inactiveCasualLeave, inactiveEarnLeave, inactiveHoliday, inactiveCommonLeave,
     getEsiPfDetails, getleaveProcessData, inactiveSickLeave, insertStatutoryCommonleave,
-    insertSickLeave, updateCommonUpdateSlno, getLeavecountbyDate
+    insertSickLeave, updateCommonUpdateSlno, getLeavecountbyDate, getYearlyLeaveCount
 } = require('../yearleaveprocess/yearllraveprocess.service');
 const logger = require('../../logger/logger');
 const { differenceInMonths, endOfYear, startOfYear } = require('date-fns');
@@ -977,6 +977,30 @@ module.exports = {
     getLeavecountbyDate: (req, res) => {
         const body = req.body;
         getLeavecountbyDate(body, (err, results) => {
+
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    data: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    data: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    getYearlyLeaveCount: (req, res) => {
+        const body = req.body;
+        getYearlyLeaveCount(body, (err, results) => {
 
             if (err) {
                 logger.errorLogger(err)
