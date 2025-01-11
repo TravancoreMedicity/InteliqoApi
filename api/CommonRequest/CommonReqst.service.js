@@ -67,13 +67,18 @@ module.exports = {
     checkInsertVal: (data, callBack) => {
 
         pool.query(
-            `SELECT * FROM one_hour_request WHERE 
-            month(one_hour_duty_day) = month(?) AND month(one_hour_duty_day) = year(?)
-            AND em_id=? and cancel_status!=1 `,
+            `SELECT   MONTH(one_hour_duty_day) AS month,
+            COUNT(request_slno) AS onehour_count
+            FROM one_hour_request WHERE 
+            em_id = ? 
+            AND YEAR(one_hour_duty_day) = YEAR(?) -- Replace with the desired year
+             AND cancel_status != 1 
+        GROUP BY MONTH(one_hour_duty_day)
+        ORDER BY month;`,
             [
-                data.one_hour_duty_day,
-                data.one_hour_duty_day,
-                data.em_id
+                data.em_id,
+                data.one_hour_duty_day
+
             ],
             (error, results, feilds) => {
                 if (error) {
