@@ -22,8 +22,7 @@ module.exports = {
         body.reason = body_result.value.reason;
 
         checkInsertVal(body, (err, results) => {
-            const value = JSON.parse(JSON.stringify(results))
-            if (Object.keys(value).length === 0) {
+            if (Object.keys(results)?.length === 0) {
                 create(body, (err, results) => {
 
                     if (err) {
