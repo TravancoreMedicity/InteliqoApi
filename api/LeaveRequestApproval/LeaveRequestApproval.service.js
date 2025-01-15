@@ -1793,7 +1793,8 @@ module.exports = {
     leaveReqRejectHrDetl: (data, callBack) => {
         pool.query(
             `UPDATE hrm_leave_request_detl
-            SET leave_status = 0
+            SET leave_status = 0,
+            leave_cancel=1
         WHERE lve_uniq_no=?`,
             [
                 data.lve_uniq_no
