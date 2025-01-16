@@ -359,7 +359,7 @@ module.exports = {
         )
     },
     ResignationApprovalHR: (data, callBack) => {
-        console.log(data);
+        // console.log(data);
         pool.query(
             `UPDATE hrm_resignation_request
                 SET 
@@ -948,6 +948,33 @@ module.exports = {
                     return callBack(error);
                 }
                 return callBack(null, results)
+            }
+        )
+    },
+    resignationHRReject: (data, callBack) => {
+        // console.log(data);
+        pool.query(
+            `UPDATE hrm_resignation_request
+                SET 
+                hr_id = ?,
+                hr_app_date = ?,
+                hr_app_status =?,
+                hr_coment =?,
+                resign_status =?
+                WHERE resig_slno =?`,
+            [
+                data.hr_id,
+                data.hr_app_date,
+                data.hr_app_status,
+                data.hr_coment,
+                data.resign_status,
+                data.resig_slno
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
             }
         )
     },

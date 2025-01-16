@@ -10,7 +10,8 @@ const { InsertResignationRequest, getInchargePending, getResignationRequestByID,
     checkResignationEntryExcist, InactiveEmployee, getUnauthorizedAbsentee,
     insertFromActiveEmp, getResignationRequestByEmpId, insertFinalSettlement,
     resignComplete, finalApprovalList, paymentSubmit, getSettlementData, deactivateLogin,
-    getResignationByEmID } = require('../ResignationRequest/ResignationRequest.service');
+    getResignationByEmID, resignationHRReject
+} = require('../ResignationRequest/ResignationRequest.service');
 const { validateResignationRequest, validateResignationRequestApprovalHOD, validateResignationRequestApprovalCEO, validateResignationRequestCancel,
     validateResignationRequestApprovalINcharge, validateResignationRequestApprovalHR } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger');
@@ -349,6 +350,8 @@ module.exports = {
                 const postData = JSON.parse(JSON.parse(JSON.stringify(body))?.postData);
                 postData.fileName = fileName
                 postData.fileType = fileType
+
+                console.log(postData);
 
                 ResignationApprovalHR(postData, (err, results) => {
                     if (err) {
@@ -860,5 +863,21 @@ module.exports = {
             });
         });
 
+    },
+    resignationHRReject: (req, res) => {
+        const body = req.body;
+        resignationHRReject(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                message: "Details Submitted SuccessFully"
+            })
+        })
     },
 }
