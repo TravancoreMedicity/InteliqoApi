@@ -1134,6 +1134,7 @@ module.exports = {
                 value.ernlv_credit, value.ernlv_taken, value.lv_process_slno, value.update_user, value.em_id,
                 value.credit_status, value.credit_year, value.special_remark]
             })
+
             insertPreviousearnLeave(a1, (err, results) => {
                 if (err) {
                     logger.errorLogger(err)
@@ -1163,6 +1164,7 @@ module.exports = {
 
     insertPreviouscasualleave: (req, res) => {
         const body = req.body;
+        //filter
         const mergedEarnLeaveArray = body.reduce((acc, employee) => {
             return acc.concat(employee.earnLeaveArray);
         }, []);
