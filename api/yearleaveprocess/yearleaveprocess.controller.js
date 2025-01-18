@@ -979,6 +979,7 @@ module.exports = {
     },
     getLeavecountbyDate: (req, res) => {
         const body = req.body;
+
         getLeavecountbyDate(body, (err, results) => {
 
             if (err) {
