@@ -9,7 +9,10 @@ const {
     dataannualcalculationEmployee, creditPrivilegeLeave, getLeaveProccedData, inactiveLastYearProcessData,
     inactiveCasualLeave, inactiveEarnLeave, inactiveHoliday, inactiveCommonLeave,
     getEsiPfDetails, getleaveProcessData, inactiveSickLeave, insertStatutoryCommonleave,
-    insertSickLeave, updateCommonUpdateSlno, getLeavecountbyDate, getYearlyLeaveCount
+    insertSickLeave, updateCommonUpdateSlno, getLeavecountbyDate, getYearlyLeaveCount,
+    getYearlyCasualLeaveCount, getYearlySickLeaveCount, getYearlyEarnLeaveCount,
+    updatePreviousLeave, insertPreviousearnLeave, insertPreviouscasualleave,
+    updatecarryforwardEl, updatecarryforwardCl, updatecarryforwardSl
 } = require('../yearleaveprocess/yearllraveprocess.service');
 const logger = require('../../logger/logger');
 const { differenceInMonths, endOfYear, startOfYear } = require('date-fns');
@@ -1022,15 +1025,182 @@ module.exports = {
             });
         });
     },
+    getYearlyCasualLeaveCount: (req, res) => {
+        const body = req.body;
+        getYearlyCasualLeaveCount(body, (err, results) => {
+
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    data: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    data: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    getYearlySickLeaveCount: (req, res) => {
+        const body = req.body;
+        getYearlySickLeaveCount(body, (err, results) => {
+
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    data: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    data: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    getYearlyEarnLeaveCount: (req, res) => {
+        const body = req.body;
+        getYearlyEarnLeaveCount(body, (err, results) => {
+
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    data: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    data: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    updatePreviousLeave: async (req, res) => {
+        const body = req.body;
+        updatecarryforwardSl(body).then(results => {
+            updatePreviousLeave(body).then(results => {
+                return res.status(200).json({
+                    success: 1,
+                    messagee: 'Update Successfully'
+                });
+            }).catch(err => {
+                return res.status(200).json({
+                    success: 0,
+                    messagee: "Error Occured , Please Contact HRD / IT"
+                });
+            })
+        }).catch(err => {
+            return res.status(200).json({
+                succes: 0,
+                messagee: "Error Occured , Please Contact HRD / IT"
+            });
+        })
+
+
+
+    },
+    insertPreviousearnLeave: (req, res) => {
+        const body = req.body;
+        //filter the array inside an array and combine into one array
+        const mergedEarnLeaveArray = body.reduce((acc, employee) => {
+            return acc.concat(employee.earnLeaveArray);
+        }, []);
+
+        updatecarryforwardEl(body).then(results => {
+            var a1 = mergedEarnLeaveArray.map((value, index) => {
+                return [value.em_no, value.ernlv_mnth, value.ernlv_year, value.ernlv_allowed,
+                value.ernlv_credit, value.ernlv_taken, value.lv_process_slno, value.update_user, value.em_id,
+                value.credit_status, value.credit_year, value.special_remark]
+            })
+            insertPreviousearnLeave(a1, (err, results) => {
+                if (err) {
+                    logger.errorLogger(err)
+                    return res.status(200).json({
+                        success: 2,
+                        message: err
+                    });
+                }
+                if (!results) {
+                    return res.status(200).json({
+                        success: 0,
+                        message: "No Results Found"
+                    });
+                }
+                return res.status(200).json({
+                    success: 1,
+                    message: "Data Created Successfully"
+                });
+            });
+        }).catch(err => {
+            return res.status(200).json({
+                succes: 0,
+                messagee: "Error Occured , Please Contact HRD / IT"
+            });
+        })
+    },
+
+    insertPreviouscasualleave: (req, res) => {
+        const body = req.body;
+        const mergedEarnLeaveArray = body.reduce((acc, employee) => {
+            return acc.concat(employee.earnLeaveArray);
+        }, []);
+
+        updatecarryforwardCl(body).then(results => {
+            var a1 = mergedEarnLeaveArray.map((value, index) => {
+                return [value.em_no, value.em_id, value.cl_lv_mnth, value.cl_lv_year,
+                value.cl_lv_allowed, value.cl_lv_credit, value.cl_lv_taken, value.lv_process_slno,
+                value.update_user, value.special_remark]
+            })
+            insertPreviouscasualleave(a1, (err, results) => {
+                if (err) {
+                    logger.errorLogger(err)
+                    return res.status(200).json({
+                        success: 2,
+                        message: err
+                    });
+                }
+                if (!results) {
+                    return res.status(200).json({
+                        success: 0,
+                        message: "No Results Found"
+                    });
+                }
+                return res.status(200).json({
+                    success: 1,
+                    message: "Data Created Successfully"
+                });
+            });
+        }).catch(err => {
+            return res.status(200).json({
+                succes: 0,
+                messagee: "Error Occured , Please Contact HRD / IT"
+            });
+        })
+
+
+
+
+    },
 }
-
-
-
-
-
-
-
-
-
-
-

@@ -619,7 +619,7 @@ module.exports = {
             FROM hrm_leave_cl 
             where em_id=? 
             and cl_lv_active='0'
-            and year(cl_lv_year) = year(curdate())`,
+            and year(cl_lv_mnth) = year(curdate())`,
             [
                 id
             ],
@@ -638,6 +638,7 @@ module.exports = {
         pool.query(
             `SELECT DATE_FORMAT(ernlv_mnth, "%M")ernlv_mnth,
                 DATE_FORMAT(ernlv_mnth, "%Y")year,
+                ernlv_year,
                 ernlv_allowed,
                 ernlv_credit,
                 ernlv_taken 

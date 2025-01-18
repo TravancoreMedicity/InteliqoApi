@@ -440,10 +440,11 @@ module.exports = {
                 MONTHNAME(cl_lv_mnth)cl_lv_mnth,
                 cl_bal_leave,
                 hl_lv_tkn_status,
-                cl_lv_taken
+                cl_lv_taken,
+                special_remark
             From hrm_leave_cl
             where cl_lv_credit=1 and em_no = ? and cl_lv_taken < 1
-            and year(cl_lv_year) = year(curdate()) and cl_lv_active=0`,
+            and year(cl_lv_mnth) = year(curdate()) and cl_lv_active=0`,
             [
                 data
             ],
@@ -513,7 +514,9 @@ module.exports = {
                 ernlv_mnth,
                 MONTHNAME(ernlv_mnth)ernlv_mnth,
                 ernlv_taken,
-                hl_lv_tkn_status
+                ernlv_year,
+                hl_lv_tkn_status,
+                special_remark
             FROM hrm_leave_earnlv
             WHERE ernlv_credit=1 
             AND em_no = ?
@@ -715,7 +718,7 @@ module.exports = {
     },
     inactiveCommonLeave: (data, callBack) => {
         pool.query(
-            `UPDATE hrm_leave_common SET cmn_status = 1 WHERE year(cm_lv_year) = ? AND em_no = ? `,
+            `UPDATE hrm_leave_common SET cmn_status = 1 WHERE year(cmn_lv_year) = ? AND em_no = ? `,
             [
                 data.lastYear,
                 data.em_no
@@ -1045,7 +1048,9 @@ module.exports = {
             takenSL,
             (SLcredit - takenSL) BalanceSL,
             dept_name,
-            sect_name
+            sect_name,
+            dept_id,
+            sect_id
         from (
         select 
             c.em_no,
@@ -1057,7 +1062,9 @@ module.exports = {
             sum(SLallowed) SLcredit,
             sum(takenSL) takenSL,
              g.dept_name,
-             h.sect_name
+             h.sect_name,
+             g.dept_id,
+             h.sect_id
         from(
             select 
                 em_no,
@@ -1187,6 +1194,307 @@ module.exports = {
                 }
                 return callBack(null, results);
             }
+        )
+    },
+    getYearlyCasualLeaveCount: (data, callBack) => {
+        pool.query(
+            `select 
+            em_no,
+            em_id,
+            em_name,
+            credited,
+            taken,
+             (credited - taken) balance,
+             carryforward,
+            dept_name,
+            sect_name,
+           dept_id,
+             sect_id,
+             lv_process_slno
+        from (
+        select 
+        f.em_id,
+            c.em_no,
+            f.em_name,
+            sum(clcredit) credited,
+            sum(takenCL) taken,
+            sum(carryforward) carryforward,
+             g.dept_name,
+             h.sect_name,
+             g.dept_id,
+             h.sect_id,
+             lv_process_slno
+        from(
+            select 
+                t.em_no,
+                sum(cl_lv_allowed) credited,
+                sum(cl_lv_credit) clcredit,
+                sum(cl_lv_taken) takenCL,
+                sum(carryforward_status) carryforward,
+                p.lv_process_slno
+            from hrm_leave_cl t
+              right join hrm_leave_process p on p.em_no=t.em_no
+            where  year(cl_lv_mnth) =year(?) and p.hrm_process_status='A'
+            group by em_no
+        ) as c right join hrm_emp_master f on c.em_no = f.em_no
+        right join hrm_department g on f.em_department=g.dept_id
+        right join hrm_dept_section h on f.em_dept_section=h.sect_id
+        where f.em_status = 1
+        group by 1 ) tble`,
+            [
+                data.currentyear
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getYearlySickLeaveCount: (data, callBack) => {
+        pool.query(
+            `select 
+            em_id,
+            em_no,
+            em_name,
+            credited,
+            taken,
+            (credited - taken) balance,
+            carryforward,
+            dept_name,
+            sect_name,
+            dept_id,
+            sect_id
+        from (
+        select 
+        f.em_id,
+            c.em_no,
+            f.em_name,
+            sum(SLallowed) credited,
+            sum(cmn_lv_taken) taken,
+            carryforward_status as carryforward,
+             g.dept_name,
+             h.sect_name,
+             g.dept_id,
+             h.sect_id
+        from(
+            select 
+                em_no,
+                cmn_lv_allowed SLallowed,
+               cmn_lv_taken,
+               carryforward_status
+                from hrm_leave_common 
+            where llvetype_slno = 7 and year(cmn_lv_year) = year(?) 
+             group by em_no
+        ) as c right join hrm_emp_master f on c.em_no = f.em_no
+        right join hrm_department g on f.em_department=g.dept_id
+        right join hrm_dept_section h on f.em_dept_section=h.sect_id
+        where f.em_status = 1
+        group by 1 ) tble`,
+            [
+                data.currentyear,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getYearlyEarnLeaveCount: (data, callBack) => {
+        pool.query(
+            `select 
+             em_id,
+             em_no,
+             em_name,
+             credited,
+             taken,
+             (credited - taken) balance,
+             carryforward,
+             dept_name,
+             sect_name,
+             dept_id,
+             sect_id,
+             lv_process_slno
+             from (
+                select 
+                f.em_id,
+                c.em_no,
+                f.em_name,
+                sum(ELcredit) credited,
+                sum(takenEL) taken,
+                sum(carryforward) carryforward,
+                g.dept_name,
+                h.sect_name,
+                g.dept_id,
+                h.sect_id,
+                lv_process_slno
+                from (
+                    select 
+                    t.em_no,
+                    sum(ernlv_allowed) ELallowed,
+                    sum(ernlv_credit) ELcredit,
+                    sum(ernlv_taken) takenEL,
+                    sum(carryforward_status) carryforward,
+                    p.lv_process_slno
+                    from hrm_leave_earnlv t
+                    right join hrm_leave_process p on p.em_no=t.em_no
+                    where  credit_year = ?   and p.hrm_process_status='A'
+                    group by em_no
+                    ) as c right join hrm_emp_master f on c.em_no = f.em_no
+                    right join hrm_department g on f.em_department=g.dept_id
+                    right join hrm_dept_section h on f.em_dept_section=h.sect_id
+                    where f.em_status = 1 
+                    group by 1 ) tble `,
+            [
+                data.currentyear
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    updatePreviousLeave: (body) => {
+        return new Promise((resolve, reject) => {
+            body.map((val) => {
+                pool.query(
+                    `UPDATE hrm_leave_common 
+                       SET cmn_lv_allowed = cmn_lv_allowed + ?, 
+                      cmn_lv_balance=cmn_lv_balance + ? 
+                       WHERE year(cmn_lv_year) = ? AND em_no = ? and llvetype_slno=7`,
+                    [val.balance, val.balance, val.cmn_lv_year, val.em_no],
+                    (error, results, feilds) => {
+                        if (error) {
+                            return reject(error)
+                        }
+                        return resolve(results)
+                    }
+                )
+            })
+
+        })
+    },
+
+    insertPreviousearnLeave: (data, callBack) => {
+        pool.query(
+            `insert  into hrm_leave_earnlv(
+                em_no,
+                ernlv_mnth, 
+                ernlv_year,
+                ernlv_allowed, 
+                ernlv_credit,
+                ernlv_taken,
+                lv_process_slno,
+                update_user,
+                em_id,
+                credit_status,
+                credit_year,
+                special_remark
+                ) values ?`,
+            [
+                data
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+
+    insertPreviouscasualleave: (data, callBack) => {
+        pool.query(
+            `insert  into hrm_leave_cl(
+                em_no, em_id,
+                cl_lv_mnth, 
+                cl_lv_year,
+                cl_lv_allowed, 
+                cl_lv_credit, 
+                cl_lv_taken,
+                lv_process_slno,
+                update_user,
+                special_remark)
+                values ?`,
+            [
+                data
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    updatecarryforwardEl: (body) => {
+        return Promise.all(body.map((val) => {
+            return new Promise((resolve, reject) => {
+                pool.query(
+                    `update hrm_leave_earnlv set 
+                    carryforward_status='1'
+                        where 
+                        credit_year=? and  em_id=? and ernlv_taken=0`,
+                    [
+                        val.carry_year,
+                        val.em_id
+                    ],
+                    (error, results, fields) => {
+                        if (error) {
+                            return reject(error)
+                        }
+                        return resolve(results)
+                    }
+                )
+            })
+        })
+        )
+    },
+    updatecarryforwardCl: (body) => {
+        return Promise.all(body.map((val) => {
+            return new Promise((resolve, reject) => {
+                pool.query(
+                    `UPDATE hrm_leave_cl SET carryforward_status = 1 
+                    WHERE year(cl_lv_mnth) = ? AND em_id = ? and  cl_lv_taken=0`,
+                    [
+                        val.carry_year,
+                        val.em_id
+                    ],
+                    (error, results, fields) => {
+                        if (error) {
+                            return reject(error)
+                        }
+                        return resolve(results)
+                    }
+                )
+            })
+        })
+        )
+    },
+    updatecarryforwardSl: (body) => {
+        return Promise.all(body.map((val) => {
+            return new Promise((resolve, reject) => {
+                pool.query(
+                    `UPDATE hrm_leave_common SET carryforward_status = 1 
+                    WHERE year(cmn_lv_year) = ? AND em_id = ? and llvetype_slno=7;`,
+                    [
+                        val.carry_year,
+                        val.em_id
+                    ],
+                    (error, results, fields) => {
+                        if (error) {
+                            return reject(error)
+                        }
+                        return resolve(results)
+                    }
+                )
+            })
+        })
         )
     },
 }
