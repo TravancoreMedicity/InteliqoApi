@@ -921,7 +921,7 @@ module.exports = {
                 b.em_no,
                 0 clallowed,
                 0 clcredit,
-                count(a.leave_status) takenCL,
+                sum(coalesce(a.leaveCount,0)) takenCL,
                 0 ELallowed,
                 0 ELcredit,
                 0 takenEL,
@@ -945,7 +945,9 @@ module.exports = {
                  0 SLallowed,
                  0 takenSL
              from hrm_halfdayrequest a
-             where lv_cancel_status=0 and lv_cancel_req_status_user=0 and a.leavedate >= ? and a.leavedate <= ?
+             where lv_cancel_status=0 and lv_cancel_req_status_user=0 
+             and  hf_hr_apprv_status!=2 and  hf_hr_apprv_status!=0
+             and a.leavedate >= ? and a.leavedate <= ?
              group by a.em_no 
             union all
             select 
@@ -1081,7 +1083,7 @@ module.exports = {
                 b.em_no,
                 0 clallowed,
                 0 clcredit,
-                count(a.leave_status) takenCL,
+                sum(coalesce(a.leaveCount,0)) takenCL,
                 0 ELallowed,
                 0 ELcredit,
                 0 takenEL,
@@ -1105,7 +1107,9 @@ module.exports = {
                  0 SLallowed,
                  0 takenSL
              from hrm_halfdayrequest a
-             where lv_cancel_status=0 and lv_cancel_req_status_user=0 and a.leavedate >= ? and a.leavedate <= ?
+             where lv_cancel_status=0 and lv_cancel_req_status_user=0 
+             and  hf_hr_apprv_status!=2 and  hf_hr_apprv_status!=0
+             and a.leavedate >= ? and a.leavedate <= ?
              group by a.em_no 
             union all
             select 

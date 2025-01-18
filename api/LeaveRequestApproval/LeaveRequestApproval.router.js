@@ -91,7 +91,8 @@ const {
     cancelApprovedHalfday,
     LeaveforHrApproval,
     HalfdayforHrApproval,
-    MisspunchforHrApproval
+    MisspunchforHrApproval,
+    cancelLeaveReqDetail
 } = require('../LeaveRequestApproval/LeaveRequestApproval.controller');
 
 
@@ -224,5 +225,7 @@ router.patch("/cancel/halfday", checkToken, cancelApprovedHalfday)
 router.get("/approval/leave", checkToken, LeaveforHrApproval)
 router.get("/approval/halfday", checkToken, HalfdayforHrApproval)
 router.get("/approval/misspunch", checkToken, MisspunchforHrApproval)
+
+router.post("/cancel/lvReqDetail", checkToken, cancelLeaveReqDetail)
 
 module.exports = router;
