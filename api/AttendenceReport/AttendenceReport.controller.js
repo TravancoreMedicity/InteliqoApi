@@ -1,4 +1,6 @@
-const { getReport, getDutyPlanBySection, getPunchMasterDataSectionWise, getPunchmastData, getPunchDataEmCodeWiseDateWise, getPunchDataDptWiseDateWise, getPunchMasterDataDeptWise } = require('../AttendenceReport/AttendenceReport.service');
+const { getReport, getDutyPlanBySection, getPunchMasterDataSectionWise, getPunchmastData,
+    getPunchDataEmCodeWiseDateWise, getPunchDataDptWiseDateWise, getPunchMasterDataDeptWise,
+    getInactivePunchDataDptWiseDateWise, getInactivePunchMasterDataDeptWise } = require('../AttendenceReport/AttendenceReport.service');
 
 const logger = require('../../logger/logger')
 module.exports = {
@@ -129,9 +131,61 @@ module.exports = {
 
         });
     },
+    getInactivePunchDataDptWiseDateWise: (req, res) => {
+        const body = req.body;
+        getInactivePunchDataDptWiseDateWise(body, (err, results) => {
+
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    su: 0,
+                    mesge: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    su: 2,
+                    mesge: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                su: 1,
+                resultPunch_data: results
+            });
+
+        });
+    },
     getPunchMasterDataDeptWise: (req, res) => {
         const body = req.body;
         getPunchMasterDataDeptWise(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                logger.infoLogger("No Records Found")
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                planData: results
+            });
+
+        });
+    },
+    getInactivePunchMasterDataDeptWise: (req, res) => {
+        const body = req.body;
+        getInactivePunchMasterDataDeptWise(body, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
