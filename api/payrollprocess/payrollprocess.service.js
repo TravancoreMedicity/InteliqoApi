@@ -495,7 +495,7 @@ module.exports = {
                 data.em_dept_section
             ],
             (error, results, feilds) => {
-                console.log(results);
+                // console.log(results);
                 if (error) {
                     return callBack(error);
                 }
