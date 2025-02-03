@@ -46,10 +46,11 @@ module.exports = {
                 clinicaltype,
                 doctor_status,
                 gross_salary,
-                holiday_type
+                holiday_type,
+                actual_doj
 
             )
-            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
                 data.em_no,
                 data.em_salutation,
@@ -92,7 +93,8 @@ module.exports = {
                 data.clinicaltype,
                 data.doctor_status,
                 data.recomend_salary,
-                data.leaveprocess_type
+                data.leaveprocess_type,
+                data.em_doj
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -146,7 +148,8 @@ module.exports = {
                 clinicaltype=?,
                 doctor_status=?,
                 gross_salary=?,
-                holiday_type=?
+                holiday_type=?,
+                actual_doj=?
                 WHERE em_no = ?`,
             [
                 data.em_salutation,
@@ -190,6 +193,7 @@ module.exports = {
                 data.doctor_status,
                 data.recomend_salary,
                 data.holiday_type,
+                data.actual_doj,
                 data.em_no
             ],
             (error, results, feilds) => {

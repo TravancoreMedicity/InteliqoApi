@@ -891,7 +891,7 @@ module.exports = {
     },
     checkAttendanceProcessDept: (data, callBack) => {
         pool.query(
-            `SELECT * FROM hrm_attendance_marking where attendance_marking_month='2023-10-01'
+            `SELECT * FROM hrm_attendance_marking where attendance_marking_month=?
             and em_id IN (?);
             `,
             [
@@ -1240,27 +1240,29 @@ module.exports = {
         // console.log(data)
         pool.query(
             `SELECT 
-                punch_slno,
-                duty_day,
-                shift_id,
-                emp_id,
-                em_no,
-                punch_in,
-                punch_out,
-                shift_in,
-                shift_out,
-                hrs_worked,
-                late_in,
-                early_out,
-                duty_desc,
-                duty_status,
-                holiday_status,
-                leave_status,
-                lvereq_desc,
-                lve_tble_updation_flag            
-            FROM punch_master 
-            WHERE duty_day >= ? and duty_day <= ?
-            AND em_no IN (?)`,
+            em_name,
+            punch_slno,
+            duty_day,
+            shift_id,
+            emp_id,
+            punch_master.em_no,
+            punch_in,
+            punch_out,
+            shift_in,
+            shift_out,
+            hrs_worked,
+            late_in,
+            early_out,
+            duty_desc,
+            duty_status,
+            holiday_status,
+            leave_status,
+            lvereq_desc,
+            lve_tble_updation_flag            
+        FROM punch_master 
+        LEFT JOIN hrm_emp_master on hrm_emp_master.em_id=punch_master.emp_id
+        WHERE duty_day >= ? and duty_day <= ?
+        AND punch_master.em_no IN (?)`,
             [
                 data.frDate,
                 data.trDate,
@@ -1485,6 +1487,24 @@ module.exports = {
             ],
             (error, results, feilds) => {
                 // console.log(results)
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    checkPunchMarkingHRView: (data, callBack) => {
+        pool.query(
+            `SELECT 
+                    last_update_date
+                FROM punchmarking_hr 
+                WHERE marking_month = ? AND deptsec_slno IN (?)`,
+            [
+                data.month,
+                data.section
+            ],
+            (error, results, feilds) => {
                 if (error) {
                     return callBack(error);
                 }

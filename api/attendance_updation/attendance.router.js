@@ -12,7 +12,8 @@ const { validateAttendance, processAttendData, getpunchmastcalcu,
     updatePunchMaster, updatePunchMarkingHR, updateDutyPlanTable, updateDelStatDutyPlanTable, checkPunchMarkingHR,
     getPunchReportLCCount, updateLCPunchMaster, getPData, monthlyUpdatePunchMaster,
     updatePunchMasterSingleRow, updatePunchMasterCalCulcated, deletePunchMasterSingleRow,
-    updateManualRequest, getManualRequestAll, InactiveManualrequest, getPunchMastDataByEMID
+    updateManualRequest, getManualRequestAll, InactiveManualrequest, getPunchMastDataByEMID,
+    checkPunchMarkingHRView
 } = require("../attendance_updation/attendance.controller")
 
 router.post("/", checkToken, validateAttendance);
@@ -68,5 +69,6 @@ router.post("/updateManualRequest", checkToken, updateManualRequest)
 router.get("/getAllManualrequest", checkToken, getManualRequestAll)
 router.patch("/inactiveStatus", checkToken, InactiveManualrequest)
 router.post("/punchMastData/emid", checkToken, getPunchMastDataByEMID)
+router.post("/checkPunchMarkingHRView", checkToken, checkPunchMarkingHRView)
 
 module.exports = router;
