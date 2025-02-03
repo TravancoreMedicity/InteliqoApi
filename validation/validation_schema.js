@@ -587,6 +587,7 @@ const validateempmasterEdit = Joi.object({
         clinicaltype: Joi.number().optional(),
         doctor_status: Joi.number().optional(),
         holiday_type: Joi.number().required(),
+        actual_doj: Joi.date().required(),
 })
 // VALIDATE EMPLOYEupdate
 const validateempmasterupdate = Joi.object({

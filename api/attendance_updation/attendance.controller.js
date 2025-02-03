@@ -18,7 +18,7 @@ const { getEmployeeDetl, getEmployeeShiftDetl, getDepartmentShiftMast,
     updatePunchMaster, updatePunchMarkingHR, updateDutyPlanTable, updateDelStatDutyPlanTable, checkPunchMarkingHR,
     updatePunchMasterSingleRow, updatePunchMasterCalCulcated, getPunchReportLCCount, updateLCPunchMaster, getPData,
     deletePunchMasterSingleRow, updateManualRequest, createManualrequestLog, getManualRequestAll,
-    InactiveManualrequest, getPunchMastDataByEMID
+    InactiveManualrequest, getPunchMastDataByEMID, checkPunchMarkingHRView
 } = require("../attendance_updation/attendance.service")
 //SHIFT DETAILS
 //get the shift details 
@@ -1898,6 +1898,29 @@ module.exports = {
                 planData: results
             });
 
+        });
+    },
+    checkPunchMarkingHRView: (req, res) => {
+        const body = req.body
+        checkPunchMarkingHRView(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+            if (results.length === 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found",
+                    data: []
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
         });
     },
 }
