@@ -400,6 +400,7 @@ module.exports = {
         WHERE 
             em_id = ? 
             AND YEAR(nopunchdate) = YEAR(?) -- Replace with the desired year
+            AND month(nopunchdate) = month(?)
             AND req_status = 0 
             AND np_incapprv_status != 2 
             AND np_hod_apprv_status != 2 
@@ -410,6 +411,7 @@ module.exports = {
         ORDER BY month;`,
             [
                 data.em_id,
+                data.date,
                 data.date
             ],
             (error, result, feild) => {
