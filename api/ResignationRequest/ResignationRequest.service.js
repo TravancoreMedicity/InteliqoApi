@@ -359,7 +359,6 @@ module.exports = {
         )
     },
     ResignationApprovalHR: (data, callBack) => {
-        // console.log(data);
         pool.query(
             `UPDATE hrm_resignation_request
                 SET 
@@ -943,7 +942,6 @@ module.exports = {
                 data
             ],
             (error, results, fields) => {
-                //console.log("results", results);
                 if (error) {
                     return callBack(error);
                 }
@@ -952,7 +950,6 @@ module.exports = {
         )
     },
     resignationHRReject: (data, callBack) => {
-        // console.log(data);
         pool.query(
             `UPDATE hrm_resignation_request
                 SET 

@@ -1233,6 +1233,7 @@ const validatecommonsettings = Joi.object({
         holiday_leave_request: Joi.number().optional(),
         halfday_time_count: Joi.number().optional(),
         punch_taken_hour_count: Joi.number().optional(),
+        external_trainee: Joi.number().optional(),
 })
 //validate carryforward
 const validatecarryforward = Joi.object({

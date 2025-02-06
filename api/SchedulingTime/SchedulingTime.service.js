@@ -95,7 +95,6 @@ module.exports = {
     },
 
     SchedulingTimeDelete: (data, callback) => {
-        console.log(data);
         pool.query(
             `UPDATE scheduling_time 
             SET schedule_status=0

@@ -54,7 +54,7 @@ module.exports = {
 
         // checkUpdateVal(body, (err, results) => {
 
-        //     console.log(results)
+
         //     const value = JSON.parse(JSON.stringify(results))
         //     if (Object.keys(value).length === 0) {
 

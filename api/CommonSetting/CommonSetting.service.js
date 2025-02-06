@@ -51,9 +51,10 @@ module.exports = {
                 hod_leave_day_count,
                 holiday_leave_request,
                 halfday_time_count,
-                punch_taken_hour_count
+                punch_taken_hour_count,
+                external_trainee
                 )
-                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
         )
 
         [
@@ -104,7 +105,8 @@ module.exports = {
             data.hod_leave_day_count,
             data.holiday_leave_request,
             data.halfday_time_count,
-            data.punch_taken_hour_count
+            data.punch_taken_hour_count,
+            data.external_trainee
         ],
             (error, results, feilds) => {
                 if (error) {
@@ -176,7 +178,8 @@ module.exports = {
                 hod_leave_day_count=?,
                 holiday_leave_request=?,
                 halfday_time_count=?,
-                punch_taken_hour_count=?
+                punch_taken_hour_count=?,
+                external_trainee=?
                 WHERE setting_slno =?`,
 
             [
@@ -228,6 +231,7 @@ module.exports = {
                 data.holiday_leave_request,
                 data.halfday_time_count,
                 data.punch_taken_hour_count,
+                data.external_trainee,
                 data.setting_slno
             ],
             (error, results, feilds) => {
