@@ -432,7 +432,6 @@ module.exports = {
 
             const detlPostData = leaveRequestDetlData?.map((e) => [e.leaveid, e.lveDate, e.leave_processid, e.leave_typeid, e.status, e.leavetype_name, e.leave_name, e.leaveCount, e.singleleave, e.leaveCount])
 
-            // console.log(leaveRequestMasterData);
 
             let dateCheck = {
                 fromDate: format(new Date(leaveRequestMasterData.leavefrom_date), "yyyy-MM-dd"),
@@ -490,10 +489,6 @@ module.exports = {
                                         empNumber: e.empNo
                                     }
                                 })
-
-                            // console.log(sickLeavePostData)
-                            // console.log(commonPostData)
-                            // console.log(nonCommonPostData)
                             const comnPostData = [...commonPostData, ...sickLeavePostData]
 
                             //UPDATING COMMON LEAVES
@@ -565,15 +560,11 @@ module.exports = {
                                             }) : null
                             })
 
-                            // console.log(promiseToUpdateCommonLeave)
-                            // console.log(promiseToUpdateCasualLeave)
-
                             const LeaveUpdationPromise = [...promiseToUpdateCommonLeave, ...promiseToUpdateCasualLeave]
 
                             //UPDATION PROMISESS
                             await Promise.allSettled(LeaveUpdationPromise)
                                 .then((result) => {
-                                    // console.log(result)
                                     const successResult = result?.find((e) => e.status === 'rejected')
                                     if (successResult === undefined) {
                                         return res.status(200).json({

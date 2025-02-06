@@ -621,10 +621,8 @@ module.exports = {
                 }
             );
         }).then((result) => {
-            // console.log('Query successful:', result.data[0].serial_current);
             return { status: 1, data: result.data[0].serial_current }; // Forward the result to the next .then() handler
         }).catch((error) => {
-            // console.error('Error during query:', error);
             throw error; // Rethrow the error for further handling
         });
     },
@@ -728,7 +726,6 @@ module.exports = {
 
         try {
             const result = await Promise.all(promises);
-            // console.log('Inserted records:', result);
             return { status: 1, message: 'success' };
         } catch (error) {
             return { status: 0, message: error };

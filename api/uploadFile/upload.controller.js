@@ -6,31 +6,23 @@ const logger = require('../../logger/logger');
 const { log } = require('winston');
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    //  console.log(file);
-
     const id = req.body.em_id;
-
-    // console.log(id);
     // File or directtory check 
     const filepath = path.join('D:/DocMeliora/Inteliqo/', "PersonalRecords", `${id}`)
     // const filepath = path.join(__dirname, "api", `${id}`)
-    // console.log(filepath)
 
     if (fs.existsSync(filepath)) {
       // Do something
-      // console.log("file excist")
       cb(null, `${filepath}`);
     } else {
       fs.mkdir(path.join('D:/DocMeliora/Inteliqo/', "PersonalRecords", `${id}`), {}, (err) => {
 
-        // console.log(err);
         if (err) {
           return cb(new Error('Error Occured while Mkdir'));
         }
         cb(null, `${filepath}`);
       })
     }
-    // cb(null, 'D:/Upload')
   },
   filename: function (req, file, cb) {
     cb(null, 'profilePic' + path.extname(file.originalname))
@@ -102,7 +94,6 @@ const upload = multer({
       cb(null, true);
     } else {
       cb(null, false);
-      // console.log('Only .png, .jpg and .jpeg format allowed!')
       return cb(new Error('Only .png, .jpg and .jpeg format allowed!'));
     }
   },
@@ -133,7 +124,6 @@ module.exports = {
   uploadfile: (req, res) => {
     upload(req, res, (err) => {
       const body = req.body;
-      // console.log(body)
       // FILE SIZE ERROR
       if (err instanceof multer.MulterError) {
         // return res.end("Max file size 2MB allowed!");
@@ -161,8 +151,6 @@ module.exports = {
       }
       // SUCCESS
       else {
-        // console.log("File uploaded successfully!");
-        // console.log("File response", req.file);
 
         insertProfile(body, (err, results) => {
           if (err) {

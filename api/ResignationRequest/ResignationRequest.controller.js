@@ -22,7 +22,6 @@ const { uploadManualreqst } = require('../ManualRequest/Manual.controller');
 
 module.exports = {
     InsertResignationRequest: (req, res) => {
-        // console.log(req.file)
         uploadResignationReqFiles(req, res, (err) => {
             if (err) {
                 return res.status(200).json({
@@ -350,9 +349,6 @@ module.exports = {
                 const postData = JSON.parse(JSON.parse(JSON.stringify(body))?.postData);
                 postData.fileName = fileName
                 postData.fileType = fileType
-
-                console.log(postData);
-
                 ResignationApprovalHR(postData, (err, results) => {
                     if (err) {
                         logger.errorLogger(err)
@@ -838,7 +834,6 @@ module.exports = {
         });
     },
     getResignationByEmID: (req, res) => {
-        // console.log(req.params);
         const id = req.params.id;
 
         getResignationByEmID(id, (err, results) => {

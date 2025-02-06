@@ -566,7 +566,6 @@ module.exports = {
                 data.empList
             ],
             (error, results, feilds) => {
-                // console.log(results)
                 if (error) {
                     return callBack(error);
                 }
@@ -1044,7 +1043,6 @@ module.exports = {
         )
     },
     updatePunchMarkingHR: (data, callBack) => {
-        // console.log(data)
         pool.query(
             `UPDATE punchmarking_hr
                 SET status = 1,
@@ -1167,7 +1165,6 @@ module.exports = {
                 )
             })
         })).then((updateResult) => {
-            // console.log(updateResult)
             const dbUpdateResult = updateResult?.find(e => e.status === 'rejected')
             if (dbUpdateResult === undefined) {
                 return 1
@@ -1237,7 +1234,6 @@ module.exports = {
     // lvereq_desc,
     // lve_tble_updation_flag
     getPData: (data, callBack) => {
-        // console.log(data)
         pool.query(
             `SELECT 
             em_name,
@@ -1269,7 +1265,6 @@ module.exports = {
                 data.empList
             ],
             (error, datas, feilds) => {
-                // console.log(datas)
                 if (error) {
                     return callBack(error);
                 }
@@ -1486,7 +1481,24 @@ module.exports = {
                 data.empList
             ],
             (error, results, feilds) => {
-                // console.log(results)
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    checkPunchMarkingHRView: (data, callBack) => {
+        pool.query(
+            `SELECT 
+                    last_update_date
+                FROM punchmarking_hr 
+                WHERE marking_month = ? AND deptsec_slno IN (?)`,
+            [
+                data.month,
+                data.section
+            ],
+            (error, results, feilds) => {
                 if (error) {
                     return callBack(error);
                 }
