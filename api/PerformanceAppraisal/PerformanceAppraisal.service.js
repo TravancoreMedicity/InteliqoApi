@@ -143,7 +143,8 @@ module.exports = {
             INNER JOIN hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
             INNER JOIN hrm_dept_section on hrm_emp_master.em_dept_section=hrm_dept_section.sect_id
             INNER JOIN designation on hrm_emp_master.em_designation=designation.desg_slno
-            WHERE em_cont_close='C' and em_cont_renew='R' and em_cont_compl_status='C' and em_status=1 
+            WHERE em_cont_close='C' and em_cont_renew='R' and em_cont_compl_status='C' and status!=1
+            and em_status=1 
             GROUP BY hrm_emp_master.em_id,
                 hrm_emp_master.em_no,
                 hrm_emp_master.em_name,
