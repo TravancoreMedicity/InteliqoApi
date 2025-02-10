@@ -11,7 +11,7 @@ const { create, checkInsertVal, createGenralRq, createOndutyRequest, createEnabl
     OndutyForApprovalHR,
     CheckOndutyExistorNot
 } = require('../CommonRequest/CommonReqst.service')
-const { InsertLeaveCalc } = require('../LeaveRequestApproval/LeaveRequestApproval.service')
+const { InsertLeaveCalc, HRhalfDayPuchMast } = require('../LeaveRequestApproval/LeaveRequestApproval.service')
 const { validateOneHourReqst } = require('../../validation/validation_schema');
 const { deletePunchMasterSingleRow } = require('../attendance_updation/attendance.service');
 
@@ -544,100 +544,84 @@ module.exports = {
     },
     addHrComment: (req, res) => {
         const body = req.body;
-        // addHrComment(body, (err, results) => {
-        //     if (err) {
-        //         logger.errorLogger(err)
-        //         return res.status(200).json({
-        //             success: 0,
-        //             message: err
-        //         });
-        //     }
-        //     else if (!results) {
-        //         return res.status(200).json({
-        //             success: 2,
-        //             message: "Record Not Found"
-        //         });
-        //     }
-        //     else {
-
-        if (body.checkinflag === 1) {
-            HRNopunchMasterIn(body, (err, results) => {
-                if (err) {
-                    logger.errorLogger(err)
-                    return res.status(200).json({
-                        success: 0,
-                        message: err
-                    });
-                }
-                else if (!results) {
-                    return res.status(200).json({
-                        success: 2,
-                        message: "Record Not Found"
-                    });
-                }
-                else {
-                    addHrComment(body, (err, results) => {
-                        if (err) {
-                            logger.errorLogger(err)
-                            return res.status(200).json({
-                                success: 0,
-                                message: err
-                            });
-                        }
-                        else if (!results) {
-                            return res.status(200).json({
-                                success: 2,
-                                message: "Record Not Found"
-                            });
-                        }
+        // if (body.checkinflag === 1) {
+        HRhalfDayPuchMast(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+            else {
+                addHrComment(body, (err, results) => {
+                    if (err) {
+                        logger.errorLogger(err)
                         return res.status(200).json({
-                            success: 1,
-                            message: "Lve Master table Updated"
+                            success: 0,
+                            message: err
                         });
-                    })
-                }
-            });
-
-        }
-        else if (body.checkoutflag === 1) {
-
-            HRNopunchMasterOut(body, (err, results) => {
-                if (err) {
-                    logger.errorLogger(err)
-                    return res.status(200).json({
-                        success: 0,
-                        message: err
-                    });
-                }
-                else if (!results) {
-                    return res.status(200).json({
-                        success: 2,
-                        message: "Record Not Found"
-                    });
-                }
-                else {
-                    addHrComment(body, (err, results) => {
-                        if (err) {
-                            logger.errorLogger(err)
-                            return res.status(200).json({
-                                success: 0,
-                                message: err
-                            });
-                        }
-                        else if (!results) {
-                            return res.status(200).json({
-                                success: 2,
-                                message: "Record Not Found"
-                            });
-                        }
+                    }
+                    else if (!results) {
                         return res.status(200).json({
-                            success: 1,
-                            message: "Lve Master table Updated"
+                            success: 2,
+                            message: "Record Not Found"
                         });
-                    })
-                }
-            });
-        }
+                    }
+                    return res.status(200).json({
+                        success: 1,
+                        message: "Lve Master table Updated"
+                    });
+                })
+            }
+        });
+
+        // }
+        // else if (body.checkoutflag === 1) {
+
+        //     HRNopunchMasterOut(body, (err, results) => {
+        //         if (err) {
+        //             logger.errorLogger(err)
+        //             return res.status(200).json({
+        //                 success: 0,
+        //                 message: err
+        //             });
+        //         }
+        //         else if (!results) {
+        //             return res.status(200).json({
+        //                 success: 2,
+        //                 message: "Record Not Found"
+        //             });
+        //         }
+        //         else {
+        //             addHrComment(body, (err, results) => {
+        //                 if (err) {
+        //                     logger.errorLogger(err)
+        //                     return res.status(200).json({
+        //                         success: 0,
+        //                         message: err
+        //                     });
+        //                 }
+        //                 else if (!results) {
+        //                     return res.status(200).json({
+        //                         success: 2,
+        //                         message: "Record Not Found"
+        //                     });
+        //                 }
+        //                 return res.status(200).json({
+        //                     success: 1,
+        //                     message: "Lve Master table Updated"
+        //                 });
+        //             })
+        //         }
+        //     });
+        // }
     },
     checkMispunchRequest: (req, res) => {
 
