@@ -351,11 +351,10 @@ module.exports = {
     updateConreactrenewAppr: (data, callBack) => {
         pool.query(
             `UPDATE hrm_emp_contract_detl
-                SET contract_renew_appr=?
+                SET status=1
                 WHERE em_no =?`,
             [
-                data.contract_renew_appr,
-                data.em_no
+                data.old_emno
             ],
             (error, results, feilds) => {
                 if (error) {
