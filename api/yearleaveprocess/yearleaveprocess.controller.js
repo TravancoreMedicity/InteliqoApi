@@ -1200,9 +1200,32 @@ module.exports = {
                 messagee: "Error Occured , Please Contact HRD / IT"
             });
         })
-
-
-
-
+    },
+    insertPrevious: (req, res) => {
+        const body = req.body;
+        var a1 = body.map((value, index) => {
+            return [value.em_no, value.ernlv_mnth, value.ernlv_year, value.ernlv_allowed,
+            value.ernlv_credit, value.ernlv_taken, value.lv_process_slno, value.update_user, value.em_id,
+            value.credit_status, value.credit_year, value.special_remark]
+        })
+        insertPreviousearnLeave(a1, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+            if (!results) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Results Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                message: "Data Created Successfully"
+            });
+        });
     },
 }

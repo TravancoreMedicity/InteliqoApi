@@ -79,7 +79,9 @@ module.exports = {
     insertDutyplan: (req, res) => {
         const body = req.body;
         var a1 = body.map((value, index) => {
-            return [value.date, value.emp_id, value.em_no, value.shift, value.holidayStatus, value.holidayName, value.holidaySlno]
+            return [value.date, value.emp_id, value.em_no, value.shift,
+            value.holidayStatus, value.holidayName, value.holidaySlno,
+            value.plan_user]
         })
 
         insertDutyplan(a1, (err, results) => {

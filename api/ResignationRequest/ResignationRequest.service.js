@@ -507,7 +507,8 @@ module.exports = {
             hr_app_status,
             inch_coment,
             hod_coment,
-            resignation_type
+            resignation_type,
+            relieving_date
             FROM hrm_resignation_request
             left join hrm_department on hrm_department.dept_id=hrm_resignation_request.dept_id
             left join hrm_dept_section on hrm_dept_section.sect_id=hrm_resignation_request.sect_id

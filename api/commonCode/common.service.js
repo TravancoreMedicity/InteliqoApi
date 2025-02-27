@@ -1608,7 +1608,8 @@ module.exports = {
             R.user_grp_slno as groupmenu,
             A.desg_name,
             B.dept_name,
-            D.sect_name
+            D.sect_name,
+            E.actual_doj
         FROM hrm_emp_master E 
         LEFT JOIN hrm_emp_category C ON C.category_slno = E.em_category
         LEFT JOIN module_group_user_rights R on R.emp_slno = E.em_id 

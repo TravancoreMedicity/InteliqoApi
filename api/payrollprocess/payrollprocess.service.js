@@ -1133,7 +1133,8 @@ module.exports = {
             left join hrm_emp_personal on hrm_emp_personal.em_id=hrm_emp_master.em_id
             left join hrm_emp_pfesi on hrm_emp_pfesi.em_id=hrm_emp_master.em_id
             where hrm_emp_master.em_department IN (?)
-            and hrm_emp_master.em_dept_section IN (?)  and em_status=1  and hrm_emp_master.em_no!=1 and doctor_status=0
+            and hrm_emp_master.em_dept_section IN (?)  and em_status=1  
+            and hrm_emp_master.em_no!=1 and doctor_status=0
             group by hrm_emp_master.em_no,
             em_name,
             gross_salary,
@@ -1429,7 +1430,9 @@ module.exports = {
             hrm_processed_salary_details.gross_salary,
             total_salary,
             holidayworked,
-            holiday_amount
+            holiday_amount,
+            inst_emp_type,
+            em_account_no
              FROM hrm_processed_salary_details 
              left join hrm_emp_master on hrm_emp_master.em_id=hrm_processed_salary_details.em_id
              left join hrm_branch on hrm_branch.branch_slno=hrm_processed_salary_details.branch_id
@@ -1438,6 +1441,7 @@ module.exports = {
              left join hrm_emp_category on hrm_emp_category.category_slno=hrm_processed_salary_details.category_id
              left join designation on designation.desg_slno=hrm_processed_salary_details.designation_id
              left join institution_type on institution_type.inst_slno=hrm_processed_salary_details.institution_slno
+             left join hrm_emp_personal on hrm_emp_personal.em_id=hrm_emp_master.em_id
              where processed_month=? `,
             [
                 data.month
@@ -1455,11 +1459,12 @@ module.exports = {
             `update payroll_processed_salary 
             set salary_status=0 ,
             update_user=?
-            where dept_id=? and sect_id=? `,
+            where dept_id=? and sect_id=? and salary_month=?`,
             [
                 data.update_user,
                 data.dept_id,
-                data.sect_id
+                data.sect_id,
+                data.processed_month
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -1574,6 +1579,79 @@ module.exports = {
             [
                 data.em_department,
                 data.em_dept_section
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    ActivatePayrollProcess: (data, callBack) => {
+        pool.query(
+            `update payroll_processed_salary 
+            set salary_status=1 ,
+            update_user=?
+            where dept_id=? and sect_id=? and salary_month=?`,
+            [
+                data.update_user,
+                data.dept_id,
+                data.sect_id,
+                data.processed_month
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getPayrollDetailsByDept: (data, callBack) => {
+        pool.query(
+            `SELECT 
+            hrm_processed_salary_details.em_no,
+            em_name,
+            branch_name,
+            dept_name,
+            sect_name,
+            ecat_name,
+            desg_name,
+            inst_emp_type
+            account_number,
+            ifsc_number,
+            total_days,
+            leave_count,
+            holiday_count,
+            halfday_lop_count,
+            lc_count,
+            total_lop_count,
+            total_pay_days,
+            lop_amount,
+            nps_amount,
+            lwf_amount,
+            deduction_amount,
+            hrm_processed_salary_details.gross_salary,
+            total_salary,
+            holidayworked,
+            holiday_amount,
+            inst_emp_type,
+            em_account_no
+             FROM hrm_processed_salary_details 
+             left join hrm_emp_master on hrm_emp_master.em_id=hrm_processed_salary_details.em_id
+             left join hrm_branch on hrm_branch.branch_slno=hrm_processed_salary_details.branch_id
+             left join hrm_department on hrm_department.dept_id=hrm_processed_salary_details.dept_id
+             left join hrm_dept_section on hrm_dept_section.sect_id=hrm_processed_salary_details.sect_id
+             left join hrm_emp_category on hrm_emp_category.category_slno=hrm_processed_salary_details.category_id
+             left join designation on designation.desg_slno=hrm_processed_salary_details.designation_id
+             left join institution_type on institution_type.inst_slno=hrm_processed_salary_details.institution_slno
+             left join hrm_emp_personal on hrm_emp_personal.em_id=hrm_emp_master.em_id
+             where processed_month=? and hrm_processed_salary_details.dept_id=? and hrm_processed_salary_details.sect_id=?`,
+            [
+                data.month,
+                data.dept_id,
+                data.sect_id
             ],
             (error, results, feilds) => {
                 if (error) {
