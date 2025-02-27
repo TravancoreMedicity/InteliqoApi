@@ -52,9 +52,10 @@ module.exports = {
                 holiday_leave_request,
                 halfday_time_count,
                 punch_taken_hour_count,
-                external_trainee
+                external_trainee,
+                earnlvCategory
                 )
-                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
         )
 
         [
@@ -106,7 +107,8 @@ module.exports = {
             data.holiday_leave_request,
             data.halfday_time_count,
             data.punch_taken_hour_count,
-            data.external_trainee
+            data.external_trainee,
+            JSON.stringify(data.earnlvCategory)
         ],
             (error, results, feilds) => {
                 if (error) {
@@ -179,7 +181,8 @@ module.exports = {
                 holiday_leave_request=?,
                 halfday_time_count=?,
                 punch_taken_hour_count=?,
-                external_trainee=?
+                external_trainee=?,
+                earnlvCategory=?
                 WHERE setting_slno =?`,
 
             [
@@ -232,6 +235,7 @@ module.exports = {
                 data.halfday_time_count,
                 data.punch_taken_hour_count,
                 data.external_trainee,
+                JSON.stringify(data.earnlvCategory),
                 data.setting_slno
             ],
             (error, results, feilds) => {

@@ -585,7 +585,6 @@ module.exports = {
                 em_prob_end_date=?,
                 contract_status=?,
                 em_doj=?,
-                actual_doj=?,
                 em_designation=?
             where em_id=?`,
                 [
@@ -595,7 +594,6 @@ module.exports = {
                     data.em_prob_end_date,
                     data.contract_status,
                     data.em_doj,
-                    data.actual_doj,
                     data.em_designation,
                     data.em_id
                 ],

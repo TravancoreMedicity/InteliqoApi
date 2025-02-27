@@ -119,7 +119,8 @@ module.exports = {
                 shift_id,
                 holiday,
                 holiday_name,
-                holiday_slno
+                holiday_slno,
+                plan_user
             ) values ?`,
             [
                 data
@@ -138,12 +139,14 @@ module.exports = {
                 pool.query(
                     `update hrm_duty_plan
                             set shift_id=?,
-                            offday_flag=?
+                            offday_flag=?,
+                            edit_user=?
                         where plan_slno=?
                         and attendance_update_flag!=1`,
                     [
                         val.shift_id,
                         val.offday,
+                        val.edit_user,
                         val.plan_slno
                     ],
                     (error, results, fields) => {
@@ -257,9 +260,10 @@ module.exports = {
         return new Promise((resolve, reject) => {
             newPlan.map((val) => {
                 pool.query(
-                    `UPDATE hrm_duty_plan SET shift_id = ? WHERE plan_slno = ? AND shift_id  != ?`,
+                    `UPDATE hrm_duty_plan SET shift_id = ?,edit_user=? WHERE plan_slno = ? AND shift_id  != ?`,
                     [
                         val.shift_id,
+                        val.edit_user,
                         val.plan_slno,
                         naShift
                     ],
