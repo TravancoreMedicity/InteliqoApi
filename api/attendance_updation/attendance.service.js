@@ -553,7 +553,8 @@ module.exports = {
                 lve_tble_updation_flag,
                 dept_name,sect_name,
                 hrm_department.dept_id,
-                hrm_dept_section.sect_id
+                hrm_dept_section.sect_id,
+                gross_salary
             FROM punch_master 
             left join hrm_emp_master on hrm_emp_master.em_no=punch_master.em_no
             left join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
