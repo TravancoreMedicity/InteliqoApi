@@ -1525,4 +1525,28 @@ module.exports = {
             }
         )
     },
+    InactiveDutyplan: (data) => {
+        return new Promise((resolve, reject) => {
+            data.map((val) => {
+                pool.query(
+                    `update hrm_duty_plan
+                    set attendance_update_flag=1
+                    where em_no=? and 
+                     date(duty_day) = ?`,
+                    [
+                        val.em_no,
+                        val.duty_day
+                    ],
+                    (error, results, fields) => {
+
+
+                        if (error) {
+                            return reject(error)
+                        }
+                        return resolve(results)
+                    }
+                )
+            })
+        })
+    },
 }

@@ -253,4 +253,213 @@ module.exports = {
             }
         )
     },
+    empMisspunchyearwise: (data, callBack) => {
+        pool.query(
+            `SELECT 
+            nopunchrequest.em_no,
+            em_name,
+            dept_name,
+            sect_name,
+            np_inc_apprv_req,
+            np_incapprv_status,
+            np_hod_apprv_req,
+            np_hod_apprv_status,
+            np_hr_aprrv_requ,
+            np_hr_apprv_status,
+            np_reason,
+            np_inc_apprv_cmnt,
+            np_hod_apprv_cmnt,
+            np_hr_apprv_cmnt,
+            nopunchdate,
+            checkintime,
+            checkouttime,
+            checkinflag,
+            checkoutflag,
+            creteddate,
+            lv_cancel_status,
+            lv_cancel_req_status_user,
+            lv_cancel_cmnt,
+            lv_cancel_cmnt_user
+            FROM nopunchrequest
+            left join hrm_emp_master on  nopunchrequest.em_no =hrm_emp_master.em_no
+            left join hrm_department on  nopunchrequest.em_department =hrm_department.dept_id
+            inner join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
+            where nopunchrequest.em_id=? and year(nopunchdate)=year(?)`,
+            [
+                data.em_id,
+                data.dateyear
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    emOnehouryearwise: (data, callBack) => {
+        pool.query(
+            `SELECT 
+            one_hour_request.em_id,
+            one_hour_request.em_no,
+            em_name,
+            one_hour_duty_day,
+            dept_name,
+            sect_name,
+            incharge_req_status,
+            incharge_approval_status,
+            hod_req_status,
+            hod_approval_status,
+            hr_req_status,
+            hr_approval_status,
+            request_date,
+            incharge_approval_comment,
+            hod_approval_comment,
+            hr_approval_comment,
+            cancel_status,
+            cancel_comment,
+            checkin_flag,
+            checkout_flag,
+            reason
+            FROM one_hour_request
+            inner join hrm_emp_master on  one_hour_request.em_no =hrm_emp_master.em_no
+            inner join hrm_department on  one_hour_request.dept_id =hrm_department.dept_id
+			inner join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
+            where  one_hour_request.em_id=? and year(one_hour_duty_day)=year(?)`,
+            [
+                data.em_id,
+                data.dateyear
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    empOndutyyearwise: (data, callBack) => {
+        pool.query(
+            `SELECT 
+            on_duty_request.em_no,
+            on_duty_date,
+            dept_name,
+            em_name,
+            sect_name,
+            incharge_req_status,
+            incharge_approval_status,
+            hod_req_status,
+            hod_approval_status,
+            hr_req_status,
+            hr_approval_status,
+            request_date,
+            incharge_approval_comment,
+            hod_approval_comment,
+            hr_approval_comment,
+            cancel_status,
+            cancel_comment,
+            onduty_reason
+            FROM on_duty_request
+            inner join hrm_emp_master on  on_duty_request.em_no =hrm_emp_master.em_no
+            inner join hrm_department on  on_duty_request.dept_id =hrm_department.dept_id
+			inner join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
+            where  on_duty_request.em_id=? and year(on_duty_date)=year(?)`,
+            [
+                data.em_id,
+                data.dateyear
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    empHalfdayYearWise: (data, callBack) => {
+        pool.query(
+            `SELECT 
+            dept_name,
+            hrm_halfdayrequest.em_no,
+            em_name,
+            sect_name,
+            hf_incapprv_status, 
+            hf_inc_apprv_req,
+            hf_incapprv_status,
+            hf_hod_apprv_req,
+            hf_hod_apprv_status,
+            hf_hr_aprrv_requ,
+            hf_hr_apprv_status,
+            hf_inc_apprv_cmnt,
+            hf_hod_apprv_cmnt,
+            hf_hr_apprv_cmnt,
+            requestdate,
+            leavedate,
+            month,		
+            checkIn,
+            checkOut,
+            hf_reason,
+            halfday_status,
+            lv_cancel_status,
+            lv_cancel_status_user,
+            lv_cancel_cmnt,
+            lv_cancel_cmnt_user
+            FROM hrm_halfdayrequest
+            inner join hrm_emp_master on  hrm_halfdayrequest.em_no =hrm_emp_master.em_no
+            inner join hrm_department on  hrm_halfdayrequest.dept_id =hrm_department.dept_id
+			inner join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
+            where  emp_id=? and year(leavedate)=year(?)`,
+            [
+                data.em_id,
+                data.dateyear
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    empLeaveYearWise: (data, callBack) => {
+        pool.query(
+            `SELECT 
+            hrm_leave_request.em_id,
+            hrm_leave_request.em_no,
+            em_name,
+            dept_name,
+            sect_name,
+            request_date,
+            leave_dates,
+            leavetype_name,
+            leave_name,
+            leave_reason,
+            inc_apprv_req,
+            incapprv_status,
+            hod_apprv_req,
+            hod_apprv_status,
+            hr_aprrv_requ,
+            hr_apprv_status,
+            lv_cancel_status,
+            lv_cancel_status_user ,
+            lv_cancel_cmnt,
+            lv_cancel_cmnt_user
+            FROM hrm_leave_request 
+            left join hrm_emp_master on hrm_emp_master.em_id=hrm_leave_request.em_id
+            left join hrm_leave_request_detl on hrm_leave_request_detl.lve_uniq_no=hrm_leave_request.lve_uniq_no
+            left join hrm_department on hrm_department.dept_id=hrm_leave_request.dept_id
+            left join hrm_dept_section on hrm_dept_section.sect_id=hrm_leave_request.dept_section
+            where hrm_leave_request.em_id=? and year(leave_dates)=year(?)`,
+            [
+                data.em_id,
+                data.dateyear
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }

@@ -18,7 +18,8 @@ const { getEmployeeDetl, getEmployeeShiftDetl, getDepartmentShiftMast,
     updatePunchMaster, updatePunchMarkingHR, updateDutyPlanTable, updateDelStatDutyPlanTable, checkPunchMarkingHR,
     updatePunchMasterSingleRow, updatePunchMasterCalCulcated, getPunchReportLCCount, updateLCPunchMaster, getPData,
     deletePunchMasterSingleRow, updateManualRequest, createManualrequestLog, getManualRequestAll,
-    InactiveManualrequest, getPunchMastDataByEMID, checkPunchMarkingHRView
+    InactiveManualrequest, getPunchMastDataByEMID, checkPunchMarkingHRView,
+    InactiveDutyplan
 } = require("../attendance_updation/attendance.service")
 //SHIFT DETAILS
 //get the shift details 
@@ -1799,16 +1800,24 @@ module.exports = {
                             message: "No Results Found"
                         });
                     }
-                    return res.status(200).json({
-                        success: 1,
-                        message: "Data Submitted Successfully",
-                        insetId: results.insertId
-                    });
+                    const result = InactiveDutyplan(body)
+                        .then((r) => {
+                            return res.status(200).json({
+                                success: 1,
+                                message: r
+                            });
+                        }).catch((e) => {
+                            return res.status(200).json({
+                                success: 0,
+                                message: e.sqlMessage
+                            });
+                        })
+                    // return res.status(200).json({
+                    //     success: 1,
+                    //     message: "Data Submitted Successfully",
+                    //     insetId: results.insertId
+                    // });
                 });
-                // return res.status(200).json({
-                //     success: 1,
-                //     message: r
-                // });
             }).catch((e) => {
                 return res.status(200).json({
                     success: 0,
