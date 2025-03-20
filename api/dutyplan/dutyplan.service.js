@@ -27,7 +27,7 @@ module.exports = {
     getPlanDetl: (data, callBack) => {
         pool.query(
             `SELECT 
-                    plan_slno, emp_id, shift_id, duty_day,attendance_update_flag,holiday,doff_updation_flag
+                    plan_slno,em_no, emp_id, shift_id, duty_day,attendance_update_flag,holiday,doff_updation_flag
                 FROM
                     hrm_duty_plan
                 WHERE  DATE(duty_day) BETWEEN ? AND ?
@@ -397,6 +397,47 @@ module.exports = {
             [
                 data.duty_day,
                 data.em_no
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    insertDutyplanLog: (data, callBack) => {
+        pool.query(
+            `insert  into hrm_duty_plan_log(
+                plan_slno, 
+                emp_id,
+                em_no,
+                new_shift_id,
+                duty_day,
+                edit_user
+            ) values ?`,
+            [
+                data
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getEmployeeDutyplanLog: (data, callBack) => {
+        pool.query(
+            `SELECT  plan_slno, emp_id, new_shift_id, duty_day ,shft_desc,  shft_cross_day
+            FROM hrm_duty_plan_log 
+            left join hrm_shift_mast on hrm_shift_mast.shft_slno=hrm_duty_plan_log.new_shift_id
+            WHERE  DATE(duty_day) BETWEEN ? AND ?
+            AND emp_id IN (?) ORDER BY DATE(duty_day) ASC`,
+            [
+                data.start_date,
+                data.end_date,
+                data.empData
             ],
             (error, results, feilds) => {
                 if (error) {
