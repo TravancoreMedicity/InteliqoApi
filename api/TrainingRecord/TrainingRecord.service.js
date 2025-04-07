@@ -38,7 +38,7 @@ module.exports = {
     //            training_pretest.mark as pretest_mark,
     //            training_posttest.mark as posttest_mark
     //         FROM 
-    //            medi_hrm.training_employee_details
+    //            training_employee_details
     //            LEFT JOIN training_topic ON training_topic.topic_slno = training_employee_details.topic
     //            LEFT JOIN training_pretest ON training_pretest.pre_dept_schedule_slno = training_employee_details.scheduled_slno and training_pretest.emp_id = ?
     //            LEFT JOIN training_posttest ON training_posttest.dept_schedule_slno =training_employee_details.scheduled_slno and training_pretest.emp_id = ?
@@ -68,7 +68,7 @@ module.exports = {
                training_topic.hours,
                training_employee_details.tnd_verification_status
             FROM 
-               medi_hrm.training_employee_details
+               training_employee_details
                LEFT JOIN training_topic ON training_topic.topic_slno = training_employee_details.topic
                LEFT JOIN training_pretest ON training_pretest.pre_dept_schedule_slno = training_employee_details.scheduled_slno and training_pretest.emp_id = ?
                LEFT JOIN training_posttest ON training_posttest.dept_schedule_slno =training_employee_details.scheduled_slno and training_posttest.emp_id = ?

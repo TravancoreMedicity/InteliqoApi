@@ -53,9 +53,12 @@ module.exports = {
                 halfday_time_count,
                 punch_taken_hour_count,
                 external_trainee,
-                earnlvCategory
+                earnlvCategory,
+                monthly_late_time_count,
+                first_policy,
+                second_plicy
                 )
-                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
         )
 
         [
@@ -108,7 +111,10 @@ module.exports = {
             data.halfday_time_count,
             data.punch_taken_hour_count,
             data.external_trainee,
-            JSON.stringify(data.earnlvCategory)
+            JSON.stringify(data.earnlvCategory),
+            data.monthly_late_time_count,
+            data.first_policy,
+            data.second_plicy
         ],
             (error, results, feilds) => {
                 if (error) {
@@ -182,7 +188,10 @@ module.exports = {
                 halfday_time_count=?,
                 punch_taken_hour_count=?,
                 external_trainee=?,
-                earnlvCategory=?
+                earnlvCategory=?,
+                monthly_late_time_count=?,
+                first_policy=?,
+                second_plicy=?
                 WHERE setting_slno =?`,
 
             [
@@ -236,6 +245,9 @@ module.exports = {
                 data.punch_taken_hour_count,
                 data.external_trainee,
                 JSON.stringify(data.earnlvCategory),
+                data.monthly_late_time_count,
+                data.first_policy,
+                data.second_plicy,
                 data.setting_slno
             ],
             (error, results, feilds) => {

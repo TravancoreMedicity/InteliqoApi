@@ -1235,6 +1235,9 @@ const validatecommonsettings = Joi.object({
         punch_taken_hour_count: Joi.number().optional(),
         external_trainee: Joi.number().optional(),
         earnlvCategory: Joi.optional(),
+        monthly_late_time_count: Joi.number().optional(),
+        first_policy: Joi.number().precision(2).optional(),
+        second_plicy: Joi.number().precision(2).optional(),
 })
 //validate carryforward
 const validatecarryforward = Joi.object({

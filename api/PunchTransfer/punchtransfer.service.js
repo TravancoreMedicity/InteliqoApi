@@ -3,7 +3,7 @@ const pool = require('../../config/database')
 module.exports = {
     getpunchdataZtech: (data, callBack) => {
         zkpool.query(
-            `select * FROM zkteco.iclock_transaction where 
+            `select * FROM iclock_transaction where 
             date(punch_time)           
                       BETWEEN ? AND ?`,
             [
