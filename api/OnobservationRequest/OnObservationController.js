@@ -117,8 +117,7 @@ module.exports = {
                     message: err
                 });
             }
-            InactiveOnobse
-            rvationrequest(body, (err, results) => {
+            InactiveOnobservationrequest(body, (err, results) => {
                 if (err) {
                     logger.errorLogger(err)
                     return res.status(200).json({

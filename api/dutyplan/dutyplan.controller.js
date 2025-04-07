@@ -1,7 +1,7 @@
 const { getData, getEmpdetl, insertDutyplan, updateDutyPlan,
     CheckInsertVal, updateDefaultShift, updateWoffShift, updateholiday, getPlanDetl, updateMultiShift,
     checkDutyPlanExcist, getdeptEmpdetl, checkDutyPlanExcistNew, getDutyPlanAboveselectedDate,
-    getEmployeeDutyplan, dutyplanExitorNot } = require('../dutyplan/dutyplan.service');
+    getEmployeeDutyplan, dutyplanExitorNot, insertDutyplanLog, getEmployeeDutyplanLog } = require('../dutyplan/dutyplan.service');
 const logger = require('../../logger/logger')
 module.exports = {
     getDutyPlan: (req, res) => {
@@ -334,6 +334,57 @@ module.exports = {
             if (results.length == 0) {
                 return res.status(200).json({
                     success: 2,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    insertDutyplanLog: (req, res) => {
+        const body = req.body;
+        var a1 = body.map((value, index) => {
+            return [value.plan_slno, value.em_id, value.em_no, value.shift_id,
+            value.duty_day, value.edit_user]
+        })
+
+        insertDutyplanLog(a1, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success1: 2,
+                    message: err
+                });
+            }
+            if (!results) {
+                return res.status(200).json({
+                    success1: 0,
+                    message: "No Results Found"
+                });
+            }
+            return res.status(200).json({
+                success1: 1,
+                message: "Data Created Successfully"
+            });
+        });
+    },
+    getEmployeeDutyplanLog: (req, res) => {
+        const body = req.body;
+        getEmployeeDutyplanLog(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
                     message: "No Record Found"
                 });
             }

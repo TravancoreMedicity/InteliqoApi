@@ -1012,7 +1012,7 @@ module.exports = {
         pool.query(
             `SELECT on_duty_request.em_no,em_name, dept_name,sect_name,on_duty_date,onduty_reason,
             case when hr_approval_status = 1 then 'HR Approved'  else 'HR Not Approved' end as 'status'
-            FROM medi_hrm.on_duty_request 
+            FROM on_duty_request 
            inner join hrm_emp_master on hrm_emp_master.em_id=on_duty_request.em_id
            inner join hrm_department on hrm_department.dept_id=on_duty_request.dept_id
            inner join hrm_dept_section on hrm_dept_section.sect_id=on_duty_request.dept_sect_id

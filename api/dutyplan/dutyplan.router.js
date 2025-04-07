@@ -3,7 +3,8 @@ const { checkToken } = require('../../auth/token_validation');
 const { getDutyPlan, getEmpdetl, insertDutyplan, updateDutyPlan,
     CheckInsertVal, updateDefaultShift, updateWoffShift, updateholiday,
     getPlanDetl, updateMultiShift, checkDutyPlanExcist, getdeptEmpdetl, checkDutyPlanExcistNew,
-    getDutyPlanAboveselectedDate, getEmployeeDutyplan, dutyplanExitorNot } = require('../dutyplan/dutyplan.controller');
+    getDutyPlanAboveselectedDate, getEmployeeDutyplan, dutyplanExitorNot, insertDutyplanLog,
+    getEmployeeDutyplanLog } = require('../dutyplan/dutyplan.controller');
 
 router.post("/", checkToken, getDutyPlan)
 router.post("/create", checkToken, getEmpdetl)
@@ -22,5 +23,9 @@ router.post("/checkDutyPlanExcistNew", checkToken, checkDutyPlanExcistNew)
 router.post("/getplan", checkToken, getDutyPlanAboveselectedDate)
 router.post("/employeeplan", checkToken, getEmployeeDutyplan)
 router.post("/existornot", checkToken, dutyplanExitorNot)
+
+router.post("/dutyplan/log", checkToken, insertDutyplanLog)
+
+router.post("/dutyplan/employeelog", checkToken, getEmployeeDutyplanLog)
 
 module.exports = router;

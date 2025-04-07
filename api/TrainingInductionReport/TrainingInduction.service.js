@@ -486,7 +486,7 @@ GROUP BY training_induction_emp_details.schedule_no,
         pool.query(
             `
              SELECT ROW_NUMBER() OVER () as Slno ,schedule_slno,topic_slno,training_topic_name,induction_date,GROUP_CONCAT(trainer.em_name) AS trainer_name
-             FROM medi_hrm.training_induction_schedule 
+             FROM training_induction_schedule 
              LEFT JOIN training_topic ON training_topic.topic_slno=training_induction_schedule.schedule_topic
              LEFT JOIN hrm_emp_master AS trainer ON JSON_CONTAINS(training_induction_schedule.trainers, CAST(trainer.em_id AS JSON), '$')
              WHERE schedule_topic=?  group by schedule_slno`,
@@ -613,7 +613,7 @@ GROUP BY training_induction_emp_details.indct_emp_no`,
     SELECT ROW_NUMBER() OVER () as Slno, slno, department, deparment_sect, schedule_date, schedule_topics, schedule_trainers, schedule_remark,
     GROUP_CONCAT(hrm_emp_master.em_name) AS trainer_name,topic_slno,training_topic_name,hrm_emp_master.em_department,dept_name,
     hrm_dept_section.sect_name
-    FROM medi_hrm.training_departmental_schedule
+    FROM training_departmental_schedule
     LEFT JOIN training_topic ON training_topic.topic_slno=training_departmental_schedule.schedule_topics
     LEFT JOIN hrm_emp_master ON JSON_CONTAINS(training_departmental_schedule.schedule_trainers, CAST(hrm_emp_master.em_id AS JSON), '$')
     LEFT JOIN hrm_department ON hrm_department.dept_id=training_departmental_schedule.department
@@ -736,7 +736,7 @@ GROUP BY training_induction_emp_details.indct_emp_no`,
     training_departmental_schedule.slno AS schedule_slno, 
     training_pretest.mark AS pre_mark
 FROM 
-    medi_hrm.training_employee_details
+    training_employee_details
 LEFT JOIN 
     hrm_emp_master AS emp_master ON emp_master.em_id = training_employee_details.emp_name
 LEFT JOIN 
@@ -807,7 +807,7 @@ GROUP BY
     training_departmental_schedule.slno AS schedule_slno, 
     training_pretest.mark AS pre_mark
 FROM 
-    medi_hrm.training_employee_details
+    training_employee_details
 LEFT JOIN 
     hrm_emp_master AS emp_master ON emp_master.em_id = training_employee_details.emp_name
 LEFT JOIN 
@@ -854,7 +854,7 @@ GROUP BY
  SELECT ROW_NUMBER() OVER () as Slno, slno, department, deparment_sect, schedule_date, schedule_topics, schedule_trainers, schedule_remark,
   GROUP_CONCAT(hrm_emp_master.em_name) AS trainer_name,topic_slno,training_topic_name,hrm_emp_master.em_department,dept_name,
   hrm_dept_section.sect_name
- FROM medi_hrm.training_departmental_schedule
+ FROM training_departmental_schedule
   LEFT JOIN training_topic ON training_topic.topic_slno=training_departmental_schedule.schedule_topics
  LEFT JOIN hrm_emp_master ON JSON_CONTAINS(training_departmental_schedule.schedule_trainers, CAST(hrm_emp_master.em_id AS JSON), '$')
  LEFT JOIN hrm_department ON hrm_department.dept_id=training_departmental_schedule.department

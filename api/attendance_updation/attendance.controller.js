@@ -1921,4 +1921,115 @@ module.exports = {
             });
         });
     },
+    dailyPunchMarking: async (req, res) => {
+        const body = req.body;
+        const { postData_getPunchData, processedData, monthly_late_time_count } = body;
+        monthlyUpdatePunchMaster(processedData).then(results => {
+            if (results === 1) {
+                // GET PUNCH MASTER DATA 
+                getPData(postData_getPunchData, (err, punchMasterData) => {
+                    if (err) {
+                        return res.status(200).json({
+                            success: 0,
+                            message: err,
+                            data: []
+                        });
+                    }
+                    if (punchMasterData === null && punchMasterData === undefined && punchMasterData?.length === 0) {
+                        return res.status(200).json({
+                            success: 1,
+                            message: 'Update Successfully',
+                            data: []
+                        });
+                    }
+
+                    // IF GET PUNCH MASTER DATA IS TRUE  // IF DATA
+                    if (punchMasterData !== null && punchMasterData !== undefined && punchMasterData?.length > 0) {
+                        //CALCULATE CALCULATED HD BASED ON LATE COMMING
+                        let lateInCount = 0;
+                        const calCulatedHD = punchMasterData
+                            ?.map((e) => {
+                                return {
+                                    punch_slno: e.punch_slno,
+                                    duty_desc: e.duty_desc,
+                                    lvereq_desc: e.lvereq_desc,
+                                    duty_day: e.duty_day,
+                                    late_in: e.late_in
+                                }
+                            })
+                            ?.sort((a, b) => a.punch_slno - b.punch_slno)
+
+                            ?.map(item => {
+                                lateInCount = lateInCount + item.late_in;
+                                if (item.duty_desc === "LC" && lateInCount < monthly_late_time_count) {
+
+                                    return item;
+                                } else if (item.duty_desc === "LC" && lateInCount >= monthly_late_time_count) {
+                                    return { ...item, lvereq_desc: "HD" };
+                                } else {
+                                    return item;
+                                }
+                            })
+                            ?.filter((e) => e.lvereq_desc === 'HD' && e.duty_desc === 'LC')
+                            ?.map((e) => e.punch_slno)
+
+                        // UPDATE CALCULATED HD (LOP) IN PUNCH MASTER
+                        if (calCulatedHD !== null && calCulatedHD !== undefined && calCulatedHD?.length > 0) {
+                            //update function for punch master table
+
+                            updateLCPunchMaster(calCulatedHD, (err, resl) => {
+                                if (err) {
+                                    return res.status(200).json({
+                                        success: 0,
+                                        message: err,
+                                        data: []
+                                    });
+                                }
+
+                                if (resl) {
+                                    const updatedPunchMasterData = punchMasterData?.map((e) => {
+                                        return {
+                                            ...e,
+                                            lvereq_desc: calCulatedHD?.includes(e.punch_slno) ? 'CHD' : e.lvereq_desc
+                                        }
+                                    })
+                                    return res.status(200).json({
+                                        success: 1,
+                                        message: 'Update Successfully',
+                                        data: updatedPunchMasterData
+                                    });
+
+                                }
+                            })
+                        } else {
+                            return res.status(200).json({
+                                success: 1,
+                                message: 'Update Successfully',
+                                data: punchMasterData
+                            });
+                        }
+                    } else {
+                        return res.status(200).json({
+                            success: 1,
+                            message: 'Update Successfully',
+                            data: punchMasterData
+                        });
+                    }
+                });
+
+            } else {
+                return res.status(200).json({
+                    success: 0,
+                    message: results,
+                    data: []
+                })
+            }
+        }).catch(err => {
+            return res.status(200).json({
+                success: 0,
+                message: "Error Occured , Please Contact HRD / IT",
+                data: []
+            });
+        })
+    },
 }
