@@ -1923,7 +1923,8 @@ module.exports = {
     },
     dailyPunchMarking: async (req, res) => {
         const body = req.body;
-        const { postData_getPunchData, processedData, monthly_late_time_count } = body;
+        const { postData_getPunchData, processedData, monthly_late_time_count,
+            cmmn_late_in } = body;
         monthlyUpdatePunchMaster(processedData).then(results => {
             if (results === 1) {
                 // GET PUNCH MASTER DATA 
@@ -1958,7 +1959,7 @@ module.exports = {
                                 }
                             })
                             ?.sort((a, b) => a.punch_slno - b.punch_slno)
-
+                            ?.filter((e) => e.late_in <= cmmn_late_in)
                             ?.map(item => {
                                 lateInCount = lateInCount + item.late_in;
                                 if (item.duty_desc === "LC" && lateInCount < monthly_late_time_count) {

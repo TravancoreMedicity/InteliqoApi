@@ -1256,7 +1256,8 @@ module.exports = {
             holiday_status,
             leave_status,
             lvereq_desc,
-            lve_tble_updation_flag            
+            lve_tble_updation_flag,
+            gross_salary            
         FROM punch_master 
         LEFT JOIN hrm_emp_master on hrm_emp_master.em_id=punch_master.emp_id
         WHERE duty_day >= ? and duty_day <= ?
