@@ -279,11 +279,13 @@ module.exports = {
             lv_cancel_status,
             lv_cancel_req_status_user,
             lv_cancel_cmnt,
-            lv_cancel_cmnt_user
+            lv_cancel_cmnt_user,
+            shift_id, shft_desc
             FROM nopunchrequest
             left join hrm_emp_master on  nopunchrequest.em_no =hrm_emp_master.em_no
             left join hrm_department on  nopunchrequest.em_department =hrm_department.dept_id
             inner join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
+            inner join hrm_shift_mast on hrm_shift_mast.shft_slno=nopunchrequest.shift_id
             where nopunchrequest.em_id=? and year(nopunchdate)=year(?)`,
             [
                 data.em_id,
@@ -403,11 +405,13 @@ module.exports = {
             lv_cancel_status,
             lv_cancel_status_user,
             lv_cancel_cmnt,
-            lv_cancel_cmnt_user
+            lv_cancel_cmnt_user,
+            shift_id, shft_desc
             FROM hrm_halfdayrequest
             inner join hrm_emp_master on  hrm_halfdayrequest.em_no =hrm_emp_master.em_no
             inner join hrm_department on  hrm_halfdayrequest.dept_id =hrm_department.dept_id
 			inner join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
+            inner join hrm_shift_mast on hrm_shift_mast.shft_slno=hrm_halfdayrequest.shift_id
             where  emp_id=? and year(leavedate)=year(?)`,
             [
                 data.em_id,

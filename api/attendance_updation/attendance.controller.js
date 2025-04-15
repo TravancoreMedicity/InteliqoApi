@@ -1946,6 +1946,7 @@ module.exports = {
 
                     // IF GET PUNCH MASTER DATA IS TRUE  // IF DATA
                     if (punchMasterData !== null && punchMasterData !== undefined && punchMasterData?.length > 0) {
+
                         //CALCULATE CALCULATED HD BASED ON LATE COMMING
                         let lateInCount = 0;
                         const calCulatedHD = punchMasterData
@@ -1955,11 +1956,13 @@ module.exports = {
                                     duty_desc: e.duty_desc,
                                     lvereq_desc: e.lvereq_desc,
                                     duty_day: e.duty_day,
-                                    late_in: e.late_in
+                                    late_in: e.late_in,
+                                    holiday_status: e.holiday_status
                                 }
                             })
                             ?.sort((a, b) => a.punch_slno - b.punch_slno)
                             ?.filter((e) => e.late_in <= cmmn_late_in)
+                            ?.filter((e) => e.holiday_status !== 1)
                             ?.map(item => {
                                 lateInCount = lateInCount + item.late_in;
                                 if (item.duty_desc === "LC" && lateInCount < monthly_late_time_count) {
