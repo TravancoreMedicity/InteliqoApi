@@ -1183,7 +1183,8 @@ module.exports = {
                 lvereq_desc,
                 duty_desc,
                 em_no,
-                late_in
+                late_in,
+                holiday_status
             FROM PUNCH_MASTER 
             WHERE em_no in (?)
             AND duty_day >= ? and duty_day <= ? 
