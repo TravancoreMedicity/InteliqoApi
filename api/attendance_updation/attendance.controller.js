@@ -1968,7 +1968,7 @@ module.exports = {
                                 if (item.duty_desc === "LC" && lateInCount < monthly_late_time_count) {
 
                                     return item;
-                                } else if (item.duty_desc === "LC" && lateInCount >= monthly_late_time_count) {
+                                } else if (item.duty_desc === "LC" && lateInCount > monthly_late_time_count) {
                                     return { ...item, lvereq_desc: "HD" };
                                 } else {
                                     return item;
