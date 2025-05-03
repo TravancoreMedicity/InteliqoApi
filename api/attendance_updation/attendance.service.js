@@ -1188,7 +1188,7 @@ module.exports = {
             FROM PUNCH_MASTER 
             WHERE em_no in (?)
             AND duty_day >= ? and duty_day <= ? 
-            AND duty_desc = 'LC'`,
+            AND lvereq_desc = 'LC'`,
             [
                 data.empList,
                 data.fromDate,
