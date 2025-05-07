@@ -8,7 +8,7 @@ const { create, createGenralRq, createOndutyRequest, createEnableMispunchRqst, g
     cancelOnehour, cancelgeneral, onDutyReport, HrApprovedOneHourData, HrApprovedOnDutyData,
     cancelApprovedOneHour, cancelApprovedOnDuty, getEmpwiseOnduty, getEmpwiseOneHour,
     getSectWiseOneHour, getSectWiseOnDuty, OneHourForApprovalHR, OndutyForApprovalHR,
-    holidayOnduty
+    holidayOnduty, inactiveInchargeOneHour, inactiveHodOneHour
 } = require("../CommonRequest/CommonReqst.controller")
 
 
@@ -28,10 +28,14 @@ router.patch("/incharge/enable", checkToken, inchargeEnable)
 router.patch("/incharge/onehour", checkToken, inchargeOneHour)
 router.patch("/incharge/onduty", checkToken, inchargeOnDuty)
 
+router.patch("/incharge/inactiveOnehour", checkToken, inactiveInchargeOneHour)
+
 //hod approvals
 router.patch("/hod/enable", checkToken, hodEnable)
 router.patch("/hod/onduty", checkToken, hodOnDuty)
 router.patch("/hod/onehour", checkToken, hodOneHour)
+
+router.patch("/hod/inactive/onehour", checkToken, inactiveHodOneHour)
 
 //ceo approvals
 router.patch("/ceo/enable", checkToken, ceoEnable)

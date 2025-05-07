@@ -101,23 +101,36 @@ module.exports = {
 
                     //UPDATE CASUAL LEAVE TABLE FOR HALF DAY 
                     if (results) {
-
-                        updateHaldayValueInTable(body, (err, results) => {
-
+                        disableDutyplanData(body, (err, results) => {
                             if (err) {
                                 logger.errorLogger(err)
-                                return res.status(200).json({
-                                    success: 0,
+                                return res.status(400).json({
+                                    susc: 0,
                                     message: err
                                 });
                             }
+                            updateHaldayValueInTable(body, (err, results) => {
 
-                            return res.status(200).json({
-                                success: 1,
-                                message: "Half Day Leave Requested Created Successfully"
-                            });
+                                if (err) {
+                                    logger.errorLogger(err)
+                                    return res.status(200).json({
+                                        success: 0,
+                                        message: err
+                                    });
+                                }
 
+                                return res.status(200).json({
+                                    success: 1,
+                                    message: "Half Day Leave Requested Created Successfully"
+                                });
+
+                            })
                         })
+                    } else {
+                        return res.status(200).json({
+                            success: 1,
+                            message: "Error Submitting Halfday Request"
+                        });
                     }
                 });
             }
@@ -179,22 +192,30 @@ module.exports = {
                     if (results) {
                         const punchSlno = JSON.parse(JSON.stringify(results));
                         const postData = { ...body, punch_slno: punchSlno?.[0]?.punch_slno }
-                        insertnopunchrequest(postData, (err, results) => {
+                        disableDutyplanData(body, (err, results) => {
                             if (err) {
                                 logger.errorLogger(err)
-                                return res.status(200).json({
-                                    success: 0,
+                                return res.status(400).json({
+                                    susc: 0,
                                     message: err
                                 });
                             }
-                            return res.status(200).json({
-                                success: 1,
-                                message: "MissPunch Requested Created Successfully"
+                            insertnopunchrequest(postData, (err, results) => {
+                                if (err) {
+                                    logger.errorLogger(err)
+                                    return res.status(200).json({
+                                        success: 0,
+                                        message: err
+                                    });
+                                }
+                                return res.status(200).json({
+                                    success: 1,
+                                    message: "MissPunch Requested Created Successfully"
+                                });
+
                             });
-
-                        });
+                        })
                     }
-
                 })
             } else {
                 return res.status(200).json({

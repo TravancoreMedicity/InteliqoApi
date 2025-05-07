@@ -164,4 +164,21 @@ module.exports = {
             }
         )
     },
+    activeDoffDutyplanData: (data, callBack) => {
+        pool.query(
+            `UPDATE hrm_duty_plan
+                SET doff_updation_flag = 0
+                WHERE em_no=? and  duty_day=?`,
+            [
+                data.em_no,
+                data.duty_day
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }

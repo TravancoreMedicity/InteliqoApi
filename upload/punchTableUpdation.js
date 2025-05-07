@@ -6,7 +6,6 @@ const calculateIn = async (empid, punchTime) => {
 
     const punchInTime = moment(punchTime).format('YYYY-MM-DD HH:mm')
     const punchInTime_two = moment(punchTime).format('YYYY-MM-DD')
-    // console.log(empid, punchTime)
     updatePunchIn(empid, punchInTime_two, (err, result) => {
         if (err) {
             console.log('error')
@@ -19,12 +18,10 @@ const calculateIn = async (empid, punchTime) => {
                 slno: result[0].punch_slno,
                 punchTime: punchInTime
             }
-            // console.log(result[0])
             updatePunchInDetails(data)
         }
 
         if (result === 1000) {
-            // console.log('no shift')
         }
     })
 
@@ -34,7 +31,6 @@ const calculateIn = async (empid, punchTime) => {
 const punchInsert = async (id, emp_code, punch_time, punch_state) => {
 
     insertPunchInDetail(id, emp_code, punch_time, punch_state, (err, result) => {
-        //    console.log(result);
         if (err) {
             console.log('error')
         }
@@ -45,7 +41,6 @@ const punchInsert = async (id, emp_code, punch_time, punch_state) => {
         }
 
         if (result === 1000) {
-            // console.log('no shift')
         }
     })
 
@@ -92,9 +87,7 @@ const updatePunchIn = async (empid, punchTime, callBack) => {
                 return callBack(error);
             }
             results[0]
-            // console.log(results[0])
             const arrayLength = Object.keys(results[0]).length;
-            // console.log(arrayLength)
             if (arrayLength === 1) {
                 const shiftDetail = JSON.parse(JSON.stringify(results[0]));
                 return callBack(null, shiftDetail);
@@ -109,7 +102,6 @@ const updatePunchIn = async (empid, punchTime, callBack) => {
 }
 //GET SHIFT TIME DETAILS DETAILS 
 const getShiftTimeDetil = async (shiftId, callBack) => {
-    // console.log(shiftId)
     pool.query(
         `CALL GET_SHIFT_TIME(?)`,
         [
@@ -127,16 +119,13 @@ const getShiftTimeDetil = async (shiftId, callBack) => {
 //CALCULATED THE IN AND OUT BASED ON SHIFT
 
 const updatePunchInDetails = async (data) => {
-    // console.log(data)
     const { shift, slno, punchTime } = data;
     getShiftTimeDetil(shift, (err, result) => {
-        // console.log(err)
         if (err) {
             console.log(err)
         }
         if (result) {
             const shiftDetl = JSON.parse(JSON.stringify(result[0]));
-            // console.log(shiftDetl)
             calculateShift(shiftDetl, punchTime, slno)
         }
 
@@ -147,7 +136,6 @@ const updatePunchInDetails = async (data) => {
 //calculater shift in and out 
 const calculateShift = async (shiftDetl, punchTime, slno) => {
 
-    // console.log(slno)
     const {
         shft_chkin_start,
         shft_chkin_end,
