@@ -1238,6 +1238,7 @@ const validatecommonsettings = Joi.object({
         monthly_late_time_count: Joi.number().optional(),
         first_policy: Joi.number().precision(2).optional(),
         second_plicy: Joi.number().precision(2).optional(),
+        holiday_min_working: Joi.number().optional()
 })
 //validate carryforward
 const validatecarryforward = Joi.object({

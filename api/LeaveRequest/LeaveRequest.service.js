@@ -115,9 +115,11 @@ module.exports = {
                 attendance_update_flag,
                 shft_cross_day,
                 doff_updation_flag,
-                shft_cross_day
+                shft_cross_day,
+                gross_salary
             FROM hrm_duty_plan
             LEFT JOIN hrm_shift_mast ON hrm_shift_mast.shft_slno = hrm_duty_plan.shift_id 
+            inner join hrm_emp_master on hrm_emp_master.em_id=hrm_duty_plan.emp_id
             WHERE duty_day= ? AND emp_id=?`,
             [data.startDate, data.em_id],
             (error, results, feilds) => {
