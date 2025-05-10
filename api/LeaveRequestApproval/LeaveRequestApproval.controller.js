@@ -22,6 +22,7 @@ const { getleaverequestdep, nopunchreq, halfrequst, getcompenoff, getlevereqmast
 const { validationinchageapprv, validateotcancel } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger');
 const { deletePunchMasterSingleRow } = require('../attendance_updation/attendance.service');
+const { updateDelStatDutyPlan, activeDoffDutyplanData } = require('../OFFRequest/OffRequest.service');
 module.exports = {
     getleaverequestdep: (req, res) => {
         const body = req.body
@@ -319,14 +320,7 @@ module.exports = {
     },
     inchargeapprvNopunch: (req, res) => {
         const body = req.body;
-        const body_result = validationinchageapprv.validate(body);
-        if (body_result.error) {
-            return res.status(200).json({
-                success: 2,
-                message: body_result.error.details[0].message
-            });
-        }
-        inchargeapprvNopunch(body, (err, results) => {
+        activeDoffDutyplanData(body, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
@@ -340,12 +334,27 @@ module.exports = {
                     message: "Record Not Found"
                 });
             }
-            else {
-                return res.status(200).json({
-                    success: 1,
-                    message: "Data Updated Successfully"
-                });
-            }
+            inchargeapprvNopunch(body, (err, results) => {
+                if (err) {
+                    logger.errorLogger(err)
+                    return res.status(200).json({
+                        success: 0,
+                        message: err
+                    });
+                }
+                else if (!results) {
+                    return res.status(200).json({
+                        success: 2,
+                        message: "Record Not Found"
+                    });
+                }
+                else {
+                    return res.status(200).json({
+                        success: 1,
+                        message: "Data Updated Successfully"
+                    });
+                }
+            });
         });
     },
     inchargeapprvCoff: (req, res) => {
@@ -443,14 +452,7 @@ module.exports = {
     },
     HodApprvlNopunch: (req, res) => {
         const body = req.body;
-        const body_result = validationinchageapprv.validate(body);
-        if (body_result.error) {
-            return res.status(200).json({
-                success: 2,
-                message: body_result.error.details[0].message
-            });
-        }
-        HodApprvlNopunch(body, (err, results) => {
+        activeDoffDutyplanData(body, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
@@ -464,12 +466,27 @@ module.exports = {
                     message: "Record Not Found"
                 });
             }
-            else {
-                return res.status(200).json({
-                    success: 1,
-                    message: "Data Updated Successfully"
-                });
-            }
+            HodApprvlNopunch(body, (err, results) => {
+                if (err) {
+                    logger.errorLogger(err)
+                    return res.status(200).json({
+                        success: 0,
+                        message: err
+                    });
+                }
+                else if (!results) {
+                    return res.status(200).json({
+                        success: 2,
+                        message: "Record Not Found"
+                    });
+                }
+                else {
+                    return res.status(200).json({
+                        success: 1,
+                        message: "Data Updated Successfully"
+                    });
+                }
+            });
         });
     },
     HodApprvlCoff: (req, res) => {
@@ -1597,7 +1614,7 @@ module.exports = {
     },
     HalfDayReqRejectHr: (req, res) => {
         const body = req.body;
-        HalfDayReqRejectHr(body, (err, results) => {
+        HalfDayHrRejectCl(body, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
@@ -1611,9 +1628,21 @@ module.exports = {
                     message: "Record Not Found"
                 });
             }
-            else {
-
-                HalfDayHrRejectCl(body, (err, results) => {
+            HalfDayReqRejectHr(body, (err, results) => {
+                if (err) {
+                    logger.errorLogger(err)
+                    return res.status(200).json({
+                        success: 0,
+                        message: err
+                    });
+                }
+                else if (!results) {
+                    return res.status(200).json({
+                        success: 2,
+                        message: "Record Not Found"
+                    });
+                }
+                activeDoffDutyplanData(body, (err, results) => {
                     if (err) {
                         logger.errorLogger(err)
                         return res.status(200).json({
@@ -1630,16 +1659,16 @@ module.exports = {
                     else {
                         return res.status(200).json({
                             success: 1,
-                            message: "Leave Request Rejected Successfully"
+                            message: "Halfday Request Rejected Successfully"
                         });
                     }
                 });
-            }
+            });
         });
     },
     NoPunchReqRejectHr: (req, res) => {
         const body = req.body;
-        NoPunchReqRejectHr(body, (err, results) => {
+        activeDoffDutyplanData(body, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
@@ -1653,13 +1682,28 @@ module.exports = {
                     message: "Record Not Found"
                 });
             }
-            else {
-                return res.status(200).json({
-                    success: 1,
-                    message: "Leave Request Rejected Successfully"
-                });
+            NoPunchReqRejectHr(body, (err, results) => {
+                if (err) {
+                    logger.errorLogger(err)
+                    return res.status(200).json({
+                        success: 0,
+                        message: err
+                    });
+                }
+                else if (!results) {
+                    return res.status(200).json({
+                        success: 2,
+                        message: "Record Not Found"
+                    });
+                }
+                else {
+                    return res.status(200).json({
+                        success: 1,
+                        message: "Leave Request Rejected Successfully"
+                    });
 
-            }
+                }
+            });
         });
     },
     CoffReqRejectHr: (req, res) => {
@@ -2018,7 +2062,7 @@ module.exports = {
     },
     HodRejectHalfday: (req, res) => {
         const body = req.body;
-        HodApprvlHalfday(body, (err, results) => {
+        HalfDayHrRejectCl(body, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
@@ -2032,8 +2076,21 @@ module.exports = {
                     message: "Record Not Found"
                 });
             }
-            else {
-                HalfDayHrRejectCl(body, (err, results) => {
+            HodApprvlHalfday(body, (err, results) => {
+                if (err) {
+                    logger.errorLogger(err)
+                    return res.status(200).json({
+                        success: 0,
+                        message: err
+                    });
+                }
+                else if (!results) {
+                    return res.status(200).json({
+                        success: 2,
+                        message: "Record Not Found"
+                    });
+                }
+                activeDoffDutyplanData(body, (err, results) => {
                     if (err) {
                         logger.errorLogger(err)
                         return res.status(200).json({
@@ -2050,11 +2107,11 @@ module.exports = {
                     else {
                         return res.status(200).json({
                             success: 1,
-                            message: "Leave Request Rejected Successfully"
+                            message: "Halfday Request Rejected Successfully"
                         });
                     }
                 });
-            }
+            });
         });
     },
     inchargeRejectHalfday: (req, res) => {
@@ -2074,27 +2131,37 @@ module.exports = {
                 });
             }
             else {
-                HalfDayHrRejectCl(body, (err, results) => {
+                activeDoffDutyplanData(body, (err, results) => {
                     if (err) {
                         logger.errorLogger(err)
-                        return res.status(200).json({
-                            success: 0,
+                        return res.status(400).json({
+                            susc: 0,
                             message: err
                         });
                     }
-                    else if (!results) {
-                        return res.status(200).json({
-                            success: 2,
-                            message: "Record Not Found"
-                        });
-                    }
-                    else {
-                        return res.status(200).json({
-                            success: 1,
-                            message: "Leave Request Rejected Successfully"
-                        });
-                    }
-                });
+                    HalfDayHrRejectCl(body, (err, results) => {
+                        if (err) {
+                            logger.errorLogger(err)
+                            return res.status(200).json({
+                                success: 0,
+                                message: err
+                            });
+                        }
+                        else if (!results) {
+                            return res.status(200).json({
+                                success: 2,
+                                message: "Record Not Found"
+                            });
+                        }
+                        else {
+                            return res.status(200).json({
+                                success: 1,
+                                message: "Leave Request Rejected Successfully"
+                            });
+                        }
+                    });
+                })
+
             }
         });
     },
@@ -2368,13 +2435,28 @@ module.exports = {
                         message: "Record Not Found"
                     });
                 }
-                else {
-                    return res.status(200).json({
-                        success: 1,
-                        message: "Request Cancelled successfully"
-                    });
+                activeDoffDutyplanData(body, (err, results) => {
+                    if (err) {
+                        logger.errorLogger(err)
+                        return res.status(200).json({
+                            success: 0,
+                            message: err
+                        });
+                    }
+                    else if (!results) {
+                        return res.status(200).json({
+                            success: 2,
+                            message: "Record Not Found"
+                        });
+                    }
+                    else {
+                        return res.status(200).json({
+                            success: 1,
+                            message: "Misspunch Request Cancelled Successfully"
+                        });
 
-                }
+                    }
+                });
             });
         });
     },
@@ -2410,12 +2492,28 @@ module.exports = {
                             message: "Record Not Found"
                         });
                     }
-                    else {
-                        return res.status(200).json({
-                            success: 1,
-                            message: "Leave Request Rejected Successfully"
-                        });
-                    }
+                    activeDoffDutyplanData(body, (err, results) => {
+                        if (err) {
+                            logger.errorLogger(err)
+                            return res.status(200).json({
+                                success: 0,
+                                message: err
+                            });
+                        }
+                        else if (!results) {
+                            return res.status(200).json({
+                                success: 2,
+                                message: "Record Not Found"
+                            });
+                        }
+                        else {
+                            return res.status(200).json({
+                                success: 1,
+                                message: "Halfday Request Cancelled Successfully"
+                            });
+
+                        }
+                    });
                 })
             })
 

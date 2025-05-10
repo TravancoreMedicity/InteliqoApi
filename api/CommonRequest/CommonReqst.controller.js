@@ -14,6 +14,7 @@ const { create, checkInsertVal, createGenralRq, createOndutyRequest, createEnabl
 const { InsertLeaveCalc, HRhalfDayPuchMast } = require('../LeaveRequestApproval/LeaveRequestApproval.service')
 const { validateOneHourReqst } = require('../../validation/validation_schema');
 const { deletePunchMasterSingleRow } = require('../attendance_updation/attendance.service');
+const { disableDutyplanData, activeDoffDutyplanData } = require('../OFFRequest/OffRequest.service');
 
 module.exports = {
     create: (req, res) => {
@@ -32,9 +33,24 @@ module.exports = {
                             message: err
                         });
                     }
-                    return res.status(200).json({
-                        success: 1,
-                        message: "One Hour Request Submitted Successfully"
+                    if (!results) {
+                        return res.status(200).json({
+                            success: 0,
+                            message: "No Results Found"
+                        });
+                    }
+                    disableDutyplanData(body, (err, results) => {
+                        if (err) {
+                            logger.errorLogger(err)
+                            return res.status(400).json({
+                                susc: 0,
+                                message: err
+                            });
+                        }
+                        return res.status(200).json({
+                            success: 1,
+                            message: "One Hour Request Submitted Successfully"
+                        });
                     });
                 });
             } else {
@@ -533,13 +549,28 @@ module.exports = {
                     message: "Record Not Found"
                 });
             }
-            else {
-                return res.status(200).json({
-                    success: 1,
-                    message: "One Hour Request Updated Successfully"
-                });
+            activeDoffDutyplanData(body, (err, results) => {
+                if (err) {
+                    logger.errorLogger(err)
+                    return res.status(200).json({
+                        success: 0,
+                        message: err
+                    });
+                }
+                else if (!results) {
+                    return res.status(200).json({
+                        success: 2,
+                        message: "Record Not Found"
+                    });
+                }
+                else {
+                    return res.status(200).json({
+                        success: 1,
+                        message: "One Hour Request Updated Successfully"
+                    });
 
-            }
+                }
+            });
         });
     },
     addHrComment: (req, res) => {
@@ -967,13 +998,28 @@ module.exports = {
                         message: "Record Not Found"
                     });
                 }
-                else {
-                    return res.status(200).json({
-                        success: 1,
-                        message: "Request Cancelled successfully"
-                    });
+                activeDoffDutyplanData(body, (err, results) => {
+                    if (err) {
+                        logger.errorLogger(err)
+                        return res.status(200).json({
+                            success: 0,
+                            message: err
+                        });
+                    }
+                    else if (!results) {
+                        return res.status(200).json({
+                            success: 2,
+                            message: "Record Not Found"
+                        });
+                    }
+                    else {
+                        return res.status(200).json({
+                            success: 1,
+                            message: "Onehour Request Cancelled Successfully"
+                        });
 
-                }
+                    }
+                });
             });
         });
     },
@@ -1182,6 +1228,86 @@ module.exports = {
             return res.status(200).json({
                 success: 1,
                 data: results
+            });
+        });
+    },
+    inactiveInchargeOneHour: (req, res) => {
+        const body = req.body;
+        inchargeOneHour(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+            activeDoffDutyplanData(body, (err, results) => {
+                if (err) {
+                    logger.errorLogger(err)
+                    return res.status(200).json({
+                        success: 0,
+                        message: err
+                    });
+                }
+                else if (!results) {
+                    return res.status(200).json({
+                        success: 2,
+                        message: "Record Not Found"
+                    });
+                }
+                else {
+                    return res.status(200).json({
+                        success: 1,
+                        message: "One Hour Request Rejected Successfully"
+                    });
+
+                }
+            });
+        });
+    },
+    inactiveHodOneHour: (req, res) => {
+        const body = req.body;
+        hodOneHour(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+            activeDoffDutyplanData(body, (err, results) => {
+                if (err) {
+                    logger.errorLogger(err)
+                    return res.status(200).json({
+                        success: 0,
+                        message: err
+                    });
+                }
+                else if (!results) {
+                    return res.status(200).json({
+                        success: 2,
+                        message: "Record Not Found"
+                    });
+                }
+                else {
+                    return res.status(200).json({
+                        success: 1,
+                        message: "One Hour Request Rejected Successfully"
+                    });
+
+                }
             });
         });
     },

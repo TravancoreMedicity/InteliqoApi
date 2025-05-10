@@ -488,11 +488,12 @@ module.exports = {
             LEFT JOIN training_topic ON training_topic.topic_slno=training_departmental_schedule.schedule_topics
             LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id =training_departmental_schedule.deparment_sect
             LEFT JOIN hrm_emp_master on JSON_CONTAINS(training_departmental_schedule.schedule_trainers,cast(hrm_emp_master.em_id as json),'$')
-            where month( schedule_date)=? and training_departmental_schedule.department=? and training_departmental_schedule.deparment_sect=?
+            where month( schedule_date)=? and year(schedule_year)=? and training_departmental_schedule.department=? and training_departmental_schedule.deparment_sect=?
             GROUP BY slno, department, deparment_sect, schedule_year, schedule_date, schedule_topics, schedule_trainers, 
             schedule_remark,hrm_department.dept_id,dept_name, topic_slno,training_topic_name,sect_id`,
             [
                 data.month,
+                data.year,
                 data.dept,
                 data.deptSec
             ],

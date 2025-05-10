@@ -358,11 +358,12 @@ module.exports = {
             LEFT JOIN training_type ON training_type.trainingtype_slno=training_induction_schedule.schedule_type
             LEFT JOIN training_topic ON training_topic.topic_slno=training_induction_schedule.schedule_topic
              LEFT JOIN hrm_emp_master on JSON_CONTAINS(training_induction_schedule.trainers,cast(hrm_emp_master.em_id as json),'$')
-             where month(induction_date) =?
+             where month(induction_date) =? and year(induction_date)=?
              group by schedule_slno, schedule_type, schedule_topic, training_induction_schedule.trainers, induction_date,
             training_type.trainingtype_slno,training_type.type_name,topic_slno,training_topic_name`,
             [
-                data.month
+                data.month,
+                data.year
             ],
             (err, results, feilds) => {
                 if (err) {
