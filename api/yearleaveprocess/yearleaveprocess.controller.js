@@ -15,7 +15,6 @@ const {
     updatecarryforwardEl, updatecarryforwardCl, updatecarryforwardSl
 } = require('../yearleaveprocess/yearllraveprocess.service');
 const logger = require('../../logger/logger');
-const { differenceInMonths, endOfYear, startOfYear } = require('date-fns');
 module.exports = {
     getLeaveProccedData: (req, res) => {
         const body = req.body;
@@ -852,30 +851,11 @@ module.exports = {
 
     },
     inactiveSickLeave: (req, res) => {
-        const { hrm_lv_cmn, em_no,
-            cmn_lv_allowedflag,
-            Iv_process_slno,
-            update_user,
-            em_id,
-            cmn_lv_year } = req.body
-        const startMonth = startOfYear(new Date())
-        const result = differenceInDays(new Date(), startMonth)
-
+        const { hrm_lv_cmn } = req.body
         const updatedata = {
             hrm_lv_cmn: hrm_lv_cmn
         }
-        const postdata = {
-            em_no: em_no,
-            llvetype_slno: 6,
-            cmn_lv_allowedflag,
-            cmn_lv_allowed: result,
-            cmn_lv_taken: 0,
-            cmn_lv_balance: result,
-            Iv_process_slno: Iv_process_slno,
-            update_user: update_user,
-            em_id: em_id,
-            cmn_lv_year: cmn_lv_year
-        }
+        const postdata = req.body;
         inactiveSickLeave(updatedata, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
@@ -902,30 +882,13 @@ module.exports = {
         })
     },
     inactiveEsiLeave: (req, res) => {
+        const postdata = req.body
 
-        const { hrm_lv_cmn, em_no,
-            cmn_lv_allowedflag,
-            Iv_process_slno,
-            update_user,
-            em_id,
-            cmn_lv_year } = req.body
-        const endMonth = endOfYear(new Date())
-        const result = differenceInMonths(endMonth, new Date())
+        const { hrm_lv_cmn } = req.body;
         const updatedata = {
             hrm_lv_cmn: hrm_lv_cmn
         }
-        const postdata = {
-            em_no: em_no,
-            llvetype_slno: 7,
-            cmn_lv_allowedflag,
-            cmn_lv_allowed: result + 1,
-            cmn_lv_taken: 0,
-            cmn_lv_balance: result + 1,
-            Iv_process_slno: Iv_process_slno,
-            update_user: update_user,
-            em_id: em_id,
-            cmn_lv_year: cmn_lv_year
-        }
+
         inactiveSickLeave(updatedata, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
