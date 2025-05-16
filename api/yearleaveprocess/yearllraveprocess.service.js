@@ -763,7 +763,7 @@ module.exports = {
     },
     getleaveProcessData: (data, callBack) => {
         pool.query(
-            `SELECT * FROM hrm_leave_common where em_no=?`,
+            `SELECT * FROM hrm_leave_common where em_no=? and cmn_status=0`,
             [
                 data
             ],
