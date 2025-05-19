@@ -154,6 +154,8 @@ const OnObservationRequest = require("./api/OnobservationRequest/OnobservationRo
 const ManualrequestUpload = require("./api/ManualRequest/Manual.router")
 const OffRquest = require('./api/OFFRequest/OffRequest.router')
 const TrainingSubType = require('./api/TrainingSubTypeMaster/TrainingSubType.router')
+const Training_additional_entry = require('./api/Training_additional_entry/Training_additional_entry.router')
+
 
 app.use(express.json({ limit: '50mb' }));
 app.use((req, res, next) => {
@@ -339,6 +341,8 @@ app.use("/api/OnObservationRequest", OnObservationRequest)
 app.use("/api/manualRequest", ManualrequestUpload)
 app.use("/api/OffRequest", OffRquest)
 app.use("/api/TrainingSubType", TrainingSubType)
+app.use("/api/Training_additional_entry", Training_additional_entry)
+
 
 
 // ------ Database Connection --------

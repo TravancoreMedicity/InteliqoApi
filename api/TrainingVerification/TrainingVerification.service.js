@@ -20,31 +20,81 @@ module.exports = {
 
     GetInductAllData: (id, callback) => {
         pool.query(
-            ` SELECT ROW_NUMBER() OVER () as veriftn_slno,induction_slno, schedule_no, indct_emp_no, induction_date,
-            training_induction_emp_details.training_status, question_count, training_induction_emp_details.pretest_status,
-            training_induction_emp_details.posttest_status, training_induction_emp_details.online_mode, training_induction_emp_details.offline_mode, retest,
-            training_iduct_tnd_verify_status,
-            topic_slno,training_topic_name,hours,
-            em_id,em_name,em_no,
-            schedule_topic,
-            training_induction_pretest.mark as pre_mark,
-            training_induct_posttest.mark as post_mark
-            FROM training_induction_emp_details
-            LEFT JOIN training_induction_schedule ON training_induction_schedule.schedule_slno=training_induction_emp_details.schedule_no
-		    LEFT JOIN training_topic ON training_topic.topic_slno=training_induction_schedule.schedule_topic
-		    LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_induction_emp_details.indct_emp_no
-            LEFT JOIN training_induct_posttest ON training_induct_posttest.emp_id=training_induction_emp_details.indct_emp_no
-			LEFT JOIN training_induction_pretest ON training_induction_pretest.emp_id=training_induction_emp_details.indct_emp_no
-            where training_induction_emp_details.schedule_no=?
-            group by induction_slno, schedule_no, indct_emp_no, induction_date,
-            training_induction_emp_details.training_status, question_count, training_induction_emp_details.pretest_status,
-            training_induction_emp_details.posttest_status, training_induction_emp_details.online_mode, training_induction_emp_details.offline_mode, retest,
-            training_iduct_tnd_verify_status,
-            topic_slno,training_topic_name,hours,
-            em_id,em_name,em_no,
-            schedule_topic,
-            training_induction_pretest.mark ,
-            training_induct_posttest.mark`
+            // ` SELECT ROW_NUMBER() OVER () as veriftn_slno,induction_slno, schedule_no, indct_emp_no, induction_date,
+            // training_induction_emp_details.training_status, question_count, training_induction_emp_details.pretest_status,
+            // training_induction_emp_details.posttest_status, training_induction_emp_details.online_mode, training_induction_emp_details.offline_mode, retest,
+            // training_iduct_tnd_verify_status,
+            // topic_slno,training_topic_name,hours,
+            // em_id,em_name,em_no,
+            // schedule_topic,
+            // training_induction_pretest.mark as pre_mark,
+            // training_induct_posttest.mark as post_mark
+            // FROM training_induction_emp_details
+            // LEFT JOIN training_induction_schedule ON training_induction_schedule.schedule_slno=training_induction_emp_details.schedule_no
+            // LEFT JOIN training_topic ON training_topic.topic_slno=training_induction_schedule.schedule_topic
+            // LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_induction_emp_details.indct_emp_no
+            // LEFT JOIN training_induct_posttest ON training_induct_posttest.emp_id=training_induction_emp_details.indct_emp_no
+            // LEFT JOIN training_induction_pretest ON training_induction_pretest.emp_id=training_induction_emp_details.indct_emp_no
+            // where training_induction_emp_details.schedule_no=?
+            // group by induction_slno, schedule_no, indct_emp_no, induction_date,
+            // training_induction_emp_details.training_status, question_count, training_induction_emp_details.pretest_status,
+            // training_induction_emp_details.posttest_status, training_induction_emp_details.online_mode, training_induction_emp_details.offline_mode, retest,
+            // training_iduct_tnd_verify_status,
+            // topic_slno,training_topic_name,hours,
+            // em_id,em_name,em_no,
+            // schedule_topic,
+            // training_induction_pretest.mark ,
+            // training_induct_posttest.mark`
+            `  SELECT
+    ROW_NUMBER() OVER () AS veriftn_slno,
+    t.induction_slno,
+    t.schedule_no,
+    t.indct_emp_no,
+    sched.induction_date,
+    t.training_status,
+    t.question_count,
+    t.pretest_status,
+    t.posttest_status,
+    t.online_mode,
+    t.offline_mode,
+    t.retest,
+    t.training_iduct_tnd_verify_status,
+    tp.topic_slno,
+    tp.training_topic_name,
+    tp.hours,
+    emp.em_id,
+    emp.em_name,
+    emp.em_no,
+    sched.schedule_topic,
+    pre.mark AS pre_mark,
+    post.mark AS post_mark
+
+FROM training_induction_emp_details t
+
+LEFT JOIN training_induction_schedule sched
+    ON sched.schedule_slno = t.schedule_no
+
+LEFT JOIN training_topic tp
+    ON tp.topic_slno = sched.schedule_topic
+    
+LEFT JOIN hrm_emp_master emp 
+    ON emp.em_id = t.indct_emp_no
+
+LEFT JOIN (
+    SELECT emp_id, emp_topic, MAX(mark) AS mark
+    FROM training_induction_pretest
+    GROUP BY emp_id, emp_topic
+) pre 
+    ON pre.emp_id = t.indct_emp_no AND pre.emp_topic = sched.schedule_topic
+
+LEFT JOIN (
+    SELECT emp_id, emp_topic, MAX(mark) AS mark
+    FROM training_induct_posttest
+    GROUP BY emp_id, emp_topic
+) post 
+    ON post.emp_id = t.indct_emp_no AND post.emp_topic = sched.schedule_topic
+
+WHERE t.schedule_no = ?`
             , [id],
             (err, results, feilds) => {
                 if (err) {
