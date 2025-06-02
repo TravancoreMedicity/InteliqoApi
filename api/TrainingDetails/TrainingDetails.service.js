@@ -162,7 +162,7 @@ module.exports = {
             LEFT JOIN designation ON designation.desg_slno=hrm_emp_master.em_designation
             left join hrm_authorization_assign on hrm_authorization_assign.dept_section=training_induction_emp_details.induct_emp_sec
             LEFT JOIN hrm_emp_master HO ON HO.em_id=hrm_authorization_assign.emp_id
-            WHERE hrm_emp_master.em_no=? and hrm_authorization_assign.auth_post=1
+            WHERE hrm_emp_master.em_no=? 
             group by indct_emp_no,indct_emp_no, induct_emp_dept, induct_emp_sec, hrm_emp_master.em_name,hrm_emp_master.em_no,hrm_emp_master.em_id,HO.em_name ,
             hrm_department.dept_id,hrm_department.dept_name,hrm_dept_section.sect_id,hrm_dept_section.sect_name,
             designation.desg_slno,designation.desg_name,training_iduct_tnd_verify_status`, [id],
@@ -172,7 +172,7 @@ module.exports = {
 
                 }
                 return callback(null, results)
-
+                //and hrm_authorization_assign.auth_post=1
             }
         )
     },
@@ -261,12 +261,12 @@ module.exports = {
              left join hrm_authorization_assign on hrm_authorization_assign.dept_section=training_induction_emp_details.induct_emp_sec
              LEFT JOIN hrm_emp_master HO ON HO.em_id=hrm_authorization_assign.emp_id
              
-             WHERE hrm_emp_master.em_id=? and hrm_authorization_assign.auth_post=1
+             WHERE hrm_emp_master.em_id=? 
              Group by schedule_topic`, [id],
             (err, results, feilds) => {
                 if (err) {
                     return callback(err)
-
+                    // and hrm_authorization_assign.auth_post=1
                 }
                 return callback(null, results)
 
