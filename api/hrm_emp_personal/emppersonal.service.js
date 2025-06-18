@@ -237,10 +237,11 @@ module.exports = {
 
         pool.query(
             `SELECT 
-                emper_slno,
-                em_no              
-            FROM hrm_emp_personal
-            WHERE em_no =? `,
+            emper_slno, em_no
+        FROM
+            hrm_emp_personal
+        WHERE
+            em_no = ? `,
             [
                 id.em_no
             ],
@@ -291,8 +292,12 @@ module.exports = {
     },
     getDetailsbyId: (id, callBack) => {
         pool.query(
-            `SELECT details_slno,relation_number,patient_name,mrd_number 
-            FROM hrm_emp_family_details where employee_id=? `,
+            `SELECT 
+            details_slno, relation_number, patient_name, mrd_number
+        FROM
+            hrm_emp_family_details
+        WHERE
+            employee_id = ?`,
             [
                 id
             ],
@@ -371,10 +376,11 @@ module.exports = {
     checkLangabyEmp: (id, callBack) => {
         pool.query(
             ` SELECT 
-            row_slno,
-            em_no              
-        FROM hrm_emp_languages_known
-        WHERE em_no =?   `,
+            row_slno, em_no
+        FROM
+            hrm_emp_languages_known
+        WHERE
+            em_no = ?   `,
             [
                 id.em_no
             ],
@@ -434,25 +440,28 @@ module.exports = {
     },
     getLangaugesByEmpno: (id, callBack) => {
         pool.query(
-            `SELECT
+            `SELECT 
             em_id,
-         em_no,
-         malayalam_speak,
-         malayalam_read,
-         malayalam_write,
-         hindi_write,
-         hindi_speak,
-         hindi_read,
-         english_write,
-         english_speak,
-         english_read,
-         tamil_write,
-         tamil_speak,
-         tamil_read,
-         arabic_write,
-         arabic_speak,
-         arabic_read
-        FROM hrm_emp_languages_known where em_no=?`,
+            em_no,
+            malayalam_speak,
+            malayalam_read,
+            malayalam_write,
+            hindi_write,
+            hindi_speak,
+            hindi_read,
+            english_write,
+            english_speak,
+            english_read,
+            tamil_write,
+            tamil_speak,
+            tamil_read,
+            arabic_write,
+            arabic_speak,
+            arabic_read
+        FROM
+            hrm_emp_languages_known
+        WHERE
+            em_no = ?`,
             [
                 id
             ],
@@ -467,10 +476,15 @@ module.exports = {
     checkAccountExist: (id, callBack) => {
         pool.query(
             `SELECT 
-                emper_slno,
-                em_no              
-            FROM hrm_emp_personal
-            WHERE em_account_no =? and em_id!=?    `,
+            emper_slno, hrm_emp_personal.em_no
+        FROM
+            hrm_emp_personal
+                INNER JOIN
+            hrm_emp_master ON hrm_emp_master.em_id = hrm_emp_personal.em_id
+        WHERE
+            em_account_no = ?
+                AND hrm_emp_personal.em_id != ?
+                AND em_status = 1 `,
             [
                 id.em_account_no,
                 id.em_id
