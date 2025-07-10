@@ -795,9 +795,10 @@ module.exports = {
                 extra_deduction,
                 gross_salary,
                 net_salary,
-                total_payableamount
+                total_payableamount,
+                refund_amount
                 )
-                VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+                VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
                 data.em_id,
                 data.em_no,
@@ -823,7 +824,8 @@ module.exports = {
                 data.extra_deduction,
                 data.gross_salary,
                 data.net_salary,
-                data.total_payableamount
+                data.total_payableamount,
+                data.refund_amount
             ],
             (error, results, fields) => {
                 if (error) {
@@ -973,6 +975,71 @@ module.exports = {
                     return callBack(error);
                 }
                 return callBack(null, results);
+            }
+        )
+    },
+    insertRetirmentLog: (data, callBack) => {
+        pool.query(
+            `INSERT INTO hrm_retirement_log(
+                em_id,
+                em_no, 
+                file_attachment,
+                attached_type,
+                exclusion,
+                exclusion_reason,
+                em_doj,
+                retirement_date,
+                total_days, 
+                leave_count,
+                holiday_count,
+                late_count,
+                lop_count,
+                holiday_worked,
+                total_paydays,
+                lop_amount,
+                nps_amount,
+                lwf_amount,
+                deduction_amount,
+                holiday_amount,
+                extra_earnings,
+                extra_deduction,
+                gross_salary,
+                net_salary,
+                total_payableamount
+                )
+                VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            [
+                data.em_id,
+                data.em_no,
+                data.fileName,
+                data.fileType,
+                data.exclusion,
+                data.exclusion_reason,
+                data.em_doj,
+                data.retirement_date,
+                data.total_days,
+                data.leave_count,
+                data.holiday_count,
+                data.late_count,
+                data.lop_count,
+                data.holiday_worked,
+                data.total_paydays,
+                data.lop_amount,
+                data.nps_amount,
+                data.lwf_amount,
+                data.deduction_amount,
+                data.holiday_amount,
+                data.extra_earnings,
+                data.extra_deduction,
+                data.gross_salary,
+                data.net_salary,
+                data.total_payableamount
+            ],
+            (error, results, fields) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results)
             }
         )
     },

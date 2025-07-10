@@ -8,7 +8,7 @@ const { InsertResignationRequest, getInchargePending, getResignationRequestByID,
     getHRPendingList, getContractClosed, getFullSettlementEmp, insertResigSalaryDetails,
     InactiveEmployee, getUnauthorizedAbsentee, InactiveEmploee, insertFromActiveEmp,
     getResignationRequestByEmpId, insertFinalSettlement, finalApprovalList,
-    paymentSubmit, getSettlementData, getResignationByEmID,
+    paymentSubmit, getSettlementData, getResignationByEmID, insertRetirmentLog,
     resignationHRReject } = require('../ResignationRequest/ResignationRequest.controller');
 
 router.post("/", checkToken, InsertResignationRequest);
@@ -46,5 +46,8 @@ router.post("/update/payment", checkToken, paymentSubmit)
 router.post("/getSettlement", checkToken, getSettlementData)
 router.get("/resignationbyemid/:id", checkToken, getResignationByEmID)
 router.patch("/resign/hrreject", checkToken, resignationHRReject)
+
+//retirement process
+router.post("/insert/retirement", checkToken, insertRetirmentLog)
 
 module.exports = router;

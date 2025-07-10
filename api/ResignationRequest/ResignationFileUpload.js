@@ -60,7 +60,28 @@ const uploadmul = multer({
     }
 }).single('file')
 
+const storageRetirement = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'D:/DocMeliora/Inteliqo/Retirement')
+    },
+    filename: function (req, file, cb) {
+        const extension = path.extname(file.originalname);
+        const newFileName = `Retirement_${Date.now()}${extension}`;
+        cb(null, newFileName)
+    }
+});
+
+
+const uploadRetirmentFiles = multer({
+    storage: storageRetirement,
+    limits: { fileSize: maxSize },
+    fileFilter: (req, file, cb) => {
+        checkFileType(file, cb);
+    }
+}).single('file')
+
 module.exports = {
     uploadResignationReqFiles,
-    uploadmul
+    uploadmul,
+    uploadRetirmentFiles
 }

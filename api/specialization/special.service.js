@@ -7,14 +7,16 @@ module.exports = {
                 spec_desc,
                 cour_slno,
                 spec_status,
-                create_user
+                create_user,
+                reg_mandatory
             )
-            VALUES (?,?,?,?)`,
+            VALUES (?,?,?,?,?)`,
             [
                 data.spec_desc,
                 data.cour_slno,
                 data.spec_status,
-                data.create_user
+                data.create_user,
+                data.reg_mandatory
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -48,13 +50,15 @@ module.exports = {
                 SET spec_desc =?,
                     cour_slno =?,
                     spec_status =?,
-                    edit_user =?
+                    edit_user =?,
+                    reg_mandatory=?
                 WHERE spec_slno = ?`,
             [
                 data.spec_desc,
                 data.cour_slno,
                 data.spec_status,
                 data.edit_user,
+                data.reg_mandatory,
                 data.spec_slno
             ],
             (error, results, feilds) => {
@@ -105,7 +109,9 @@ module.exports = {
                hrm_mast_specializtion.cour_slno,
                hrm_mast_course.cour_desc,
                spec_status,
-            if(spec_status = 1 ,'Yes','No') status
+            if(spec_status = 1 ,'Yes','No') status,
+            reg_mandatory,
+             if(reg_mandatory = 1 ,'Yes','No') mandatory
         FROM hrm_mast_specializtion
         LEFT JOIN hrm_mast_course ON hrm_mast_specializtion.cour_slno = hrm_mast_course.cour_slno`,
             [],
@@ -123,7 +129,8 @@ module.exports = {
                 spec_slno,
                 spec_desc,
                 cour_slno,
-                spec_status
+                spec_status,
+                reg_mandatory
             FROM hrm_mast_specializtion
             WHERE spec_slno =?`,
             [
@@ -141,7 +148,8 @@ module.exports = {
         pool.query(
             `SELECT 
                 spec_slno,
-                spec_desc
+                spec_desc,
+                reg_mandatory
             FROM hrm_mast_specializtion
             WHERE spec_status = 1`,
             [],
