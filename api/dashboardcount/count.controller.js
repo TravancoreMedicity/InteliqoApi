@@ -4,7 +4,7 @@ const { getResignCount, getContractCloseCount, OtRequestCount, OtReqInchargeCoun
     ResignReqHodCount, ResignReqCeoCount, contractrenewalCount, RegistrationPendingList,
     trainingconformationCount, getLeaveRequestID, RegistrationPending, probationEndCount, annualAppraisalCount,
     trainingAppraisalCount, contractEndCount, getActiveEmpCount, getpunchCount, contractAppraisalCount,
-    esiNotAddedList } = require('../dashboardcount/count.service');
+    esiNotAddedList, retirementList } = require('../dashboardcount/count.service');
 const logger = require('../../logger/logger')
 module.exports = {
     getResignCount: (req, res) => {
@@ -687,6 +687,29 @@ module.exports = {
     },
     esiNotAddedList: (req, res) => {
         esiNotAddedList((err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    retirementList: (req, res) => {
+        retirementList((err, results) => {
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({

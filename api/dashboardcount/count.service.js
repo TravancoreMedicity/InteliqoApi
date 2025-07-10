@@ -554,5 +554,49 @@ module.exports = {
             }
         )
     },
+    retirementList: (callBack) => {
+        pool.query(
+            `SELECT 
+            hrm_emp_master.em_id,
+            hrm_emp_master.em_no,
+            em_name,
+            dept_name,
+            desg_name,
+            sect_name,
+            hrm_emp_master.em_doj,
+            ecat_name,
+            hrm_emp_master.em_dob,
+            em_retirement_date,
+            hrm_emp_master.gross_salary,
+            hrm_department.dept_id AS dept_id,
+            hrm_dept_section.sect_id AS sect_id
+        FROM
+            hrm_emp_master
+                LEFT JOIN
+            hrm_department ON hrm_emp_master.em_department = hrm_department.dept_id
+                LEFT JOIN
+            designation ON hrm_emp_master.em_designation = designation.desg_slno
+                LEFT JOIN
+            hrm_emp_category ON hrm_emp_master.em_category = hrm_emp_category.category_slno
+                LEFT JOIN
+            hrm_dept_section ON hrm_emp_master.em_dept_section = hrm_dept_section.sect_id
+        WHERE
+            em_status = 1
+                AND em_retirement_date <= LAST_DAY(CURDATE())
+                AND em_category = 1
+                AND doctor_status = 0
+                AND em_no NOT IN (SELECT 
+                    em_no
+                FROM
+                    hrm_retirement_log)`,
+            [],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 
 }

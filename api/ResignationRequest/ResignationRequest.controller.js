@@ -10,12 +10,12 @@ const { InsertResignationRequest, getInchargePending, getResignationRequestByID,
     checkResignationEntryExcist, InactiveEmployee, getUnauthorizedAbsentee,
     insertFromActiveEmp, getResignationRequestByEmpId, insertFinalSettlement,
     resignComplete, finalApprovalList, paymentSubmit, getSettlementData, deactivateLogin,
-    getResignationByEmID, resignationHRReject
+    getResignationByEmID, resignationHRReject, insertRetirmentLog
 } = require('../ResignationRequest/ResignationRequest.service');
 const { validateResignationRequest, validateResignationRequestApprovalHOD, validateResignationRequestApprovalCEO, validateResignationRequestCancel,
     validateResignationRequestApprovalINcharge, validateResignationRequestApprovalHR } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger');
-const { uploadResignationReqFiles, uploadFinalSettlement, uploadmul } = require('./ResignationFileUpload');
+const { uploadResignationReqFiles, uploadFinalSettlement, uploadmul, uploadRetirmentFiles } = require('./ResignationFileUpload');
 const { empLoginDeactivate, deleteByID, InActiveEmpHR } = require('../hrm_emp_master/empmast.service');
 const { uploadManualreqst } = require('../ManualRequest/Manual.controller');
 
@@ -873,6 +873,47 @@ module.exports = {
                 success: 1,
                 message: "Details Submitted SuccessFully"
             })
+        })
+    },
+    insertRetirmentLog: (req, res) => {
+        uploadRetirmentFiles(req, res, (err) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            } else {
+
+                const body = req.body;
+                const file = req.file;
+                const fileName = file?.filename;
+                const fileType = file?.mimetype;
+                const postData = JSON.parse(JSON.parse(JSON.stringify(body))?.postData);
+                postData.fileName = fileName
+                postData.fileType = fileType
+
+                insertRetirmentLog(postData, (err, results) => {
+                    if (err) {
+                        logger.errorLogger(err)
+                        return res.status(200).json({
+                            success: 0,
+                            message: err
+                        });
+                    }
+
+                    if (results.length === 0) {
+                        return res.status(200).json({
+                            success: 0,
+                            message: "No Record Found"
+                        });
+                    }
+                    return res.status(200).json({
+                        success: 1,
+                        data: results,
+                        message: "Insert Data Successfully!"
+                    });
+                })
+            }
         })
     },
 }

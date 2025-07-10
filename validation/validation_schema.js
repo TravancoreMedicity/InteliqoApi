@@ -810,6 +810,7 @@ const validatespecialization = Joi.object({
         spec_slno: Joi.number().optional(),
         create_user: Joi.number().optional(),
         edit_user: Joi.number().optional(),
+        reg_mandatory: Joi.number().optional()
 })
 
 // VALIDATION MODULE GROUP MASTER

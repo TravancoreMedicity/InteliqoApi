@@ -237,7 +237,8 @@ module.exports = {
         const body = req.body;
         var a1 = body.map((value, index) => {
             return [value.em_no, value.hd_slno, value.hl_lv_year, value.hl_date,
-            value.hl_lv_credit, value.hl_lv_taken, value.hl_lv_allowed, value.lv_process_slno, value.update_user, value.em_id]
+            value.hl_lv_credit, value.hl_lv_taken, value.hl_lv_allowed, value.lv_process_slno,
+            value.update_user, value.em_id, value.special_type]
         })
         insertHoliday(a1, (err, results) => {
             if (err) {

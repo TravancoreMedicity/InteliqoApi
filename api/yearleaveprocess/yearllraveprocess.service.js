@@ -213,7 +213,8 @@ module.exports = {
                 hl_lv_allowed,
                 lv_process_slno,
                 update_user,
-                em_id) 
+                em_id,
+                special_type) 
                 values ?`,
             [
                 data
