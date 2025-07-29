@@ -1744,7 +1744,9 @@ module.exports = {
                         duty_status=?,
                         lvereq_desc = ?,
                         duty_desc = ?,
-                        lve_tble_updation_flag = 1
+                        lve_tble_updation_flag = 1,
+                        late_in=0,
+                        early_out=0
                         WHERE em_no = ? 
                         AND duty_day = ?`,
                     [
