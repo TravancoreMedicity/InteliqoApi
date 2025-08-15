@@ -13,7 +13,9 @@ const {
     getResignedEmployees,
     getBranchActiveEmpDate,
     getDeptActiveEmpDate,
-    getEmpdetl
+    getEmpdetl,
+    getBranchActiveDoctors,
+    getallDoctors
 } = require('../ActiveEmpReport/ActiveEmpReport.controller')
 
 /** Active employee List*/
@@ -37,4 +39,9 @@ router.post('/resigned', checkToken, getResignedEmployees)
 
 
 router.post('/inactive/emp', checkToken, getEmpdetl)
+
+//doctors
+router.post('/active/doctors', checkToken, getBranchActiveDoctors)
+router.get('/allactive/doctors', checkToken, getallDoctors)
+
 module.exports = router;
