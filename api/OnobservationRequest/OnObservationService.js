@@ -45,6 +45,7 @@ module.exports = {
             SET duty_status = 1,
             lvereq_desc = 'OBS',
             duty_desc = 'OBS',
+            late_in=0,
             lve_tble_updation_flag=1,
             leave_status=1
         WHERE duty_day=? and emp_id=?`,
