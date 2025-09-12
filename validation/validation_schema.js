@@ -69,7 +69,8 @@ const validateDepartment = Joi.object({
         dept_id: Joi.optional(),
         create_user: Joi.number().optional(),
         edit_user: Joi.number().optional(),
-        dept_type: Joi.number().optional()
+        dept_type: Joi.number().optional(),
+        doctor_department: Joi.number().optional(),
 });
 
 const validateSection = Joi.object({
@@ -361,6 +362,7 @@ const validateempcategory = Joi.object({
         ecate_pf: Joi.number(),
         ecat_wwf: Joi.number(),
         ecat_lwf: Joi.number(),
+        ecat_doctor: Joi.number(),
 })
 
 // VALIDATE REGISTRATON TYPE
@@ -538,7 +540,7 @@ const validateempmaster = Joi.object({
         clinicaltype: Joi.number().min(1).required(),
         doctor_status: Joi.number().optional(),
         leaveprocess_type: Joi.number().required(),
-
+        nmc_regno: Joi.number().optional(),
 })
 
 // VALIDATE EMPLOYEE MASTER EDIT

@@ -33,9 +33,10 @@ module.exports = {
                 ecate_pf,
                 ecat_wwf,
                 ecat_lwf,
-                create_users
+                create_users,
+                ecat_doctor
                 )
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
                 data.ecat_name,
                 data.emp_type,
@@ -66,7 +67,8 @@ module.exports = {
                 data.ecate_pf,
                 data.ecat_wwf,
                 data.ecat_lwf,
-                data.create_users
+                data.create_users,
+                data.ecat_doctor
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -129,7 +131,8 @@ module.exports = {
                     cont_grace=?,
                     ecate_pf=?,
                     ecat_wwf=?,
-                    ecat_lwf=?
+                    ecat_lwf=?,
+                    ecat_doctor=?
                     WHERE category_slno = ?`,
             [
 
@@ -163,6 +166,7 @@ module.exports = {
                 data.ecate_pf,
                 data.ecat_wwf,
                 data.ecat_lwf,
+                data.ecat_doctor,
                 data.category_slno
             ],
             (error, results, feilds) => {
@@ -269,7 +273,8 @@ module.exports = {
             ecat_holiday ,
             ecat_training,
             ecat_training_max,
-            ecate_pf, ecat_wwf, ecat_lwf
+            ecate_pf, ecat_wwf, ecat_lwf,
+            ecat_doctor
         FROM hrm_emp_category
         WHERE category_slno = ?`,
             [

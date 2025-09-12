@@ -30,7 +30,9 @@ const {
     insertActivateEmp,
     createCompany,
     craeteCateChange,
-    createPermanentChange
+    createPermanentChange,
+    getDoctors,
+    getDoctorsbyDeptSectionWise
 } = require('../hrm_emp_master/empmast.controller');
 
 router.post("/", checkToken, createempmast)
@@ -73,5 +75,11 @@ router.post("/company/dept", checkToken, createCompany)
 
 router.post("/newContract/cateChange", checkToken, craeteCateChange)
 router.post('/permanent', checkToken, createPermanentChange)
+
+
+// doctors
+
+router.post("/docyors/list", checkToken, getDoctors)
+router.post("/doctors/bysection", checkToken, getDoctorsbyDeptSectionWise)
 
 module.exports = router;
