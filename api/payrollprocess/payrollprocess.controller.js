@@ -11,7 +11,7 @@ const { empDeptdata, empDeptSecdata, empNameBasedata, getFixedByEmid, getTotalFi
     getPunchMasterSalaryAllEmployee, getAcriveDepartmentSection, getPunchmastAboveSelectedDate,
     getPunchAboveSelectedDate, submitProcessedSalary, inertMonthlyProcess, getProcessedDepartments,
     getPayrollDetails, CancelPayrollProcess, deleteProcessedSalary, ActivatePayrollProcess,
-    getSectionWiseEmployee, getPayrollDetailsByDept
+    getSectionWiseEmployee, getPayrollDetailsByDept,getOnemonthLeavDetl
 } = require('../payrollprocess/payrollprocess.service');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -1432,6 +1432,28 @@ module.exports = {
             if (results.length == 0) {
                 return res.status(200).json({
                     succ: 2,
+                    message: "No Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    getOnemonthLeavDetl: (req, res) => {
+        const body = req.body
+        getOnemonthLeavDetl(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
                     message: "No Record Found"
                 });
             }
