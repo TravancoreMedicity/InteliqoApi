@@ -1962,7 +1962,7 @@ module.exports = {
                             })
                             ?.sort((a, b) => a.punch_slno - b.punch_slno)
                             ?.filter((e) => e.late_in <= cmmn_late_in)
-                            // ?.filter((e) => e.holiday_status !== 1)
+                            ?.filter((e) => e.lvereq_desc !== 'A')
                             ?.map(item => {
                                 lateInCount = lateInCount + item.late_in;
                                 if (item.duty_desc === "LC" && lateInCount < monthly_late_time_count) {
