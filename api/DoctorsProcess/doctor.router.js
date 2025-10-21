@@ -1,5 +1,7 @@
 const router = require("express").Router();
-const { checkToken } = require("../../auth/token_validation");
+const {
+    checkToken
+} = require("../../auth/token_validation");
 const {
     checkDoctorDutyplan,
     insertDutyplan,
@@ -11,7 +13,17 @@ const {
     getDoctorById,
     getdoctorDept,
     getDoctorSectionByDept,
-    createDoctorPunch } = require("./doctorController");
+    createDoctorPunch,
+    getDoctorsByNMC,
+    getDoctorPunchmastData,
+    getDoctorpunchLog,
+    activeDoctorsList,
+    clinicalDoctorsList,
+    accademicDoctorsList,
+    tmcPunchedDoctorList,
+    nmcPunchedDoctorList,
+    gettodayPresentDoctor
+} = require("./doctorController");
 
 
 router.post("/check", checkToken, checkDoctorDutyplan)
@@ -26,5 +38,16 @@ router.get("/dept", checkToken, getdoctorDept)
 router.get("/sect/:id", checkToken, getDoctorSectionByDept)
 
 router.post("/insert/doctorpunch", checkToken, createDoctorPunch)
+router.post("/getDoctor/byNMC", checkToken, getDoctorsByNMC)
+router.post("/punchmastdata", checkToken, getDoctorPunchmastData)
+router.get("/getLog", checkToken, getDoctorpunchLog)
+
+//reports
+router.get("/doctorslist", checkToken, activeDoctorsList)
+router.get("/clinicaldoctor", checkToken, clinicalDoctorsList)
+router.get("/accademicDoctor", checkToken, accademicDoctorsList)
+router.get("/tmcpunchDoctor", checkToken, tmcPunchedDoctorList)
+router.get("/nmcpunchDoctor", checkToken, nmcPunchedDoctorList)
+router.get("/todayPrsent", checkToken, gettodayPresentDoctor)
 
 module.exports = router;

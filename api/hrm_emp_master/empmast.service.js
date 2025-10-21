@@ -1242,7 +1242,8 @@ module.exports = {
                 gross_salary,
                 IF(em_status = 1, 'Yes', 'No') emp_status,
                 unauthorized_absent_status,
-                holiday_type
+                holiday_type,
+                nmc_regno
             FROM
                 hrm_emp_master
                     LEFT JOIN

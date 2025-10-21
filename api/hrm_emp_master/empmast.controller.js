@@ -35,7 +35,11 @@ const {
     getDoctors,
     getDoctorsbyDeptSectionWise
 } = require('../hrm_emp_master/empmast.service');
-const { validateempmaster, validateempmasterupdate, validateempmasterEdit } = require('../../validation/validation_schema');
+const {
+    validateempmaster,
+    validateempmasterupdate,
+    validateempmasterEdit
+} = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
 module.exports = {
     createempmast: (req, res) => {
@@ -71,8 +75,7 @@ module.exports = {
                             success: 0,
                             message: "No Results Found"
                         });
-                    }
-                    else {
+                    } else {
                         return res.status(200).json({
                             success: 1,
                             message: "Data Created Successfully"
@@ -366,8 +369,7 @@ module.exports = {
                     success: 0,
                     message: err
                 });
-            }
-            else {
+            } else {
                 updateCompanyInfo(body, (err, results) => {
 
                     if (err) {
@@ -847,8 +849,7 @@ module.exports = {
                     success: 0,
                     message: err
                 });
-            }
-            else {
+            } else {
                 updateContractEmpmastData(body, (err, results) => {
 
                     if (err) {
@@ -883,8 +884,7 @@ module.exports = {
                     success: 0,
                     message: err
                 });
-            }
-            else {
+            } else {
                 updatePermanentData(body, (err, results) => {
 
                     if (err) {
@@ -942,20 +942,23 @@ module.exports = {
                 logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
-                    message: res.err
+                    message: res.err,
+                    data:[]
                 });
             }
 
             if (!results) {
                 return res.status(200).json({
                     success: 2,
-                    message: "Record Not Found"
+                    message: "Record Not Found",
+                    data:[]
                 });
             }
 
             return res.status(200).json({
                 success: 1,
-                data: results
+                data: results,
+                message: "Data Found"
             });
         })
     },

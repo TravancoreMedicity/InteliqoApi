@@ -1,3 +1,6 @@
+const {
+    format
+} = require('date-fns');
 const pool = require('../../config/database');
 
 module.exports = {
@@ -210,7 +213,8 @@ ORDER BY DATE(duty_day) ASC`,
                     clinicaltype,
                     gross_salary,
                     doctor_status,
-                    holiday_type
+                    holiday_type,
+                    nmc_regno
                 FROM hrm_emp_master
                 WHERE em_id = ?
                 AND em_status=1 and doctor_status=1 `,
@@ -270,6 +274,407 @@ ORDER BY DATE(duty_day) ASC`,
             [
                 data
             ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getDoctorsByNMC: (data, callBack) => {
+        pool.query(
+            `SELECT 
+                em_no,
+                em_id,
+                CONCAT(hrm_salutation.sal_name, '.', em_name) AS emp_name,
+                IF(em_gender = 1, 'Male', 'Female') gender,
+                em_dob,
+                em_age_year,
+                em_doj,
+                em_mobile,
+                hrm_branch.branch_name,
+                hrm_department.dept_name,
+                hrm_dept_section.sect_name,
+                designation.desg_name,
+                gross_salary,
+                IF(em_status = 1, 'Yes', 'No') emp_status,
+                unauthorized_absent_status,
+                holiday_type,
+                nmc_regno
+            FROM
+                hrm_emp_master
+                    LEFT JOIN
+                hrm_salutation ON hrm_salutation.sa_code = hrm_emp_master.em_salutation
+                    LEFT JOIN
+                hrm_branch ON hrm_branch.branch_slno = hrm_emp_master.em_branch
+                    LEFT JOIN
+                hrm_department ON hrm_department.dept_id = hrm_emp_master.em_department
+                    LEFT JOIN
+                hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
+                    LEFT JOIN
+                designation ON designation.desg_slno = hrm_emp_master.em_designation
+                    LEFT JOIN
+                hrm_emp_category ON hrm_emp_category.category_slno = hrm_emp_master.em_category
+            WHERE   nmc_regno IN (?)
+                    AND em_status=1  and em_id !=1 and em_no!=2 and doctor_status=1`,
+            [
+                data
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    updateNMCpunch: (data, callBack) => {
+        return new Promise((resolve, reject) => {
+            data.map((val) => {
+                pool.query(
+                    `update doctor_punch_master 
+                     set nmc_punchin=?, 
+                     nmc_punchout=?, 
+                     nmc_punch_status=? 
+                     where duty_day=? 
+                     and em_no=?`,
+                    [
+                        format(new Date(val.inTime), 'yyyy-MM-dd'),
+                        format(new Date(val.outTime), 'yyyy-MM-dd'),
+                        val.status,
+                        val.duty_day,
+                        val.em_no
+                    ],
+                    (error, results, feilds) => {
+                        if (error) {
+                            return reject(error)
+                        }
+                        return resolve(results)
+                    }
+                )
+            })
+        })
+    },
+    getDoctorPunchmastData: (data, callBack) => {
+        pool.query(
+            `select punch_slno, duty_day,shift_id,doctor_punch_master.emp_id,doctor_punch_master.em_no,
+            hrm_emp_master.em_name,dept_name,sect_name, gross_salary,punch_in,
+            punch_out,shift_in,shift_out,hrs_worked,over_time,late_in,
+            early_out,duty_status,holiday_status,leave_status,holiday_slno,
+            lvereq_desc,duty_desc,lve_tble_updation_flag,hrm_emp_master.em_name,
+            unauthorized_absent_status,manual_request_flag,nmc_punchin,nmc_punchout,nmc_punch_status
+            from  doctor_punch_master
+            left join hrm_emp_master on hrm_emp_master.em_no=doctor_punch_master.em_no
+            left join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
+            left join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
+            where doctor_punch_master.em_no IN (?)
+            and date(duty_day) between ? and ?`,
+            [
+                data.em_no,
+                data.from,
+                data.to
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    logDoctorPunch: (data, callBack) => {
+        pool.query(
+            `INSERT INTO doctor_punch_upload_log (  last_update_user  )   VALUES (?)`,
+            [
+                data
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getDoctorpunchLog: (callBack) => {
+        pool.query(
+            `SELECT 
+    last_update_date, last_update_user, em_name
+FROM
+    doctor_punch_upload_log
+        INNER JOIN
+    hrm_emp_master ON hrm_emp_master.em_id = doctor_punch_upload_log.last_update_user`,
+            [],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        );
+    },
+    activeDoctorsList: (callBack) => {
+        pool.query(
+            `SELECT 
+    hrm_emp_master.em_no,
+    em_name,
+    em_dob,
+    em_doj,
+    em_mobile,
+    em_email,
+    branch_name,
+    dept_name,
+    sect_name,
+    desg_name,
+    ecat_name,
+    inst_emp_type,
+    gross_salary,
+    addressPresent1,
+    em_account_no,
+    hrm_pin2,
+    em_pan_no,
+    addressPresent2,
+    em_retirement_date,
+    em_passport_no,
+    em_adhar_no,
+    IF(em_gender = 1, 'Male', 'Female') em_gender,
+    IFNULL(em_pf_no, 0) em_pf_no,
+    em_esi_no,
+    lwfnumber,
+    nmc_regno
+FROM
+    hrm_emp_master
+        INNER JOIN
+    hrm_branch ON hrm_branch.branch_slno = hrm_emp_master.em_branch
+        INNER JOIN
+    hrm_department ON hrm_department.dept_id = hrm_emp_master.em_department
+        INNER JOIN
+    hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
+        INNER JOIN
+    designation ON designation.desg_slno = hrm_emp_master.em_designation
+        INNER JOIN
+    hrm_emp_category ON hrm_emp_category.category_slno = hrm_emp_master.em_category
+        INNER JOIN
+    institution_type ON institution_type.inst_slno = hrm_emp_master.em_institution_type
+        LEFT JOIN
+    hrm_emp_personal ON hrm_emp_personal.em_id = hrm_emp_master.em_id
+        LEFT JOIN
+    hrm_emp_pfesi ON hrm_emp_pfesi.em_id = hrm_emp_master.em_id
+WHERE
+    (hrm_emp_master.em_status = 1
+        AND hrm_emp_master.em_no != 1
+        AND hrm_emp_master.em_no != 2
+        AND doctor_status = 1)`,
+            [],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        );
+    },
+    clinicalDoctorsList: (callBack) => {
+        pool.query(
+            `SELECT 
+    hrm_emp_master.em_no,
+    em_name,
+    em_dob,
+    em_doj,
+    em_mobile,
+    em_email,
+    branch_name,
+    dept_name,
+    sect_name,
+    desg_name,
+    ecat_name,
+    inst_emp_type,
+    gross_salary,
+    addressPresent1,
+    em_account_no,
+    hrm_pin2,
+    em_pan_no,
+    addressPresent2,
+    em_retirement_date,
+    em_passport_no,
+    em_adhar_no,
+    IF(em_gender = 1, 'Male', 'Female') em_gender,
+    IFNULL(em_pf_no, 0) em_pf_no,
+    em_esi_no,
+    lwfnumber
+FROM
+    hrm_emp_master
+        INNER JOIN
+    hrm_branch ON hrm_branch.branch_slno = hrm_emp_master.em_branch
+        INNER JOIN
+    hrm_department ON hrm_department.dept_id = hrm_emp_master.em_department
+        INNER JOIN
+    hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
+        INNER JOIN
+    designation ON designation.desg_slno = hrm_emp_master.em_designation
+        INNER JOIN
+    hrm_emp_category ON hrm_emp_category.category_slno = hrm_emp_master.em_category
+        INNER JOIN
+    institution_type ON institution_type.inst_slno = hrm_emp_master.em_institution_type
+        LEFT JOIN
+    hrm_emp_personal ON hrm_emp_personal.em_id = hrm_emp_master.em_id
+        LEFT JOIN
+    hrm_emp_pfesi ON hrm_emp_pfesi.em_id = hrm_emp_master.em_id
+WHERE
+    (hrm_emp_master.em_status = 1
+        AND hrm_emp_master.em_no != 1
+        AND hrm_emp_master.em_no != 2
+        AND doctor_status = 1 AND clinicaltype=1)`,
+            [],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        );
+    },
+    accademicDoctorsList: (callBack) => {
+        pool.query(
+            `SELECT 
+    hrm_emp_master.em_no,
+    em_name,
+    em_dob,
+    em_doj,
+    em_mobile,
+    em_email,
+    branch_name,
+    dept_name,
+    sect_name,
+    desg_name,
+    ecat_name,
+    inst_emp_type,
+    gross_salary,
+    addressPresent1,
+    em_account_no,
+    hrm_pin2,
+    em_pan_no,
+    addressPresent2,
+    em_retirement_date,
+    em_passport_no,
+    em_adhar_no,
+    IF(em_gender = 1, 'Male', 'Female') em_gender,
+    IFNULL(em_pf_no, 0) em_pf_no,
+    em_esi_no,
+    lwfnumber
+FROM
+    hrm_emp_master
+        INNER JOIN
+    hrm_branch ON hrm_branch.branch_slno = hrm_emp_master.em_branch
+        INNER JOIN
+    hrm_department ON hrm_department.dept_id = hrm_emp_master.em_department
+        INNER JOIN
+    hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
+        INNER JOIN
+    designation ON designation.desg_slno = hrm_emp_master.em_designation
+        INNER JOIN
+    hrm_emp_category ON hrm_emp_category.category_slno = hrm_emp_master.em_category
+        INNER JOIN
+    institution_type ON institution_type.inst_slno = hrm_emp_master.em_institution_type
+        LEFT JOIN
+    hrm_emp_personal ON hrm_emp_personal.em_id = hrm_emp_master.em_id
+        LEFT JOIN
+    hrm_emp_pfesi ON hrm_emp_pfesi.em_id = hrm_emp_master.em_id
+WHERE
+    (hrm_emp_master.em_status = 1
+        AND hrm_emp_master.em_no != 1
+        AND hrm_emp_master.em_no != 2
+        AND doctor_status = 1 AND clinicaltype=3)`,
+            [],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        );
+    },
+    getDoctorpunch: ( callBack) => {
+        pool.query(
+            `SELECT 
+    emp_code, em_name, nmc_regno, punch_time, em_no, branch_name,
+    dept_name, sect_name,  desg_name
+FROM
+    punch_data
+        LEFT JOIN
+    hrm_emp_master ON hrm_emp_master.em_no = punch_data.emp_code
+        INNER JOIN
+    hrm_branch ON hrm_branch.branch_slno = hrm_emp_master.em_branch
+        INNER JOIN
+    hrm_department ON hrm_department.dept_id = hrm_emp_master.em_department
+        INNER JOIN
+    hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
+        INNER JOIN
+    designation ON designation.desg_slno = hrm_emp_master.em_designation
+WHERE
+    DATE(punch_time) = CURRENT_DATE()
+        AND emp_code IN (SELECT 
+            em_no
+        FROM
+            hrm_emp_master
+        WHERE
+            doctor_status = 1 AND em_status = 1)
+GROUP BY em_no;`,
+            [ ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    nmcDoctorPunch: (data, callBack) => {
+        pool.query(
+            `  SELECT em_no,em_name,branch_name,attendance_id,
+     dept_name, sect_name,  desg_name
+FROM doctor_punch_upload
+LEFT JOIN hrm_emp_master
+  ON hrm_emp_master.nmc_regno COLLATE utf8mb4_general_ci = doctor_punch_upload.attendance_id COLLATE utf8mb4_general_ci
+    LEFT JOIN
+   hrm_branch ON hrm_branch.branch_slno = hrm_emp_master.em_branch
+        INNER JOIN
+    hrm_department ON hrm_department.dept_id = hrm_emp_master.em_department
+        INNER JOIN
+    hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
+        INNER JOIN
+    designation ON designation.desg_slno = hrm_emp_master.em_designation
+WHERE (DATE(punch_intime) = CURRENT_DATE() OR DATE(punch_outtime) = CURRENT_DATE())
+  AND attendance_id IN (?) `,
+            [
+                data.id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+     gettodayPresentDoctor: ( callBack) => {
+        pool.query(
+            `SELECT doctor_punch_master.em_no,em_name,branch_name,
+     dept_name, sect_name,  desg_name FROM doctor_punch_master 
+LEFT JOIN
+    hrm_emp_master ON hrm_emp_master.em_no = doctor_punch_master.em_no
+        INNER JOIN
+    hrm_branch ON hrm_branch.branch_slno = hrm_emp_master.em_branch
+        INNER JOIN
+    hrm_department ON hrm_department.dept_id = hrm_emp_master.em_department
+        INNER JOIN
+    hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
+        INNER JOIN
+    designation ON designation.desg_slno = hrm_emp_master.em_designation
+where date(duty_day)=curdate() and (duty_desc='P' or nmc_punch_status='P') and doctor_punch_master.em_no IN 
+(SELECT em_no FROM hrm_emp_master WHERE doctor_status = 1 AND em_status = 1)`,
+            [ ],
             (error, results, feilds) => {
                 if (error) {
                     return callBack(error);
