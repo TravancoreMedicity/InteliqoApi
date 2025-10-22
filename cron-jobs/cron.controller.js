@@ -203,6 +203,7 @@ const InsertDeafualtDoctorDutyplan = async () => {
 };
 
 const InsertTmcpunch = async () => {
+ 
    pool.getConnection((err, connection) => {
     if (err) {
       console.log(" MySQL DB not connected");
@@ -288,7 +289,7 @@ const InsertTmcpunch = async () => {
             connection.query(employeeQuery, (err, employees) => {
               try {
                 if (err) {
-                  //console.log(" Error fetching employees", err);
+                 console.log(" Error fetching employees", err);
                   throw err;
                 }
 
@@ -400,6 +401,9 @@ cron.schedule("0 0 1 * *", () => {
 
 });
 
-cron.schedule("* * * * *", () => {
- InsertTmcpunch();
+cron.schedule("*/2 * * * * ", () => {
+  const currentTime = new Date().toLocaleTimeString();
+  console.log("Running InsertTmcpunch at:", currentTime);
+
+  InsertTmcpunch();
 });
