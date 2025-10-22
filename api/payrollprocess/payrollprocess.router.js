@@ -12,7 +12,7 @@ const { empDeptdata, empDeptSecdata, empNameBasedata, getFixedByEmid, getEarning
     getPunchMarkingHrFull, getTotalGrosssalaryByno, getPunchMasterSalaryAllEmployee, getAcriveDepartmentSection,
     getPunchmastAboveSelectedDate, getPunchAboveSelectedDate, submitProcessedSalary, inertMonthlyProcess,
     getProcessedDepartments, getPayrollDetails, CancelPayrollProcess, deleteProcessedSalary, ActivatePayrollProcess,
-    getSectionWiseEmployee, getPayrollDetailsByDept
+    getSectionWiseEmployee, getPayrollDetailsByDept,getOnemonthLeavDetl
 
 } = require('../payrollprocess/payrollprocess.controller');
 
@@ -95,5 +95,6 @@ router.post("/activate/processedSalary", checkToken, ActivatePayrollProcess)
 
 router.post("/sectionEmployees", checkToken, getSectionWiseEmployee)
 router.post("/getPayrollDetailsByDept", checkToken, getPayrollDetailsByDept)
+router.post("/getOnemnothLeave", checkToken,getOnemonthLeavDetl)
 
 module.exports = router; 

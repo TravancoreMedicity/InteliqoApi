@@ -1661,4 +1661,30 @@ module.exports = {
             }
         )
     },
+    getOnemonthLeavDetl: (data, callBack) => {
+        pool.query(
+            `select 
+             duty_day,
+			punch_master.emp_id,
+            punch_master.em_no,
+            hrm_emp_master.em_name,
+            lvereq_desc,
+            duty_desc
+            from  punch_master
+            inner join hrm_emp_master on hrm_emp_master.em_no=punch_master.em_no
+            where emp_id =?
+                 and duty_day between ? and ?`,
+            [
+                data.emp_id,
+                data.from,
+                data.to
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }
