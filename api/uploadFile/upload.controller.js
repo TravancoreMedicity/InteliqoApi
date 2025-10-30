@@ -310,7 +310,9 @@ module.exports = {
     const folderPath = path.join('D:/DocMeliora/Inteliqo', id);
     fs.readdir(folderPath, (err, files) => {
       if (err) {
-        console.error(err);
+        //console.log("b,cmbvn");
+        
+        // console.error(err);
         return res.status(200).json({
           success: 0,
           message: err.message,
