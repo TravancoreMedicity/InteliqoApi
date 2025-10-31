@@ -178,10 +178,10 @@ module.exports = {
                        LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id=training_trainername.trainer_name
                        LEFT JOIN hrm_dept_section ON hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
                        LEFT JOIN designation ON designation.desg_slno=training_trainername.trainer_desig
-                       where em_status=1 AND trainer_status=1 AND hrm_department.dept_id=? AND hrm_dept_section.sect_id=?`,
+                       where em_status=1 AND trainer_status=1 AND hrm_department.dept_id=? `,
             [
                 data.em_department,
-                data.em_dept_section
+                // data.em_dept_section
 
             ],
             (error, results, feilds) => {
