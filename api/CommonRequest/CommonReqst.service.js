@@ -74,6 +74,9 @@ module.exports = {
             AND YEAR(one_hour_duty_day) = YEAR(?) -- Replace with the desired year
             AND month(one_hour_duty_day) = month(?)
              AND cancel_status != 1 
+              AND incharge_approval_status!=2
+             AND hod_req_status!=2
+             AND hr_approval_status!=2
         GROUP BY MONTH(one_hour_duty_day)
         ORDER BY month;`,
             [

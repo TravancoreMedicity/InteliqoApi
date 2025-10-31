@@ -540,6 +540,7 @@ module.exports = {
     allowableearnleave: (req, res) => {
         const id = req.params.id;
         allowableearnleave(id, (err, results) => {
+    
             if (err) {
                 logger.errorLogger(err)
                 return res.status(200).json({
