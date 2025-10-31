@@ -233,8 +233,8 @@ module.exports = {
     },
 
     TrainerNameDeptSecWise: (req, res) => {
-        const body = req.body;
-        TrainerNameDeptSecWise(body, (err, results) => {
+        const data = req.body;
+        TrainerNameDeptSecWise(data, (err, results) => {
             if (err) {
                 return res.status(200).json({
                     success: 0,
@@ -249,7 +249,7 @@ module.exports = {
             }
             return res.status(200).json({
                 success: 2,
-                data: results
+                data: results,
             })
         });
     },
