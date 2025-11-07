@@ -397,7 +397,7 @@ const InsertTmcpunch = async () => {
 };
 
 cron.schedule("0 0 1 * *", () => {
-  InsertDeafualtDoctorDutyplan();
+ // InsertDeafualtDoctorDutyplan();
 
 });
 
@@ -405,5 +405,5 @@ cron.schedule("*/2 * * * * ", () => {
   const currentTime = new Date().toLocaleTimeString();
   console.log("Running InsertTmcpunch at:", currentTime);
 
-  InsertTmcpunch();
+ // InsertTmcpunch();
 });
