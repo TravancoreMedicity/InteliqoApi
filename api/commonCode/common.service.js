@@ -100,7 +100,8 @@ module.exports = {
         pool.query(
             `SELECT 
                 module_slno,
-                module_name
+                module_name,
+                module_status
             FROM module_name`,
             [],
             (error, results, feilds) => {

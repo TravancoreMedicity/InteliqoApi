@@ -32,6 +32,8 @@ const {
     updateContractEmpmastData,
     updatePermanentData,
     empLoginDeactivate,
+    getDoctors,
+    getDoctorsbyDeptSectionWise,
     empLoginActivate
 } = require('../hrm_emp_master/empmast.service');
 const {
@@ -914,6 +916,58 @@ module.exports = {
                 });
 
             }
+        })
+    },
+    getDoctors: (req, res) => {
+        const body = req.body
+
+        getDoctors(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: res.err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    getDoctorsbyDeptSectionWise: (req, res) => {
+        const body = req.body
+        getDoctorsbyDeptSectionWise(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: res.err,
+                    data:[]
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found",
+                    data:[]
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results,
+                message: "Data Found"
+            });
         })
     },
 }

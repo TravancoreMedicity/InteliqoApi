@@ -138,4 +138,42 @@ module.exports = {
             }
         )
     },
+    createModuleName: (data, callBack) => {
+        pool.query(
+            `INSERT INTO module_name (
+                module_name,
+                module_status
+            )
+            VALUES (?,?)`,
+            [
+                data.module_name,
+                data.module_status
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    updateModulename: (data, callBack) => {
+        pool.query(
+            `UPDATE module_name 
+                SET module_name = ?,
+                module_status =?
+                WHERE module_slno = ?`,
+            [
+                data.module_name,
+                data.module_status,
+                data.module_slno
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }

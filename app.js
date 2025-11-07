@@ -90,7 +90,6 @@ const hrmgrosssalaryRouter = require("./api/Hrm_grosssalary/Hrm_grosssalary.rout
 const attedancemarkRouter = require("./api/attendance_marking_save/attendance_marking_save.router")
 const payrollprocess = require("./api/payrollprocess/payrollprocess.router")
 const JobdescriptionRouter = require("./api/Job_description/Job_description.router")
-// const reportsRouter = require("./api/Reports/Reports.router")
 const advance_settingsRouter = require("./api/advance_settings/advance_settings.router")
 const advancerequestRouter = require("./api/advance_request/advance_request.router")
 const CategoryReportRouter = require("./api/CategoryReport/CategoryReport.router")
@@ -136,9 +135,7 @@ const TrainingOnline = require("./api/TrainingOnline/TrainingOnline.router")
 const Training_topic_uploads = require("./api/Training_topic_uploads/Training_topic_uploads.router")
 const TrainingEmployee_Dashboard = require("./api/TrainingEmployee_Dashboard/TrainingEmployee_Dashboard.router")
 const TrainingMonthlyReport = require("./api/TrainingMonthlyReport/MonthlyReport.router")
-// const LeaveReports = require("./api/LeaveReports/Leavereports.router")
 const CommonPreTestPage = require("./api/TrainingCommonTest/TrainingCommonTest.router")
-
 const InductionTraining = require("./api/TrainingInduction/TrainingInduction.route")
 const InductionTest = require("./api/TrainingInductionTest/InductionTest.router")
 const InductionProcess = require("./api/TrainingInductionProcess/InductionProcess.router")
@@ -155,7 +152,9 @@ const ManualrequestUpload = require("./api/ManualRequest/Manual.router")
 const OffRquest = require('./api/OFFRequest/OffRequest.router')
 const TrainingSubType = require('./api/TrainingSubTypeMaster/TrainingSubType.router')
 const Training_additional_entry = require('./api/Training_additional_entry/Training_additional_entry.router')
+const DoctorsProcess = require("./api/DoctorsProcess/doctor.router")
 
+const cronjob = require("./cron-jobs/cron.router");
 
 app.use(express.json({ limit: '50mb' }));
 app.use((req, res, next) => {
@@ -278,7 +277,6 @@ app.use("/api/proftax", professionaltax)//proffessional Tax
 app.use("/api/attedancemarkSave", attedancemarkRouter)//attendance marking save
 app.use("/api/payrollprocess", payrollprocess)//payroll Process
 app.use("/api/jobdescription", JobdescriptionRouter)//job description
-// app.use("/api/reports", reportsRouter)//Reports
 app.use("/api/advanceSettings", advance_settingsRouter)
 app.use("/api/advancerequest", advancerequestRouter)
 app.use("/api/CategoryReport", CategoryReportRouter)
@@ -295,7 +293,6 @@ app.use("/api/institutionReport", institutionReportRouter) //institution report
 app.use("/api/RegistrationTypeReport", RegistrationTypeReportRouter) //registration type reports
 app.use("/api/ContractReport", ContractReportRouter)// contract expiry report
 app.use("/api/PermanentEmpReport", PermanentEmpReportRouter) //permanent employee report
-// app.use("/api/employeeReport", employeeReportRouter)
 app.use("/api/empVerification", empVerificationRouter)
 app.use("/api/jobsummary", JobSummaryRouter)//job summary
 app.use("/api/KraMast", KRARouter)//KRA
@@ -305,7 +302,6 @@ app.use("/api/punchTrasfer", punchTrasfer)
 app.use("/api/CommonReqst", CommonReqst)
 app.use("/api/CommonRequestMast", CommonRequestMast)
 app.use('/api/Vaccination', Vaccination)
-// app.use("/api/LeaveReports", LeaveReports)
 //Training
 app.use("/api/TrainingType", TrainingType)
 app.use("/api/TrainingCategory", TrainingCategory)
@@ -342,6 +338,8 @@ app.use("/api/manualRequest", ManualrequestUpload)
 app.use("/api/OffRequest", OffRquest)
 app.use("/api/TrainingSubType", TrainingSubType)
 app.use("/api/Training_additional_entry", Training_additional_entry)
+app.use("/api/DoctorsProcess", DoctorsProcess)
+app.use("/api/cronjob", cronjob);
 
 
 
