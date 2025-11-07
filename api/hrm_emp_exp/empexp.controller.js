@@ -1,4 +1,4 @@
-const { create, update, getDataById, getSelectAllDataById, getDataByEmpno } = require('../hrm_emp_exp/empexp.service');
+const { create, update, getDataById, getSelectAllDataById, getDataByEmpno, DeleteByIdExp } = require('../hrm_emp_exp/empexp.service');
 const { validateempexperience_ } = require('../../validation/validation_schema');
 const logger = require('../../logger/logger')
 module.exports = {
@@ -70,7 +70,6 @@ module.exports = {
         });
     },
     getExpByID: (req, res) => {
-
         const id = req.params.id;
         getDataById(id, (err, results) => {
             if (err) {
@@ -96,7 +95,6 @@ module.exports = {
 
     },
     getSelectAllExpByID: (req, res) => {
-
         const id = req.params.id;
         getSelectAllDataById(id, (err, results) => {
             if (err) {
@@ -122,7 +120,6 @@ module.exports = {
 
     },
     getDataByEmpno: (req, res) => {
-
         const id = req.params.id;
         getDataByEmpno(id, (err, results) => {
             if (err) {
@@ -143,6 +140,30 @@ module.exports = {
             return res.status(200).json({
                 success: 1,
                 data: results
+            });
+        });
+    },
+    DeleteByIdExp: (req, res) => {
+        const id = req.params.id;
+        DeleteByIdExp(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(400).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(400).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                message: "Deleted Successfully"
             });
         });
 

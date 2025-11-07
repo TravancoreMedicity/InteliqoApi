@@ -153,5 +153,19 @@ module.exports = {
             }
         )
     },
-
+    DeleteByIdExp: (id, callBack) => {
+        pool.query(
+            `delete from hrm_emp_exp
+            where emexp_slno=?`,
+            [
+                id
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }

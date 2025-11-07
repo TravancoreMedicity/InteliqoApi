@@ -1,9 +1,16 @@
 const multer = require('multer');
 const path = require('path');
 const fs = require("fs")
-const { insertProfile, getProfilePic, updateUploadStatus } = require('../uploadFile/upload.service')
+const {
+  insertProfile,
+  getProfilePic,
+  updateUploadStatus
+} = require('../uploadFile/upload.service')
 const logger = require('../../logger/logger');
-const { log } = require('winston');
+const {
+  log
+} = require('winston');
+const archiver = require('archiver');
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const id = req.body.em_id;
@@ -36,7 +43,9 @@ const storagemul = multer.diskStorage({
     const filepath = path.join('D:/DocMeliora/Inteliqo/', "PersonalRecords", `${id}`);
 
     if (!fs.existsSync(filepath)) {
-      fs.mkdirSync(filepath, { recursive: true });
+      fs.mkdirSync(filepath, {
+        recursive: true
+      });
     }
 
     cb(null, filepath);
@@ -62,7 +71,9 @@ const storagemultraining = multer.diskStorage({
     const filepath = path.join('D:/DocMeliora/Inteliqo/', "Training", `${id}`);
 
     if (!fs.existsSync(filepath)) {
-      fs.mkdirSync(filepath, { recursive: true });
+      fs.mkdirSync(filepath, {
+        recursive: true
+      });
     }
 
     cb(null, filepath);
@@ -97,7 +108,9 @@ const upload = multer({
       return cb(new Error('Only .png, .jpg and .jpeg format allowed!'));
     }
   },
-  limits: { fileSize: maxSize }
+  limits: {
+    fileSize: maxSize
+  }
 }).single('file');
 
 // for multiple file upload
@@ -116,7 +129,9 @@ const uploadmul = multer({
       return cb(new Error('Only .png, .jpg, .jpeg, and .pdf format allowed!'));
     }
   },
-  limits: { fileSize: maxSize }
+  limits: {
+    fileSize: maxSize
+  }
 }).array('files', 10);
 
 module.exports = {
@@ -201,7 +216,9 @@ module.exports = {
 
           // Create the em_id folder if it doesn't exist
           if (!fs.existsSync(em_id_folder)) {
-            fs.mkdirSync(em_id_folder, { recursive: true });
+            fs.mkdirSync(em_id_folder, {
+              recursive: true
+            });
           }
 
           for (const file of files) {
@@ -249,7 +266,10 @@ module.exports = {
 
   // for getting the file
   selectUploads: (req, res) => {
-    const { topic_slno, checklistid } = req.body;
+    const {
+      topic_slno,
+      checklistid
+    } = req.body;
     const folderPath = `D:/DocMeliora/Inteliqo/Training/${topic_slno}/Images/${checklistid}`;
     fs.readdir(folderPath, (err, files) => {
       if (err) {
@@ -284,7 +304,131 @@ module.exports = {
         data: results
       });
     })
+  },
+  getPersonalImage: (req, res) => {
+    const id = req.params.id;
+    const folderPath = path.join('D:/DocMeliora/Inteliqo', id);
+    fs.readdir(folderPath, (err, files) => {
+      if (err) {
+        //console.log("b,cmbvn");
+        
+        // console.error(err);
+        return res.status(200).json({
+          success: 0,
+          message: err.message,
+        });
+      } else if (!files || files.length === 0) {
+        // No images found
+        return res.status(200).json({
+          success: 1,
+          data: [] // or files if you prefer to return the empty array
+        });
+      } else {
+        // Otherwise, create the ZIP archive and pipe it
+        res.setHeader('Content-Type', 'application/zip');
+        res.setHeader('Content-Disposition', `attachment; filename="${id}_images.zip"`);
+        const archive = archiver('zip', {
+          zlib: {
+            level: 9
+          }
+        });
+        archive.on('error', (archiveErr) => {
+          console.error('Archive error:', archiveErr);
+          res.status(500).json({
+            success: 0,
+            message: archiveErr.message
+          });
+        });
+        archive.pipe(res);
+        // Optionally, filter for image extensions only
+        files.forEach((filename) => {
+          const filePath = path.join(folderPath, filename);
+          archive.file(filePath, {
+            name: filename
+          });
+        });
+        archive.finalize();
+      }
+    });
+  },
+  getHospitalImage: (req, res) => {
+    // Example: single image path — you can make it dynamic if needed
+    const filePath = path.join('D:/DocMeliora/Inteliqo/Logo', 'image.jpg');
+
+    // Check if file exists
+    fs.access(filePath, fs.constants.F_OK, (err) => {
+      if (err) {
+        console.error('File not found:', err);
+        return res.status(404).json({
+          success: 0,
+          message: 'Logo not found'
+        });
+      }
+
+      // Set headers (optional)
+      res.setHeader('Content-Type', 'image/jpeg');
+      res.setHeader('Content-Disposition', `attachment; filename="image.jpg"`);
+
+      // Send file
+      res.sendFile(filePath);
+      // Or you can use: res.download(filePath, `${id}_logo.jpg`);
+    });
+  },
+  getHospitalLogo: (req, res) => {
+    // Example: single image path — you can make it dynamic if needed
+    const filePath = path.join('D:/DocMeliora/Inteliqo/Logo', 'logo.png');
+
+    // Check if file exists
+    fs.access(filePath, fs.constants.F_OK, (err) => {
+      if (err) {
+        console.error('File not found:', err);
+        return res.status(404).json({
+          success: 0,
+          message: 'Logo not found'
+        });
+      }
+
+      // Set headers (optional)
+      res.setHeader('Content-Type', 'image/jpeg');
+      res.setHeader('Content-Disposition', `attachment; filename="image.jpg"`);
+
+      // Send file
+      res.sendFile(filePath);
+      // Or you can use: res.download(filePath, `${id}_logo.jpg`);
+    });
+  },
+ 
+  getManualRequest : (req, res) => {
+  const id = req.params.id
+  const basePath = path.join('D:/DocMeliora/Inteliqo/ManualRequests')
+  const targetPath = path.join(basePath, id)
+
+  // Check if path exists
+  if (!fs.existsSync(targetPath)) {
+    return res.status(404).json({
+      success: 0,
+      message: 'File or folder not found',
+    })
   }
 
+  const stats = fs.statSync(targetPath)
+
+  // ?? If it's a FILE — zip the single file
+  if (stats.isFile()) {
+    res.setHeader('Content-Type', 'application/zip')
+    res.setHeader('Content-Disposition', `attachment; filename="${path.basename(id, path.extname(id))}.zip"`)
+
+    const archive = archiver('zip', { zlib: { level: 9 } })
+    archive.on('error', (archiveErr) => {
+      console.error('Archive error:', archiveErr)
+      res.status(500).json({ success: 0, message: archiveErr.message })
+    })
+
+    archive.pipe(res)
+    archive.file(targetPath, { name: id }) // Add the file to the zip
+    archive.finalize()
+    return
+  }
+}
 
 }
