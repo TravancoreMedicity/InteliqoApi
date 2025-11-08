@@ -1528,6 +1528,18 @@ const validateTrainingSubType = Joi.object({
         update_user: Joi.number().optional()
 })
 
+
+const validateDoctorDuty = Joi.object({
+        duty_name: Joi.string().trim().uppercase().min(3).max(45).required()
+                .messages({
+                        'string.empty': 'Duty Name is Required',
+                        'string.max': 'Duty Name length must be less than or equal to 45 characters long',
+                        'string.min': 'Duty Name length must be at least 3 characters long',
+                }),
+        duty_status: Joi.number().min(0).max(1).required(),
+        dutyslno: Joi.optional()
+});
+
 module.exports = {
         authSchema,  //authSchema:authSchema
         validateEmployee,
@@ -1626,5 +1638,6 @@ module.exports = {
         validateSchedulingTime,
         validateOneHourReqst,
         validateCommonreqstMast,
-        validateTrainingSubType
+        validateTrainingSubType,
+        validateDoctorDuty
 }

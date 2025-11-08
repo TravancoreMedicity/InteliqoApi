@@ -265,6 +265,33 @@ module.exports = {
             }
         )
     },
+    getallshiftData: (callBack) => {
+        pool.query(
+            `SELECT 
+                shft_slno,
+                shft_desc,
+                shft_code,
+                shft_chkin_time as checkInTime,
+                shft_chkout_time as checkOutTime,
+                DATE_FORMAT(shft_chkin_time,"%H %i")shft_chkin_time,
+                DATE_FORMAT(shft_chkout_time,"%H %i")shft_chkout_time,
+                if(shft_status = 1 ,'Active','In Active') shft_status,
+                shft_cross_day,
+                shft_chkin_start,
+                shft_chkin_end,
+                shft_chkout_start,
+                shft_chkout_end,
+                shft_status
+            FROM hrm_shift_mast where shft_status=1`,
+            [],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }
 
 

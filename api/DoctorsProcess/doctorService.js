@@ -683,4 +683,20 @@ where date(duty_day)=curdate() and (duty_desc='P' or nmc_punch_status='P') and d
             }
         )
     },
+     checkInsertVal: (data, callBack) => {
+        pool.query(
+            `SELECT duty_name
+                FROM doctor_duty
+                WHERE duty_name = ?`,
+            [
+                data.duty_name,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error)
+                }
+                return callBack(null, results)
+            }
+        )
+    },
 }
