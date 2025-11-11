@@ -1,3 +1,4 @@
+const { validateDoctorDuty } = require("../../validation/validation_schema");
 const {
     checkDoctorDutyplan,
     insertDutyplan,
@@ -20,7 +21,8 @@ const {
     accademicDoctorsList,
     getDoctorpunch,
     nmcDoctorPunch,
-    gettodayPresentDoctor
+    gettodayPresentDoctor,
+    checkInsertVal
 } = require("./doctorService");
 
 module.exports = {
@@ -81,7 +83,21 @@ module.exports = {
     },
     createDoctorDuty: (req, res) => {
         const body = req.body;
-        createDoctorDuty(body, (err, results) => {
+       //validate department Inster function
+        const body_result = validateDoctorDuty.validate(body);
+        if (body_result.error) {
+            return res.status(200).json({
+                success: 2,
+                message: body_result.error.details[0].message
+            });
+        }
+      
+        body.duty_name = body_result.value.duty_name;
+        checkInsertVal(body, (err, results) => {
+            const value = JSON.parse(JSON.stringify(results))
+            if (Object.keys(value).length === 0) {
+
+            createDoctorDuty(body, (err, results) => {
             if (err) {
                 //logger.errorLogger(err)
                 return res.status(200).json({
@@ -99,8 +115,15 @@ module.exports = {
                 success: 1,
                 message: "Data Created Successfully"
             });
-
         });
+            }
+            else {
+                return res.status(200).json({
+                    success: 7,
+                    message: "Doctor Duty Already Exist"
+                })
+            }
+        })
     },
     getDutyList: (req, res) => {
         getDutyList((err, results) => {
