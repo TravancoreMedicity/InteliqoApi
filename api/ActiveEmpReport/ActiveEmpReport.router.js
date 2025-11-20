@@ -1,5 +1,7 @@
 const router = require("express").Router();
-const { checkToken } = require("../../auth/token_validation");
+const {
+    checkToken
+} = require("../../auth/token_validation");
 const {
     getBranchActiveEmployees,
     getDeptActiveEmployees,
@@ -15,7 +17,9 @@ const {
     getDeptActiveEmpDate,
     getEmpdetl,
     getBranchActiveDoctors,
-    getallDoctors
+    getallDoctors,
+    getallinactiveDoctors,
+    getBranchInactiveDoctors
 } = require('../ActiveEmpReport/ActiveEmpReport.controller')
 
 /** Active employee List*/
@@ -43,5 +47,7 @@ router.post('/inactive/emp', checkToken, getEmpdetl)
 //doctors
 router.post('/active/doctors', checkToken, getBranchActiveDoctors)
 router.get('/allactive/doctors', checkToken, getallDoctors)
+router.get('/allinactive/doctorlist', checkToken, getallinactiveDoctors)
+router.post('/allinactive/branchlist', checkToken, getBranchInactiveDoctors)
 
 module.exports = router;

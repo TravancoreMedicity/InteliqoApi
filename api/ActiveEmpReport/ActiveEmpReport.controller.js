@@ -13,7 +13,9 @@ const {
     getDeptActiveEmpDate,
     getEmpdetl,
     getBranchActiveDoctors,
-    getallDoctors
+    getallDoctors,
+    getallinactiveDoctors,
+    getBranchInactiveDoctors
 } = require('../ActiveEmpReport/ActiveEmpReport.service')
 const logger = require('../../logger/logger')
 
@@ -343,7 +345,6 @@ module.exports = {
     },
 
     getallDoctors: (req, res) => {
-
         getallDoctors((err, results) => {
             if (err) {
                 logger.errorLogger(err)
@@ -360,6 +361,50 @@ module.exports = {
                 });
             }
 
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    getallinactiveDoctors: (req, res) => {
+        getallinactiveDoctors((err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    getBranchInactiveDoctors: (req, res) => {
+        const body = req.body
+        getBranchInactiveDoctors(body, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Results Found"
+                });
+            }
             return res.status(200).json({
                 success: 1,
                 data: results
