@@ -1540,6 +1540,13 @@ const validateDoctorDuty = Joi.object({
         dutyslno: Joi.optional()
 });
 
+const validateDoctorempRights= Joi.object({
+        em_id:Joi.number().required(),
+        department:Joi.optional(),
+        right_slno: Joi.optional(),
+        right_status: Joi.number().min(0).max(1).required(),
+});
+
 module.exports = {
         authSchema,  //authSchema:authSchema
         validateEmployee,
@@ -1628,7 +1635,6 @@ module.exports = {
         validationPerformanceGrade,
         validatePerformanceAppraisalRights,
         validateKRA,
-        //Training
         ValidateTrainingType,
         validateTraningCategory,
         validateTrainingName,
@@ -1639,5 +1645,6 @@ module.exports = {
         validateOneHourReqst,
         validateCommonreqstMast,
         validateTrainingSubType,
-        validateDoctorDuty
+        validateDoctorDuty,
+        validateDoctorempRights
 }

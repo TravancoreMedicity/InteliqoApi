@@ -2,9 +2,9 @@ const pool = require('../../config/database');
 
 module.exports = {
 
-    getEmpNameByDeptSection: (data, callBack) => {
+    getAllemployeeList: (data, callBack) => {
         pool.query(
-            `SELECT * FROM hrm_emp_master where em_status=1`,
+            `SELECT * FROM hrm_emp_master where em_status=1 and em_no!=1`,
             [
                 data
             ],

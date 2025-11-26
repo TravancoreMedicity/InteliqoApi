@@ -595,7 +595,7 @@ WHERE
             }
         );
     },
-    getDoctorpunch: ( callBack) => {
+    getDoctorpunch: (callBack) => {
         pool.query(
             `SELECT 
     emp_code, em_name, nmc_regno, punch_time, em_no, branch_name,
@@ -621,7 +621,7 @@ WHERE
         WHERE
             doctor_status = 1 AND em_status = 1)
 GROUP BY em_no;`,
-            [ ],
+            [],
             (error, results, feilds) => {
                 if (error) {
                     return callBack(error);
@@ -658,7 +658,7 @@ WHERE (DATE(punch_intime) = CURRENT_DATE() OR DATE(punch_outtime) = CURRENT_DATE
             }
         )
     },
-     gettodayPresentDoctor: ( callBack) => {
+    gettodayPresentDoctor: (callBack) => {
         pool.query(
             `SELECT doctor_punch_master.em_no,em_name,branch_name,
      dept_name, sect_name,  desg_name FROM doctor_punch_master 
@@ -674,7 +674,7 @@ LEFT JOIN
     designation ON designation.desg_slno = hrm_emp_master.em_designation
 where date(duty_day)=curdate() and (duty_desc='P' or nmc_punch_status='P') and doctor_punch_master.em_no IN 
 (SELECT em_no FROM hrm_emp_master WHERE doctor_status = 1 AND em_status = 1)`,
-            [ ],
+            [],
             (error, results, feilds) => {
                 if (error) {
                     return callBack(error);
@@ -683,13 +683,141 @@ where date(duty_day)=curdate() and (duty_desc='P' or nmc_punch_status='P') and d
             }
         )
     },
-     checkInsertVal: (data, callBack) => {
+    checkInsertVal: (data, callBack) => {
         pool.query(
             `SELECT duty_name
                 FROM doctor_duty
                 WHERE duty_name = ?`,
             [
                 data.duty_name,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error)
+                }
+                return callBack(null, results)
+            }
+        )
+    },
+    getDutyplanByDate: (data, callBack) => {
+        pool.query(
+            `SELECT 
+                dutyplan_slno,
+                emp_id,
+                em_no,
+                doctor_dutyslno,
+                doctor_dutyplan.shift_id,
+                duty_day,
+                plan_create_user,
+                attendance_update_flag,
+                holiday,
+                offday_flag,
+                holiday_name,
+                holiday_slno,
+                plan_update_user,
+                shft_desc as shiftName,
+                duty_name as dutyName
+            FROM
+                doctor_dutyplan
+                inner join hrm_shift_mast on hrm_shift_mast.shft_slno=doctor_dutyplan.shift_id
+                left  join doctor_duty on doctor_duty.dutyslno=doctor_dutyplan.doctor_dutyslno
+            WHERE
+                DATE(duty_day) = ?
+	            AND emp_id IN (?)
+                ORDER BY DATE(duty_day) ASC`,
+            [
+                data.duty_date,
+                data.empData
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    createRights: (data, callBack) => {
+        pool.query(
+            `INSERT INTO doctor_employeerights (
+                em_id,
+                department,
+                right_status
+            )
+            VALUES ?`,
+            [
+                data
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    checkEmployeeHasRights: (data, callBack) => {
+        pool.query(
+            `SELECT *
+                FROM doctor_employeerights
+                WHERE em_id = ? and department=?`,
+            [
+                data.em_id,
+                data.department
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error)
+                }
+                return callBack(null, results)
+            }
+        )
+    },
+    getEmployeeDocDepartments: (callBack) => {
+        pool.query(
+            `SELECT right_slno,doctor_employeerights.em_id, em_name, dept_name, department, right_status,
+                em_no 
+                FROM doctor_employeerights 
+                left join hrm_emp_master on hrm_emp_master.em_id=doctor_employeerights.em_id
+                left join hrm_department on hrm_department.dept_id=doctor_employeerights.department`,
+            [],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        );
+    },
+    updateDeptRights: (data, callBack) => {
+        pool.query(
+            `UPDATE doctor_employeerights 
+                SET em_id = ?,
+                department =?,
+                right_status=?
+                WHERE right_slno = ?`,
+            [
+                data.em_id,
+                data.department,
+                data.right_status,
+                data.right_slno
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getEmployeeDepartments: (data, callBack) => {
+        pool.query(
+            `SELECT em_id,department, dept_id, dept_name
+                FROM doctor_employeerights
+                INNER JOIN hrm_department on doctor_employeerights.department=hrm_department.dept_id
+                WHERE em_id = ?`,
+            [
+                data.em_id
             ],
             (error, results, feilds) => {
                 if (error) {

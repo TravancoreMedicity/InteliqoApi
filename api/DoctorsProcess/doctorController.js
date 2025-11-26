@@ -1,4 +1,7 @@
-const { validateDoctorDuty } = require("../../validation/validation_schema");
+const {
+    validateDoctorDuty,
+    validateDoctorempRights
+} = require("../../validation/validation_schema");
 const {
     checkDoctorDutyplan,
     insertDutyplan,
@@ -22,7 +25,13 @@ const {
     getDoctorpunch,
     nmcDoctorPunch,
     gettodayPresentDoctor,
-    checkInsertVal
+    checkInsertVal,
+    getDutyplanByDate,
+    createRights,
+    checkEmployeeHasRights,
+    getEmployeeDocDepartments,
+    updateDeptRights,
+    getEmployeeDepartments
 } = require("./doctorService");
 
 module.exports = {
@@ -30,14 +39,12 @@ module.exports = {
         const body = req.body;
         checkDoctorDutyplan(body, (err, results) => {
             if (err) {
-                //logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err,
                     data: []
                 });
             }
-
             if (results.length == 0) {
                 return res.status(200).json({
                     success: 0,
@@ -45,7 +52,6 @@ module.exports = {
                     data: []
                 });
             }
-
             return res.status(200).json({
                 success: 1,
                 data: results
@@ -63,7 +69,6 @@ module.exports = {
 
         insertDutyplan(a1, (err, results) => {
             if (err) {
-                // logger.errorLogger(err)
                 return res.status(200).json({
                     success1: 2,
                     message: err
@@ -83,7 +88,7 @@ module.exports = {
     },
     createDoctorDuty: (req, res) => {
         const body = req.body;
-       //validate department Inster function
+        //validate department Inster function
         const body_result = validateDoctorDuty.validate(body);
         if (body_result.error) {
             return res.status(200).json({
@@ -91,33 +96,31 @@ module.exports = {
                 message: body_result.error.details[0].message
             });
         }
-      
+
         body.duty_name = body_result.value.duty_name;
         checkInsertVal(body, (err, results) => {
             const value = JSON.parse(JSON.stringify(results))
             if (Object.keys(value).length === 0) {
 
-            createDoctorDuty(body, (err, results) => {
-            if (err) {
-                //logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 0,
-                    message: err
+                createDoctorDuty(body, (err, results) => {
+                    if (err) {
+                        return res.status(200).json({
+                            success: 0,
+                            message: err
+                        });
+                    }
+                    if (results.length == 0) {
+                        return res.status(200).json({
+                            success: 0,
+                            message: "No Record Found"
+                        });
+                    }
+                    return res.status(200).json({
+                        success: 1,
+                        message: "Data Created Successfully"
+                    });
                 });
-            }
-            if (results.length == 0) {
-                return res.status(200).json({
-                    success: 0,
-                    message: "No Record Found"
-                });
-            }
-            return res.status(200).json({
-                success: 1,
-                message: "Data Created Successfully"
-            });
-        });
-            }
-            else {
+            } else {
                 return res.status(200).json({
                     success: 7,
                     message: "Doctor Duty Already Exist"
@@ -128,7 +131,6 @@ module.exports = {
     getDutyList: (req, res) => {
         getDutyList((err, results) => {
             if (err) {
-                // logger.errorLogger(err)
                 return res.status(200).json({
                     success: 2,
                     message: err
@@ -151,9 +153,7 @@ module.exports = {
     updateDoctorduty: (req, res) => {
         const body = req.body;
         updateDoctorduty(body, (err, results) => {
-
             if (err) {
-                //logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err
@@ -193,7 +193,6 @@ module.exports = {
         const body = req.body;
         getDutyplan(body, (err, results) => {
             if (err) {
-                // logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err,
@@ -266,7 +265,6 @@ module.exports = {
         const id = req.params.id;
         getDoctorSectionByDept(id, (err, results) => {
             if (err) {
-                //logger.errorLogger(err)
                 return res.status(200).json({
                     success: 2,
                     message: err
@@ -287,7 +285,7 @@ module.exports = {
     },
     insertDutyplan: (req, res) => {
         const body = req.body;
-        var a1 = body.map((value, index) => {
+        var a1 = body?.map((value, index) => {
             return [value.date, value.emp_id, value.em_no, value.shift,
                 value.holidayStatus, value.holidayName, value.holidaySlno,
                 value.plan_user
@@ -316,7 +314,7 @@ module.exports = {
     },
     createDoctorPunch: (req, res) => {
         const body = req.body;
-  
+
         const {
             em_id,
             insertArray
@@ -332,7 +330,6 @@ module.exports = {
         })
 
         const punchUpdateData = insertArray?.filter((i) => i.em_no !== 0)
-
         createDoctorPunch(a1, (err, results) => {
             if (err) {
                 // logger.errorLogger(err)
@@ -386,7 +383,6 @@ module.exports = {
                     data: []
                 });
             }
-
             if (results.length == 0) {
                 return res.status(200).json({
                     success: 0,
@@ -394,7 +390,6 @@ module.exports = {
                     data: []
                 });
             }
-
             return res.status(200).json({
                 success: 1,
                 data: results
@@ -405,7 +400,6 @@ module.exports = {
         const body = req.body
         getDoctorPunchmastData(body, (err, results) => {
             if (err) {
-                logger.errorLogger(err)
                 return res.status(400).json({
                     success: 0,
                     message: err
@@ -511,7 +505,6 @@ module.exports = {
     tmcPunchedDoctorList: (req, res) => {
         getDoctorpunch((err, results) => {
             if (err) {
-                // logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err,
@@ -532,7 +525,7 @@ module.exports = {
             });
         })
     },
-    nmcPunchedDoctorList:(req, res) => {
+    nmcPunchedDoctorList: (req, res) => {
         activeDoctorsList((err, results) => {
             if (err) {
                 return res.status(200).json({
@@ -547,33 +540,34 @@ module.exports = {
                     message: "No Results Found"
                 });
             }
-         
-            const nmcArr=results?.map((val)=>val?.nmc_regno)?.filter(val => val!= null); 
-            const post={ id:nmcArr }
+
+            const nmcArr = results?.map((val) => val ?.nmc_regno) ?.filter(val => val != null);
+            const post = {
+                id: nmcArr
+            }
             nmcDoctorPunch(post, (err, results) => {
-            if (err) {
-                return res.status(400).json({
-                    success: 0,
-                    message: err
-                });
-            }
-            if (results.length == 0) {
+                if (err) {
+                    return res.status(400).json({
+                        success: 0,
+                        message: err
+                    });
+                }
+                if (results.length == 0) {
+                    return res.status(200).json({
+                        success: 0,
+                        message: "No Record Found"
+                    });
+                }
                 return res.status(200).json({
-                    success: 0,
-                    message: "No Record Found"
+                    success: 1,
+                    data: results
                 });
-            }
-            return res.status(200).json({
-                success: 1,
-                data: results
             });
-        });
         });
     },
     gettodayPresentDoctor: (req, res) => {
         gettodayPresentDoctor((err, results) => {
             if (err) {
-                // logger.errorLogger(err)
                 return res.status(200).json({
                     success: 0,
                     message: err,
@@ -588,6 +582,145 @@ module.exports = {
                     data: []
                 });
             }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    getDutyplanByDate: (req, res) => {
+        const body = req.body;
+        getDutyplanByDate(body, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err,
+                    data: []
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found",
+                    data: []
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+    },
+    createRights: (req, res) => {
+        const body = req.body;
+        // checkEmployeeHasRights(body, (err, results) => {
+        //     console.log(results);
+            
+        //     const value = JSON.parse(JSON.stringify(results))
+        //     if (Object.keys(value).length === 0) {
+            var a1 = body.map((value, index) => {
+                return [value.em_id, value.department, value.right_status ]
+                })
+                createRights(a1, (err, results) => {
+                    if (err) {
+                        return res.status(200).json({
+                            success: 0,
+                            message: err
+                        });
+                    }
+                    if (results.length == 0) {
+                        return res.status(200).json({
+                            success: 0,
+                            message: "No Record Found"
+                        });
+                    }
+                    return res.status(200).json({
+                        success: 1,
+                        message: "Data Created Successfully"
+                    });
+                });
+        //     } else {
+        //         return res.status(200).json({
+        //             success: 7,
+        //             message: "Employee Rights Already Exist"
+        //         })
+        //     }
+        // // })
+    },
+    getEmployeeDocDepartments: (req, res) => {
+        getEmployeeDocDepartments((err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Results Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    updateDeptRights: (req, res) => {
+        const body = req.body;
+         checkEmployeeHasRights(body, (err, results) => {
+            const value = JSON.parse(JSON.stringify(results))
+            if (Object.keys(value).length === 0) {
+                updateDeptRights(body, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 2,
+                message: "Data Updated Successfully"
+            });
+            });
+            }else{
+                return res.status(200).json({
+                    success: 7,
+                    message: "Employee Rights Already Exist"
+                })
+            }})
+    },
+    getEmployeeDepartments: (req, res) => {
+        const body = req.body;
+        getEmployeeDepartments(body, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err,
+                    data: []
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found",
+                    data: []
+                });
+            }
+
             return res.status(200).json({
                 success: 1,
                 data: results
