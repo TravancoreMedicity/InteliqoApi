@@ -22,7 +22,12 @@ const {
     accademicDoctorsList,
     tmcPunchedDoctorList,
     nmcPunchedDoctorList,
-    gettodayPresentDoctor
+    gettodayPresentDoctor,
+    getDutyplanByDate,
+    createRights,
+    getEmployeeDocDepartments,
+    updateDeptRights,
+    getEmployeeDepartments
 } = require("./doctorController");
 
 
@@ -49,5 +54,13 @@ router.get("/accademicDoctor", checkToken, accademicDoctorsList)
 router.get("/tmcpunchDoctor", checkToken, tmcPunchedDoctorList)
 router.get("/nmcpunchDoctor", checkToken, nmcPunchedDoctorList)
 router.get("/todayPrsent", checkToken, gettodayPresentDoctor)
+
+router.post("/bydate/dutyplan", checkToken, getDutyplanByDate)
+
+//employee rights to doctor departments
+router.post("/insert/rights", checkToken, createRights)
+router.get("/employee/rights", checkToken, getEmployeeDocDepartments)
+router.patch("/update/rights", checkToken, updateDeptRights)
+router.post("/list/departments", checkToken, getEmployeeDepartments)
 
 module.exports = router;

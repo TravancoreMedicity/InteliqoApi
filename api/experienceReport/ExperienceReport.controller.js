@@ -1,7 +1,7 @@
 const {
     experienceReport,
     DeptSectReport,
-    getEmpNameByDeptSection,
+    getAllemployeeList,
     EmpNameReport,
     getDeptSectByID,
     noExperienceReport,
@@ -81,9 +81,9 @@ module.exports = {
             });
         })
     },
-    getEmpNameByDeptSection: (req, res) => {
+    getAllemployeeList: (req, res) => {
         const body = req.body;
-        getEmpNameByDeptSection(body, (err, results) => {
+        getAllemployeeList(body, (err, results) => {
             if (err) {
                 return res.status(200).json({
                     success: 0,
