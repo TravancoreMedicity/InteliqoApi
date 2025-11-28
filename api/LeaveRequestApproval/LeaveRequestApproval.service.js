@@ -2134,11 +2134,13 @@ module.exports = {
                 pool.query(
                     `UPDATE 
                         hrm_leave_cl
-                    SET cl_lv_taken = 0,
-                        cl_bal_leave = 0,
+                    SET cl_lv_taken = ?,
+                        cl_bal_leave = ?,
                         hl_lv_tkn_status = 0
                     WHERE hrm_cl_slno = ?`,
                     [
+                        data.cl_lv_taken,
+                        data.cl_bal_leave,
                         data.leave_processid
                     ],
                     (error, results, fields) => {

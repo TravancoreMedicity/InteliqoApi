@@ -159,7 +159,7 @@ module.exports = {
 
                     return res.status(200).json({
                         success: 1,
-                        message: "Data Created Successfully"
+                        message: "COFF Created Successfully"
                     });
                 })
             }
@@ -210,7 +210,7 @@ module.exports = {
                                 }
                                 return res.status(200).json({
                                     success: 1,
-                                    message: "MissPunch Requested Created Successfully"
+                                    message: "MissPunch Requested Successfully"
                                 });
 
                             });
