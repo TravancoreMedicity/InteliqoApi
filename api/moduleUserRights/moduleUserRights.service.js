@@ -124,7 +124,8 @@ module.exports = {
         LEFT JOIN  hrm_emp_master ON hrm_emp_master.em_id = module_group_user_rights.emp_slno
         LEFT JOIN module_group_mast ON module_group_mast.mdgrp_slno = module_group_user_rights.mdgrp_slno
         LEFT JOIN 
-            user_group_mast ON user_group_mast.user_grp_slno = module_group_user_rights.user_grp_slno`,
+            user_group_mast ON user_group_mast.user_grp_slno = module_group_user_rights.user_grp_slno
+            WHERE em_status=1`,
             [],
             (error, results, feilds) => {
                 if (error) {
