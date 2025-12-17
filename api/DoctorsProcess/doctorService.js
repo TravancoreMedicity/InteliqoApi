@@ -827,4 +827,269 @@ where date(duty_day)=curdate() and (duty_desc='P' or nmc_punch_status='P') and d
             }
         )
     },
+    createDoctorCoff: (data, callBack) => {
+        pool.query(
+            `INSERT INTO doctor_comp_off_request (
+                punchindata,
+                punchoutdata,
+                duty_type,
+                special_duty_type,
+                durationpunch,
+                shiftduration,
+                extratime,
+                request_status,
+                leave_date,
+                em_id,
+                em_no,
+                em_department,
+                em_dept_section,
+                shift_id,
+                cf_reason
+            )
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            [
+                data.punchindata,
+                data.punchoutdata,
+                data.duty_type,
+                data.special_duty_type,
+                data.durationpunch,
+                data.shiftduration,
+                data.extratime,
+                1,
+                data.startdate,
+                data.em_id,
+                data.em_no,
+                data.em_department,
+                data.em_dept_section,
+                data.shift_id,
+                data.cf_reason,
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    updatePunchMasterLeave: (body) => {
+        return Promise.all(body.map((data) => {
+            return new Promise((resolve, reject) => {
+                pool.query(
+                    `UPDATE 
+                            doctor_punch_master
+                        SET leave_status = 1,
+                        duty_status=1,
+                        lvereq_desc = ?,
+                        duty_desc = ?,
+                        lve_tble_updation_flag = 1,
+                        late_in=0,
+                        early_out=0
+                        WHERE em_no = ? 
+                        AND duty_day = ?`,
+                    [
+                        data.lvereq_desc,
+                        data.duty_desc,
+                        data.emno,
+                        data.leave_dates
+                    ],
+                    (error, results, fields) => {
+                        if (error) {
+                            return reject(error)
+                        }
+                        return resolve(results)
+                    }
+                )
+            })
+        })
+        )
+    },
+    doctorLeaveRequestUniquNumer: () => {
+        return new Promise((resolve, reject) => {
+            pool.query(
+                `SELECT serial_current FROM master_serialno where serial_slno=8`,
+                [],
+                (error, results, fields) => {
+                    if (error) {
+                        reject({ status: 0, data: [], error });
+                    } else {
+                        resolve({ status: 1, data: JSON.parse(JSON.stringify(results)) });
+                    }
+                }
+            );
+        }).then((result) => {
+            return { status: 1, data: result.data[0].serial_current }; // Forward the result to the next .then() handler
+        }).catch((error) => {
+            throw error; // Rethrow the error for further handling
+        });
+    },
+    checkDoctorLeaveexist: async (data) => {
+        return new Promise((resolve, reject) => {
+            pool.query(
+                `SELECT 
+            COUNT(leave_slno) CNT
+        FROM doctor_leave_request R
+        INNER JOIN doctor_leave_request_detl D ON D.lve_uniq_no = R.lve_uniq_no AND R.em_no = ?
+        WHERE D.leave_dates BETWEEN ? AND ? and  lv_cancel_status!=1`,
+                [
+                    data.em_no,
+                    data.fromDate,
+                    data.toDate
+                ],
+                (error, results, fields) => {
+                    if (error) {
+                        reject({ status: 0 });
+                    } else {
+                        resolve({ status: 1, data: JSON.parse(JSON.stringify(results)) });
+                    }
+                }
+            );
+        }).then((result) => {
+            return { status: 1, data: result.data };
+        }).catch((error) => {
+            return { status: 0, data: error };
+        });
+    },
+    saveLeaveRequest: (data) => {
+        return new Promise((resolve, reject) => {
+
+            pool.query(
+                `INSERT INTO doctor_leave_request 
+                    (
+                        lve_uniq_no,
+                        em_id,
+                        em_no,
+                        dept_id,
+                        dept_section,
+                        leave_date,
+                        leavetodate,
+                        rejoin_date,
+                        request_status,
+                        leave_reason,
+                        no_of_leave
+                    )
+                VALUES (?,?,?,?,?,?,?,?,?,?,?)`,
+                [
+                    data.leaveid,
+                    data.em_id,
+                    data.em_no,
+                    data.em_department,
+                    data.em_dept_section,
+                    data.leavefrom_date,
+                    data.leavetodate,
+                    data.rejoin_date,
+                    data.request_status,
+                    data.resonforleave,
+                    data.no_of_leave
+                ],
+                (error, results, feilds) => {
+                    if (error) {
+                        return reject({ status: 0, message: error });
+                    }
+                    return resolve({ status: 1, message: 'success' });
+                }
+            )
+        }).then((result) => {
+            return result;
+        }).catch((error) => {
+            return ({ status: 0, message: error })
+        });
+    },
+    saveLeaveDetailedTable: async (data) => {//INSERTING DETAILED TABLE LEAVE REQUEST
+        const promises = data?.map((e) => {
+            return new Promise((resolve, reject) => {
+                pool.query(
+                    `INSERT INTO doctor_leave_request_detl (
+                        lve_uniq_no,
+                        leave_dates,
+                        leave_processid,
+                        leave_typeid,
+                        leave_status,
+                        leavetype_name,                
+                        leave_name,
+                        no_days,
+                        sl_leave,
+                        leaveCount
+                    )
+                    VALUES (?)`,
+                    [e],
+                    (error, results, fields) => {
+                        if (error) {
+                            reject(error);
+                        } else {
+                            resolve(results);
+                        }
+                    }
+                );
+            });
+        });
+
+        try {
+            const result = await Promise.all(promises);
+            return { status: 1, message: 'success' };
+        } catch (error) {
+            return { status: 0, message: error };
+        }
+    },
+    cancelDoctorLeaveReqMaster: async (data) => {
+        return new Promise((resolve, reject) => {
+            pool.query(
+                `UPDATE hrm_leave_request
+                    SET lv_cancel_status = 1,
+                        lv_cancel_cmnt= 'error insert detl table',
+                        lv_cancel_date= NOW(),
+                        lv_cancel_us_code= ?
+                WHERE lve_uniq_no = ?`,
+                [
+                    data.em_no,
+                    data.leaveid,
+                ],
+                (error, results, fields) => {
+                    if (error) {
+                        reject({ status: 0 });
+                    } else {
+                        resolve({ status: 1 });
+                    }
+                }
+            );
+        }).then((result) => {
+            return { status: 1 };
+        }).catch((error) => {
+            return { status: 0, data: error };
+        });
+    },
+    getSelectedDateShift: (data, callBack) => {
+            pool.query(
+                `SELECT 
+                dutyplan_slno,
+                emp_id,
+                doctor_dutyplan.shift_id,
+                shft_desc,
+                shft_chkin_time,
+                shft_chkout_time,
+                first_half_in,
+                first_half_out,
+                second_half_in,
+                second_half_out,
+                holiday,
+                night_off_flag,
+                coff_flag,
+                attendance_update_flag,
+                shft_cross_day,
+                shft_cross_day,
+                gross_salary
+            FROM doctor_dutyplan
+            LEFT JOIN hrm_shift_mast ON hrm_shift_mast.shft_slno = doctor_dutyplan.shift_id 
+            inner join hrm_emp_master on hrm_emp_master.em_id=doctor_dutyplan.emp_id
+            WHERE duty_day= ? AND emp_id=?`,
+                [data.startDate, data.em_id],
+                (error, results, feilds) => {
+                    if (error) {
+                        return callBack(error);
+                    }
+                    return callBack(null, results);
+                }
+            )
+    
+        },
 }
