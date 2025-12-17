@@ -39,7 +39,8 @@ const {
     saveLeaveRequest,
     saveLeaveDetailedTable,
     cancelDoctorLeaveReqMaster,
-    getSelectedDateShift
+    getSelectedDateShift,
+    updateCOFFLeave
 } = require("./doctorService");
 const { leaveRequestUniquNumer, checkLeaveexist, saveLeaveRequestMasterTable, saveDetailedTableFun, cancelLeaveReqMasterTable } = require("../LeaveRequest/LeaveRequest.service");
 
@@ -740,10 +741,31 @@ module.exports = {
                     message: "No Record Found"
                 });
             }
+            updateCOFFLeave(body, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Record Not Found"
+                });
+            }
+
             return res.status(200).json({
-                success: 1,
-                message: "Data Created Successfully"
+                success: 2,
+                message: "COFF Updated Successfully"
             });
+
+        });
+            // return res.status(200).json({
+            //     success: 1,
+            //     message: "Data Created Successfully"
+            // });
         });
     },
     updatePunchMasterLeave: async (req, res) => {

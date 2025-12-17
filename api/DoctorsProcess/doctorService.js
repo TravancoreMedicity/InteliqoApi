@@ -830,13 +830,8 @@ where date(duty_day)=curdate() and (duty_desc='P' or nmc_punch_status='P') and d
     createDoctorCoff: (data, callBack) => {
         pool.query(
             `INSERT INTO doctor_comp_off_request (
-                punchindata,
-                punchoutdata,
                 duty_type,
                 special_duty_type,
-                durationpunch,
-                shiftduration,
-                extratime,
                 request_status,
                 leave_date,
                 em_id,
@@ -844,25 +839,24 @@ where date(duty_day)=curdate() and (duty_desc='P' or nmc_punch_status='P') and d
                 em_department,
                 em_dept_section,
                 shift_id,
-                cf_reason
+                cf_reason,
+                duty_taken_date,
+                duty_shift
             )
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
-                data.punchindata,
-                data.punchoutdata,
                 data.duty_type,
                 data.special_duty_type,
-                data.durationpunch,
-                data.shiftduration,
-                data.extratime,
                 1,
-                data.startdate,
+                data.leave_date,
                 data.em_id,
                 data.em_no,
                 data.em_department,
                 data.em_dept_section,
                 data.shift_id,
                 data.cf_reason,
+                data.duty_taken_date,
+                data.duty_shift
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -901,8 +895,7 @@ where date(duty_day)=curdate() and (duty_desc='P' or nmc_punch_status='P') and d
                     }
                 )
             })
-        })
-        )
+        }))
     },
     doctorLeaveRequestUniquNumer: () => {
         return new Promise((resolve, reject) => {
@@ -911,14 +904,24 @@ where date(duty_day)=curdate() and (duty_desc='P' or nmc_punch_status='P') and d
                 [],
                 (error, results, fields) => {
                     if (error) {
-                        reject({ status: 0, data: [], error });
+                        reject({
+                            status: 0,
+                            data: [],
+                            error
+                        });
                     } else {
-                        resolve({ status: 1, data: JSON.parse(JSON.stringify(results)) });
+                        resolve({
+                            status: 1,
+                            data: JSON.parse(JSON.stringify(results))
+                        });
                     }
                 }
             );
         }).then((result) => {
-            return { status: 1, data: result.data[0].serial_current }; // Forward the result to the next .then() handler
+            return {
+                status: 1,
+                data: result.data[0].serial_current
+            }; // Forward the result to the next .then() handler
         }).catch((error) => {
             throw error; // Rethrow the error for further handling
         });
@@ -938,16 +941,27 @@ where date(duty_day)=curdate() and (duty_desc='P' or nmc_punch_status='P') and d
                 ],
                 (error, results, fields) => {
                     if (error) {
-                        reject({ status: 0 });
+                        reject({
+                            status: 0
+                        });
                     } else {
-                        resolve({ status: 1, data: JSON.parse(JSON.stringify(results)) });
+                        resolve({
+                            status: 1,
+                            data: JSON.parse(JSON.stringify(results))
+                        });
                     }
                 }
             );
         }).then((result) => {
-            return { status: 1, data: result.data };
+            return {
+                status: 1,
+                data: result.data
+            };
         }).catch((error) => {
-            return { status: 0, data: error };
+            return {
+                status: 0,
+                data: error
+            };
         });
     },
     saveLeaveRequest: (data) => {
@@ -984,19 +998,28 @@ where date(duty_day)=curdate() and (duty_desc='P' or nmc_punch_status='P') and d
                 ],
                 (error, results, feilds) => {
                     if (error) {
-                        return reject({ status: 0, message: error });
+                        return reject({
+                            status: 0,
+                            message: error
+                        });
                     }
-                    return resolve({ status: 1, message: 'success' });
+                    return resolve({
+                        status: 1,
+                        message: 'success'
+                    });
                 }
             )
         }).then((result) => {
             return result;
         }).catch((error) => {
-            return ({ status: 0, message: error })
+            return ({
+                status: 0,
+                message: error
+            })
         });
     },
-    saveLeaveDetailedTable: async (data) => {//INSERTING DETAILED TABLE LEAVE REQUEST
-        const promises = data?.map((e) => {
+    saveLeaveDetailedTable: async (data) => { //INSERTING DETAILED TABLE LEAVE REQUEST
+        const promises = data ?.map((e) => {
             return new Promise((resolve, reject) => {
                 pool.query(
                     `INSERT INTO doctor_leave_request_detl (
@@ -1026,9 +1049,15 @@ where date(duty_day)=curdate() and (duty_desc='P' or nmc_punch_status='P') and d
 
         try {
             const result = await Promise.all(promises);
-            return { status: 1, message: 'success' };
+            return {
+                status: 1,
+                message: 'success'
+            };
         } catch (error) {
-            return { status: 0, message: error };
+            return {
+                status: 0,
+                message: error
+            };
         }
     },
     cancelDoctorLeaveReqMaster: async (data) => {
@@ -1046,21 +1075,30 @@ where date(duty_day)=curdate() and (duty_desc='P' or nmc_punch_status='P') and d
                 ],
                 (error, results, fields) => {
                     if (error) {
-                        reject({ status: 0 });
+                        reject({
+                            status: 0
+                        });
                     } else {
-                        resolve({ status: 1 });
+                        resolve({
+                            status: 1
+                        });
                     }
                 }
             );
         }).then((result) => {
-            return { status: 1 };
+            return {
+                status: 1
+            };
         }).catch((error) => {
-            return { status: 0, data: error };
+            return {
+                status: 0,
+                data: error
+            };
         });
     },
     getSelectedDateShift: (data, callBack) => {
-            pool.query(
-                `SELECT 
+        pool.query(
+            `SELECT 
                 dutyplan_slno,
                 emp_id,
                 doctor_dutyplan.shift_id,
@@ -1076,20 +1114,44 @@ where date(duty_day)=curdate() and (duty_desc='P' or nmc_punch_status='P') and d
                 coff_flag,
                 attendance_update_flag,
                 shft_cross_day,
-                shft_cross_day,
                 gross_salary
             FROM doctor_dutyplan
             LEFT JOIN hrm_shift_mast ON hrm_shift_mast.shft_slno = doctor_dutyplan.shift_id 
             inner join hrm_emp_master on hrm_emp_master.em_id=doctor_dutyplan.emp_id
             WHERE duty_day= ? AND emp_id=?`,
-                [data.startDate, data.em_id],
-                (error, results, feilds) => {
-                    if (error) {
-                        return callBack(error);
-                    }
-                    return callBack(null, results);
+            [data.startDate, data.em_id],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
                 }
-            )
-    
-        },
+                return callBack(null, results);
+            }
+        )
+
+    },
+    updateCOFFLeave: (data, callBack) => {
+        pool.query(
+            `UPDATE 
+                doctor_punch_master
+                SET leave_status = 1,
+                duty_status=1,
+                lvereq_desc = 'COFF',
+                duty_desc = 'COFF',
+                lve_tble_updation_flag = 1,
+                late_in=0,
+                early_out=0
+                WHERE em_no = ? 
+                AND duty_day = ?`,
+            [
+                data.em_no,
+                data.leave_date
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }
