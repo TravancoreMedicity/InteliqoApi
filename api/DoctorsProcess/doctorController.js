@@ -1,3 +1,4 @@
+const { format } = require("date-fns");
 const {
     validateDoctorDuty,
     validateDoctorempRights
@@ -31,8 +32,17 @@ const {
     checkEmployeeHasRights,
     getEmployeeDocDepartments,
     updateDeptRights,
-    getEmployeeDepartments
+    getEmployeeDepartments,
+    createDoctorCoff,
+    doctorLeaveRequestUniquNumer,
+    checkDoctorLeaveexist,
+    saveLeaveRequest,
+    saveLeaveDetailedTable,
+    cancelDoctorLeaveReqMaster,
+    getSelectedDateShift,
+    updateCOFFLeave
 } = require("./doctorService");
+const { leaveRequestUniquNumer, checkLeaveexist, saveLeaveRequestMasterTable, saveDetailedTableFun, cancelLeaveReqMasterTable } = require("../LeaveRequest/LeaveRequest.service");
 
 module.exports = {
     checkDoctorDutyplan: (req, res) => {
@@ -329,7 +339,7 @@ module.exports = {
             ]
         })
 
-        const punchUpdateData = insertArray?.filter((i) => i.em_no !== 0)
+        const punchUpdateData = insertArray?.filter((i) => i?.em_no !== 0)
         createDoctorPunch(a1, (err, results) => {
             if (err) {
                 // logger.errorLogger(err)
@@ -541,7 +551,7 @@ module.exports = {
                 });
             }
 
-            const nmcArr = results?.map((val) => val ?.nmc_regno) ?.filter(val => val != null);
+            const nmcArr = results?.map((val) => val?.nmc_regno)?.filter(val => val != null);
             const post = {
                 id: nmcArr
             }
@@ -615,39 +625,27 @@ module.exports = {
     },
     createRights: (req, res) => {
         const body = req.body;
-        // checkEmployeeHasRights(body, (err, results) => {
-        //     console.log(results);
-            
-        //     const value = JSON.parse(JSON.stringify(results))
-        //     if (Object.keys(value).length === 0) {
-            var a1 = body.map((value, index) => {
-                return [value.em_id, value.department, value.right_status ]
-                })
-                createRights(a1, (err, results) => {
-                    if (err) {
-                        return res.status(200).json({
-                            success: 0,
-                            message: err
-                        });
-                    }
-                    if (results.length == 0) {
-                        return res.status(200).json({
-                            success: 0,
-                            message: "No Record Found"
-                        });
-                    }
-                    return res.status(200).json({
-                        success: 1,
-                        message: "Data Created Successfully"
-                    });
+        var a1 = body.map((value, index) => {
+            return [value.em_id, value.department, value.right_status]
+        })
+        createRights(a1, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
                 });
-        //     } else {
-        //         return res.status(200).json({
-        //             success: 7,
-        //             message: "Employee Rights Already Exist"
-        //         })
-        //     }
-        // // })
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                message: "Data Created Successfully"
+            });
+        });
     },
     getEmployeeDocDepartments: (req, res) => {
         getEmployeeDocDepartments((err, results) => {
@@ -672,35 +670,36 @@ module.exports = {
     },
     updateDeptRights: (req, res) => {
         const body = req.body;
-         checkEmployeeHasRights(body, (err, results) => {
+        checkEmployeeHasRights(body, (err, results) => {
             const value = JSON.parse(JSON.stringify(results))
             if (Object.keys(value).length === 0) {
                 updateDeptRights(body, (err, results) => {
-            if (err) {
-                return res.status(200).json({
-                    success: 0,
-                    message: err
-                });
-            }
+                    if (err) {
+                        return res.status(200).json({
+                            success: 0,
+                            message: err
+                        });
+                    }
 
-            if (!results) {
-                return res.status(200).json({
-                    success: 1,
-                    message: "Record Not Found"
-                });
-            }
+                    if (!results) {
+                        return res.status(200).json({
+                            success: 1,
+                            message: "Record Not Found"
+                        });
+                    }
 
-            return res.status(200).json({
-                success: 2,
-                message: "Data Updated Successfully"
-            });
-            });
-            }else{
+                    return res.status(200).json({
+                        success: 2,
+                        message: "Data Updated Successfully"
+                    });
+                });
+            } else {
                 return res.status(200).json({
                     success: 7,
                     message: "Employee Rights Already Exist"
                 })
-            }})
+            }
+        })
     },
     getEmployeeDepartments: (req, res) => {
         const body = req.body;
@@ -727,4 +726,84 @@ module.exports = {
             });
         })
     },
+    createDoctorCoff: (req, res) => {
+        const body = req.body;
+        createDoctorCoff(body, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+            updateCOFFLeave(body, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 2,
+                message: "COFF Updated Successfully"
+            });
+
+        });
+            // return res.status(200).json({
+            //     success: 1,
+            //     message: "Data Created Successfully"
+            // });
+        });
+    },
+    updatePunchMasterLeave: async (req, res) => {
+        const body = req.body;
+        updatePunchMasterLeave(body).then(results => {
+            return res.status(200).json({
+                success: 1,
+                message: 'Update Successfully'
+            });
+        }).catch(err => {
+            return res.status(200).json({
+                success: 0,
+                message: "Error Occured , Please Contact HRD / IT"
+            });
+        })
+    },
+    getSelectedDateShift: (req, res) => {
+            const body = req.body;
+            getSelectedDateShift(body, (err, results) => {
+                if (err) {
+                    logger.errorLogger(err)
+                    return res.status(200).json({
+                        success: 0,
+                        message: err
+                    });
+                }
+                else if (results?.length === 0) {
+                    return res.status(200).json({
+                        success: 2,
+                        message: "No Record Found"
+                    });
+                }
+                else {
+                    return res.status(200).json({
+                        success: 1,
+                        data: results
+                    });
+                }
+            });
+        },
 }

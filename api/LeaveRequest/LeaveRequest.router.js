@@ -1,8 +1,23 @@
 const router = require("express").Router();
-const { checkToken } = require('../../auth/token_validation');
-const { createmastleave, createdetlleave, gethafdayshift, getfirsthalf, getsecondhalf, inserthalfdayreque,
-    insertnopunchrequest, insertcompensatyoff, getLeaveCancelEmpdetl, modifiedLeaveRequest, getLeaveExcistOrNot,
-    getHolidayStatus, creditCoff } = require('../LeaveRequest/LeaveRequest.controller');
+const {
+    checkToken
+} = require('../../auth/token_validation');
+const {
+    createmastleave,
+    createdetlleave,
+    gethafdayshift,
+    getfirsthalf,
+    getsecondhalf,
+    inserthalfdayreque,
+    insertnopunchrequest,
+    insertcompensatyoff,
+    getLeaveCancelEmpdetl,
+    modifiedLeaveRequest,
+    getLeaveExcistOrNot,
+    getHolidayStatus,
+    creditCoff,
+    doctorLeaveRequest
+} = require('../LeaveRequest/LeaveRequest.controller');
 
 router.post("/", checkToken, createmastleave)
 router.post("/inserthalfdayreque", checkToken, inserthalfdayreque)
@@ -23,6 +38,8 @@ router.post("/modifiedLeaveRequest", checkToken, modifiedLeaveRequest)
 
 
 router.post("/creditCoff", checkToken, creditCoff)
+
+router.post("/insert/doctorleave", checkToken, doctorLeaveRequest)
 
 
 module.exports = router;

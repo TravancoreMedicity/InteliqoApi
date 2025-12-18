@@ -27,7 +27,9 @@ const {
     createRights,
     getEmployeeDocDepartments,
     updateDeptRights,
-    getEmployeeDepartments
+    getEmployeeDepartments,
+    createDoctorCoff,
+    getSelectedDateShift
 } = require("./doctorController");
 
 
@@ -62,5 +64,7 @@ router.post("/insert/rights", checkToken, createRights)
 router.get("/employee/rights", checkToken, getEmployeeDocDepartments)
 router.patch("/update/rights", checkToken, updateDeptRights)
 router.post("/list/departments", checkToken, getEmployeeDepartments)
+router.post("/insert/coff", checkToken, createDoctorCoff)
+router.post("/selectedDateshift", checkToken, getSelectedDateShift)
 
 module.exports = router;
