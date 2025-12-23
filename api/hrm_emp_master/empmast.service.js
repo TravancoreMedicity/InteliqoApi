@@ -151,7 +151,8 @@ module.exports = {
                 doctor_status=?,
                 gross_salary=?,
                 holiday_type=?,
-                actual_doj=?
+                actual_doj=?,
+                nmc_regno=?
                 WHERE em_no = ?`,
             [
                 data.em_salutation,
@@ -196,6 +197,7 @@ module.exports = {
                 data.recomend_salary,
                 data.holiday_type,
                 data.actual_doj,
+                data.nmc_regno,
                 data.em_no
             ],
             (error, results, feilds) => {
@@ -357,7 +359,8 @@ module.exports = {
                     clinicaltype,
                     gross_salary,
                     doctor_status,
-                    holiday_type
+                    holiday_type,
+                    nmc_regno
                 FROM hrm_emp_master
                 WHERE em_no = ?
                 AND em_status=1 `,
