@@ -324,11 +324,7 @@ module.exports = {
     },
     createDoctorPunch: (req, res) => {
         const body = req.body;
-
-        const {
-            em_id,
-            insertArray
-        } = body
+        const {  insertArray } = body
 
         var a1 = insertArray?.map((value, index) => {
             return [
@@ -339,10 +335,10 @@ module.exports = {
             ]
         })
 
-        const punchUpdateData = insertArray?.filter((i) => i?.em_no !== 0)
+        const nmc_regnoList = insertArray?.map((val) => val?.attendanceId)
         createDoctorPunch(a1, (err, results) => {
+            
             if (err) {
-                // logger.errorLogger(err)
                 return res.status(200).json({
                     success: 2,
                     message: err
@@ -354,33 +350,54 @@ module.exports = {
                     message: "No Results Found"
                 });
             }
-
-            const result = updateNMCpunch(punchUpdateData)
-                .then((r) => {
-                    logDoctorPunch(em_id, (err, results) => {
-                        if (err) {
-                            return res.status(200).json({
-                                success: 2,
-                                message: err
-                            });
-                        }
-                        if (!results) {
-                            return res.status(200).json({
-                                success: 0,
-                                message: "No Results Found"
-                            });
-                        }
-                        return res.status(200).json({
-                            success: 1,
-                            message: "Punch Updated Successfully"
-                        });
-                    });
-                }).catch((e) => {
-                    return res.status(200).json({
-                        success: 0,
-                        message: e.sqlMessage
-                    });
-                })
+            
+            getDoctorsByNMC(nmc_regnoList, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err,
+                    data: []
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found",
+                    data: []
+                });
+            }
+            return res.status(200).json({
+                    success: 1,
+                    message: "Punch Updated Successfully",
+                    data: results                  
+                });
+            // const result = updateNMCpunch(newArray)
+            //     .then((r) => {
+            //         logDoctorPunch(em_id, (err, results) => {
+            //             if (err) {
+            //                 return res.status(200).json({
+            //                     success: 2,
+            //                     message: err
+            //                 });
+            //             }
+            //             if (!results) {
+            //                 return res.status(200).json({
+            //                     success: 0,
+            //                     message: "No Results Found"
+            //                 });
+            //             }
+            //             return res.status(200).json({
+            //                 success: 1,
+            //                 message: "Punch Updated Successfully"
+            //             });
+            //         });
+            //     }).catch((e) => {
+            //         return res.status(200).json({
+            //             success: 0,
+            //             message: e.sqlMessage
+            //         });
+            //     })
+            })
         });
     },
     getDoctorsByNMC: (req, res) => {
@@ -762,10 +779,6 @@ module.exports = {
             });
 
         });
-            // return res.status(200).json({
-            //     success: 1,
-            //     message: "Data Created Successfully"
-            // });
         });
     },
     updatePunchMasterLeave: async (req, res) => {
@@ -806,4 +819,34 @@ module.exports = {
                 }
             });
         },
+        updateDoctorPunchMast: (req, res) => {
+        const body = req.body;
+        const {   em_id,  insertArray } = body;      
+        const result =updateNMCpunch(insertArray)
+            .then((r) => {
+            logDoctorPunch(em_id, (err, results) => {
+                if (err) {
+                    return res.status(200).json({
+                        success: 2,
+                        message: err
+                    });
+                }
+                if (!results) {
+                    return res.status(200).json({
+                        success: 0,
+                        message: "No Results Found"
+                    });
+                }
+                return res.status(200).json({
+                    success: 1,
+                    message: "Punch Updated Successfully"
+                });
+            });
+            }).catch((e) => {
+                return res.status(200).json({
+                    success: 0,
+                    message: e.sqlMessage
+                });
+            })
+    },
 }

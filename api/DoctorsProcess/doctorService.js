@@ -329,19 +329,21 @@ ORDER BY DATE(duty_day) ASC`,
             }
         )
     },
-    updateNMCpunch: (data, callBack) => {
+    updateNMCpunch: (data, callBack) => {     
         return new Promise((resolve, reject) => {
             data.map((val) => {
                 pool.query(
                     `update doctor_punch_master 
-                     set nmc_punchin=?, 
+                     set nmc_regno=?,
+                     nmc_punchin=?, 
                      nmc_punchout=?, 
                      nmc_punch_status=? 
                      where duty_day=? 
                      and em_no=?`,
                     [
-                        format(new Date(val.inTime), 'yyyy-MM-dd'),
-                        format(new Date(val.outTime), 'yyyy-MM-dd'),
+                        val.attendanceId,
+                        val.inTime,
+                        val.outTime,
                         val.status,
                         val.duty_day,
                         val.em_no
