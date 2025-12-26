@@ -40,7 +40,12 @@ const {
     saveLeaveDetailedTable,
     cancelDoctorLeaveReqMaster,
     getSelectedDateShift,
-    updateCOFFLeave
+    updateCOFFLeave,
+    getDoctorsPunchData,
+    getDoctorPunchMaster,
+    getSingleDoctorPunch,
+    getDoctorPunchReport,
+    getSingleDoctorPunchmast
 } = require("./doctorService");
 const { leaveRequestUniquNumer, checkLeaveexist, saveLeaveRequestMasterTable, saveDetailedTableFun, cancelLeaveReqMasterTable } = require("../LeaveRequest/LeaveRequest.service");
 
@@ -848,5 +853,97 @@ module.exports = {
                     message: e.sqlMessage
                 });
             })
+    },
+    getDoctorsPunchData: (req, res) => {
+        const body = req.body
+        getDoctorsPunchData(body, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+     getDoctorPunchMaster: (req, res) => {
+            const body = req.body
+            getDoctorPunchMaster(body, (err, results) => {
+                if (err) {
+                    return res.status(200).json({
+                        success: 0,
+                        message: err
+                    });
+                }
+    
+                if (!results) {
+                    return res.status(200).json({
+                        success: 2,
+                        message: "No Results Found"
+                    });
+                }
+    
+                return res.status(200).json({
+                    success: 1,
+                    data: results
+                });
+            });
+        },
+        getSingleDoctorPunch: (req, res) => {
+                const body = req.body
+                getSingleDoctorPunch(body, (err, results) => {
+                    if (err) {
+                        return res.status(200).json({
+                            success: 0,
+                            message: err
+                        });
+                    }
+        
+                    if (!results) {
+                        return res.status(200).json({
+                            success: 2,
+                            message: "No Results Found"
+                        });
+                    }
+        
+                    return res.status(200).json({
+                        success: 1,
+                        data: results
+                    });
+                });
+            },
+    getSingleDoctorPunchmast: (req, res) => {
+        const body = req.body
+        getSingleDoctorPunchmast(body, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
     },
 }

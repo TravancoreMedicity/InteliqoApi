@@ -401,9 +401,9 @@ cron.schedule("0 0 1 * *", () => {
 
 });
 
-cron.schedule("*/2 * * * * ", () => {
+cron.schedule("*/60 * * * * ", () => {
   const currentTime = new Date().toLocaleTimeString();
- // console.log("Running InsertTmcpunch at:", currentTime);
+ //console.log("Running InsertTmcpunch at:", currentTime);
 
-  InsertTmcpunch();
+ InsertTmcpunch();
 });
