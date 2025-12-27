@@ -30,7 +30,11 @@ const {
     getEmployeeDepartments,
     createDoctorCoff,
     getSelectedDateShift,
-    updateDoctorPunchMast
+    updateDoctorPunchMast,
+    getDoctorsPunchData,
+    getDoctorPunchMaster,
+    getSingleDoctorPunch,
+    getSingleDoctorPunchmast
 } = require("./doctorController");
 
 
@@ -69,5 +73,9 @@ router.post("/insert/coff", checkToken, createDoctorCoff)
 router.post("/selectedDateshift", checkToken, getSelectedDateShift)
 
 router.patch("/nmcPunchupload", checkToken, updateDoctorPunchMast)
+router.post("/doctorPunch/dept", checkToken, getDoctorsPunchData)
+router.post("/doctorPunchmast", checkToken, getDoctorPunchMaster)
+router.post("/single/doctorPunch", checkToken, getSingleDoctorPunch)
+router.post("/punchReport/singledoctor", checkToken, getSingleDoctorPunchmast)
 
 module.exports = router;
