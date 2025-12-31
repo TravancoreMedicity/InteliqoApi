@@ -1343,12 +1343,12 @@ module.exports = {
                     p.lv_process_slno
                     from hrm_leave_earnlv t
                     right join hrm_leave_process p on p.em_no=t.em_no
-                    where  credit_year = ?   and p.hrm_process_status='A'
+                    where  credit_year = ? and special_remark is null  and p.hrm_process_status='A'
                     group by em_no
                     ) as c right join hrm_emp_master f on c.em_no = f.em_no
                     right join hrm_department g on f.em_department=g.dept_id
                     right join hrm_dept_section h on f.em_dept_section=h.sect_id
-                    where f.em_status = 1 
+                    where f.em_status = 1 and f.doctor_status=0
                     group by 1 ) tble `,
             [
                 data.currentyear
