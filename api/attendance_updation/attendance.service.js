@@ -684,47 +684,53 @@ module.exports = {
             }
         })
     },
-    updatePunchMastDuty: (body) => {
-        return Promise.all(body.map((data) => {
-            return new Promise((resolve, reject) => {
-                pool.query(
-                    `UPDATE punch_master
-                                SET 
-                                punch_in = ?,
-                                punch_out = ?,
-                                hrs_worked=?,
-                                late_in=?,
-                                early_out=?,
-                                duty_status = ?,
-                                duty_desc = ?,
-                                holiday_slno=?,
-                                holiday_status=?                              
-                                WHERE punch_slno = ? and lve_tble_updation_flag!=1`,
-                    [
-                        data.punch_in,
-                        data.punch_out,
-                        data.hrs_worked,
-                        data.late_in,
-                        data.early_out,
-                        data.duty_status,
-                        data.duty_desc,
-                        data.holiday_slno,
-                        data.holiday_status,
-                        data.punch_slno,
-                    ],
-                    (error, results, fields) => {
-                        if (error) {
-                            return reject(error)
+    updatePunchMastDuty: async (body) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            body.sort((a, b) => a.punch_slno - b.punch_slno); // sorting pri-key ase for updte 
+
+            for (const data of body) {
+                await new Promise((res, rej) => {
+                    pool.query(
+                        `UPDATE punch_master
+                         SET 
+                            punch_in = ?,
+                            punch_out = ?,
+                            hrs_worked = ?,
+                            late_in = ?,
+                            early_out = ?,
+                            duty_status = ?,
+                            duty_desc = ?,
+                            holiday_slno = ?,
+                            holiday_status = ?
+                         WHERE punch_slno = ?
+                           AND lve_tble_updation_flag != 1`,
+                        [
+                            data.punch_in,
+                            data.punch_out,
+                            data.hrs_worked,
+                            data.late_in,
+                            data.early_out,
+                            data.duty_status,
+                            data.duty_desc,
+                            data.holiday_slno,
+                            data.holiday_status,
+                            data.punch_slno,
+                        ],
+                        (err, result) => {
+                            if (err) return rej(err);
+                            res(result);
                         }
-                        return resolve(results)
-                    }
-                )
+                    );
+                });
+            }
 
-
-            })
-        })
-        )
-    },
+            resolve(1);
+        } catch (err) {
+            reject(err);
+        }
+    });
+},
     getHolidayDate: (data, callBack) => {
         pool.query(
             `select 
