@@ -1,15 +1,48 @@
 const logger = require('../../logger/logger')
-const { create, checkInsertVal, createGenralRq, createOndutyRequest, createEnableMispunchRqst,
-    getOneHourReqst, getOndutyRequest, getenableMisspunchRequest, inchargeEnable,
-    inchargeOneHour, inchargeOnDuty, hodEnable, hodOnDuty, hodOneHour, ceoEnable,
-    ceoonduty, ceoOnehour, hrEnable, hrOnduty, hrOnehour, getGeneralReqstAll,
-    addHrComment, checkingAttendanceMarking, HRNopunchMasterIn, HRNopunchMasterOut,
-    checkMispunchRequest, checksEnableRq, punchdataEntry, HROnDutyPunchMaster,
-    checkAttendanceProcess, generalHRapproval, cancelEnable, enableOnduty, cancelOnehour,
-    cancelgeneral, checkPunchMarkingHR, onDutyReport, HrApprovedOneHourData, HrApprovedOnDutyData,
-    getEmpwiseOnduty, getEmpwiseOneHour, getSectWiseOneHour, getSectWiseOnDuty, OneHourForApprovalHR,
+const { 
+    create, 
+    checkInsertVal, 
+    createGenralRq, 
+    createOndutyRequest, 
+    createEnableMispunchRqst,
+    getOneHourReqst, 
+    getOndutyRequest, 
+    getenableMisspunchRequest, 
+    inchargeEnable,
+    inchargeOneHour, 
+    inchargeOnDuty, 
+    hodEnable, 
+    hodOnDuty, 
+    hodOneHour, 
+    ceoEnable,
+    ceoonduty, 
+    ceoOnehour, 
+    hrEnable, 
+    hrOnduty, 
+    hrOnehour, 
+    getGeneralReqstAll,
+    addHrComment, 
+    checkMispunchRequest, 
+    checksEnableRq, 
+    punchdataEntry, 
+    HROnDutyPunchMaster,
+    checkAttendanceProcess, 
+    generalHRapproval, 
+    cancelEnable, 
+    enableOnduty, 
+    cancelOnehour,
+    cancelgeneral, 
+    onDutyReport, 
+    HrApprovedOneHourData, 
+    HrApprovedOnDutyData,
+    getEmpwiseOnduty, 
+    getEmpwiseOneHour, 
+    getSectWiseOneHour, 
+    getSectWiseOnDuty, 
+    OneHourForApprovalHR,
     OndutyForApprovalHR,
-    CheckOndutyExistorNot
+    CheckOndutyExistorNot,
+    getTotalOnehrYear
 } = require('../CommonRequest/CommonReqst.service')
 const { InsertLeaveCalc, HRhalfDayPuchMast } = require('../LeaveRequestApproval/LeaveRequestApproval.service')
 const { validateOneHourReqst } = require('../../validation/validation_schema');
@@ -22,38 +55,48 @@ module.exports = {
         const body_result = validateOneHourReqst.validate(body);
         body.reason = body_result.value.reason;
 
-        checkInsertVal(body, (err, results) => {
-            if (Object.keys(results)?.length === 0) {
-                create(body, (err, results) => {
+        const {onehour_rqst_count}=body;//one hour count from common setting
 
-                    if (err) {
-                        logger.errorLogger(err)
-                        return res.status(200).json({
-                            success: 0,
-                            message: err
-                        });
-                    }
-                    if (!results) {
-                        return res.status(200).json({
-                            success: 0,
-                            message: "No Results Found"
-                        });
-                    }
-                    disableDutyplanData(body, (err, results) => {
-                        if (err) {
-                            logger.errorLogger(err)
-                            return res.status(400).json({
-                                susc: 0,
-                                message: err
+        checkInsertVal(body, (err, results) => {
+            if (Object.keys(results)?.length ===0) {
+                getTotalOnehrYear(body, (err, result) => {
+                   if ( Object.keys(result)?.length===0|| result[0].onehour_count < onehour_rqst_count) {
+                        create(body, (err, results) => {
+                            if (err) {
+                                logger.errorLogger(err)
+                                return res.status(200).json({
+                                    success: 0,
+                                    message: err
+                                });
+                            }
+                            if (!results) {
+                                return res.status(200).json({
+                                    success: 0,
+                                    message: "No Results Found"
+                                });
+                            }
+                            disableDutyplanData(body, (err, results) => {
+                                if (err) {
+                                    logger.errorLogger(err)
+                                    return res.status(400).json({
+                                        susc: 0,
+                                        message: err
+                                    });
+                                }
+                                return res.status(200).json({
+                                    success: 1,
+                                    message: "One Hour Request Submitted Successfully"
+                                });
                             });
-                        }
-                        return res.status(200).json({
-                            success: 1,
-                            message: "One Hour Request Submitted Successfully"
                         });
-                    });
-                });
-            } else {
+                    }else  {
+                        return res.status(200).json({
+                            success: 3,
+                            message: "Based On Policy Only More Than "+onehour_rqst_count+" One Hour Request is not Allowed"
+                        })
+                    }
+                })
+            }  else {
                 return res.status(200).json({
                     success: 2,
                     message: "Based On Policy Only 1 One Hour Request is Allowed"

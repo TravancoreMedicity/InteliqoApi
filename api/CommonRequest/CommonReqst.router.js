@@ -1,14 +1,52 @@
 const router = require("express").Router();
-const { checkToken } = require("../../auth/token_validation");
-const { create, createGenralRq, createOndutyRequest, createEnableMispunchRqst, getOneHourReqst,
-    getOndutyRequest, getenableMisspunchRequest, inchargeEnable, inchargeOneHour, inchargeOnDuty,
-    hodEnable, hodOnDuty, hodOneHour, ceoEnable, ceoonduty, ceoOnehour, hrEnable, hrOnduty,
-    hrOnehour, getGeneralReqstAll, addHrComment, checkMispunchRequest, hrEnableComment,
-    hrOndutyComment, checkAttendanceProcess, generalHRapproval, cancelEnable, enableOnduty,
-    cancelOnehour, cancelgeneral, onDutyReport, HrApprovedOneHourData, HrApprovedOnDutyData,
-    cancelApprovedOneHour, cancelApprovedOnDuty, getEmpwiseOnduty, getEmpwiseOneHour,
-    getSectWiseOneHour, getSectWiseOnDuty, OneHourForApprovalHR, OndutyForApprovalHR,
-    holidayOnduty, inactiveInchargeOneHour, inactiveHodOneHour
+const {
+    checkToken
+} = require("../../auth/token_validation");
+const {
+    create,
+    createGenralRq,
+    createOndutyRequest,
+    createEnableMispunchRqst,
+    getOneHourReqst,
+    getOndutyRequest,
+    getenableMisspunchRequest,
+    inchargeEnable,
+    inchargeOneHour,
+    inchargeOnDuty,
+    hodEnable,
+    hodOnDuty,
+    hodOneHour,
+    ceoEnable,
+    ceoonduty,
+    ceoOnehour,
+    hrEnable,
+    hrOnduty,
+    hrOnehour,
+    getGeneralReqstAll,
+    addHrComment,
+    checkMispunchRequest,
+    hrEnableComment,
+    hrOndutyComment,
+    checkAttendanceProcess,
+    generalHRapproval,
+    cancelEnable,
+    enableOnduty,
+    cancelOnehour,
+    cancelgeneral,
+    onDutyReport,
+    HrApprovedOneHourData,
+    HrApprovedOnDutyData,
+    cancelApprovedOneHour,
+    cancelApprovedOnDuty,
+    getEmpwiseOnduty,
+    getEmpwiseOneHour,
+    getSectWiseOneHour,
+    getSectWiseOnDuty,
+    OneHourForApprovalHR,
+    OndutyForApprovalHR,
+    holidayOnduty,
+    inactiveInchargeOneHour,
+    inactiveHodOneHour,
 } = require("../CommonRequest/CommonReqst.controller")
 
 
@@ -77,5 +115,6 @@ router.post("/onduty/sectioWise", checkToken, getSectWiseOnDuty)
 router.get("/approval/onehour", checkToken, OneHourForApprovalHR)
 router.get("/approval/onduty", checkToken, OndutyForApprovalHR)
 router.post("/creditoff/insert", checkToken, holidayOnduty)
+
 
 module.exports = router;

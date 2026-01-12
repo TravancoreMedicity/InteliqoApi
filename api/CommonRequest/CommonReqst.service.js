@@ -1428,4 +1428,28 @@ module.exports = {
             }
         )
     },
+    getTotalOnehrYear: (data, callBack) => {
+        pool.query(
+            `SELECT   COUNT(request_slno) AS onehour_count
+            FROM one_hour_request WHERE 
+            em_id = ? 
+            AND YEAR(one_hour_duty_day) =  YEAR(?) -- Replace with the desired year
+             AND cancel_status != 1 
+              AND incharge_approval_status!=2
+             AND hod_req_status!=2
+             AND hr_approval_status!=2
+        GROUP BY YEAR(one_hour_duty_day)`,
+            [
+                data.em_id,
+                data.one_hour_duty_day,
+
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error)
+                }
+                return callBack(null, results)
+            }
+        )
+    },
 }
