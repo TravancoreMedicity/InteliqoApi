@@ -1359,34 +1359,51 @@ module.exports = {
             }
         )
     },
-    updateManualRequest: (data, callBack) => {
-        return new Promise((resolve, reject) => {
-            data.map((val) => {
-                pool.query(
-                    ` UPDATE punch_master
-                    SET punch_in = ?,
-                        punch_out = ?,
-                        hrs_worked =0,
-                        late_in = 0,
-                        early_out = 0,
-                        duty_status=1,
-                        duty_desc=?,
-                        lvereq_desc=?,
-                        leave_status=1,
-                        lve_tble_updation_flag = 1,
-                        manual_request_flag=1
-                    WHERE punch_slno = ? `,
-                    [val.punch_in, val.punch_out, val.duty_desc, val.lvereq_desc, val.punch_slno],
-                    (error, results, feilds) => {
-                        if (error) {
-                            return reject(error)
-                        }
-                        return resolve(results)
-                    }
-                )
-            })
+    updateManualRequest: (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            // 1. Sort data first (example: by punch_slno)
+            const sortedData = [...data].sort(
+                (a, b) => a.punch_slno - b.punch_slno
+            );
 
-        })
+            // 2. Execute updates sequentially
+            for (const val of sortedData) {
+                await new Promise((res, rej) => {
+                    pool.query(
+                        `UPDATE punch_master
+                         SET punch_in = ?,
+                             punch_out = ?,
+                             hrs_worked = 0,
+                             late_in = 0,
+                             early_out = 0,
+                             duty_status = 1,
+                             duty_desc = ?,
+                             lvereq_desc = ?,
+                             leave_status = 1,
+                             lve_tble_updation_flag = 1,
+                             manual_request_flag = 1
+                         WHERE punch_slno = ?`,
+                        [
+                            val.punch_in,
+                            val.punch_out,
+                            val.duty_desc,
+                            val.lvereq_desc,
+                            val.punch_slno
+                        ],
+                        (error, results) => {
+                            if (error) return rej(error);
+                            res(results);
+                        }
+                    );
+                });
+            }
+
+            resolve({ message: "Manual requests updated successfully" });
+        } catch (error) {
+            reject(error);
+        }
+    });
     },
     createManualrequestLog: (data, callBack) => {
         pool.query(
@@ -1535,27 +1552,37 @@ module.exports = {
         )
     },
     InactiveDutyplan: (data) => {
-        return new Promise((resolve, reject) => {
-            data.map((val) => {
-                pool.query(
-                    `update hrm_duty_plan
-                    set attendance_update_flag=1
-                    where em_no=? and 
-                     date(duty_day) = ?`,
-                    [
-                        val.em_no,
-                        val.duty_day
-                    ],
-                    (error, results, fields) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            // 1. Sort data first (example: by duty_day)
+            const sortedData = [...data].sort(
+                (a, b) => new Date(a.duty_day) - new Date(b.duty_day)
+            );
 
-
-                        if (error) {
-                            return reject(error)
+            // 2. Execute updates sequentially
+            for (const val of sortedData) {
+                await new Promise((res, rej) => {
+                    pool.query(
+                        `UPDATE hrm_duty_plan
+                         SET attendance_update_flag = 1
+                         WHERE em_no = ?
+                         AND DATE(duty_day) = ?`,
+                        [
+                            val.em_no,
+                            val.duty_day
+                        ],
+                        (error, results) => {
+                            if (error) return rej(error);
+                            res(results);
                         }
-                        return resolve(results)
-                    }
-                )
-            })
-        })
-    },
+                    );
+                });
+            }
+
+            resolve({ message: "Duty plan inactivated successfully" });
+        } catch (error) {
+            reject(error);
+        }
+    });
+},
 }

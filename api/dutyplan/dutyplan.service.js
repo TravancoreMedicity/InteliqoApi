@@ -134,33 +134,43 @@ module.exports = {
         )
     },
     updateDutyPlan: (data) => {
-        return new Promise((resolve, reject) => {
-            data.map((val) => {
-                pool.query(
-                    `update hrm_duty_plan
-                            set shift_id=?,
-                            offday_flag=?,
-                            edit_user=?
-                        where plan_slno=?
-                        and attendance_update_flag!=1`,
-                    [
-                        val.shift_id,
-                        val.offday,
-                        val.edit_user,
-                        val.plan_slno
-                    ],
-                    (error, results, fields) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            // 1. Sort data first (example: by plan_slno)
+            const sortedData = [...data].sort(
+                (a, b) => a.plan_slno - b.plan_slno
+            );
 
-
-                        if (error) {
-                            return reject(error)
+            // 2. Execute updates sequentially
+            for (const val of sortedData) {
+                await new Promise((res, rej) => {
+                    pool.query(
+                        `UPDATE hrm_duty_plan
+                         SET shift_id = ?,
+                             offday_flag = ?,
+                             edit_user = ?
+                         WHERE plan_slno = ?
+                         AND attendance_update_flag != 1`,
+                        [
+                            val.shift_id,
+                            val.offday,
+                            val.edit_user,
+                            val.plan_slno
+                        ],
+                        (error, results) => {
+                            if (error) return rej(error);
+                            res(results);
                         }
-                        return resolve(results)
-                    }
-                )
-            })
-        })
-    },
+                    );
+                });
+            }
+
+            resolve({ message: "Duty plan updated successfully" });
+        } catch (error) {
+            reject(error);
+        }
+    });
+},
     CheckInsertVal: (data, callBack) => {
 
         pool.query(
@@ -186,96 +196,148 @@ module.exports = {
         )
     },
     updateDefaultShift: (data) => {
-        return new Promise((resolve, reject) => {
-            data.map((val) => {
-                pool.query(
-                    `update hrm_duty_plan
-                    set shift_id=?
-                    where emp_id=?
-                     and date(duty_day) between ? and ? and shift_id != ? `,
-                    [
-                        val.shiftid,
-                        val.emp_id,
-                        val.startdate,
-                        val.enddate,
-                        val.notApplicable
-                    ],
-                    (error, results, fields) => {
-                        if (error) {
-                            return reject(error)
+    return new Promise(async (resolve, reject) => {
+        try {
+            // 1. Sort data first (example: by startdate)
+            const sortedData = [...data].sort(
+                (a, b) => new Date(a.startdate) - new Date(b.startdate)
+            );
+
+            // 2. Execute updates sequentially
+            for (const val of sortedData) {
+                await new Promise((res, rej) => {
+                    pool.query(
+                        `UPDATE hrm_duty_plan
+                         SET shift_id = ?
+                         WHERE emp_id = ?
+                         AND DATE(duty_day) BETWEEN ? AND ?
+                         AND shift_id != ?`,
+                        [
+                            val.shiftid,
+                            val.emp_id,
+                            val.startdate,
+                            val.enddate,
+                            val.notApplicable
+                        ],
+                        (error, results) => {
+                            if (error) return rej(error);
+                            res(results);
                         }
-                        return resolve(results)
-                    }
-                )
-            })
-        })
+                    );
+                });
+            }
+
+            resolve({ message: "Default shift updated successfully" });
+        } catch (error) {
+            reject(error);
+        }
+    });
     },
     updateWoffShift: (data) => {
-        return new Promise((resolve, reject) => {
-            data.map((val) => {
-                pool.query(
-                    `update hrm_duty_plan
-                    set shift_id=?,
-                    offday_flag=1
-                    where emp_id=?
-                     and date(duty_day) IN (?) and shift_id != ? `,
-                    [
-                        val.weekOffShiftId,
-                        val.emp_id,
-                        val.dutydate,
-                        val.notApplicable
-                    ],
-                    (error, results, fields) => {
-                        if (error) {
-                            return reject(error)
+    return new Promise(async (resolve, reject) => {
+        try {
+            // 1. Sort data first (example: by duty date)
+            const sortedData = [...data].sort(
+                (a, b) => new Date(a.dutydate) - new Date(b.dutydate)
+            );
+
+            // 2. Execute updates sequentially
+            for (const val of sortedData) {
+                await new Promise((res, rej) => {
+                    pool.query(
+                        `UPDATE hrm_duty_plan
+                         SET shift_id = ?,
+                             offday_flag = 1
+                         WHERE emp_id = ?
+                         AND DATE(duty_day) IN (?)
+                         AND shift_id != ?`,
+                        [
+                            val.weekOffShiftId,
+                            val.emp_id,
+                            val.dutydate,
+                            val.notApplicable
+                        ],
+                        (error, results) => {
+                            if (error) return rej(error);
+                            res(results);
                         }
-                        return resolve(results)
-                    }
-                )
-            })
-        })
+                    );
+                });
+            }
+
+            resolve({ message: "Week-off shift updated successfully" });
+        } catch (error) {
+            reject(error);
+        }
+    });
     },
     updateholiday: (data) => {
-        return new Promise((resolve, reject) => {
-            data.map((val) => {
-                pool.query(
-                    `update punch_master
-                    set holiday_flag=1
-                    where date(duty_day) IN (?)`,
-                    [
-                        val.hld_date
-                    ],
-                    (error, results, fields) => {
-                        if (error) {
-                            return reject(error)
+    return new Promise(async (resolve, reject) => {
+        try {
+            // 1. Sort data first (example: by holiday date)
+            const sortedData = [...data].sort(
+                (a, b) => new Date(a.hld_date) - new Date(b.hld_date)
+            );
+
+            // 2. Execute updates sequentially
+            for (const val of sortedData) {
+                await new Promise((res, rej) => {
+                    pool.query(
+                        `UPDATE punch_master
+                         SET holiday_flag = 1
+                         WHERE DATE(duty_day) IN (?)`,
+                        [val.hld_date],
+                        (error, results) => {
+                            if (error) return rej(error);
+                            res(results);
                         }
-                        return resolve(results)
-                    }
-                )
-            })
-        })
+                    );
+                });
+            }
+
+            resolve({ message: "Holiday updated successfully" });
+        } catch (error) {
+            reject(error);
+        }
+    });
     },
     updateMultiShift: (data) => {
-        const { newPlan, naShift } = data;
-        return new Promise((resolve, reject) => {
-            newPlan.map((val) => {
-                pool.query(
-                    `UPDATE hrm_duty_plan SET shift_id = ?,edit_user=? WHERE plan_slno = ? AND shift_id  != ?`,
-                    [
-                        val.shift_id,
-                        val.edit_user,
-                        val.plan_slno,
-                        naShift
-                    ],
-                    (error, results, fields) => {
-                        if (error) {
-                            return reject(error)
+    const { newPlan, naShift } = data;
+
+    return new Promise(async (resolve, reject) => {
+        try {
+            // 1. Sort array first (example: by plan_slno)
+            const sortedPlan = [...newPlan].sort(
+                (a, b) => a.plan_slno - b.plan_slno
+            );
+
+            // 2. Execute updates one by one
+            for (const val of sortedPlan) {
+                await new Promise((res, rej) => {
+                    pool.query(
+                        `UPDATE hrm_duty_plan
+                         SET shift_id = ?, edit_user = ?
+                         WHERE plan_slno = ?
+                         AND shift_id != ?`,
+                        [
+                            val.shift_id,
+                            val.edit_user,
+                            val.plan_slno,
+                            naShift
+                        ],
+                        (error, results) => {
+                            if (error) return rej(error);
+                            res(results);
                         }
-                        return resolve(results)
-                    }
-                )
-            })
-        })
+                    );
+                });
+            }
+
+            resolve({ message: "All shifts updated successfully" });
+        } catch (error) {
+            reject(error);
+        }
+    });
     },
     checkDutyPlanExcist: (data, callBack) => {
         pool.query(
