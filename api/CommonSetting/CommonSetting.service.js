@@ -57,9 +57,10 @@ module.exports = {
                 monthly_late_time_count,
                 first_policy,
                 second_plicy,
-                holiday_min_working
+                holiday_min_working,
+                opdduty
                 )
-                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
         )
 
         [
@@ -116,7 +117,8 @@ module.exports = {
             data.monthly_late_time_count,
             data.first_policy,
             data.second_plicy,
-            data.holiday_min_working
+            data.holiday_min_working,
+            JSON.stringify(data.opdduty)
         ],
             (error, results, feilds) => {
                 if (error) {
@@ -194,7 +196,8 @@ module.exports = {
                 monthly_late_time_count=?,
                 first_policy=?,
                 second_plicy=?,
-                holiday_min_working=?
+                holiday_min_working=?,
+                opdduty=?
                 WHERE setting_slno =?`,
 
             [
@@ -252,6 +255,7 @@ module.exports = {
                 data.first_policy,
                 data.second_plicy,
                 data.holiday_min_working,
+                JSON.stringify(data.opdduty),
                 data.setting_slno
             ],
             (error, results, feilds) => {
