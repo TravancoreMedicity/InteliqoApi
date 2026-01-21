@@ -1269,4 +1269,79 @@ where date(duty_day)=curdate() and (duty_desc='P' or nmc_punch_status='P') and d
             }
         )
     },
+    getLeaveRequest: (data, callBack) => {
+        pool.query(
+            `SELECT 
+                leave_slno,
+                dept_section,
+                doctor_leave_request.lve_uniq_no,
+                leave_date,
+                doctor_leave_request.em_no,
+                dept_name,
+                em_name,
+                sect_name,
+            	leavetodate,
+                leave_reason,
+                no_of_leave,
+                request_date,
+                doctor_leave_request.dept_id
+            FROM
+                doctor_leave_request
+                    INNER JOIN
+                hrm_emp_master ON doctor_leave_request.em_no = hrm_emp_master.em_no
+                    INNER JOIN
+                hrm_department ON doctor_leave_request.dept_id = hrm_department.dept_id
+                    INNER JOIN
+                hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
+            WHERE
+                lv_cancel_status = 0 and leave_date between ? and ?
+            ORDER BY leave_date DESC`,
+            [
+                data.fromdate, data.todate
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getDoctorCoff: (data, callBack) => {
+        pool.query(
+            `SELECT 
+            ROW_NUMBER() OVER () as rslno,
+            doc_cmp_off_reqid,
+            duty_type,
+            special_duty_type,
+            shift_id,
+            duty_shift,
+            duty_taken_date,
+			doctor_comp_off_request.em_no,
+            em_name,
+            doctor_comp_off_request.em_id,
+			doctor_comp_off_request.em_dept_section,
+			dept_name,
+            leave_date,
+            sect_name,
+            cf_reason,
+            reqestdate,
+            shift_id,
+            doctor_comp_off_request.em_department
+            FROM doctor_comp_off_request 
+            left join hrm_emp_master on  doctor_comp_off_request.em_no =hrm_emp_master.em_no
+            left join hrm_department on  doctor_comp_off_request.em_department =hrm_department.dept_id
+            inner join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
+            where  lv_cancel_status=0 and leave_date between ? and ?`,
+            [
+                data.fromdate, data.todate
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }

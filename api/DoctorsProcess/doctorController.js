@@ -1,7 +1,5 @@
-const { format } = require("date-fns");
 const {
-    validateDoctorDuty,
-    validateDoctorempRights
+    validateDoctorDuty
 } = require("../../validation/validation_schema");
 const {
     checkDoctorDutyplan,
@@ -34,20 +32,15 @@ const {
     updateDeptRights,
     getEmployeeDepartments,
     createDoctorCoff,
-    doctorLeaveRequestUniquNumer,
-    checkDoctorLeaveexist,
-    saveLeaveRequest,
-    saveLeaveDetailedTable,
-    cancelDoctorLeaveReqMaster,
     getSelectedDateShift,
     updateCOFFLeave,
     getDoctorsPunchData,
     getDoctorPunchMaster,
     getSingleDoctorPunch,
-    getDoctorPunchReport,
-    getSingleDoctorPunchmast
+    getSingleDoctorPunchmast,
+    getLeaveRequest,
+    getDoctorCoff
 } = require("./doctorService");
-const { leaveRequestUniquNumer, checkLeaveexist, saveLeaveRequestMasterTable, saveDetailedTableFun, cancelLeaveReqMasterTable } = require("../LeaveRequest/LeaveRequest.service");
 
 module.exports = {
     checkDoctorDutyplan: (req, res) => {
@@ -376,32 +369,6 @@ module.exports = {
                     message: "Punch Updated Successfully",
                     data: results                  
                 });
-            // const result = updateNMCpunch(newArray)
-            //     .then((r) => {
-            //         logDoctorPunch(em_id, (err, results) => {
-            //             if (err) {
-            //                 return res.status(200).json({
-            //                     success: 2,
-            //                     message: err
-            //                 });
-            //             }
-            //             if (!results) {
-            //                 return res.status(200).json({
-            //                     success: 0,
-            //                     message: "No Results Found"
-            //                 });
-            //             }
-            //             return res.status(200).json({
-            //                 success: 1,
-            //                 message: "Punch Updated Successfully"
-            //             });
-            //         });
-            //     }).catch((e) => {
-            //         return res.status(200).json({
-            //             success: 0,
-            //             message: e.sqlMessage
-            //         });
-            //     })
             })
         });
     },
@@ -926,6 +893,52 @@ module.exports = {
     getSingleDoctorPunchmast: (req, res) => {
         const body = req.body
         getSingleDoctorPunchmast(body, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    getLeaveRequest: (req, res) => {
+        const body = req.body
+        getLeaveRequest(body, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    getDoctorCoff: (req, res) => {
+        const body = req.body
+        getDoctorCoff(body, (err, results) => {
             if (err) {
                 return res.status(200).json({
                     success: 0,

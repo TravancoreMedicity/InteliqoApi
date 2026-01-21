@@ -19,7 +19,8 @@ const {
     getBranchActiveDoctors,
     getallDoctors,
     getallinactiveDoctors,
-    getBranchInactiveDoctors
+    getBranchInactiveDoctors,
+    getallOPDDoctors
 } = require('../ActiveEmpReport/ActiveEmpReport.controller')
 
 /** Active employee List*/
@@ -49,5 +50,6 @@ router.post('/active/doctors', checkToken, getBranchActiveDoctors)
 router.get('/allactive/doctors', checkToken, getallDoctors)
 router.get('/allinactive/doctorlist', checkToken, getallinactiveDoctors)
 router.post('/allinactive/branchlist', checkToken, getBranchInactiveDoctors)
+router.get('/allOPD/doctors', checkToken, getallOPDDoctors)
 
 module.exports = router;

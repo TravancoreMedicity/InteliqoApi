@@ -34,7 +34,9 @@ const {
     getDoctorsPunchData,
     getDoctorPunchMaster,
     getSingleDoctorPunch,
-    getSingleDoctorPunchmast
+    getSingleDoctorPunchmast,
+    getLeaveRequest,
+    getDoctorCoff
 } = require("./doctorController");
 
 
@@ -77,5 +79,7 @@ router.post("/doctorPunch/dept", checkToken, getDoctorsPunchData)
 router.post("/doctorPunchmast", checkToken, getDoctorPunchMaster)
 router.post("/single/doctorPunch", checkToken, getSingleDoctorPunch)
 router.post("/punchReport/singledoctor", checkToken, getSingleDoctorPunchmast)
+router.post("/getdoctors/leaveRequest", checkToken, getLeaveRequest)
+router.post("/coffrequest", checkToken, getDoctorCoff)
 
 module.exports = router;

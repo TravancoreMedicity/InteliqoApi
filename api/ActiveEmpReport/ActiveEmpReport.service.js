@@ -546,4 +546,31 @@ module.exports = {
             }
         )
     },
+    getallOPDDoctors: (callBack) => {
+        pool.query(
+            `SELECT hrm_emp_master.em_no,sal_name, em_name,em_dob,em_doj,em_mobile,em_email,branch_name,dept_name,hrm_emp_master.em_id,
+            sect_name,desg_name,ecat_name,inst_emp_type,gross_salary,addressPresent1,em_account_no,hrm_pin2,em_pan_no,
+            addressPresent2,em_retirement_date,em_passport_no,em_adhar_no,if(em_gender=1,'Male','Female')em_gender,
+           ifnull(em_pf_no,0) em_pf_no, em_esi_no,lwfnumber
+            FROM hrm_emp_master
+            inner join hrm_branch on hrm_branch.branch_slno=hrm_emp_master.em_branch
+            inner join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
+            inner join hrm_dept_section on hrm_dept_section.sect_id=hrm_emp_master.em_dept_section
+            inner join designation on designation.desg_slno=hrm_emp_master.em_designation
+            inner join hrm_emp_category on hrm_emp_category.category_slno=hrm_emp_master.em_category
+            inner join institution_type on institution_type.inst_slno=hrm_emp_master.em_institution_type
+            left join hrm_emp_personal on hrm_emp_personal.em_id=hrm_emp_master.em_id
+            left join hrm_emp_pfesi on hrm_emp_pfesi.em_id=hrm_emp_master.em_id
+            inner join hrm_salutation on hrm_salutation.sa_code=hrm_emp_master.em_salutation
+            where (hrm_emp_master.em_status=1 and hrm_emp_master.em_no!=1 and hrm_emp_master.em_no!=2 and doctor_status=1 and dept_type=1) 
+                        group by hrm_emp_master.em_no`,
+            [],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }
