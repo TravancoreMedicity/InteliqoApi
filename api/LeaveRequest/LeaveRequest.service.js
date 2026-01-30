@@ -827,4 +827,34 @@ module.exports = {
             return { status: 0, data: error };
         });
     },
+    checkLWPInaMonth: (data, callBack) => {
+        pool.query(
+            `SELECT 
+    em_no, em_id, leave_dates, leavetype_name, leave_name
+FROM
+    hrm_leave_request R
+        INNER JOIN
+    hrm_leave_request_detl D ON D.lve_uniq_no = R.lve_uniq_no
+        AND R.em_no = ?
+        AND D.leave_typeid = 5
+WHERE
+    D.leave_dates BETWEEN ? AND ?
+        AND (incapprv_status != 2
+        AND hod_apprv_status != 2
+        AND hr_apprv_status != 2
+        AND lv_cancel_status != 1
+        AND lv_cancel_status_user != 1)`,
+            [
+                data.em_no,
+                data.fromDate,
+                data.toDate
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }

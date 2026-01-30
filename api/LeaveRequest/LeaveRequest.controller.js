@@ -3,7 +3,7 @@ const { createmastleave, createdetlleave, updateserialnum, gethafdayshift, getfi
     getLeaveCancelEmpdetl, getPunchMasterSlno, checkMispunchRequest, updatePunchSlno, getLeaveCount,
     updateCommonLeave, updateCasualLeave, updateCompansatoryOff, updateEarnLeave, updateNationalHoliday, halfDayRequestCheck,
     updateHaldayValueInTable, checkPunchMarkingHR, leaveRequestUniquNumer, saveLeaveRequestMasterTable,
-    saveDetailedTableFun, getLeaveExcistOrNot, checkLeaveexist,
+    saveDetailedTableFun, getLeaveExcistOrNot, checkLeaveexist,checkLWPInaMonth,
     cancelLeaveReqMasterTable
 } = require('../LeaveRequest/LeaveRequest.service');
 // const { validateleavetype } = require('../../validation/validation_schema');
@@ -894,5 +894,29 @@ module.exports = {
                 message: "Error !! - Get UNIQUE IDENTIFIER LEAVE REQUEST"
             });
         }
+    },
+    checkLWPInaMonth: (req, res) => {
+        const body = req.body;
+        checkLWPInaMonth(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else if (results?.length === 0) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Record Found"
+                });
+            }
+            else {
+                return res.status(200).json({
+                    success: 1,
+                    data: results
+                });
+            }
+        });
     },
 }
