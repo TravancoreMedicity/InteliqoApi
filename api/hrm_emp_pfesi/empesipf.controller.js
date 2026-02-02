@@ -1,54 +1,75 @@
-const { create, update, getDataById, getDataBySlno, getEsiallow, createNpsdata,
-    esinotallowedUpdate, InactiveEsi } = require('../hrm_emp_pfesi/empesipf.service');
-const { validateempesipf } = require('../../validation/validation_schema');
+const {
+    create,
+    update,
+    getDataById,
+    getDataBySlno,
+    getEsiallow,
+    createNpsdata,
+    esinotallowedUpdate,
+    InactiveEsi
+} = require('../hrm_emp_pfesi/empesipf.service');
 const logger = require('../../logger/logger')
 module.exports = {
     createpfesi: (req, res) => {
         const body = req.body;
-        // const body_result = validateempesipf.validate(body);
+        const {
+            em_no
+        } = body;
 
-        // if (body_result.error) {
-        //     return res.status(200).json({
-        //         success: 2,
-        //         message: body_result.error.details[0].message
-        //     });
-        // }
+        getDataById(em_no, (err, results) => {
+            if (Object.keys(results)?.length === 0) {
+                create(body, (err, results) => {
+                    if (err) {
+                        logger.errorLogger(err)
+                        return res.status(200).json({
+                            success: 0,
+                            message: err
+                        });
+                    }
 
-        create(body, (err, results) => {
-            if (err) {
-                logger.errorLogger(err)
-                return res.status(200).json({
-                    success: 0,
-                    message: err
+                    if (!results) {
+                        return res.status(200).json({
+                            success: 0,
+                            message: "Record Not Found"
+                        });
+                    }
+
+                    return res.status(200).json({
+                        success: 1,
+                        message: "Data Created Successfully"
+                    });
+
+                });
+
+            } else {
+                update(body, (err, results) => {
+
+                    if (err) {
+                        logger.errorLogger(err)
+                        return res.status(200).json({
+                            success: 0,
+                            message: err
+                        });
+                    }
+
+                    if (!results) {
+                        return res.status(200).json({
+                            success: 2,
+                            message: "Record Not Found"
+                        });
+                    }
+
+                    return res.status(200).json({
+                        success: 1,
+                        message: "Data Updated Successfully"
+                    });
+
                 });
             }
-
-            if (!results) {
-                return res.status(200).json({
-                    success: 0,
-                    message: "Record Not Found"
-                });
-            }
-
-            return res.status(200).json({
-                success: 1,
-                message: "Data Created Successfully"
-            });
-
         });
     },
     updatepfesi: (req, res) => {
-
         const body = req.body;
-        // const body_result = validateempesipf.validate(body);
-
-        // if (body_result.error) {
-        //     return res.status(200).json({
-        //         success: 3,
-        //         message: body_result.error.details[0].message
-        //     });
-        // }
-
         update(body, (err, results) => {
 
             if (err) {
@@ -74,7 +95,6 @@ module.exports = {
         });
     },
     getempesipfByID: (req, res) => {
-
         const id = req.params.id;
         getDataById(id, (err, results) => {
             if (err) {
@@ -101,7 +121,6 @@ module.exports = {
 
     },
     getempesipfBySlno: (req, res) => {
-
         const id = req.params.id;
         getDataBySlno(id, (err, results) => {
             if (err) {

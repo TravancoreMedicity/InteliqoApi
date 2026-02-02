@@ -1,7 +1,17 @@
 const router = require("express").Router();
-const { checkToken } = require("../../auth/token_validation");
-const { createpfesi, updatepfesi, getempesipfByID, getempesipfBySlno, getEsiallow,
-    createnps, esinotallowedUpdate, InactiveEsi } = require('../hrm_emp_pfesi/empesipf.controller');
+const {
+    checkToken
+} = require("../../auth/token_validation");
+const {
+    createpfesi,
+    updatepfesi,
+    getempesipfByID,
+    getempesipfBySlno,
+    getEsiallow,
+    createnps,
+    esinotallowedUpdate,
+    InactiveEsi
+} = require('../hrm_emp_pfesi/empesipf.controller');
 
 router.post("/", checkToken, createpfesi);
 router.patch("/", checkToken, updatepfesi);
