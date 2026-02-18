@@ -456,9 +456,9 @@ module.exports = {
 
 
             let dateCheck = {
-                fromDate: format(new Date(leaveRequestMasterData.leavefrom_date), "yyyy-MM-dd"),
-                toDate: format(new Date(leaveRequestMasterData.leavetodate), "yyyy-MM-dd"),
-                em_no: leaveRequestMasterData.em_no
+                fromDate: format(new Date(leaveRequestMasterData?.leavefrom_date), "yyyy-MM-dd"),
+                toDate: format(new Date(leaveRequestMasterData?.leavetodate), "yyyy-MM-dd"),
+                em_no: leaveRequestMasterData?.em_no
             }
 
             const leaveExist = await checkLeaveexist(dateCheck)
