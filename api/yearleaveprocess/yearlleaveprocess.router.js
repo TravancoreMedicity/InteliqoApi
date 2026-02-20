@@ -1,17 +1,57 @@
 const router = require("express").Router();
-const { checkToken } = require("../../auth/token_validation");
 const {
-    checkprocesstable, insertprocesstable, updateprocess, getproceedataByID,
-    insertcasualleave, getholidaylist, insertHoliday, updatecasualleave,
-    updateholiday, insertCommonleave, updatecommon, insertearnleave,
-    updateearnleave, updateholidayupdateslno, updatecasualleaveupdateslno, creditCasualLeave, updateeanleaveupdate,
-    allowableCasualLeave, allowableholiday, allowablefesitval, allowableearnleave, dataannualcalculation,
-    allowableconleave, holidaylistyear, insertyearly, select_yearlyprocess, dataannualcalculationEmployee,
-    creditPrivilegeLeave, getLeaveProccedData, inactiveLastYearProcessData, inactiveCasualLeave,
-    inactiveEarnLeave, inactiveHoliday, inactiveCommonLeave, getEsiPfDetails, getleaveProcessData,
-    inactiveSickLeave, inactiveEsiLeave, updateCommonUpdateSlno, getLeavecountbyDate,
-    getYearlyLeaveCount, getYearlyCasualLeaveCount, getYearlySickLeaveCount, getYearlyEarnLeaveCount,
-    updatePreviousLeave, insertPreviousearnLeave, insertPreviouscasualleave, insertPrevious
+    checkToken
+} = require("../../auth/token_validation");
+const {
+    checkprocesstable,
+    insertprocesstable,
+    updateprocess,
+    getproceedataByID,
+    insertcasualleave,
+    getholidaylist,
+    insertHoliday,
+    updatecasualleave,
+    updateholiday,
+    insertCommonleave,
+    updatecommon,
+    insertearnleave,
+    updateearnleave,
+    updateholidayupdateslno,
+    updatecasualleaveupdateslno,
+    creditCasualLeave,
+    updateeanleaveupdate,
+    allowableCasualLeave,
+    allowableholiday,
+    allowablefesitval,
+    allowableearnleave,
+    dataannualcalculation,
+    allowableconleave,
+    holidaylistyear,
+    insertyearly,
+    select_yearlyprocess,
+    dataannualcalculationEmployee,
+    creditPrivilegeLeave,
+    getLeaveProccedData,
+    inactiveLastYearProcessData,
+    inactiveCasualLeave,
+    inactiveEarnLeave,
+    inactiveHoliday,
+    inactiveCommonLeave,
+    getEsiPfDetails,
+    getleaveProcessData,
+    inactiveSickLeave,
+    inactiveEsiLeave,
+    updateCommonUpdateSlno,
+    getLeavecountbyDate,
+    getYearlyLeaveCount,
+    getYearlyCasualLeaveCount,
+    getYearlySickLeaveCount,
+    getYearlyEarnLeaveCount,
+    updatePreviousLeave,
+    insertPreviousearnLeave,
+    insertPreviouscasualleave,
+    insertPrevious,
+    insertEsiLeave
 } = require('../yearleaveprocess/yearleaveprocess.controller');
 
 router.post("/", checkToken, checkprocesstable)
@@ -67,5 +107,6 @@ router.post("/insertPreviousearnLeave", checkToken, insertPreviousearnLeave)
 router.post("/insertPreviouscasualleave", checkToken, insertPreviouscasualleave)
 
 router.post("/insertPrevious", checkToken, insertPrevious)
+router.post("/insert/esileave", checkToken, insertEsiLeave)
 
 module.exports = router;
