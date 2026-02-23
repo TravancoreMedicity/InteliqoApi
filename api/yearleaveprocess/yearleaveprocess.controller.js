@@ -1193,4 +1193,30 @@ module.exports = {
             });
         });
     },
+    insertEsiLeave: (req, res) => {
+        const body = req.body;
+        insertStatutoryCommonleave(body, (err, results) => {
+
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                message: "Data Updated Successfully"
+            });
+
+        });
+    },
 }
