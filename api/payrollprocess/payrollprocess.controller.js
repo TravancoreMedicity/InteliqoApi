@@ -879,11 +879,6 @@ module.exports = {
 
     InsertPunchInOutHr: (req, res) => {
         const body = req.body;
-        // checkInsertVal(body, (err, results) => {
-
-        // const value = JSON.parse(JSON.stringify(results))
-        // if (Object.keys(value).length === 0) {
-
         InsertPunchInOutHr(body, (err, results) => {
 
             if (err) {
@@ -900,35 +895,6 @@ module.exports = {
             });
 
         });
-
-        // } else {
-
-        // updatePunchInOutHr(body, (err, results) => {
-
-        //     if (err) {
-        //         logger.errorLogger(err)
-        //         return res.status(200).json({
-        //             success: 0,
-        //             message: err
-        //         });
-        //     }
-
-        //     if (!results) {
-        //         return res.status(200).json({
-        //             success: 2,
-        //             message: "Record Not Found"
-        //         });
-        //     }
-
-        //     return res.status(200).json({
-        //         success: 1,
-        //         message: "Data Updated Successfully"
-        //     });
-
-        // });
-
-        // }
-        // })
     },
     getPunchInOutHr: (req, res) => {
         const body = req.body

@@ -932,7 +932,7 @@ module.exports = {
     },
     InsertPunchInOutHr: (data, callBack) => {
         pool.query(
-            `INSERT INTO punchmarking_hr (marking_month,dept_slno,deptsec_slno,status,create_date,edit_date,create_user,edit_user,last_update_date)
+            `INSERT INTO punchmarking_hr (marking_month,dept_slno,deptsec_slno,status,create_user,edit_user,last_update_date)
             VALUES ?`,
             [
                 data
