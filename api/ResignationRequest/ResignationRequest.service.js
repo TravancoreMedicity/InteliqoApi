@@ -67,7 +67,7 @@ module.exports = {
         pool.query(
             `SELECT resig_slno FROM hrm_resignation_request WHERE resign_cancel IS NULL 
             AND (resign_status != 'R' or resign_status IS NULL) AND em_no = ? 
-            and (inch_app_status!=2 and hod_app_status!=2 and hr_app_status!=2);`,
+            and (inch_app_status!=2 or hod_app_status!=2 or hr_app_status!=2);`,
             [
                 data.em_no,
             ],
