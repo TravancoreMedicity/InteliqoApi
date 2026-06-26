@@ -12,7 +12,7 @@ const {
     insertSickLeave, updateCommonUpdateSlno, getLeavecountbyDate, getYearlyLeaveCount,
     getYearlyCasualLeaveCount, getYearlySickLeaveCount, getYearlyEarnLeaveCount,
     updatePreviousLeave, insertPreviousearnLeave, insertPreviouscasualleave,
-    updatecarryforwardEl, updatecarryforwardCl, updatecarryforwardSl
+    updatecarryforwardEl, updatecarryforwardCl, updatecarryforwardSl,getCommonLeaveDataCurrentYear
 } = require('../yearleaveprocess/yearllraveprocess.service');
 const logger = require('../../logger/logger');
 module.exports = {
@@ -1218,5 +1218,29 @@ module.exports = {
             });
 
         });
+    },
+    getCommonLeaveDataCurrentYear: (req, res) => {
+        const id = req.params.id
+        getCommonLeaveDataCurrentYear(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    data: "No Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        })
+
     },
 }

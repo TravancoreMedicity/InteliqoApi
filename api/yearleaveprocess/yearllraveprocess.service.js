@@ -1499,4 +1499,19 @@ module.exports = {
         })
         )
     },
+    getCommonLeaveDataCurrentYear: (data, callBack) => {
+        pool.query(
+            `SELECT * FROM hrm_leave_common where em_no=? and YEAR(cmn_lv_year) = YEAR(CURDATE());`,
+            [
+                data
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+
+    },
 }

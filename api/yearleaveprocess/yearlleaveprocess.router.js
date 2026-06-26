@@ -51,7 +51,8 @@ const {
     insertPreviousearnLeave,
     insertPreviouscasualleave,
     insertPrevious,
-    insertEsiLeave
+    insertEsiLeave,
+    getCommonLeaveDataCurrentYear
 } = require('../yearleaveprocess/yearleaveprocess.controller');
 
 router.post("/", checkToken, checkprocesstable)
@@ -108,5 +109,8 @@ router.post("/insertPreviouscasualleave", checkToken, insertPreviouscasualleave)
 
 router.post("/insertPrevious", checkToken, insertPrevious)
 router.post("/insert/esileave", checkToken, insertEsiLeave)
+router.get("/getCommonDataCurrentYear/:id", checkToken, getCommonLeaveDataCurrentYear)
+
+
 
 module.exports = router;
