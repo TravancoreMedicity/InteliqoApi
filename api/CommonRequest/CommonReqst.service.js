@@ -75,7 +75,7 @@ module.exports = {
             AND month(one_hour_duty_day) = month(?)
              AND cancel_status != 1 
               AND incharge_approval_status!=2
-             AND hod_req_status!=2
+             AND hod_approval_status!=2
              AND hr_approval_status!=2
         GROUP BY MONTH(one_hour_duty_day)
         ORDER BY month;`,
@@ -858,7 +858,9 @@ module.exports = {
             duty_status=1,
             lvereq_desc = ?,
             duty_desc = 'ODP',
-            lve_tble_updation_flag = 1
+            lve_tble_updation_flag = 1,
+            late_in=0,
+            early_out=0
             WHERE em_no = ? and duty_day=?`,
             [
                 data.punch_in,
