@@ -858,7 +858,9 @@ module.exports = {
             duty_status=1,
             lvereq_desc = ?,
             duty_desc = 'ODP',
-            lve_tble_updation_flag = 1
+            lve_tble_updation_flag = 1,
+            late_in=0,
+            early_out=0
             WHERE em_no = ? and duty_day=?`,
             [
                 data.punch_in,
