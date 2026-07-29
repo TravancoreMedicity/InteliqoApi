@@ -817,7 +817,7 @@ where date(duty_day)=curdate() and (duty_desc='P' or nmc_punch_status='P') and d
             `SELECT em_id,department, dept_id, dept_name
                 FROM doctor_employeerights
                 INNER JOIN hrm_department on doctor_employeerights.department=hrm_department.dept_id
-                WHERE em_id = ?`,
+                WHERE em_id = ? order by dept_name asc`,
             [
                 data.em_id
             ],
@@ -1121,7 +1121,10 @@ where date(duty_day)=curdate() and (duty_desc='P' or nmc_punch_status='P') and d
             LEFT JOIN hrm_shift_mast ON hrm_shift_mast.shft_slno = doctor_dutyplan.shift_id 
             inner join hrm_emp_master on hrm_emp_master.em_id=doctor_dutyplan.emp_id
             WHERE duty_day= ? AND emp_id=?`,
-            [data.startDate, data.em_id],
+            [
+                data.startDate, 
+                data.em_id
+            ],
             (error, results, feilds) => {
                 if (error) {
                     return callBack(error);
@@ -1335,6 +1338,70 @@ where date(duty_day)=curdate() and (duty_desc='P' or nmc_punch_status='P') and d
             where  lv_cancel_status=0 and leave_date between ? and ?`,
             [
                 data.fromdate, data.todate
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    createAccademicRequest: (data, callBack) => {
+        pool.query(
+            `INSERT INTO doctor_accademic_leave_request 
+                    (
+                        em_id,
+                        em_no,
+                        dept_id,
+                        dept_section,
+                        leave_fromdate,
+                        leave_todate,
+                        rejoin_date,
+                        request_status,
+                        leave_reason,
+                        no_of_leave
+                    )
+                VALUES (?,?,?,?,?,?,?,?,?,?)`,
+                [
+                    data.em_id,
+                    data.em_no,
+                    data.em_department,
+                    data.em_dept_section,
+                    data.leavefrom_date,
+                    data.leavetodate,
+                    data.rejoin_date,
+                    data.request_status,
+                    data.resonforleave,
+                    data.no_of_leave
+                ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    updateAccLeave: (data, callBack) => {
+        pool.query(
+            `UPDATE 
+                doctor_punch_master
+                SET leave_status = 1,
+                duty_status=1,
+                lvereq_desc=?,
+                duty_desc=?,
+                lve_tble_updation_flag = 1,
+                late_in=0,
+                early_out=0
+                WHERE em_no = ? 
+                AND duty_day between ? and ?`,
+            [
+                data.lvereq_desc,
+                data.duty_desc,
+                data.em_no,
+                data.leavefrom_date,
+                data.leavetodate
             ],
             (error, results, feilds) => {
                 if (error) {
