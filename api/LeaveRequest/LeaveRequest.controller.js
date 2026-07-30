@@ -763,7 +763,7 @@ module.exports = {
                             //common leave ( ML -> 2 ,LOP -> 5 , ESI -> 6 , SL -> 7 )
                             //CL -> 1 EL -> 8 //C-OFF -> 11
 
-                            const commonLeave = [6, 5, 2]
+                            const commonLeave = [6, 5, 2, 9]
                             const nonCommonLeave = [1, 8, 11]
                             //POST DATA FOR COMMON LEAVE NOT INCLUDED THE SICK LEAVE IS SICK LEAVE HAVE HALF DAY 
                             const commonPostData = commonLeave?.map((el) => {

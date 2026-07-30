@@ -36,7 +36,8 @@ const {
     getSingleDoctorPunch,
     getSingleDoctorPunchmast,
     getLeaveRequest,
-    getDoctorCoff
+    getDoctorCoff,
+    createAccademicRequest
 } = require("./doctorController");
 
 
@@ -81,5 +82,6 @@ router.post("/single/doctorPunch", checkToken, getSingleDoctorPunch)
 router.post("/punchReport/singledoctor", checkToken, getSingleDoctorPunchmast)
 router.post("/getdoctors/leaveRequest", checkToken, getLeaveRequest)
 router.post("/coffrequest", checkToken, getDoctorCoff)
+router.post("/createAccademic/request",checkToken,createAccademicRequest)
 
 module.exports = router;

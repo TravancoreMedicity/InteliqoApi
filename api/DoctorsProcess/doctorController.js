@@ -39,7 +39,9 @@ const {
     getSingleDoctorPunch,
     getSingleDoctorPunchmast,
     getLeaveRequest,
-    getDoctorCoff
+    getDoctorCoff,
+    createAccademicRequest,
+    updateAccLeave
 } = require("./doctorService");
 
 module.exports = {
@@ -771,7 +773,6 @@ module.exports = {
             const body = req.body;
             getSelectedDateShift(body, (err, results) => {
                 if (err) {
-                    logger.errorLogger(err)
                     return res.status(200).json({
                         success: 0,
                         message: err
@@ -957,6 +958,41 @@ module.exports = {
                 success: 1,
                 data: results
             });
+        });
+    },
+    createAccademicRequest: (req, res) => {
+        const body = req.body;
+        createAccademicRequest(body, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+           updateAccLeave(body, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (results.length == 0) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Record Found"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                message: "Request Updated Successfully"
+            });
+        });
         });
     },
 }
