@@ -575,11 +575,7 @@ module.exports = {
                     WHEN (cl_lv_taken = 0 AND hl_lv_tkn_status = 0)THEN 0.5 ELSE cl_lv_taken END,
                 cl_bal_leave = CASE 
                     WHEN (cl_bal_leave = 0.5 AND hl_lv_tkn_status = 0) THEN 0
-                    WHEN (cl_bal_leave = 0 AND hl_lv_tkn_status = 0)THEN 0.5 ELSE cl_lv_taken END,
-                hl_lv_tkn_status = CASE 
-                    WHEN (cl_bal_leave = 0 AND cl_lv_taken = 1 AND hl_lv_tkn_status = 0) THEN 1 
-                     WHEN (cl_bal_leave = 0.5 AND cl_lv_taken = 0.5 AND hl_lv_tkn_status = 0) THEN 1
-                    ELSE 0 END
+                    WHEN (cl_bal_leave = 0 AND hl_lv_tkn_status = 0)THEN 0.5 ELSE cl_lv_taken END
         WHERE hrm_cl_slno = ? `,
             [
                 data.planslno,

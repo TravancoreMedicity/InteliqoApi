@@ -1,44 +1,44 @@
 const logger = require('../../logger/logger')
-const { 
-    create, 
-    checkInsertVal, 
-    createGenralRq, 
-    createOndutyRequest, 
+const {
+    create,
+    checkInsertVal,
+    createGenralRq,
+    createOndutyRequest,
     createEnableMispunchRqst,
-    getOneHourReqst, 
-    getOndutyRequest, 
-    getenableMisspunchRequest, 
+    getOneHourReqst,
+    getOndutyRequest,
+    getenableMisspunchRequest,
     inchargeEnable,
-    inchargeOneHour, 
-    inchargeOnDuty, 
-    hodEnable, 
-    hodOnDuty, 
-    hodOneHour, 
+    inchargeOneHour,
+    inchargeOnDuty,
+    hodEnable,
+    hodOnDuty,
+    hodOneHour,
     ceoEnable,
-    ceoonduty, 
-    ceoOnehour, 
-    hrEnable, 
-    hrOnduty, 
-    hrOnehour, 
+    ceoonduty,
+    ceoOnehour,
+    hrEnable,
+    hrOnduty,
+    hrOnehour,
     getGeneralReqstAll,
-    addHrComment, 
-    checkMispunchRequest, 
-    checksEnableRq, 
-    punchdataEntry, 
+    addHrComment,
+    checkMispunchRequest,
+    checksEnableRq,
+    punchdataEntry,
     HROnDutyPunchMaster,
-    checkAttendanceProcess, 
-    generalHRapproval, 
-    cancelEnable, 
-    enableOnduty, 
+    checkAttendanceProcess,
+    generalHRapproval,
+    cancelEnable,
+    enableOnduty,
     cancelOnehour,
-    cancelgeneral, 
-    onDutyReport, 
-    HrApprovedOneHourData, 
+    cancelgeneral,
+    onDutyReport,
+    HrApprovedOneHourData,
     HrApprovedOnDutyData,
-    getEmpwiseOnduty, 
-    getEmpwiseOneHour, 
-    getSectWiseOneHour, 
-    getSectWiseOnDuty, 
+    getEmpwiseOnduty,
+    getEmpwiseOneHour,
+    getSectWiseOneHour,
+    getSectWiseOnDuty,
     OneHourForApprovalHR,
     OndutyForApprovalHR,
     CheckOndutyExistorNot,
@@ -55,12 +55,12 @@ module.exports = {
         const body_result = validateOneHourReqst.validate(body);
         body.reason = body_result.value.reason;
 
-        const {onehour_rqst_count}=body;//one hour count from common setting
+        const { onehour_rqst_count } = body;//one hour count from common setting
 
         checkInsertVal(body, (err, results) => {
-            if (Object.keys(results)?.length ===0) {
+            if (Object.keys(results)?.length === 0) {
                 getTotalOnehrYear(body, (err, result) => {
-                   if ( Object.keys(result)?.length===0|| result[0].onehour_count < onehour_rqst_count) {
+                    if (Object.keys(result)?.length === 0 || result[0].onehour_count < onehour_rqst_count) {
                         create(body, (err, results) => {
                             if (err) {
                                 logger.errorLogger(err)
@@ -89,14 +89,14 @@ module.exports = {
                                 });
                             });
                         });
-                    }else  {
+                    } else {
                         return res.status(200).json({
                             success: 3,
-                            message: "Based On Policy Only More Than "+onehour_rqst_count+" One Hour Request is not Allowed"
+                            message: "Based On Policy Only More Than " + onehour_rqst_count + " One Hour Request is not Allowed"
                         })
                     }
                 })
-            }  else {
+            } else {
                 return res.status(200).json({
                     success: 2,
                     message: "Based On Policy Only 1 One Hour Request is Allowed"
@@ -912,9 +912,27 @@ module.exports = {
                 });
             }
             else {
-                return res.status(200).json({
-                    success: 1,
-                    message: "Request Cancelled successfully"
+                activeDoffDutyplanData(body, (err, results) => {
+                    if (err) {
+                        logger.errorLogger(err)
+                        return res.status(200).json({
+                            success: 0,
+                            message: err
+                        });
+                    }
+                    else if (!results) {
+                        return res.status(200).json({
+                            success: 2,
+                            message: "Record Not Found"
+                        });
+                    }
+                    else {
+                        return res.status(200).json({
+                            success: 1,
+                            message: "One Hour Request Rejected Successfully"
+                        });
+
+                    }
                 });
 
             }

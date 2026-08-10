@@ -1286,10 +1286,6 @@ module.exports = {
                 });
             }
             else {
-                // return res.status(200).json({
-                //     success: 1,
-                //     message: "Data Updated Successfully"
-                // });
                 HalfDayHrRejectCl(body, (err, results) => {
                     if (err) {
                         logger.errorLogger(err)
@@ -1305,7 +1301,7 @@ module.exports = {
                         });
                     }
                     else {
-                        HalfDayHrCancelPunchMast(body, (err, results) => {
+                        activeDoffDutyplanData(body, (err, results) => {
                             if (err) {
                                 logger.errorLogger(err)
                                 return res.status(200).json({
@@ -1322,9 +1318,8 @@ module.exports = {
                             else {
                                 return res.status(200).json({
                                     success: 1,
-                                    message: "Leave Request Rejected Successfully"
+                                    message: "Halfday Request Rejected Successfully"
                                 });
-
                             }
                         });
 
@@ -1335,6 +1330,7 @@ module.exports = {
     },
     NopunchCancelUser: (req, res) => {
         const body = req.body;
+
         NopunchCancelUser(body, (err, results) => {
             if (err) {
                 logger.errorLogger(err)
@@ -1350,9 +1346,27 @@ module.exports = {
                 });
             }
             else {
-                return res.status(200).json({
-                    success: 1,
-                    message: "Data Updated Successfully"
+                activeDoffDutyplanData(body, (err, results) => {
+                    if (err) {
+                        logger.errorLogger(err)
+                        return res.status(200).json({
+                            success: 0,
+                            message: err
+                        });
+                    }
+                    else if (!results) {
+                        return res.status(200).json({
+                            success: 2,
+                            message: "Record Not Found"
+                        });
+                    }
+                    else {
+                        return res.status(200).json({
+                            success: 1,
+                            message: "Miss Punch Request Canceelled Successfully"
+                        });
+
+                    }
                 });
             }
         });
@@ -1939,10 +1953,6 @@ module.exports = {
                         });
                     }
                 });
-                // return res.status(200).json({
-                //     success: 1,
-                //     message: "Leave Request Rejected Successfully"
-                // });
             }
         });
     },

@@ -58,9 +58,10 @@ module.exports = {
                 first_policy,
                 second_plicy,
                 holiday_min_working,
-                opdduty
+                opdduty,
+                apprenticeship_type
                 )
-                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
         )
 
         [
@@ -118,7 +119,8 @@ module.exports = {
             data.first_policy,
             data.second_plicy,
             data.holiday_min_working,
-            JSON.stringify(data.opdduty)
+            JSON.stringify(data.opdduty),
+            data.apprenticeship_type
         ],
             (error, results, feilds) => {
                 if (error) {
@@ -197,7 +199,8 @@ module.exports = {
                 first_policy=?,
                 second_plicy=?,
                 holiday_min_working=?,
-                opdduty=?
+                opdduty=?,
+                apprenticeship_type=?
                 WHERE setting_slno =?`,
 
             [
@@ -256,6 +259,7 @@ module.exports = {
                 data.second_plicy,
                 data.holiday_min_working,
                 JSON.stringify(data.opdduty),
+                data.apprenticeship_type,
                 data.setting_slno
             ],
             (error, results, feilds) => {
