@@ -1244,6 +1244,7 @@ const validatecommonsettings = Joi.object({
         second_plicy: Joi.number().precision(2).optional(),
         holiday_min_working: Joi.number().optional(),
         opdduty:Joi.optional(),
+        apprenticeship_type:Joi.optional()
 })
 //validate carryforward
 const validatecarryforward = Joi.object({
