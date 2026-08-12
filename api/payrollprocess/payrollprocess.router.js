@@ -1,18 +1,72 @@
-
 const router = require("express").Router();
-const { checkToken } = require("../../auth/token_validation");
-const { removeListener } = require("../../config/database");
-const { empDeptdata, empDeptSecdata, empNameBasedata, getFixedByEmid, getEarningByEmid, getTotalFineByEmid, getTotalFixedByEmid,
-    getTotalEarningsByEmid, getTotalDeductionByEmid, getDeductionByEmid, getLopByEmid, getTotalGrosssalaryById, GetPfStatus,
-    getPFcalcalculatingamt, GetEsiStatus, getESIcalculatingamt, createAttendanceManual, getPaySlipTableData, getEmpEarningData,
-    getEmpFixedWageData, getEmpDeductionData, getAllEarnData, createPayrollpayslip, createPayrollpayslipDetl, checkAttendanceProcess,
-    getPunchdata, getattendancemark, getEmpNoDeptWise, getPunchmastData, DutyPlanLock, dutyPlanUnLock, getPaySlipData,
-    getIndvidualPayslipDetl, checkPayslipDataExist, deptWisePaySlipData, empWisePaySlipDetl, punchMastLock, InsertPunchInOutHr,
-    getPunchInOutHr, CancelPunchInOutHr, getPunchByEmid, InsertArrearSalary, getArearData, getAllEmployee, getPunchMarkingHr,
-    getPunchMarkingHrFull, getTotalGrosssalaryByno, getPunchMasterSalaryAllEmployee, getAcriveDepartmentSection,
-    getPunchmastAboveSelectedDate, getPunchAboveSelectedDate, submitProcessedSalary, inertMonthlyProcess,
-    getProcessedDepartments, getPayrollDetails, CancelPayrollProcess, deleteProcessedSalary, ActivatePayrollProcess,
-    getSectionWiseEmployee, getPayrollDetailsByDept,getOnemonthLeavDetl
+const {
+    checkToken
+} = require("../../auth/token_validation");
+const {
+    removeListener
+} = require("../../config/database");
+const {
+    empDeptdata,
+    empDeptSecdata,
+    empNameBasedata,
+    getFixedByEmid,
+    getEarningByEmid,
+    getTotalFineByEmid,
+    getTotalFixedByEmid,
+    getTotalEarningsByEmid,
+    getTotalDeductionByEmid,
+    getDeductionByEmid,
+    getLopByEmid,
+    getTotalGrosssalaryById,
+    GetPfStatus,
+    getPFcalcalculatingamt,
+    GetEsiStatus,
+    getESIcalculatingamt,
+    createAttendanceManual,
+    getPaySlipTableData,
+    getEmpEarningData,
+    getEmpFixedWageData,
+    getEmpDeductionData,
+    getAllEarnData,
+    createPayrollpayslip,
+    createPayrollpayslipDetl,
+    checkAttendanceProcess,
+    getPunchdata,
+    getattendancemark,
+    getEmpNoDeptWise,
+    getPunchmastData,
+    DutyPlanLock,
+    dutyPlanUnLock,
+    getPaySlipData,
+    getIndvidualPayslipDetl,
+    checkPayslipDataExist,
+    deptWisePaySlipData,
+    empWisePaySlipDetl,
+    punchMastLock,
+    InsertPunchInOutHr,
+    getPunchInOutHr,
+    CancelPunchInOutHr,
+    getPunchByEmid,
+    InsertArrearSalary,
+    getArearData,
+    getAllEmployee,
+    getPunchMarkingHr,
+    getPunchMarkingHrFull,
+    getTotalGrosssalaryByno,
+    getPunchMasterSalaryAllEmployee,
+    getAcriveDepartmentSection,
+    getPunchmastAboveSelectedDate,
+    getPunchAboveSelectedDate,
+    submitProcessedSalary,
+    inertMonthlyProcess,
+    getProcessedDepartments,
+    getPayrollDetails,
+    CancelPayrollProcess,
+    deleteProcessedSalary,
+    ActivatePayrollProcess,
+    getSectionWiseEmployee,
+    getPayrollDetailsByDept,
+    getOnemonthLeavDetl
 
 } = require('../payrollprocess/payrollprocess.controller');
 
@@ -45,7 +99,7 @@ router.post("/empEarning", checkToken, getEmpEarningData)
 router.post("/empFixedDetl", checkToken, getEmpFixedWageData)
 router.post("/empDeduction", checkToken, getEmpDeductionData)
 router.post("/allData", checkToken, getAllEarnData)
-router.patch("/dutyPlanUnLock", checkToken, dutyPlanUnLock);//Hr Punch In/Out cancel
+router.patch("/dutyPlanUnLock", checkToken, dutyPlanUnLock); //Hr Punch In/Out cancel
 //payslip calculation
 router.post("/create/payslip", checkToken, createPayrollpayslip)
 router.post("/create/detail", checkToken, createPayrollpayslipDetl)
@@ -82,7 +136,7 @@ router.get("/getTotalGrosssalaryByno/:id", checkToken, getTotalGrosssalaryByno)
 router.post("/getPunchMasterSalaryAllEmployee", checkToken, getPunchMasterSalaryAllEmployee)
 router.get("/getAcriveDepartmentSection", checkToken, getAcriveDepartmentSection)
 
-router.post("/getPunchmastAboveSelectedDate", checkToken, getPunchmastAboveSelectedDate)//contract renwal new id updation
+router.post("/getPunchmastAboveSelectedDate", checkToken, getPunchmastAboveSelectedDate) //contract renwal new id updation
 router.post("/getPunchAboveSelectedDate", checkToken, getPunchAboveSelectedDate)
 
 router.post("/create/processedSalary", checkToken, submitProcessedSalary)
@@ -95,6 +149,6 @@ router.post("/activate/processedSalary", checkToken, ActivatePayrollProcess)
 
 router.post("/sectionEmployees", checkToken, getSectionWiseEmployee)
 router.post("/getPayrollDetailsByDept", checkToken, getPayrollDetailsByDept)
-router.post("/getOnemnothLeave", checkToken,getOnemonthLeavDetl)
+router.post("/getOnemnothLeave", checkToken, getOnemonthLeavDetl)
 
-module.exports = router; 
+module.exports = router;

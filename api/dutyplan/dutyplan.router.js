@@ -1,10 +1,27 @@
 const router = require("express").Router();
-const { checkToken } = require('../../auth/token_validation');
-const { getDutyPlan, getEmpdetl, insertDutyplan, updateDutyPlan,
-    CheckInsertVal, updateDefaultShift, updateWoffShift, updateholiday,
-    getPlanDetl, updateMultiShift, checkDutyPlanExcist, getdeptEmpdetl, checkDutyPlanExcistNew,
-    getDutyPlanAboveselectedDate, getEmployeeDutyplan, dutyplanExitorNot, insertDutyplanLog,
-    getEmployeeDutyplanLog } = require('../dutyplan/dutyplan.controller');
+const {
+    checkToken
+} = require('../../auth/token_validation');
+const {
+    getDutyPlan,
+    getEmpdetl,
+    insertDutyplan,
+    updateDutyPlan,
+    CheckInsertVal,
+    updateDefaultShift,
+    updateWoffShift,
+    updateholiday,
+    getPlanDetl,
+    updateMultiShift,
+    checkDutyPlanExcist,
+    getdeptEmpdetl,
+    checkDutyPlanExcistNew,
+    getDutyPlanAboveselectedDate,
+    getEmployeeDutyplan,
+    dutyplanExitorNot,
+    insertDutyplanLog,
+    getEmployeeDutyplanLog
+} = require('../dutyplan/dutyplan.controller');
 
 router.post("/", checkToken, getDutyPlan)
 router.post("/create", checkToken, getEmpdetl)
