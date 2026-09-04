@@ -6,7 +6,7 @@ module.exports = {
             `SELECT hrm_emp_master.em_no,em_name,em_dob,em_doj,em_mobile,em_email,branch_name,dept_name,
             sect_name,desg_name,ecat_name,inst_emp_type,gross_salary,addressPresent1,em_account_no,hrm_pin2,em_pan_no,
             addressPresent2,em_retirement_date,em_passport_no,em_adhar_no,if(em_gender=1,'Male','Female')em_gender,
-           ifnull(em_pf_no,0) em_pf_no, em_esi_no,lwfnumber
+           ifnull(em_pf_no,0) em_pf_no, em_esi_no,lwfnumber,actual_doj
             FROM hrm_emp_master
             inner join hrm_branch on hrm_branch.branch_slno=hrm_emp_master.em_branch
             inner join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
@@ -35,7 +35,7 @@ module.exports = {
             `SELECT hrm_emp_master.em_no,em_name,em_dob,em_doj,em_mobile,em_email,branch_name,dept_name,
             sect_name,desg_name,ecat_name,inst_emp_type,gross_salary,addressPresent1,em_account_no,hrm_pin2,em_pan_no,
             addressPresent2,em_retirement_date,em_passport_no,em_adhar_no,if(em_gender=1,'Male','Female')em_gender,
-           ifnull(em_pf_no,0) em_pf_no, em_esi_no,lwfnumber
+           ifnull(em_pf_no,0) em_pf_no, em_esi_no,lwfnumber,actual_doj
             FROM hrm_emp_master
             inner join hrm_branch on hrm_branch.branch_slno=hrm_emp_master.em_branch
             inner join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
@@ -65,7 +65,7 @@ module.exports = {
             `SELECT hrm_emp_master.em_no,em_name,em_dob,em_doj,em_mobile,em_email,branch_name,dept_name,
             sect_name,desg_name,ecat_name,inst_emp_type,gross_salary,addressPresent1,em_account_no,hrm_pin2,em_pan_no,
             addressPresent2,em_retirement_date,em_passport_no,em_adhar_no,if(em_gender=1,'Male','Female')em_gender,
-           ifnull(em_pf_no,0) em_pf_no, em_esi_no,lwfnumber
+           ifnull(em_pf_no,0) em_pf_no, em_esi_no,lwfnumber,actual_doj
             FROM hrm_emp_master
             inner join hrm_branch on hrm_branch.branch_slno=hrm_emp_master.em_branch
             inner join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
@@ -96,7 +96,7 @@ module.exports = {
             `SELECT hrm_emp_master.em_no,em_name,em_dob,em_doj,em_mobile,em_email,branch_name,dept_name,
             sect_name,desg_name,ecat_name,inst_emp_type,gross_salary,addressPresent1,em_account_no,hrm_pin2,em_pan_no,
             addressPresent2,em_retirement_date,em_passport_no,em_adhar_no,if(em_gender=1,'Male','Female')em_gender,
-           ifnull(em_pf_no,0) em_pf_no, em_esi_no,lwfnumber
+           ifnull(em_pf_no,0) em_pf_no, em_esi_no,lwfnumber,actual_doj
             FROM hrm_emp_master
             inner join hrm_branch on hrm_branch.branch_slno=hrm_emp_master.em_branch
             inner join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
@@ -127,7 +127,7 @@ module.exports = {
             `SELECT hrm_emp_master.em_no,em_name,em_dob,em_doj,em_mobile,em_email,branch_name,dept_name,
             sect_name,desg_name,ecat_name,inst_emp_type,gross_salary,addressPresent1,em_account_no,hrm_pin2,em_pan_no,
             addressPresent2,em_retirement_date,em_passport_no,em_adhar_no,if(em_gender=1,'Male','Female')em_gender,
-           ifnull(em_pf_no,0) em_pf_no, em_esi_no,lwfnumber
+           ifnull(em_pf_no,0) em_pf_no, em_esi_no,lwfnumber,actual_doj
             FROM hrm_emp_master
             inner join hrm_branch on hrm_branch.branch_slno=hrm_emp_master.em_branch
             inner join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
@@ -159,7 +159,7 @@ module.exports = {
             `SELECT hrm_emp_master.em_no,em_name,em_dob,em_doj,em_mobile,em_email,branch_name,dept_name,
             sect_name,desg_name,ecat_name,inst_emp_type,gross_salary,addressPresent1,em_account_no,hrm_pin2,em_pan_no,
             addressPresent2,em_retirement_date,em_passport_no,em_adhar_no,if(em_gender=1,'Male','Female')em_gender,
-           ifnull(em_pf_no,0) em_pf_no, em_esi_no,lwfnumber
+           ifnull(em_pf_no,0) em_pf_no, em_esi_no,lwfnumber,actual_doj
             FROM hrm_emp_master
             inner join hrm_branch on hrm_branch.branch_slno=hrm_emp_master.em_branch
             inner join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
@@ -192,7 +192,7 @@ module.exports = {
         pool.query(
             `
              select hrm_emp_master.em_id,hrm_emp_master.em_no,em_name,em_dob,if(em_gender=1,'Male','Female')em_gender,em_doj,em_mobile,em_email,branch_name,dept_name,
-            sect_name,inst_emp_type,desg_name,doctype_desc,ecat_name,em_contract_end_date,em_adhar_no,
+            sect_name,inst_emp_type,desg_name,doctype_desc,ecat_name,em_contract_end_date,em_adhar_no,actual_doj,
             em_retirement_date,addressPresent1,addressPresent2,hrm_pin2,if(hrm_emp_master.em_status=0,'Resigned',null)status,remark
             from hrm_emp_master
             left join hrm_employee on hrm_emp_master.em_id=hrm_employee.emp_id
@@ -221,7 +221,7 @@ module.exports = {
     getDeptInActiveEmployees: (data, callBack) => {
         pool.query(
             `select hrm_emp_contract_log.em_id,old_emno as em_no,em_name,em_dob,if(em_gender=1,'Male','Female')em_gender,em_doj,em_mobile,em_email,branch_name,dept_name,
-            sect_name,inst_emp_type,desg_name,doctype_desc,ecat_name,contract_end_date,em_adhar_no,
+            sect_name,inst_emp_type,desg_name,doctype_desc,ecat_name,contract_end_date,em_adhar_no,actual_doj,
             em_retirement_date,addressPresent1,addressPresent2,hrm_pin2,if(contract_end_date is not null,'Contract Closed',null)status,remark
             from hrm_emp_contract_log
             left join hrm_emp_master on hrm_emp_master.em_id=hrm_emp_contract_log.em_id
@@ -237,7 +237,7 @@ module.exports = {
              where em_branch IN (?) and em_department IN(?)
              union all
              select hrm_emp_master.em_id,hrm_emp_master.em_no,em_name,em_dob,if(em_gender=1,'Male','Female')em_gender,em_doj,em_mobile,em_email,branch_name,dept_name,
-            sect_name,inst_emp_type,desg_name,doctype_desc,ecat_name,em_contract_end_date,em_adhar_no,
+            sect_name,inst_emp_type,desg_name,doctype_desc,ecat_name,em_contract_end_date,em_adhar_no,actual_doj,
             em_retirement_date,addressPresent1,addressPresent2,hrm_pin2,if(hrm_emp_master.em_status=0,'Resigned',null)status,remark
             from hrm_emp_master
             left join hrm_employee on hrm_emp_master.em_id=hrm_employee.emp_id
@@ -268,7 +268,7 @@ module.exports = {
     getInActiveEmployees: (data, callBack) => {
         pool.query(
             `select hrm_emp_contract_log.em_id,old_emno as em_no,em_name,em_dob,if(em_gender=1,'Male','Female')em_gender,em_doj,em_mobile,em_email,branch_name,dept_name,
-            sect_name,inst_emp_type,desg_name,doctype_desc,ecat_name,contract_end_date,em_adhar_no,
+            sect_name,inst_emp_type,desg_name,doctype_desc,ecat_name,contract_end_date,em_adhar_no,actual_doj,
             em_retirement_date,addressPresent1,addressPresent2,hrm_pin2,if(contract_end_date is not null,'Contract Closed',null)status,remark
             from hrm_emp_contract_log
             left join hrm_emp_master on hrm_emp_master.em_id=hrm_emp_contract_log.em_id
@@ -284,7 +284,7 @@ module.exports = {
              where  em_branch  IN (?) and em_department IN (?) and em_dept_section IN (?)
              union all
              select hrm_emp_master.em_id,hrm_emp_master.em_no,em_name,em_dob,if(em_gender=1,'Male','Female')em_gender,em_doj,em_mobile,em_email,branch_name,dept_name,
-            sect_name,inst_emp_type,desg_name,doctype_desc,ecat_name,em_contract_end_date,em_adhar_no,
+            sect_name,inst_emp_type,desg_name,doctype_desc,ecat_name,em_contract_end_date,em_adhar_no,actual_doj,
             em_retirement_date,addressPresent1,addressPresent2,hrm_pin2,if(hrm_emp_master.em_status=0,'Resigned',null)status,remark
             from hrm_emp_master
             left join hrm_employee on hrm_emp_master.em_id=hrm_employee.emp_id
@@ -317,7 +317,7 @@ module.exports = {
     getBranchResignedEmployees: (data, callBack) => {
         pool.query(
             `select hrm_emp_master.em_id,hrm_emp_master.em_no,em_name,em_dob,if(em_gender=1,'Male','Female')em_gender,em_doj,em_mobile,em_email,branch_name,dept_name,
-            sect_name,inst_emp_type,desg_name,doctype_desc,ecat_name,em_contract_end_date,em_adhar_no,
+            sect_name,inst_emp_type,desg_name,doctype_desc,ecat_name,em_contract_end_date,em_adhar_no,actual_doj,
             em_retirement_date,addressPresent1,addressPresent2,hrm_pin2,if(hrm_emp_master.em_status=0,'Resigned',null)status
             from hrm_emp_master
             left join hrm_employee on hrm_emp_master.em_id=hrm_employee.emp_id
@@ -344,7 +344,7 @@ module.exports = {
     getDeptResignedEmployees: (data, callBack) => {
         pool.query(
             `select hrm_emp_master.em_id,hrm_emp_master.em_no,em_name,em_dob,if(em_gender=1,'Male','Female')em_gender,em_doj,em_mobile,em_email,branch_name,dept_name,
-            sect_name,inst_emp_type,desg_name,doctype_desc,ecat_name,em_contract_end_date,em_adhar_no,
+            sect_name,inst_emp_type,desg_name,doctype_desc,ecat_name,em_contract_end_date,em_adhar_no,actual_doj,
             em_retirement_date,addressPresent1,addressPresent2,hrm_pin2,if(hrm_emp_master.em_status=0,'Resigned',null)status
             from hrm_emp_master
             left join hrm_employee on hrm_emp_master.em_id=hrm_employee.emp_id
@@ -372,7 +372,7 @@ module.exports = {
     getResignedEmployees: (data, callBack) => {
         pool.query(
             `select hrm_emp_master.em_id,hrm_emp_master.em_no,em_name,em_dob,if(em_gender=1,'Male','Female')em_gender,em_doj,em_mobile,em_email,branch_name,dept_name,
-            sect_name,inst_emp_type,desg_name,doctype_desc,ecat_name,em_contract_end_date,em_adhar_no,
+            sect_name,inst_emp_type,desg_name,doctype_desc,ecat_name,em_contract_end_date,em_adhar_no,actual_doj,
             em_retirement_date,addressPresent1,addressPresent2,hrm_pin2,if(hrm_emp_master.em_status=0,'Resigned',null)status
             from hrm_emp_master
             left join hrm_employee on hrm_emp_master.em_id=hrm_employee.emp_id
@@ -412,7 +412,8 @@ module.exports = {
             em_designation,
             dept_name, 
             sect_name,
-            desg_name
+            desg_name,
+            actual_doj
             FROM hrm_emp_master
             left join hrm_emp_contract_detl on hrm_emp_contract_detl.em_no = hrm_emp_master.em_no and hrm_emp_contract_detl.status = 0
             inner join hrm_department on hrm_emp_master.em_department=hrm_department.dept_id
@@ -441,7 +442,7 @@ module.exports = {
             `SELECT hrm_emp_master.em_no,em_name,em_dob,em_doj,em_mobile,em_email,branch_name,dept_name,
             sect_name,desg_name,ecat_name,inst_emp_type,gross_salary,addressPresent1,em_account_no,hrm_pin2,em_pan_no,
             addressPresent2,em_retirement_date,em_passport_no,em_adhar_no,if(em_gender=1,'Male','Female')em_gender,
-           ifnull(em_pf_no,0) em_pf_no, em_esi_no,lwfnumber
+           ifnull(em_pf_no,0) em_pf_no, em_esi_no,lwfnumber,actual_doj
             FROM hrm_emp_master
             inner join hrm_branch on hrm_branch.branch_slno=hrm_emp_master.em_branch
             inner join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
@@ -470,7 +471,7 @@ module.exports = {
             `SELECT hrm_emp_master.em_no,em_name,em_dob,em_doj,em_mobile,em_email,branch_name,dept_name,hrm_emp_master.em_id,
             sect_name,desg_name,ecat_name,inst_emp_type,gross_salary,addressPresent1,em_account_no,hrm_pin2,em_pan_no,
             addressPresent2,em_retirement_date,em_passport_no,em_adhar_no,if(em_gender=1,'Male','Female')em_gender,
-           ifnull(em_pf_no,0) em_pf_no, em_esi_no,lwfnumber
+           ifnull(em_pf_no,0) em_pf_no, em_esi_no,lwfnumber,actual_doj
             FROM hrm_emp_master
             inner join hrm_branch on hrm_branch.branch_slno=hrm_emp_master.em_branch
             inner join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
@@ -496,7 +497,7 @@ module.exports = {
             `SELECT hrm_emp_master.em_no,em_name,em_dob,em_doj,em_mobile,em_email,branch_name,dept_name,
             sect_name,desg_name,ecat_name,inst_emp_type,gross_salary,addressPresent1,em_account_no,hrm_pin2,em_pan_no,
             addressPresent2,em_retirement_date,em_passport_no,em_adhar_no,if(em_gender=1,'Male','Female')em_gender,
-           ifnull(em_pf_no,0) em_pf_no, em_esi_no,lwfnumber
+           ifnull(em_pf_no,0) em_pf_no, em_esi_no,lwfnumber,actual_doj
             FROM hrm_emp_master
             inner join hrm_branch on hrm_branch.branch_slno=hrm_emp_master.em_branch
             inner join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
@@ -522,7 +523,7 @@ module.exports = {
             `SELECT hrm_emp_master.em_no,em_name,em_dob,em_doj,em_mobile,em_email,branch_name,dept_name,
             sect_name,desg_name,ecat_name,inst_emp_type,gross_salary,addressPresent1,em_account_no,hrm_pin2,em_pan_no,
             addressPresent2,em_retirement_date,em_passport_no,em_adhar_no,if(em_gender=1,'Male','Female')em_gender,
-           ifnull(em_pf_no,0) em_pf_no, em_esi_no,lwfnumber
+           ifnull(em_pf_no,0) em_pf_no, em_esi_no,lwfnumber,actual_doj
             FROM hrm_emp_master
             inner join hrm_branch on hrm_branch.branch_slno=hrm_emp_master.em_branch
             inner join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
@@ -551,7 +552,7 @@ module.exports = {
             `SELECT hrm_emp_master.em_no,sal_name, em_name,em_dob,em_doj,em_mobile,em_email,branch_name,dept_name,hrm_emp_master.em_id,
             sect_name,desg_name,ecat_name,inst_emp_type,gross_salary,addressPresent1,em_account_no,hrm_pin2,em_pan_no,
             addressPresent2,em_retirement_date,em_passport_no,em_adhar_no,if(em_gender=1,'Male','Female')em_gender,
-           ifnull(em_pf_no,0) em_pf_no, em_esi_no,lwfnumber
+            ifnull(em_pf_no,0) em_pf_no, em_esi_no,lwfnumber,actual_doj
             FROM hrm_emp_master
             inner join hrm_branch on hrm_branch.branch_slno=hrm_emp_master.em_branch
             inner join hrm_department on hrm_department.dept_id=hrm_emp_master.em_department
