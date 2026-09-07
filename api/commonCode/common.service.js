@@ -848,7 +848,9 @@ module.exports = {
                 holiday_slno,
                 ot_request_flag,
                 shft_cross_day,
-                shft_brk_start
+                shft_brk_start,
+                lvereq_desc,
+                duty_desc
             FROM punch_master
             LEFT JOIN hrm_shift_mast ON hrm_shift_mast.shft_slno=punch_master.shift_id
             LEFT JOIN hrm_emp_master ON hrm_emp_master.em_id = punch_master.emp_id
