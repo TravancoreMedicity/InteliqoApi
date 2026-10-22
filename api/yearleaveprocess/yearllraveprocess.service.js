@@ -1236,7 +1236,7 @@ module.exports = {
                 p.lv_process_slno
             from hrm_leave_cl t
               right join hrm_leave_process p on p.em_no=t.em_no
-            where  year(cl_lv_mnth) =year(?) and p.hrm_process_status='A'
+            where  year(cl_lv_mnth) =year(?) and p.hrm_process_status='A' and t.cl_lv_active=0
             group by em_no
         ) as c right join hrm_emp_master f on c.em_no = f.em_no
         right join hrm_department g on f.em_department=g.dept_id
