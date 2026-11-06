@@ -34,7 +34,7 @@ module.exports = {
                 request_date,
                 hrm_leave_request.dept_id
                 FROM hrm_leave_request 
-                inner join hrm_emp_master on  hrm_leave_request.em_no =hrm_emp_master.em_no
+                inner join hrm_emp_master on  hrm_leave_request.em_id =hrm_emp_master.em_id
                 inner join hrm_department on  hrm_leave_request.dept_id =hrm_department.dept_id
                 inner join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
                 inner join hrm_leave_request_detl ON hrm_leave_request_detl.lve_uniq_no = hrm_leave_request.lve_uniq_no
@@ -79,7 +79,7 @@ module.exports = {
             hf_reason,
             hrm_halfdayrequest.dept_id
             FROM hrm_halfdayrequest
-            inner join hrm_emp_master on  hrm_halfdayrequest.em_no =hrm_emp_master.em_no
+            inner join hrm_emp_master on  hrm_halfdayrequest.emp_id =hrm_emp_master.em_id
             inner join hrm_department on  hrm_halfdayrequest.dept_id =hrm_department.dept_id
 			inner join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
             where  lv_cancel_req_status_user=0 and lv_cancel_status_user=0`,
@@ -125,7 +125,7 @@ module.exports = {
             creteddate,
             nopunchrequest.em_department
             FROM nopunchrequest
-            left join hrm_emp_master on  nopunchrequest.em_no =hrm_emp_master.em_no
+            left join hrm_emp_master on  nopunchrequest.em_id =hrm_emp_master.em_id
             left join hrm_department on  nopunchrequest.em_department =hrm_department.dept_id
             inner join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
             where lv_cancel_req_status_user=0 and lv_cancel_status_user=0;`,
@@ -167,7 +167,7 @@ module.exports = {
             cf_hr_apprv_cmnt,
             comp_off_request.em_department
             FROM comp_off_request 
-            left join hrm_emp_master on  comp_off_request.em_no =hrm_emp_master.em_no
+            left join hrm_emp_master on  comp_off_request.em_id =hrm_emp_master.em_id
             left join hrm_department on  comp_off_request.em_department =hrm_department.dept_id
             inner join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
             where  lv_cancel_status=0 and lv_cancel_status_user=0;`,
@@ -204,7 +204,7 @@ module.exports = {
             hod_approval_comment,
             hr_approval_comment
             FROM one_hour_request
-            inner join hrm_emp_master on  one_hour_request.em_no =hrm_emp_master.em_no
+            inner join hrm_emp_master on  one_hour_request.em_id =hrm_emp_master.em_id
             inner join hrm_department on  one_hour_request.dept_id =hrm_department.dept_id
 			inner join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
             where  cancel_status=0`,
@@ -240,7 +240,7 @@ module.exports = {
             hod_approval_comment,
             hr_approval_comment
             FROM on_duty_request
-            inner join hrm_emp_master on  on_duty_request.em_no =hrm_emp_master.em_no
+            inner join hrm_emp_master on  on_duty_request.em_id =hrm_emp_master.em_id
             inner join hrm_department on  on_duty_request.dept_id =hrm_department.dept_id
 			inner join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
             where  cancel_status=0`,
@@ -282,7 +282,7 @@ module.exports = {
             lv_cancel_cmnt_user,
             shift_id, shft_desc
             FROM nopunchrequest
-            left join hrm_emp_master on  nopunchrequest.em_no =hrm_emp_master.em_no
+            left join hrm_emp_master on  nopunchrequest.em_id =hrm_emp_master.em_id
             left join hrm_department on  nopunchrequest.em_department =hrm_department.dept_id
             inner join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
             inner join hrm_shift_mast on hrm_shift_mast.shft_slno=nopunchrequest.shift_id
@@ -324,7 +324,7 @@ module.exports = {
             checkout_flag,
             reason
             FROM one_hour_request
-            inner join hrm_emp_master on  one_hour_request.em_no =hrm_emp_master.em_no
+            inner join hrm_emp_master on  one_hour_request.em_id =hrm_emp_master.em_id
             inner join hrm_department on  one_hour_request.dept_id =hrm_department.dept_id
 			inner join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
             where  one_hour_request.em_id=? and year(one_hour_duty_day)=year(?)`,
@@ -362,7 +362,7 @@ module.exports = {
             cancel_comment,
             onduty_reason
             FROM on_duty_request
-            inner join hrm_emp_master on  on_duty_request.em_no =hrm_emp_master.em_no
+            inner join hrm_emp_master on  on_duty_request.em_id =hrm_emp_master.em_id
             inner join hrm_department on  on_duty_request.dept_id =hrm_department.dept_id
 			inner join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
             where  on_duty_request.em_id=? and year(on_duty_date)=year(?)`,
@@ -408,7 +408,7 @@ module.exports = {
             lv_cancel_cmnt_user,
             shift_id, shft_desc
             FROM hrm_halfdayrequest
-            inner join hrm_emp_master on  hrm_halfdayrequest.em_no =hrm_emp_master.em_no
+            inner join hrm_emp_master on  hrm_halfdayrequest.emp_id =hrm_emp_master.em_id
             inner join hrm_department on  hrm_halfdayrequest.dept_id =hrm_department.dept_id
 			inner join hrm_dept_section ON hrm_dept_section.sect_id = hrm_emp_master.em_dept_section
             inner join hrm_shift_mast on hrm_shift_mast.shft_slno=hrm_halfdayrequest.shift_id
