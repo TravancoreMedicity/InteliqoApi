@@ -1013,6 +1013,7 @@ module.exports = {
             punch_slno, 
             duty_day,
             shift_id,
+            shft_desc,
             punch_master.emp_id,
             punch_master.em_no,
             hrm_emp_master.em_name,
@@ -1034,6 +1035,7 @@ module.exports = {
             hrm_emp_master.em_name
             from  punch_master
             left join hrm_emp_master on hrm_emp_master.em_no=punch_master.em_no
+            inner join hrm_shift_mast on hrm_shift_mast.shft_slno=punch_master.shift_id
             where punch_master.emp_id IN (?)
                  and date(duty_day) between ? and ?`,
             [
