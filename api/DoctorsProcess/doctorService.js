@@ -1,6 +1,7 @@
 const {
     format
 } = require('date-fns');
+const moment = require('moment');
 const pool = require('../../config/database');
 
 module.exports = {
@@ -27,6 +28,7 @@ ORDER BY DATE(duty_day) ASC`,
             }
         )
     },
+
     insertDutyplan: (data, callBack) => {
         pool.query(
             `insert  into doctor_dutyplan(
@@ -50,6 +52,7 @@ ORDER BY DATE(duty_day) ASC`,
             }
         )
     },
+
     createDoctorDuty: (data, callBack) => {
         pool.query(
             `INSERT INTO doctor_duty (
@@ -69,6 +72,7 @@ ORDER BY DATE(duty_day) ASC`,
             }
         )
     },
+
     getDutyList: (callBack) => {
         pool.query(
             `SELECT dutyslno,duty_name,duty_status FROM doctor_duty`,
@@ -81,6 +85,7 @@ ORDER BY DATE(duty_day) ASC`,
             }
         )
     },
+
     updateDoctorduty: (data, callBack) => {
         pool.query(
             `UPDATE doctor_duty 
@@ -100,6 +105,7 @@ ORDER BY DATE(duty_day) ASC`,
             }
         )
     },
+
     updateDoctorDutyPlan: (data) => {
         return new Promise((resolve, reject) => {
             data.map((val) => {
@@ -171,6 +177,7 @@ ORDER BY DATE(duty_day) ASC`,
             }
         )
     },
+
     getDoctorById: (id, callBack) => {
         pool.query(
             `SELECT 
@@ -229,6 +236,7 @@ ORDER BY DATE(duty_day) ASC`,
             }
         )
     },
+
     getdoctorDept: (callBack) => {
         pool.query(
             `SELECT dept_id,
@@ -282,6 +290,7 @@ ORDER BY DATE(duty_day) ASC`,
             }
         )
     },
+
     getDoctorsByNMC: (data, callBack) => {
         pool.query(
             `SELECT 
@@ -329,7 +338,8 @@ ORDER BY DATE(duty_day) ASC`,
             }
         )
     },
-    updateNMCpunch: (data, callBack) => {     
+
+    updateNMCpunch: (data, callBack) => {
         return new Promise((resolve, reject) => {
             data.map((val) => {
                 pool.query(
@@ -385,6 +395,7 @@ ORDER BY DATE(duty_day) ASC`,
             }
         )
     },
+
     logDoctorPunch: (data, callBack) => {
         pool.query(
             `INSERT INTO doctor_punch_upload_log (  last_update_user  )   VALUES (?)`,
@@ -399,6 +410,7 @@ ORDER BY DATE(duty_day) ASC`,
             }
         )
     },
+
     getDoctorpunchLog: (callBack) => {
         pool.query(
             `SELECT 
@@ -632,6 +644,7 @@ GROUP BY em_no;`,
             }
         )
     },
+
     nmcDoctorPunch: (data, callBack) => {
         pool.query(
             `  SELECT em_no,em_name,branch_name,attendance_id,
@@ -660,6 +673,7 @@ WHERE (DATE(punch_intime) = CURRENT_DATE() OR DATE(punch_outtime) = CURRENT_DATE
             }
         )
     },
+
     gettodayPresentDoctor: (callBack) => {
         pool.query(
             `SELECT doctor_punch_master.em_no,em_name,branch_name,
@@ -685,6 +699,7 @@ where date(duty_day)=curdate() and (duty_desc='P' or nmc_punch_status='P') and d
             }
         )
     },
+
     checkInsertVal: (data, callBack) => {
         pool.query(
             `SELECT duty_name
@@ -739,6 +754,7 @@ where date(duty_day)=curdate() and (duty_desc='P' or nmc_punch_status='P') and d
             }
         )
     },
+
     createRights: (data, callBack) => {
         pool.query(
             `INSERT INTO doctor_employeerights (
@@ -758,6 +774,7 @@ where date(duty_day)=curdate() and (duty_desc='P' or nmc_punch_status='P') and d
             }
         )
     },
+
     checkEmployeeHasRights: (data, callBack) => {
         pool.query(
             `SELECT *
@@ -812,6 +829,7 @@ where date(duty_day)=curdate() and (duty_desc='P' or nmc_punch_status='P') and d
             }
         )
     },
+
     getEmployeeDepartments: (data, callBack) => {
         pool.query(
             `SELECT em_id,department, dept_id, dept_name
@@ -843,9 +861,12 @@ where date(duty_day)=curdate() and (duty_desc='P' or nmc_punch_status='P') and d
                 shift_id,
                 cf_reason,
                 duty_taken_date,
-                duty_shift
+                duty_shift,
+                hod_required_status,
+                dms_required_status,
+                ms_required_status
             )
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`,
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
                 data.duty_type,
                 data.special_duty_type,
@@ -858,7 +879,10 @@ where date(duty_day)=curdate() and (duty_desc='P' or nmc_punch_status='P') and d
                 data.shift_id,
                 data.cf_reason,
                 data.duty_taken_date,
-                data.duty_shift
+                data.duty_shift,
+                data.hod_required_status,
+                data.dms_required_status,
+                data.ms_required_status
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -868,36 +892,73 @@ where date(duty_day)=curdate() and (duty_desc='P' or nmc_punch_status='P') and d
             }
         )
     },
-    updatePunchMasterLeave: (body) => {
-        return Promise.all(body.map((data) => {
-            return new Promise((resolve, reject) => {
+
+    // updatePunchMasterLeave: (body) => {
+    //     return Promise.all(body.map((data) => {
+    //         return new Promise((resolve, reject) => {
+    //             pool.query(
+    //                 `UPDATE 
+    //                         doctor_punch_master
+    //                     SET leave_status = 1,
+    //                     duty_status=1,
+    //                     lvereq_desc = ?,
+    //                     duty_desc = ?,
+    //                     lve_tble_updation_flag = 1,
+    //                     late_in=0,
+    //                     early_out=0
+    //                     WHERE em_no = ? 
+    //                     AND duty_day = ?`,
+    //                 [
+    //                     data.lvereq_desc,
+    //                     data.duty_desc,
+    //                     data.emno,
+    //                     data.leave_dates
+    //                 ],
+    //                 (error, results, fields) => {
+    //                     if (error) {
+    //                         return reject(error)
+    //                     }
+    //                     return resolve(results)
+    //                 }
+    //             )
+    //         })
+    //     }))
+    // },
+    updatePunchMasterLeave: async (body) => {
+        for (const data of body) {
+            const leaveDate = data.leave_dates?.trim();
+
+            await new Promise((resolve, reject) => {
                 pool.query(
-                    `UPDATE 
-                            doctor_punch_master
-                        SET leave_status = 1,
-                        duty_status=1,
-                        lvereq_desc = ?,
-                        duty_desc = ?,
-                        lve_tble_updation_flag = 1,
-                        late_in=0,
-                        early_out=0
-                        WHERE em_no = ? 
-                        AND duty_day = ?`,
+                    `
+                UPDATE doctor_punch_master
+                SET
+                    leave_status = 1,
+                    duty_status = 1,
+                    lvereq_desc = ?,
+                    duty_desc = ?,
+                    lve_tble_updation_flag = 1,
+                    late_in = 0,
+                    early_out = 0
+                WHERE em_no = ?
+                AND duty_day = ?
+                `,
                     [
                         data.lvereq_desc,
                         data.duty_desc,
                         data.emno,
-                        data.leave_dates
+                        leaveDate
                     ],
-                    (error, results, fields) => {
+                    (error, results) => {
                         if (error) {
-                            return reject(error)
+                            return reject(error);
                         }
-                        return resolve(results)
+
+                        resolve(results);
                     }
-                )
-            })
-        }))
+                );
+            });
+        }
     },
     doctorLeaveRequestUniquNumer: () => {
         return new Promise((resolve, reject) => {
@@ -982,9 +1043,15 @@ where date(duty_day)=curdate() and (duty_desc='P' or nmc_punch_status='P') and d
                         rejoin_date,
                         request_status,
                         leave_reason,
-                        no_of_leave
+                        no_of_leave,
+                        hod_required_status,
+                        hod_approval_status,
+                        dms_required_status,
+                        dms_approval_status,
+                        ms_required_status,
+                        ms_approval_status
                     )
-                VALUES (?,?,?,?,?,?,?,?,?,?,?)`,
+                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
                 [
                     data.leaveid,
                     data.em_id,
@@ -996,7 +1063,13 @@ where date(duty_day)=curdate() and (duty_desc='P' or nmc_punch_status='P') and d
                     data.rejoin_date,
                     data.request_status,
                     data.resonforleave,
-                    data.no_of_leave
+                    data.no_of_leave,
+                    data.hod_required_status,
+                    data.hod_approval_status,
+                    data.dms_required_status,
+                    data.dms_approval_status,
+                    data.ms_required_status,
+                    data.ms_approval_status
                 ],
                 (error, results, feilds) => {
                     if (error) {
@@ -1021,7 +1094,7 @@ where date(duty_day)=curdate() and (duty_desc='P' or nmc_punch_status='P') and d
         });
     },
     saveLeaveDetailedTable: async (data) => { //INSERTING DETAILED TABLE LEAVE REQUEST
-        const promises = data ?.map((e) => {
+        const promises = data?.map((e) => {
             return new Promise((resolve, reject) => {
                 pool.query(
                     `INSERT INTO doctor_leave_request_detl (
@@ -1069,7 +1142,7 @@ where date(duty_day)=curdate() and (duty_desc='P' or nmc_punch_status='P') and d
                     SET lv_cancel_status = 1,
                         lv_cancel_cmnt= 'error insert detl table',
                         lv_cancel_date= NOW(),
-                        lv_cancel_us_code= ?
+                        lv_cancel_emid= ?
                 WHERE lve_uniq_no = ?`,
                 [
                     data.em_no,
@@ -1122,7 +1195,7 @@ where date(duty_day)=curdate() and (duty_desc='P' or nmc_punch_status='P') and d
             inner join hrm_emp_master on hrm_emp_master.em_id=doctor_dutyplan.emp_id
             WHERE duty_day= ? AND emp_id=?`,
             [
-                data.startDate, 
+                data.startDate,
                 data.em_id
             ],
             (error, results, feilds) => {
@@ -1134,20 +1207,22 @@ where date(duty_day)=curdate() and (duty_desc='P' or nmc_punch_status='P') and d
         )
 
     },
-    updateCOFFLeave: (data, callBack) => {
+    updateDoctorLeavePunchMaster: (data, callBack) => {
         pool.query(
             `UPDATE 
                 doctor_punch_master
                 SET leave_status = 1,
                 duty_status=1,
-                lvereq_desc = 'COFF',
-                duty_desc = 'COFF',
+                lvereq_desc =?,
+                duty_desc = ?,
                 lve_tble_updation_flag = 1,
                 late_in=0,
                 early_out=0
                 WHERE em_no = ? 
                 AND duty_day = ?`,
             [
+                data.lvereq_desc,
+                data.duty_desc,
                 data.em_no,
                 data.leave_date
             ],
@@ -1159,6 +1234,7 @@ where date(duty_day)=curdate() and (duty_desc='P' or nmc_punch_status='P') and d
             }
         )
     },
+
     getDoctorsPunchData: (data, callBack) => {
         pool.query(
             `SELECT 
@@ -1181,7 +1257,8 @@ where date(duty_day)=curdate() and (duty_desc='P' or nmc_punch_status='P') and d
             }
         )
     },
-     getDoctorPunchMaster: (data, callBack) => {
+
+    getDoctorPunchMaster: (data, callBack) => {
         pool.query(
             ` SELECT 
             doctor_punch_master.em_no,
@@ -1214,7 +1291,8 @@ where date(duty_day)=curdate() and (duty_desc='P' or nmc_punch_status='P') and d
             }
         )
     },
-     getSingleDoctorPunch: (data, callBack) => {
+
+    getSingleDoctorPunch: (data, callBack) => {
         pool.query(
             `SELECT 
             emp_code,
@@ -1234,8 +1312,8 @@ where date(duty_day)=curdate() and (duty_desc='P' or nmc_punch_status='P') and d
             }
         )
     },
+
     getSingleDoctorPunchmast: (data, callBack) => {
-        
         pool.query(
             ` SELECT 
             punch_slno,
@@ -1272,6 +1350,7 @@ where date(duty_day)=curdate() and (duty_desc='P' or nmc_punch_status='P') and d
             }
         )
     },
+
     getLeaveRequest: (data, callBack) => {
         pool.query(
             `SELECT 
@@ -1310,6 +1389,7 @@ where date(duty_day)=curdate() and (duty_desc='P' or nmc_punch_status='P') and d
             }
         )
     },
+
     getDoctorCoff: (data, callBack) => {
         pool.query(
             `SELECT 
@@ -1347,6 +1427,7 @@ where date(duty_day)=curdate() and (duty_desc='P' or nmc_punch_status='P') and d
             }
         )
     },
+
     createAccademicRequest: (data, callBack) => {
         pool.query(
             `INSERT INTO doctor_accademic_leave_request 
@@ -1360,48 +1441,28 @@ where date(duty_day)=curdate() and (duty_desc='P' or nmc_punch_status='P') and d
                         rejoin_date,
                         request_status,
                         leave_reason,
-                        no_of_leave
+                        no_of_leave,
+                        hod_required_status,
+                        dms_required_status,
+                        ms_required_status,
+                        leavetype
                     )
-                VALUES (?,?,?,?,?,?,?,?,?,?)`,
-                [
-                    data.em_id,
-                    data.em_no,
-                    data.em_department,
-                    data.em_dept_section,
-                    data.leavefrom_date,
-                    data.leavetodate,
-                    data.rejoin_date,
-                    data.request_status,
-                    data.resonforleave,
-                    data.no_of_leave
-                ],
-            (error, results, feilds) => {
-                if (error) {
-                    return callBack(error);
-                }
-                return callBack(null, results);
-            }
-        )
-    },
-    updateAccLeave: (data, callBack) => {
-        pool.query(
-            `UPDATE 
-                doctor_punch_master
-                SET leave_status = 1,
-                duty_status=1,
-                lvereq_desc=?,
-                duty_desc=?,
-                lve_tble_updation_flag = 1,
-                late_in=0,
-                early_out=0
-                WHERE em_no = ? 
-                AND duty_day between ? and ?`,
+                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
-                data.lvereq_desc,
-                data.duty_desc,
+                data.em_id,
                 data.em_no,
+                data.em_department,
+                data.em_dept_section,
                 data.leavefrom_date,
-                data.leavetodate
+                data.leavetodate,
+                data.rejoin_date,
+                data.request_status,
+                data.resonforleave,
+                data.no_of_leave,
+                1,
+                1,
+                1,
+                data.leavetype
             ],
             (error, results, feilds) => {
                 if (error) {
@@ -1410,5 +1471,836 @@ where date(duty_day)=curdate() and (duty_desc='P' or nmc_punch_status='P') and d
                 return callBack(null, results);
             }
         )
+    },
+
+    getAllCoffRequest: (callBack) => {
+        pool.query(
+            `SELECT 
+    dcr.doc_cmp_off_reqid,
+    dcr.duty_type,
+    dcr.special_duty_type,
+    dcr.reqestdate,
+    dcr.request_status,
+    dcr.duty_shift,
+    dcr.duty_taken_date,
+    dcr.leave_date,
+    dcr.em_id,
+    dcr.em_no,
+    e.em_name,
+    dcr.em_department,
+    d.dept_name,
+    s.sect_name,
+    dcr.em_dept_section,
+    dcr.shift_id,
+    dcr.cf_reason,
+    dcr.lv_cancel_cmnt,
+    dcr.lv_cancel_status,
+    dcr.lv_cancel_date,
+    dcr.lv_cancel_emid,
+    dcr.hod_required_status,
+    dcr.hod_approval_status,
+    dcr.hod_approval_comment,
+    dcr.hod_approval_date,
+    dcr.hod_emid,
+    dcr.dms_required_status,
+    dcr.dms_approval_status,
+    dcr.dms_approval_comment,
+    dcr.dms_approval_date,
+    dcr.dms_emid,
+    dcr.ms_required_status,
+    dcr.ms_approval_status,
+    dcr.ms_approval_comment,
+    dcr.ms_approval_date,
+    dcr.ms_emid
+FROM
+    doctor_comp_off_request AS dcr
+        INNER JOIN
+    hrm_emp_master AS e ON e.em_id = dcr.em_id
+        INNER JOIN
+    hrm_department AS d ON d.dept_id = dcr.em_department
+        INNER JOIN
+    hrm_dept_section AS s ON s.sect_id = dcr.em_dept_section`,
+            [],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        );
+    },
+    msCoffStatus: (data, callBack) => {
+        pool.query(
+            `UPDATE doctor_comp_off_request
+                SET ms_approval_status =?,
+                ms_approval_comment=?,
+                ms_approval_date=?,
+                ms_emid=?
+                WHERE doc_cmp_off_reqid=?`,
+            [
+                data.ms_approval_status,
+                data.ms_approval_comment,
+                data.ms_approval_date,
+                data.ms_emid,
+                data.doc_cmp_off_reqid
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+
+    getAllAccademicRequest: (callBack) => {
+        pool.query(
+            `SELECT 
+    dalr.leave_slno,
+    dalr.em_id,
+    dalr.em_no,
+    hem.em_name,
+    hd.dept_name,
+    hds.sect_name,
+    dalr.dept_id,
+    dalr.dept_section,
+    dalr.request_date,
+    dalr.leave_fromdate,
+    dalr.leave_todate,
+    dalr.rejoin_date,
+    dalr.request_status,
+    dalr.request_cancel,
+    dalr.leave_reason,
+    dalr.no_of_leave,
+    dalr.lv_cancel_status,
+    
+    dalr.hod_required_status,
+    dalr.hod_approval_status,
+    dalr.hod_approval_comment,
+    dalr.hod_approval_date,
+    dalr.hod_emid,
+    
+    dalr.dms_required_status,
+    dalr.dms_approval_status,
+    dalr.dms_approval_comment,
+    dalr.dms_approval_date,
+    dalr.dms_emid,
+    
+    dalr.ms_required_status,
+    dalr.ms_approval_status,
+    dalr.ms_approval_comment,
+    dalr.ms_approval_date,
+    dalr.ms_emid
+
+FROM doctor_accademic_leave_request AS dalr
+
+INNER JOIN hrm_emp_master AS hem
+    ON hem.em_id = dalr.em_id
+
+INNER JOIN hrm_department AS hd
+    ON hd.dept_id = dalr.dept_id
+
+INNER JOIN hrm_dept_section AS hds
+    ON hds.sect_id = dalr.dept_section;`,
+            [],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        );
+    },
+    msAccademicStatus: (data, callBack) => {
+        pool.query(
+            `UPDATE doctor_accademic_leave_request
+                SET ms_approval_status =?,
+                ms_approval_comment=?,
+                ms_approval_date=?,
+                ms_emid=?
+                WHERE leave_slno=?`,
+            [
+                data.ms_approval_status,
+                data.ms_approval_comment,
+                data.ms_approval_date,
+                data.ms_emid,
+                data.leave_slno
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+
+    arrayUpdateDoctorPunchMast: (body) => {
+        return Promise.all(body.map((data) => {
+            return new Promise((resolve, reject) => {
+                pool.query(
+                    `UPDATE 
+                doctor_punch_master
+                SET leave_status = 1,
+                duty_status=1,
+                lvereq_desc =?,
+                duty_desc = ?,
+                lve_tble_updation_flag = 1,
+                late_in=0,
+                early_out=0
+                WHERE em_no = ? 
+                AND duty_day = ?`,
+                    [
+                        data.lvereq_desc,
+                        data.duty_desc,
+                        data.em_no,
+                        data.date
+                    ],
+                    (error, results, fields) => {
+                        if (error) {
+                            return reject(error)
+                        }
+                        return resolve(results)
+                    }
+                )
+            })
+        })
+        )
+    },
+    getAllLeaveRequest: (callBack) => {
+        pool.query(
+            `SELECT 
+    dlr.leave_slno,
+    dlr.lve_uniq_no,
+    dlr.em_id,
+    dlr.em_no,
+    
+    hem.em_name,
+    hd.dept_name,
+    hds.sect_name,
+    
+    dlr.dept_id,
+    dlr.dept_section,
+    dlr.request_date,
+    dlr.leave_date,
+    dlr.leavetodate,
+    dlr.rejoin_date,
+    dlr.request_status,
+    dlr.request_cancel,
+    dlr.leave_reason,
+    dlr.no_of_leave,
+    dlr.lv_cancel_status,
+
+    dlr.hod_required_status,
+    dlr.hod_approval_status,
+    dlr.hod_approval_comment,
+    dlr.hod_approval_date,
+    dlr.hod_emid,
+
+    dlr.dms_required_status,
+    dlr.dms_approval_status,
+    dlr.dms_approval_comment,
+    dlr.dms_approval_date,
+    dlr.dms_emid,
+
+    dlr.ms_required_status,
+    dlr.ms_approval_status,
+    dlr.ms_approval_comment,
+    dlr.ms_approval_date,
+    dlr.ms_emid
+
+FROM doctor_leave_request AS dlr
+
+INNER JOIN hrm_emp_master AS hem
+    ON hem.em_id = dlr.em_id
+
+INNER JOIN hrm_department AS hd
+    ON hd.dept_id = dlr.dept_id
+
+INNER JOIN hrm_dept_section AS hds
+    ON hds.sect_id = dlr.dept_section;`,
+            [],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        );
+    },
+    getDoctorLeaveDetl: (data, callBack) => {
+        pool.query(
+            `SELECT * FROM doctor_leave_request_detl WHERE lve_uniq_no = ?`,
+            [data],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+
+    },
+    msLeaveReqStatus: (data, callBack) => {
+        pool.query(
+            `UPDATE doctor_leave_request
+                SET ms_approval_status =?,
+                ms_approval_comment=?,
+                ms_approval_date=?,
+                ms_emid=?
+                WHERE leave_slno=?`,
+            [
+                data.ms_approval_status,
+                data.ms_approval_comment,
+                data.ms_approval_date,
+                data.ms_emid,
+                data.leave_slno
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+
+    hodAccademicStatus: (data, callBack) => {
+        pool.query(
+            `UPDATE doctor_accademic_leave_request
+                SET hod_approval_status =?,
+                hod_approval_comment=?,
+                hod_approval_date=?,
+                hod_emid=?
+                WHERE leave_slno=?`,
+            [
+                data.hod_approval_status,
+                data.hod_approval_comment,
+                data.hod_approval_date,
+                data.hod_emid,
+                data.leave_slno
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+
+    dmsAccademicStatus: (data, callBack) => {
+        pool.query(
+            `UPDATE doctor_accademic_leave_request
+                SET dms_approval_status =?,
+                dms_approval_comment=?,
+                dms_approval_date=?,
+                dms_emid=?
+                WHERE leave_slno=?`,
+            [
+                data.dms_approval_status,
+                data.dms_approval_comment,
+                data.dms_approval_date,
+                data.dms_emid,
+                data.leave_slno
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+
+    hodCoffStatus: (data, callBack) => {
+        pool.query(
+            `UPDATE doctor_comp_off_request
+                SET hod_approval_status =?,
+                hod_approval_comment=?,
+                hod_approval_date=?,
+                hod_emid=?
+                WHERE doc_cmp_off_reqid=?`,
+            [
+                data.hod_approval_status,
+                data.hod_approval_comment,
+                data.hod_approval_date,
+                data.hod_emid,
+                data.doc_cmp_off_reqid
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+
+    dmsCoffStatus: (data, callBack) => {
+        pool.query(
+            `UPDATE doctor_comp_off_request
+                SET dms_approval_status =?,
+                dms_approval_comment=?,
+                dms_approval_date=?,
+                dms_emid=?
+                WHERE doc_cmp_off_reqid=?`,
+            [
+                data.dms_approval_status,
+                data.dms_approval_comment,
+                data.dms_approval_date,
+                data.dms_emid,
+                data.doc_cmp_off_reqid
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+
+    hodleaveReqStatus: (data, callBack) => {
+        pool.query(
+            `UPDATE doctor_leave_request
+                SET hod_approval_status =?,
+                hod_approval_comment=?,
+                hod_approval_date=?,
+                hod_emid=?
+                WHERE leave_slno=?`,
+            [
+                data.hod_approval_status,
+                data.hod_approval_comment,
+                data.hod_approval_date,
+                data.hod_emid,
+                data.leave_slno
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+
+    dmsleavereqStatus: (data, callBack) => {
+        pool.query(
+            `UPDATE doctor_leave_request
+                SET dms_approval_status =?,
+                dms_approval_comment=?,
+                dms_approval_date=?,
+                dms_emid=?
+                WHERE leave_slno=?`,
+            [
+                data.dms_approval_status,
+                data.dms_approval_comment,
+                data.dms_approval_date,
+                data.dms_emid,
+                data.leave_slno
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+
+    deleteDoctorLeave: (data, callBack) => {
+        pool.query(
+            `UPDATE doctor_leave_request
+                SET lv_cancel_status = 1,
+                    lv_cancel_cmnt = ?,
+                    lv_cancel_date = ?,
+                    lv_cancel_emid = ?
+                WHERE leave_slno = ? OR lve_uniq_no = ?`,
+            [
+                data.lv_cancel_cmnt,
+                data.lv_cancel_date,
+                data.lv_cancel_emid,
+                data.leave_slno,
+                data.lve_uniq_no
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+
+    deleteDoctorCoff: (data, callBack) => {
+        pool.query(
+            `UPDATE doctor_comp_off_request
+                SET lv_cancel_status = 1,
+                    lv_cancel_cmnt = ?,
+                    lv_cancel_date = ?,
+                    lv_cancel_emid = ?
+                WHERE doc_cmp_off_reqid = ?`,
+            [
+                data.lv_cancel_cmnt,
+                data.lv_cancel_date,
+                data.lv_cancel_emid,
+                data.doc_cmp_off_reqid
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+
+    deleteDoctorAccademic: (data, callBack) => {
+        pool.query(
+            `UPDATE doctor_accademic_leave_request
+                SET lv_cancel_status = 1,
+                    lv_cancel_cmnt = ?,
+                    lv_cancel_date = ?,
+                    lv_cancel_emid = ?
+                WHERE leave_slno = ?`,
+            [
+                data.lv_cancel_cmnt,
+                data.lv_cancel_date,
+                data.em_no,
+                data.leave_slno
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+
+    getDoctorAccademic: (data, callBack) => {
+        pool.query(
+            `SELECT 
+                dalr.leave_slno,
+                dalr.em_id,
+                dalr.em_no,
+                hem.em_name,
+                hd.dept_name,
+                hds.sect_name,
+                dalr.dept_id,
+                dalr.dept_section,
+                dalr.request_date,
+                dalr.leave_fromdate,
+                dalr.leave_todate,
+                dalr.rejoin_date,
+                dalr.request_status,
+                dalr.leave_reason,
+                dalr.no_of_leave,
+                dalr.lv_cancel_status
+            FROM doctor_accademic_leave_request AS dalr
+            INNER JOIN hrm_emp_master AS hem ON hem.em_id = dalr.em_id
+            INNER JOIN hrm_department AS hd ON hd.dept_id = dalr.dept_id
+            INNER JOIN hrm_dept_section AS hds ON hds.sect_id = dalr.dept_section
+            WHERE dalr.lv_cancel_status = 0 AND dalr.leave_fromdate BETWEEN ? AND ?
+            ORDER BY dalr.leave_fromdate DESC`,
+            [
+                data.fromdate,
+                data.todate
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    deleteDoctorLeavePunchMaster: (data, callBack) => {
+        pool.query(
+            `UPDATE 
+                doctor_punch_master
+                SET leave_status = ?,
+                duty_status=0,
+                lvereq_desc =?,
+                duty_desc = ?,
+                lve_tble_updation_flag = 0,
+                late_in=0,
+                early_out=0
+                WHERE em_no = ? 
+                AND duty_day = ?`,
+            [
+                null,
+                data.lvereq_desc,
+                data.duty_desc,
+                data.em_no,
+                data.leave_date
+            ],
+            (error, results, feilds) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    CancelpunchMastLeave: (body) => {
+        const postData = Array.isArray(body) ? body : [body];
+        return Promise.all(postData.map((data) => {
+            return new Promise((resolve, reject) => {
+                const emNo = data.emno || data.em_no;
+                const leaveDate = data.leave_dates || data.leave_date || data.duty_day;
+                if (!emNo || !leaveDate) {
+                    return resolve(null);
+                }
+                pool.query(
+                    `UPDATE 
+                            doctor_punch_master
+                        SET leave_status = null,
+                        duty_status=0,
+                            lvereq_desc = 'A',
+                            duty_desc = 'A',
+                            lve_tble_updation_flag = 0
+                        WHERE em_no = ? 
+                        AND duty_day = ?`,
+                    [
+                        emNo,
+                        moment(leaveDate).format('YYYY-MM-DD')
+                    ],
+                    (error, results, fields) => {
+                        if (error) {
+                            return reject(error);
+                        }
+                        return resolve(results);
+                    }
+                );
+            });
+        }));
+    },
+
+    getDoctorLeaveReport: (data, callBack) => {
+        const emId = data.em_id && data.em_id !== 0 ? data.em_id : null;
+        const deptId = data.dept_id && data.dept_id !== 0 ? data.dept_id : null;
+        const sectId = data.dept_section && data.dept_section !== 0 ? data.dept_section : null;
+
+        let dateCondition = '';
+        let dateParams = [];
+
+        if (data.from_date && data.to_date) {
+            dateCondition = `((DATE(dlr.leave_date) BETWEEN ? AND ?) OR (dlrd.leave_dates IS NOT NULL AND DATE(dlrd.leave_dates) BETWEEN ? AND ?))`;
+            dateParams = [data.from_date, data.to_date, data.from_date, data.to_date];
+        } else {
+            const yearVal = data.dateyear ? data.dateyear : format(new Date(), 'yyyy-MM-dd');
+            dateCondition = `(YEAR(dlr.leave_date) = YEAR(?) OR (dlrd.leave_dates IS NOT NULL AND YEAR(dlrd.leave_dates) = YEAR(?)))`;
+            dateParams = [yearVal, yearVal];
+        }
+
+        pool.query(
+            `SELECT 
+                dlr.leave_slno,
+                dlr.lve_uniq_no,
+                dlr.em_id,
+                dlr.em_no,
+                hem.em_name,
+                hd.dept_name,
+                hds.sect_name,
+                dlr.dept_id,
+                dlr.dept_section,
+                dlr.request_date,
+                dlrd.leave_dates,
+                dlrd.leavetype_name,
+                dlrd.leave_name,
+                dlr.leave_date,
+                dlr.leavetodate,
+                dlr.rejoin_date,
+                dlr.request_status,
+                dlr.leave_reason,
+                dlr.no_of_leave,
+                dlr.lv_cancel_status,
+                dlr.lv_cancel_cmnt,
+                dlr.lv_cancel_date,
+                dlr.hod_required_status,
+                dlr.hod_approval_status,
+                dlr.hod_approval_comment,
+                dlr.hod_approval_date,
+                dlr.dms_required_status,
+                dlr.dms_approval_status,
+                dlr.dms_approval_comment,
+                dlr.dms_approval_date,
+                dlr.ms_required_status,
+                dlr.ms_approval_status,
+                dlr.ms_approval_comment,
+                dlr.ms_approval_date
+            FROM doctor_leave_request AS dlr
+            INNER JOIN hrm_emp_master AS hem ON hem.em_id = dlr.em_id
+            INNER JOIN hrm_department AS hd ON hd.dept_id = dlr.dept_id
+            INNER JOIN hrm_dept_section AS hds ON hds.sect_id = dlr.dept_section
+            LEFT JOIN doctor_leave_request_detl AS dlrd ON dlrd.lve_uniq_no = dlr.lve_uniq_no
+            WHERE ${dateCondition}
+              AND (? IS NULL OR dlr.em_id = ?)
+              AND (? IS NULL OR dlr.dept_id = ?)
+              AND (? IS NULL OR dlr.dept_section = ?)
+            ORDER BY dlr.request_date DESC, dlr.leave_date DESC`,
+            [
+                ...dateParams,
+                emId, emId,
+                deptId, deptId,
+                sectId, sectId
+            ],
+            (error, results, fields) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        );
+    },
+
+    getDoctorCoffReport: (data, callBack) => {
+        const emId = data.em_id && data.em_id !== 0 ? data.em_id : null;
+        const deptId = data.dept_id && data.dept_id !== 0 ? data.dept_id : null;
+        const sectId = data.dept_section && data.dept_section !== 0 ? data.dept_section : null;
+
+        let dateCondition = '';
+        let dateParams = [];
+
+        if (data.from_date && data.to_date) {
+            dateCondition = `DATE(dcr.leave_date) BETWEEN ? AND ?`;
+            dateParams = [data.from_date, data.to_date];
+        } else {
+            const yearVal = data.dateyear ? data.dateyear : format(new Date(), 'yyyy-MM-dd');
+            dateCondition = `YEAR(dcr.leave_date) = YEAR(?)`;
+            dateParams = [yearVal];
+        }
+
+        pool.query(
+            `SELECT 
+                dcr.doc_cmp_off_reqid,
+                dcr.duty_type,
+                dcr.special_duty_type,
+                dcr.request_status,
+                dcr.leave_date,
+                dcr.duty_taken_date,
+                dcr.duty_shift,
+                dcr.reqestdate,
+                dcr.em_id,
+                e.em_no,
+                e.em_name,
+                dcr.em_department AS dept_id,
+                d.dept_name,
+                s.sect_name,
+                dcr.em_dept_section AS dept_section,
+                dcr.shift_id,
+                dcr.cf_reason,
+                dcr.lv_cancel_cmnt,
+                dcr.lv_cancel_status,
+                dcr.lv_cancel_date,
+                dcr.hod_required_status,
+                dcr.hod_approval_status,
+                dcr.hod_approval_comment,
+                dcr.hod_approval_date,
+                dcr.dms_required_status,
+                dcr.dms_approval_status,
+                dcr.dms_approval_comment,
+                dcr.dms_approval_date,
+                dcr.ms_required_status,
+                dcr.ms_approval_status,
+                dcr.ms_approval_comment,
+                dcr.ms_approval_date
+            FROM doctor_comp_off_request AS dcr
+            INNER JOIN hrm_emp_master AS e ON e.em_id = dcr.em_id
+            INNER JOIN hrm_department AS d ON d.dept_id = dcr.em_department
+            INNER JOIN hrm_dept_section AS s ON s.sect_id = dcr.em_dept_section
+            WHERE ${dateCondition}
+              AND (? IS NULL OR dcr.em_id = ?)
+              AND (? IS NULL OR dcr.em_department = ?)
+              AND (? IS NULL OR dcr.em_dept_section = ?)
+            ORDER BY dcr.reqestdate DESC`,
+            [
+                ...dateParams,
+                emId, emId,
+                deptId, deptId,
+                sectId, sectId
+            ],
+            (error, results, fields) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        );
+    },
+
+    getDoctorAccademicReport: (data, callBack) => {
+        const emId = data.em_id && data.em_id !== 0 ? data.em_id : null;
+        const deptId = data.dept_id && data.dept_id !== 0 ? data.dept_id : null;
+        const sectId = data.dept_section && data.dept_section !== 0 ? data.dept_section : null;
+
+        let dateCondition = '';
+        let dateParams = [];
+
+        if (data.from_date && data.to_date) {
+            dateCondition = `((DATE(dalr.leave_fromdate) BETWEEN ? AND ?) OR (DATE(dalr.leave_todate) BETWEEN ? AND ?))`;
+            dateParams = [data.from_date, data.to_date, data.from_date, data.to_date];
+        } else {
+            const yearVal = data.dateyear ? data.dateyear : format(new Date(), 'yyyy-MM-dd');
+            dateCondition = `YEAR(dalr.leave_fromdate) = YEAR(?)`;
+            dateParams = [yearVal];
+        }
+
+        pool.query(
+            `SELECT 
+                dalr.leave_slno,
+                dalr.em_id,
+                dalr.em_no,
+                hem.em_name,
+                hd.dept_name,
+                hds.sect_name,
+                dalr.dept_id,
+                dalr.dept_section,
+                dalr.request_date,
+                dalr.leave_fromdate,
+                dalr.leave_todate,
+                dalr.rejoin_date,
+                dalr.request_status,
+                dalr.leave_reason,
+                dalr.no_of_leave,
+                dalr.lv_cancel_status,
+                dalr.lv_cancel_cmnt,
+                dalr.lv_cancel_date,
+                dalr.hod_required_status,
+                dalr.hod_approval_status,
+                dalr.hod_approval_comment,
+                dalr.hod_approval_date,
+                dalr.dms_required_status,
+                dalr.dms_approval_status,
+                dalr.dms_approval_comment,
+                dalr.dms_approval_date,
+                dalr.ms_required_status,
+                dalr.ms_approval_status,
+                dalr.ms_approval_comment,
+                dalr.ms_approval_date
+            FROM doctor_accademic_leave_request AS dalr
+            INNER JOIN hrm_emp_master AS hem ON hem.em_id = dalr.em_id
+            INNER JOIN hrm_department AS hd ON hd.dept_id = dalr.dept_id
+            INNER JOIN hrm_dept_section AS hds ON hds.sect_id = dalr.dept_section
+            WHERE ${dateCondition}
+              AND (? IS NULL OR dalr.em_id = ?)
+              AND (? IS NULL OR dalr.dept_id = ?)
+              AND (? IS NULL OR dalr.dept_section = ?)
+            ORDER BY dalr.request_date DESC`,
+            [
+                ...dateParams,
+                emId, emId,
+                deptId, deptId,
+                sectId, sectId
+            ],
+            (error, results, fields) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        );
     },
 }

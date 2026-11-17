@@ -844,17 +844,21 @@ module.exports = {
                                 .then((result) => {
                                     const successResult = result?.find((e) => e.status === 'rejected')
                                     if (successResult === undefined) {
-                                        updatePunchMasterLeave(leaveRequestDetlData).then(results => {
-                                            return res.status(200).json({
-                                                success: 1,
-                                                message: "Leave Request Submitted Successfully"
-                                            });
-                                        }).catch(err => {
-                                            return res.status(200).json({
-                                                success: 0,
-                                                message: "Error Occured , Please Contact HRD / IT"
-                                            });
-                                        })
+                                        return res.status(200).json({
+                                            success: 1,
+                                            message: "Leave Request Submitted Successfully"
+                                        });
+                                  // updatePunchMasterLeave(leaveRequestDetlData).then(results => {
+                                        //     return res.status(200).json({
+                                        //         success: 1,
+                                        //         message: "Leave Request Submitted Successfully"
+                                        //     });
+                                        // }).catch(err => {
+                                        //     return res.status(200).json({
+                                        //         success: 0,
+                                        //         message: "Error Occured , Please Contact HRD / IT"
+                                        //     });
+                                        // })
                                     } else {
                                         //if successfull return the message
                                         // if no return all updation

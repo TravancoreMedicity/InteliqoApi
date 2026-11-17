@@ -37,7 +37,34 @@ const {
     getSingleDoctorPunchmast,
     getLeaveRequest,
     getDoctorCoff,
-    createAccademicRequest
+    createAccademicRequest,
+    getAllCoffRequest,
+    msCoffRejectStatus,
+    msCoffApproveStatus,
+    getAllAccademicRequest,
+    msAccademicRejectStatus,
+    msAccApproveStatus,
+    getAllLeaveRequest,
+    getDoctorLeaveDetl,
+    msLeaveReqRejectStatus,
+    hodAccademicStatus,
+    dmsAccademicStatus,
+    hodCoffStatus,
+    dmsCoffStatus,
+    hodLeaveReqApproveStatus,
+    dmsLeaveReqApproveStatus,
+    hodLeaveReqrejectStatus,
+    dmsLeaveReqRejectStatus,
+    msLeaveReqApproveStatus,
+    updatePunchMasterLeave,
+    deleteDoctorLeave,
+    deleteDoctorCoff,
+    deleteDoctorAccademic,
+    getDoctorAccademic,
+    CancelpunchMastLeave,
+    getDoctorLeaveReport,
+    getDoctorCoffReport,
+    getDoctorAccademicReport
 } = require("./doctorController");
 
 
@@ -80,8 +107,45 @@ router.post("/doctorPunch/dept", checkToken, getDoctorsPunchData)
 router.post("/doctorPunchmast", checkToken, getDoctorPunchMaster)
 router.post("/single/doctorPunch", checkToken, getSingleDoctorPunch)
 router.post("/punchReport/singledoctor", checkToken, getSingleDoctorPunchmast)
+
 router.post("/getdoctors/leaveRequest", checkToken, getLeaveRequest)
 router.post("/coffrequest", checkToken, getDoctorCoff)
-router.post("/createAccademic/request",checkToken,createAccademicRequest)
+router.post("/getdoctors/accademicRequest", checkToken, getDoctorAccademic)
+router.post("/createAccademic/request", checkToken, createAccademicRequest)
+router.post("/doctorleave/update", checkToken, updatePunchMasterLeave)
+
+router.patch("/doctorleave/delete", checkToken, deleteDoctorLeave)
+router.patch("/doctorCoff/delete", checkToken, deleteDoctorCoff)
+router.patch("/doctorAccademic/delete", checkToken, deleteDoctorAccademic)
+router.post("/deleteLeave/punchmast", checkToken, CancelpunchMastLeave)
+router.post("/doctorleave/deletepunchmast", checkToken, CancelpunchMastLeave)
+
+//allleavedata
+router.get("/allCoffRequest", checkToken, getAllCoffRequest)
+router.get("/allAccmdRequest", checkToken, getAllAccademicRequest)
+router.get("/allleaveRequest", checkToken, getAllLeaveRequest)
+router.get("/getDoctorLeaveDetail/:id", checkToken, getDoctorLeaveDetl)
+router.post("/doctorLeaveReport", checkToken, getDoctorLeaveReport)
+router.post("/doctorCoffReport", checkToken, getDoctorCoffReport)
+router.post("/doctorAccademicReport", checkToken, getDoctorAccademicReport)
+//mscoffstatus
+router.patch("/mscoff/reject", checkToken, msCoffRejectStatus)
+router.patch("/mscoff/approve", checkToken, msCoffApproveStatus)
+router.patch("/hodcoff/status", checkToken, hodCoffStatus)
+router.patch("/dmscoff/status", checkToken, dmsCoffStatus)
+
+//msaccdemicstatus
+router.patch("/msAcc/reject", checkToken, msAccademicRejectStatus)
+router.patch("/msAcc/approve", checkToken, msAccApproveStatus)
+router.patch("/hodAcc/status", checkToken, hodAccademicStatus)
+router.patch("/dmsAcc/status", checkToken, dmsAccademicStatus)
+
+//leaverequeststatus
+router.patch("/msLeavereq/reject", checkToken, msLeaveReqRejectStatus)
+router.patch("/msLeavereq/approve", checkToken, msLeaveReqApproveStatus)
+router.patch("/hodLeavereq/approve", checkToken, hodLeaveReqApproveStatus)
+router.patch("/hodLeavereq/reject", checkToken, hodLeaveReqrejectStatus)
+router.patch("/dmsLeavereq/approve", checkToken, dmsLeaveReqApproveStatus)
+router.patch("/dmsLeavereq/reject", checkToken, dmsLeaveReqRejectStatus)
 
 module.exports = router;
