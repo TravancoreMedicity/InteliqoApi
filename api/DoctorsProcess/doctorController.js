@@ -1,6 +1,7 @@
 const {
     validateDoctorDuty
 } = require("../../validation/validation_schema");
+const logger = require('../../logger/logger');
 const {
     checkDoctorDutyplan,
     insertDutyplan,
@@ -33,7 +34,7 @@ const {
     getEmployeeDepartments,
     createDoctorCoff,
     getSelectedDateShift,
-    updateCOFFLeave,
+    updateDoctorLeavePunchMaster,
     getDoctorsPunchData,
     getDoctorPunchMaster,
     getSingleDoctorPunch,
@@ -41,7 +42,30 @@ const {
     getLeaveRequest,
     getDoctorCoff,
     createAccademicRequest,
-    updateAccLeave
+    getAllCoffRequest,
+    msCoffStatus,
+    getAllAccademicRequest,
+    msAccademicStatus,
+    arrayUpdateDoctorPunchMast,
+    getAllLeaveRequest,
+    getDoctorLeaveDetl,
+    msLeaveReqStatus,
+    hodAccademicStatus,
+    dmsAccademicStatus,
+    hodCoffStatus,
+    dmsCoffStatus,
+    hodleaveReqStatus,
+    dmsleavereqStatus,
+    updatePunchMasterLeave,
+    deleteDoctorLeave,
+    deleteDoctorCoff,
+    deleteDoctorAccademic,
+    getDoctorAccademic,
+    deleteDoctorLeavePunchMaster,
+    CancelpunchMastLeave,
+    getDoctorLeaveReport,
+    getDoctorCoffReport,
+    getDoctorAccademicReport
 } = require("./doctorService");
 
 module.exports = {
@@ -72,8 +96,8 @@ module.exports = {
         const body = req.body;
         var a1 = body.map((value, index) => {
             return [value.date, value.emp_id, value.em_no, value.shift,
-                value.holidayStatus, value.holidayName, value.holidaySlno,
-                value.plan_user
+            value.holidayStatus, value.holidayName, value.holidaySlno,
+            value.plan_user
             ]
         })
 
@@ -297,8 +321,8 @@ module.exports = {
         const body = req.body;
         var a1 = body?.map((value, index) => {
             return [value.date, value.emp_id, value.em_no, value.shift,
-                value.holidayStatus, value.holidayName, value.holidaySlno,
-                value.plan_user
+            value.holidayStatus, value.holidayName, value.holidaySlno,
+            value.plan_user
             ]
         })
 
@@ -324,7 +348,7 @@ module.exports = {
     },
     createDoctorPunch: (req, res) => {
         const body = req.body;
-        const {  insertArray } = body
+        const { insertArray } = body
 
         var a1 = insertArray?.map((value, index) => {
             return [
@@ -337,7 +361,7 @@ module.exports = {
 
         const nmc_regnoList = insertArray?.map((val) => val?.attendanceId)
         createDoctorPunch(a1, (err, results) => {
-            
+
             if (err) {
                 return res.status(200).json({
                     success: 2,
@@ -350,26 +374,26 @@ module.exports = {
                     message: "No Results Found"
                 });
             }
-            
+
             getDoctorsByNMC(nmc_regnoList, (err, results) => {
-            if (err) {
+                if (err) {
+                    return res.status(200).json({
+                        success: 0,
+                        message: err,
+                        data: []
+                    });
+                }
+                if (results.length == 0) {
+                    return res.status(200).json({
+                        success: 0,
+                        message: "No Record Found",
+                        data: []
+                    });
+                }
                 return res.status(200).json({
-                    success: 0,
-                    message: err,
-                    data: []
-                });
-            }
-            if (results.length == 0) {
-                return res.status(200).json({
-                    success: 0,
-                    message: "No Record Found",
-                    data: []
-                });
-            }
-            return res.status(200).json({
                     success: 1,
                     message: "Punch Updated Successfully",
-                    data: results                  
+                    data: results
                 });
             })
         });
@@ -732,27 +756,10 @@ module.exports = {
                     message: "No Record Found"
                 });
             }
-            updateCOFFLeave(body, (err, results) => {
-            if (err) {
-                return res.status(200).json({
-                    success: 0,
-                    message: err
-                });
-            }
-
-            if (!results) {
-                return res.status(200).json({
-                    success: 1,
-                    message: "Record Not Found"
-                });
-            }
-
             return res.status(200).json({
                 success: 2,
-                message: "COFF Updated Successfully"
+                message: "OFF request Submitted Successfully"
             });
-
-        });
         });
     },
     updatePunchMasterLeave: async (req, res) => {
@@ -760,7 +767,7 @@ module.exports = {
         updatePunchMasterLeave(body).then(results => {
             return res.status(200).json({
                 success: 1,
-                message: 'Update Successfully'
+                message: "Leave Request Submitted Successfully"
             });
         }).catch(err => {
             return res.status(200).json({
@@ -770,51 +777,51 @@ module.exports = {
         })
     },
     getSelectedDateShift: (req, res) => {
-            const body = req.body;
-            getSelectedDateShift(body, (err, results) => {
-                if (err) {
-                    return res.status(200).json({
-                        success: 0,
-                        message: err
-                    });
-                }
-                else if (results?.length === 0) {
-                    return res.status(200).json({
-                        success: 2,
-                        message: "No Record Found"
-                    });
-                }
-                else {
-                    return res.status(200).json({
-                        success: 1,
-                        data: results
-                    });
-                }
-            });
-        },
-        updateDoctorPunchMast: (req, res) => {
         const body = req.body;
-        const {   em_id,  insertArray } = body;      
-        const result =updateNMCpunch(insertArray)
-            .then((r) => {
-            logDoctorPunch(em_id, (err, results) => {
-                if (err) {
-                    return res.status(200).json({
-                        success: 2,
-                        message: err
-                    });
-                }
-                if (!results) {
-                    return res.status(200).json({
-                        success: 0,
-                        message: "No Results Found"
-                    });
-                }
+        getSelectedDateShift(body, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else if (results?.length === 0) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Record Found"
+                });
+            }
+            else {
                 return res.status(200).json({
                     success: 1,
-                    message: "Punch Updated Successfully"
+                    data: results
                 });
-            });
+            }
+        });
+    },
+    updateDoctorPunchMast: (req, res) => {
+        const body = req.body;
+        const { em_id, insertArray } = body;
+        const result = updateNMCpunch(insertArray)
+            .then((r) => {
+                logDoctorPunch(em_id, (err, results) => {
+                    if (err) {
+                        return res.status(200).json({
+                            success: 2,
+                            message: err
+                        });
+                    }
+                    if (!results) {
+                        return res.status(200).json({
+                            success: 0,
+                            message: "No Results Found"
+                        });
+                    }
+                    return res.status(200).json({
+                        success: 1,
+                        message: "Punch Updated Successfully"
+                    });
+                });
             }).catch((e) => {
                 return res.status(200).json({
                     success: 0,
@@ -845,52 +852,52 @@ module.exports = {
             });
         });
     },
-     getDoctorPunchMaster: (req, res) => {
-            const body = req.body
-            getDoctorPunchMaster(body, (err, results) => {
-                if (err) {
-                    return res.status(200).json({
-                        success: 0,
-                        message: err
-                    });
-                }
-    
-                if (!results) {
-                    return res.status(200).json({
-                        success: 2,
-                        message: "No Results Found"
-                    });
-                }
-    
+    getDoctorPunchMaster: (req, res) => {
+        const body = req.body
+        getDoctorPunchMaster(body, (err, results) => {
+            if (err) {
                 return res.status(200).json({
-                    success: 1,
-                    data: results
+                    success: 0,
+                    message: err
                 });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
             });
-        },
-        getSingleDoctorPunch: (req, res) => {
-                const body = req.body
-                getSingleDoctorPunch(body, (err, results) => {
-                    if (err) {
-                        return res.status(200).json({
-                            success: 0,
-                            message: err
-                        });
-                    }
-        
-                    if (!results) {
-                        return res.status(200).json({
-                            success: 2,
-                            message: "No Results Found"
-                        });
-                    }
-        
-                    return res.status(200).json({
-                        success: 1,
-                        data: results
-                    });
+        });
+    },
+    getSingleDoctorPunch: (req, res) => {
+        const body = req.body
+        getSingleDoctorPunch(body, (err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 0,
+                    message: err
                 });
-            },
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
     getSingleDoctorPunchmast: (req, res) => {
         const body = req.body
         getSingleDoctorPunchmast(body, (err, results) => {
@@ -975,24 +982,657 @@ module.exports = {
                     message: "No Record Found"
                 });
             }
-           updateAccLeave(body, (err, results) => {
+            return res.status(200).json({
+                success: 1,
+                message: "Request Submitted Successfully"
+            });
+        });
+    },
+    getAllCoffRequest: (req, res) => {
+        getAllCoffRequest((err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    msCoffRejectStatus: (req, res) => {
+        const body = req.body;
+        msCoffStatus(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+            else {
+                return res.status(200).json({
+                    success: 1,
+                    message: "OFF Request Rejected"
+                });
+
+            }
+        });
+    },
+    msCoffApproveStatus: (req, res) => {
+        const body = req.body;
+        updateDoctorLeavePunchMaster(body, (err, results) => {
             if (err) {
                 return res.status(200).json({
                     success: 0,
                     message: err
                 });
             }
-            if (results.length == 0) {
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Record Not Found"
+                });
+            }
+
+            msCoffStatus(body, (err, results) => {
+                if (err) {
+                    logger.errorLogger(err)
+                    return res.status(200).json({
+                        success: 0,
+                        message: err
+                    });
+                }
+                else if (!results) {
+                    return res.status(200).json({
+                        success: 2,
+                        message: "Record Not Found"
+                    });
+                }
+                else {
+                    return res.status(200).json({
+                        success: 1,
+                        message: "OFF Request Rejected"
+                    });
+                }
+            });
+        });
+    },
+    getAllAccademicRequest: (req, res) => {
+        getAllAccademicRequest((err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+
+            if (!results) {
                 return res.status(200).json({
                     success: 0,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    msAccademicRejectStatus: (req, res) => {
+        const body = req.body;
+        msAccademicStatus(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+            else {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Accademic/Exam Request Rejected"
+                });
+
+            }
+        });
+    },
+    msAccApproveStatus: (req, res) => {
+        const body = req.body;
+        const { punchmastLeave, tableLeave } = body;
+        const result = arrayUpdateDoctorPunchMast(punchmastLeave)
+            .then((r) => {
+                msAccademicStatus(tableLeave, (err, results) => {
+                    if (err) {
+                        return res.status(200).json({
+                            success: 2,
+                            message: err
+                        });
+                    }
+                    if (!results) {
+                        return res.status(200).json({
+                            success: 0,
+                            message: "No Results Found"
+                        });
+                    }
+                    return res.status(200).json({
+                        success: 1,
+                        message: "Leave Request Approved"
+                    });
+                });
+            }).catch((e) => {
+                return res.status(200).json({
+                    success: 0,
+                    message: e.sqlMessage
+                });
+            })
+    },
+    getAllLeaveRequest: (req, res) => {
+        getAllLeaveRequest((err, results) => {
+            if (err) {
+                return res.status(200).json({
+                    success: 2,
+                    message: err
+                });
+            }
+
+            if (!results) {
+                return res.status(200).json({
+                    success: 0,
+                    message: "No Results Found"
+                });
+            }
+
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    getDoctorLeaveDetl: (req, res) => {
+        const id = req.params.id;
+        getDoctorLeaveDetl(id, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else if (results.length == 0) {
+                return res.status(200).json({
+                    success: 2,
                     message: "No Record Found"
+                });
+            }
+            else {
+                return res.status(200).json({
+                    success: 1,
+                    data: results
+                });
+            }
+        });
+    },
+    msLeaveReqRejectStatus: (req, res) => {
+        const body = req.body;
+        msLeaveReqStatus(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+            else {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Leave Request Rejected"
+                });
+            }
+        });
+    },
+    msLeaveReqApproveStatus: (req, res) => {
+        const body = req.body;
+        msLeaveReqStatus(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+            else {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Leave Request Approved"
+                });
+
+            }
+        });
+    },
+    hodAccademicStatus: (req, res) => {
+        const body = req.body;
+        hodAccademicStatus(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+            else {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Accademic/Exam Request Updated"
+                });
+            }
+        });
+    },
+    dmsAccademicStatus: (req, res) => {
+        const body = req.body;
+        dmsAccademicStatus(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+            else {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Accademic/Exam Request Updated"
+                });
+
+            }
+        });
+    },
+    hodCoffStatus: (req, res) => {
+        const body = req.body;
+        hodCoffStatus(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+            else {
+                return res.status(200).json({
+                    success: 1,
+                    message: "OFF Request Updated"
+                });
+            }
+        });
+    },
+    dmsCoffStatus: (req, res) => {
+        const body = req.body;
+        dmsCoffStatus(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+            else {
+                return res.status(200).json({
+                    success: 1,
+                    message: "OFF Request Updated"
+                });
+            }
+        });
+    },
+    hodLeaveReqApproveStatus: (req, res) => {
+        const body = req.body;
+        hodleaveReqStatus(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+            else {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Leave Request Approved"
+                });
+            }
+        });
+    },
+    hodLeaveReqrejectStatus: (req, res) => {
+        const body = req.body;
+        hodleaveReqStatus(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+            else {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Leave Request Rejected"
+                });
+            }
+        });
+    },
+    dmsLeaveReqApproveStatus: (req, res) => {
+        const body = req.body;
+        dmsleavereqStatus(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+            else {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Leave Request Approved"
+                });
+            }
+        });
+    },
+    dmsLeaveReqRejectStatus: (req, res) => {
+        const body = req.body;
+        dmsleavereqStatus(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+            else {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Leave Request Rejected"
+                });
+            }
+        });
+    },
+    deleteDoctorLeave: (req, res) => {
+        const body = req.body;
+        deleteDoctorLeave(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+            else {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Leave Request Deleted Successfully"
+                });
+            }
+        });
+    },
+    deleteDoctorCoff: (req, res) => {
+        const body = req.body;
+        deleteDoctorLeavePunchMaster(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err)
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+            deleteDoctorCoff(body, (err, results) => {
+                if (err) {
+                    logger.errorLogger(err);
+                    return res.status(200).json({
+                        success: 0,
+                        message: err
+                    });
+                }
+                else if (!results) {
+                    return res.status(200).json({
+                        success: 2,
+                        message: "Record Not Found"
+                    });
+                }
+                else {
+                    return res.status(200).json({
+                        success: 1,
+                        message: "COFF Request Deleted Successfully"
+                    });
+                }
+            });
+        });
+    },
+    deleteDoctorAccademic: (req, res) => {
+        const body = req.body;
+        deleteDoctorAccademic(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err);
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else if (!results) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "Record Not Found"
+                });
+            }
+            else {
+                return res.status(200).json({
+                    success: 1,
+                    message: "Academic Leave Request Deleted Successfully"
+                });
+            }
+        });
+    },
+    getDoctorAccademic: (req, res) => {
+        const body = req.body;
+        getDoctorAccademic(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err);
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            else if (results?.length === 0) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Record Found"
+                });
+            }
+            else {
+                return res.status(200).json({
+                    success: 1,
+                    data: results
+                });
+            }
+        });
+    },
+    CancelpunchMastLeave: async (req, res) => {
+        const body = req.body;
+        CancelpunchMastLeave(body).then(results => {
+            return res.status(200).json({
+                success: 1,
+                message: 'Update Successfully'
+            });
+        }).catch(err => {
+            logger.errorLogger(err);
+            return res.status(200).json({
+                success: 0,
+                message: "Error Occured , Please Contact HRD / IT"
+            });
+        });
+    },
+    getDoctorLeaveReport: (req, res) => {
+        const body = req.body;
+        getDoctorLeaveReport(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err);
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (!results || results.length === 0) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Record Found",
+                    data: []
                 });
             }
             return res.status(200).json({
                 success: 1,
-                message: "Request Updated Successfully"
+                data: results
             });
         });
+    },
+    getDoctorCoffReport: (req, res) => {
+        const body = req.body;
+        getDoctorCoffReport(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err);
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (!results || results.length === 0) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Record Found",
+                    data: []
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    },
+    getDoctorAccademicReport: (req, res) => {
+        const body = req.body;
+        getDoctorAccademicReport(body, (err, results) => {
+            if (err) {
+                logger.errorLogger(err);
+                return res.status(200).json({
+                    success: 0,
+                    message: err
+                });
+            }
+            if (!results || results.length === 0) {
+                return res.status(200).json({
+                    success: 2,
+                    message: "No Record Found",
+                    data: []
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
         });
     },
 }

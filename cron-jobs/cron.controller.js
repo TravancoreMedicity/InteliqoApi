@@ -275,7 +275,8 @@ const InsertTmcpunch = async () => {
                   hrm_department.dept_id,
                   hrm_dept_section.sect_id,
                   gross_salary,
-                  shft_brk_start
+                  shft_brk_start,
+                  shft_cross_day
               FROM doctor_punch_master 
               LEFT JOIN hrm_emp_master ON hrm_emp_master.em_no=doctor_punch_master.em_no
               LEFT JOIN hrm_department ON hrm_department.dept_id=hrm_emp_master.em_department
@@ -304,7 +305,7 @@ const InsertTmcpunch = async () => {
                     ?.filter((k) => parseInt(k?.emp_code) === val?.em_no)
                     ?.map((row) => ({ ...row }));
 
-                  const { shft_brk_start, duty_day, shift_id } = val;
+                  const { shft_brk_start, duty_day, shift_id, shft_cross_day } = val;
                   const halftime =
                     shft_brk_start !== null
                       ? format(new Date(shft_brk_start), "HH:mm")
