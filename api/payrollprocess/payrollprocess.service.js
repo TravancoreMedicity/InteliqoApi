@@ -1032,7 +1032,8 @@ module.exports = {
             lvereq_desc,
             duty_desc,
             lve_tble_updation_flag,
-            hrm_emp_master.em_name
+            hrm_emp_master.em_name,
+            shft_cross_day
             from  punch_master
             left join hrm_emp_master on hrm_emp_master.em_no=punch_master.em_no
             inner join hrm_shift_mast on hrm_shift_mast.shft_slno=punch_master.shift_id
